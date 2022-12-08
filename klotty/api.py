@@ -1,0 +1,83 @@
+from typing import Dict
+
+import requests
+
+from klotty.exceptions import raise_for_code_and_type
+
+from .version import get_version
+
+
+class Klotty:
+    """Klotty SDK main client class
+
+    Raises:
+        ValueError: raises ValueError when api key is
+    """
+
+    base_url: str = "https://api.klotty.com"
+    timeout_ms: int = 60_000
+
+    def __init__(self, api_key: str):
+        if not api_key:
+            raise ValueError("Klotty API Key is required.")
+        self.__api_key = api_key
+
+    def __get_headers(self) -> Dict:
+        """get_headers returns the HTTP headers that will be
+        used for every req.
+
+        Returns:
+            Dict: _description_
+        """
+        return {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {self.__api_key}",
+            "User-Agent": f"python:{get_version()}",
+        }
+
+    def _make_request(self, url, params, headers):
+        try:
+            return requests.post(url, params=params, headers=headers)
+        except requests.HTTPError as e:
+            raise e
+
+    def send_email(
+        self,
+        sender: str,
+        to: str,
+        subject: str,
+        text: str = None,
+        bcc: str = None,
+        cc: str = None,
+        html: str = None,
+    ):
+        if not sender:
+            raise ValueError("sender is required.")
+        if not to:
+            raise ValueError("to is required.")
+        if not subject:
+            raise ValueError("subject is required.")
+
+        url = f"{self.base_url}/email"
+        headers = self.__get_headers()
+
+        params: Dict = {"to": to, "from": sender, "subject": subject}
+        if text:
+            params["text"] = text
+        elif html:
+            params["html"] = html
+
+        if cc:
+            params["cc"] = cc
+        if bcc:
+            params["bcc"] = bcc
+
+        resp = self._make_request(url, params, headers)
+
+        if resp.status_code != 200 or resp.json().get("error") is not None:
+            error = resp.json().get("error")
+            raise_for_code_and_type(
+                code=error.get("code"),
+                message=error.get("message"),
+                error_type=error.get("type"),
+            )
