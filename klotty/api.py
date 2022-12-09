@@ -37,7 +37,7 @@ class Klotty:
 
     def _make_request(self, url, params, headers):
         try:
-            return requests.post(url, params=params, headers=headers)
+            return requests.post(url, json=params, headers=headers)
         except requests.HTTPError as e:
             raise e
 
@@ -81,3 +81,5 @@ class Klotty:
                 message=error.get("message"),
                 error_type=error.get("type"),
             )
+
+        return resp.json()
