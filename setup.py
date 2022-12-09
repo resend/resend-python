@@ -2,11 +2,13 @@
 
 from setuptools import setup
 
+from klotty.version import get_version
+
 install_requires = open("requirements.txt").readlines()
 
 setup(
     name="klotty",
-    version="0.0.1",
+    version=get_version(),
     description="Klotty Python SDK",
     long_description=open("README.md", encoding="utf8").read(),
     long_description_content_type="text/markdown",
