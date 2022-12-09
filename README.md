@@ -16,6 +16,16 @@ To install Klotty Python SDK, simply execute the following command in a terminal
 pip install klotty
 ```
 
+## Setup
+
+First, you need to get an API key, which is available in the [Klotty Dashboard](https://klotty.com).
+
+```py
+from klotty import Klotty
+
+client = Klotty(api_key="kl_123")
+```
+
 ## Example
 
 ```py
