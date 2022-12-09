@@ -28,3 +28,7 @@ client.send_email(
     html="<strong>hello, world!</strong>"
 )
 ```
+
+## Example sending email using React
+
+Coming soon.
