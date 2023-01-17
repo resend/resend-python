@@ -2,24 +2,24 @@ from typing import Dict
 
 import requests
 
-from klotty.exceptions import raise_for_code_and_type
+from resend.exceptions import raise_for_code_and_type
 
 from .version import get_version
 
 
-class Klotty:
-    """Klotty SDK main client class
+class Resend:
+    """Resend SDK main client class
 
     Raises:
         ValueError: raises ValueError when api key is
     """
 
-    base_url: str = "https://api.klotty.com"
+    base_url: str = "https://api.resend.com"
     timeout_ms: int = 60_000
 
     def __init__(self, api_key: str):
         if not api_key:
-            raise ValueError("Klotty API Key is required.")
+            raise ValueError("Resend API Key is required.")
         self.__api_key = api_key
 
     def __get_headers(self) -> Dict:

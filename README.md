@@ -1,37 +1,37 @@
-# Klotty Python SDK
+# Resend Python SDK
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-![Build](https://github.com/drish/klotty-py/actions/workflows/test.yaml/badge.svg)
-[![codecov](https://codecov.io/gh/drish/klotty-py/branch/main/graph/badge.svg?token=GGD39PPFM0)](https://codecov.io/gh/drish/klotty-py)
+![Build](https://github.com/drish/resend-py/actions/workflows/test.yaml/badge.svg)
+[![codecov](https://codecov.io/gh/drish/resend-py/branch/main/graph/badge.svg?token=GGD39PPFM0)](https://codecov.io/gh/drish/resend-py)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![PyPI](https://img.shields.io/pypi/v/klotty)](https://pypi.org/project/klotty/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/klotty)](https://pypi.org/project/klotty)
+[![PyPI](https://img.shields.io/pypi/v/resend)](https://pypi.org/project/resend/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/resend)](https://pypi.org/project/resend)
 ---
 
 ## Installation
 
-To install Klotty Python SDK, simply execute the following command in a terminal:
+To install Resend Python SDK, simply execute the following command in a terminal:
 
 ```
-pip install klotty
+pip install resend
 ```
 
 ## Setup
 
-First, you need to get an API key, which is available in the [Klotty Dashboard](https://klotty.com).
+First, you need to get an API key, which is available in the [Resend Dashboard](https://resend.com).
 
 ```py
-from klotty import Klotty
+from resend import Resend
 
-client = Klotty(api_key="kl_123")
+client = Resend(api_key="kl_123")
 ```
 
 ## Example
 
 ```py
-from klotty import Klotty
+from resend import Resend
 
-client = Klotty(api_key=os.environ["KLOTTY_API_KEY"])
+client = Resend(api_key=os.environ["RESEND_API_KEY"])
 
 client.send_email(
     to="to@email.com",

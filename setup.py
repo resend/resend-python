@@ -2,20 +2,20 @@
 
 from setuptools import setup
 
-from klotty.version import get_version
+from resend.version import get_version
 
 install_requires = open("requirements.txt").readlines()
 
 setup(
-    name="klotty",
+    name="resend",
     version=get_version(),
-    description="Klotty Python SDK",
+    description="Resend Python SDK",
     long_description=open("README.md", encoding="utf8").read(),
     long_description_content_type="text/markdown",
     author="Derich Pacheco",
     author_email="carlosderich@gmail.com",
-    url="https://github.com/drish/klotty-py",
-    packages=["klotty"],
+    url="https://github.com/drish/resend-py",
+    packages=["resend"],
     include_package_data=True,
     install_requires=install_requires,
     zip_safe=False,
