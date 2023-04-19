@@ -1,5 +1,6 @@
 main.py
 
+.vscode
 ### Emacs ###
 # -*- mode: gitignore; -*-
 *~

@@ -29,6 +29,7 @@ client = Resend(api_key="kl_123")
 ## Example
 
 ```py
+import os
 from resend import Resend
 
 client = Resend(api_key=os.environ["RESEND_API_KEY"])
