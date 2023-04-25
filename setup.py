@@ -14,7 +14,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Derich Pacheco",
     author_email="carlosderich@gmail.com",
-    url="https://github.com/drish/resend-py",
+    url="https://github.com/resendlabs/resend-python",
     packages=["resend"],
     include_package_data=True,
     install_requires=install_requires,
