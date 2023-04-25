@@ -8,8 +8,8 @@ if not os.environ["RESEND_API_KEY"]:
 client = Resend(api_key=os.environ["RESEND_API_KEY"])
 
 r = client.send_email(
-    sender="team@recomendo.io",
-    to="carlosderich@gmail.com",
+    sender="from@email.io",
+    to="to@email.com",
     subject="hi",
     html="<strong>hello, world!</strong>",
 )
