@@ -1,0 +1,11 @@
+version: '3.4'
+services:
+  # Used for dev testing and integration testing
+  app:
+    build:
+      context: .
+    command: sleep infinity
+    environment:
+      RESEND_API_KEY: ${RESEND_API_KEY}
+    volumes:
+      - .:/app
