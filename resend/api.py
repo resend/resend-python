@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 import requests
 
@@ -50,6 +50,7 @@ class Resend:
         bcc: str = None,
         cc: str = None,
         html: str = None,
+        attachments: List[Dict] = None,
     ):
         if not sender:
             raise ValueError("sender is required.")
@@ -71,6 +72,8 @@ class Resend:
             params["cc"] = cc
         if bcc:
             params["bcc"] = bcc
+        if attachments:
+            params["attachments"] = attachments
 
         resp = self._make_request(url, params, headers)
 
