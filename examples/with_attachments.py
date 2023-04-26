@@ -12,8 +12,8 @@ f = open(
 ).read()
 
 r = client.send_email(
-    sender="team@recomendo.io",
-    to="carlosderich@gmail.com",
+    sender="from@example.io",
+    to="to@email.com",
     subject="hi",
     html="<strong>hello, world!</strong>",
     attachments=[{"filename": "invoice.pdf", "content": list(f)}],
