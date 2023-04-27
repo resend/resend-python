@@ -2,7 +2,8 @@ import unittest
 
 import pytest
 
-from resend.exceptions import ResendError, MissingApiKeyError, raise_for_code_and_type
+from resend.exceptions import (MissingApiKeyError, ResendError,
+                               raise_for_code_and_type)
 
 
 class TestResendError(unittest.TestCase):
