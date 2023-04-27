@@ -113,10 +113,12 @@ ERRORS: Dict[str, Dict[str, ResendError]] = {
 
 
 def raise_for_code_and_type(code, error_type, message: str) -> ResendError:
+    error = ERRORS.get(str(code))
+
     # Handle the case where the error might be unknown
-    if ERRORS.get(code).get(error_type) is None:
-        raise ResendError()
+    if error is None or error.get(error_type) is None:
+        raise ResendError(code=code, message=message, error_type=error_type)
 
     # Raise error from errors list
-    error: ResendError = ERRORS.get(code).get(error_type)
+    error: ResendError = error.get(error_type)
     raise error(code=code, message=message, error_type=error_type)

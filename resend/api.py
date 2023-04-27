@@ -77,12 +77,12 @@ class Resend:
 
         resp = self._make_request(url, params, headers)
 
-        if resp.status_code != 200 or resp.json().get("error") is not None:
-            error = resp.json().get("error")
+        if resp.status_code != 200:
+            error = resp.json()
             raise_for_code_and_type(
-                code=error.get("code"),
+                code=error.get("statusCode"),
                 message=error.get("message"),
-                error_type=error.get("type"),
+                error_type=error.get("name"),
             )
 
         return resp.json()
