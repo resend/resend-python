@@ -49,11 +49,9 @@ class TestResend(unittest.TestCase):
 
         def mock_json():
             return {
-                "error": {
-                    "code": "422",
-                    "type": "missing_required_fields",
-                    "message": "missing field",
-                }
+                "statusCode": "422",
+                "name": "missing_required_fields",
+                "message": "missing field",
             }
 
         m.json = mock_json
