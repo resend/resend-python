@@ -21,27 +21,32 @@ pip install resend
 First, you need to get an API key, which is available in the [Resend Dashboard](https://resend.com).
 
 ```py
-from resend import Resend
+import resend
+import os
 
-client = Resend(api_key="kl_123")
+resend.api_key = os.environ["RESEND_API_KEY"]
 ```
 
 ## Example
 
 ```py
 import os
-from resend import Resend
+import resend
 
-client = Resend(api_key=os.environ["RESEND_API_KEY"])
+resend.api_key = os.environ["RESEND_API_KEY"]
 
-client.send_email(
-    to="to@email.com",
-    sender="from@email.com",
+r = resend.Emails.send(
+    sender="from@email.io",
+    to=["to@gmail.com"],
     subject="hi",
-    html="<strong>hello, world!</strong>"
+    html="<strong>hello, world!</strong>",
+    reply_to="to@gmail.com",
+    bcc="to@gmail.com",
+    cc=["to@gmail.com"],
+    tags=[
+        {"name": "tag1", "value": "tagvalue1"},
+        {"name": "tag2", "value": "tagvalue2"},
+    ],
 )
+print(r)
 ```
-
-## Example sending email using React
-
-Coming soon.
