@@ -35,18 +35,22 @@ import resend
 
 resend.api_key = os.environ["RESEND_API_KEY"]
 
-r = resend.Emails.send(
-    sender="from@email.io",
-    to=["to@gmail.com"],
-    subject="hi",
-    html="<strong>hello, world!</strong>",
-    reply_to="to@gmail.com",
-    bcc="to@gmail.com",
-    cc=["to@gmail.com"],
-    tags=[
+params = {
+    "from": "r@email.io",
+    "to": ["to@gmail.com"],
+    "subject": "hi",
+    "html": "<strong>hello, world!</strong>",
+    "reply_to": "to@gmail.com",
+    "bcc": "to@gmail.com",
+    "cc": ["to@gmail.com"],
+    "tags": [
         {"name": "tag1", "value": "tagvalue1"},
         {"name": "tag2", "value": "tagvalue2"},
     ],
+}
+
+r = resend.Emails.send(
+
 )
 print(r)
 ```
