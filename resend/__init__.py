@@ -1,7 +1,7 @@
 from .api import Resend
-from .version import get_version
-from .request import Request
 from .emails import Emails
+from .request import Request
+from .version import get_version
 
 # Config vars
 api_key = None

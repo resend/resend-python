@@ -9,7 +9,7 @@ class Emails:
     @classmethod
     # https://resend.com/docs/api-reference/emails/send-email
     def send(
-        self,
+        cls,
         sender: str,
         to: Union[str, List[str]],
         subject: str,
@@ -46,6 +46,6 @@ class Emails:
 
     @classmethod
     # https://resend.com/docs/api-reference/emails/retrieve-email
-    def get(self, email_id: str = "") -> Dict:
+    def get(cls, email_id: str = "") -> Dict:
         path = f"/emails/{email_id}"
         return request.Request(path=path, params={}, verb="get").perform()

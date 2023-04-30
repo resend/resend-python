@@ -1,9 +1,9 @@
-import requests
-import resend
-
 from typing import Dict
-from resend.exceptions import raise_for_code_and_type
 
+import requests
+
+import resend
+from resend.exceptions import raise_for_code_and_type
 from resend.version import get_version
 
 
