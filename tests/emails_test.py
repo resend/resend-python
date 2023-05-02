@@ -6,7 +6,7 @@ import resend
 # flake8: noqa
 
 
-class TestResendError(unittest.TestCase):
+class TestResendEmail(unittest.TestCase):
     def test_email_send(self):
         resend.api_key = "re_123"
 
@@ -27,12 +27,13 @@ class TestResendError(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        email = resend.Emails.send(
-            to="to@email.com",
-            sender="from@email.com",
-            subject="subject",
-            html="html",
-        )
+        params = {
+            "to": "to@email.com",
+            "sender": "from@email.com",
+            "subject": "subject",
+            "html": "html",
+        }
+        email = resend.Emails.send(params)
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
         patcher.stop()
 

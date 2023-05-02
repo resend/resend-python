@@ -27,6 +27,9 @@ class Request:
                 error_type=error.get("name"),
             )
 
+        # some delete calls do not return a body
+        if resp.text == "":
+            return None
         return resp.json()
 
     def __get_headers(self) -> Dict:
