@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List
 
 import resend
 
@@ -12,11 +12,11 @@ class Resend:
     def send_email(
         self,
         sender: str,
-        to: Union[str, List[str]],
+        to,
         subject: str,
-        bcc: Union[str, List[str]] = None,
-        cc: Union[str, List[str]] = None,
-        reply_to: str = None,
+        bcc=None,
+        cc=None,
+        reply_to=None,
         html: str = None,
         text: str = None,
         attachments: List[Dict] = None,
@@ -26,14 +26,16 @@ class Resend:
             "[DEPRECATION]: method `send_email` is deprecated. Use resend.Emails.send() instead"  # noqa
         )
         return resend.Emails.send(
-            sender=sender,
-            to=to,
-            subject=subject,
-            bcc=bcc,
-            cc=cc,
-            reply_to=reply_to,
-            html=html,
-            text=text,
-            attachments=attachments,
-            tags=tags,
+            {
+                "from": sender,
+                "to": to,
+                "subject": subject,
+                "bcc": bcc,
+                "cc": cc,
+                "reply_to": reply_to,
+                "html": html,
+                "text": text,
+                "attachments": attachments,
+                "tags": tags,
+            }
         )
