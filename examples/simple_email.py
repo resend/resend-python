@@ -1,16 +1,27 @@
 import os
 
-from resend import Resend
+import resend
 
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
-client = Resend(api_key=os.environ["RESEND_API_KEY"])
 
-r = client.send_email(
-    sender="from@email.io",
-    to="to@email.com",
+resend.api_key = os.environ["RESEND_API_KEY"]
+
+email = resend.Emails.send(
+    sender="from@recomendo.io",
+    to=["carlosderich@gmail.com"],
     subject="hi",
     html="<strong>hello, world!</strong>",
+    reply_to="carlosderich@gmail.com",
+    bcc="carlosderich@gmail.com",
+    cc=["carlosderich@gmail.com"],
+    tags=[
+        {"name": "tag1", "value": "tagvalue1"},
+        {"name": "tag2", "value": "tagvalue2"},
+    ],
 )
-print(r)
+print(email)
+
+email_resp = resend.Emails.get(email_id=email["id"])
+print(email_resp)
