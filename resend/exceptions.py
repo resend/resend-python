@@ -78,6 +78,33 @@ class InvalidApiKeyError(ResendError):
         )
 
 
+class ValidationError(ResendError):
+    """see https://resend.com/docs/errors"""
+
+    def __init__(
+        self,
+        message,
+        error_type,
+        code,
+    ):
+        default_message = """
+        The request body is missing one or more required fields."""
+
+        suggested_action = """Check the error message
+        to see the list of missing fields."""
+
+        if message == "":
+            message = default_message
+
+        ResendError.__init__(
+            self,
+            code=code or 400,
+            message=message,
+            suggested_action=suggested_action,
+            error_type=error_type,
+        )
+
+
 class MissingRequiredFieldsError(ResendError):
     """see https://resend.com/docs/errors"""
 
@@ -106,6 +133,7 @@ class MissingRequiredFieldsError(ResendError):
 
 
 ERRORS: Dict[str, Dict[str, ResendError]] = {
+    "400": {"validation_error": ValidationError},
     "422": {"missing_required_fields": MissingRequiredFieldsError},
     "401": {"missing_api_key": MissingApiKeyError},
     "403": {"invalid_api_key": InvalidApiKeyError},

@@ -19,7 +19,13 @@ class Request:
     def perform(self):
         resp = self.make_request(url=f"{self.base_url}{self.path}")
 
-        if resp.status_code != 200:
+        # delete calls do not return a body
+        if resp.text == "" and resp.status_code == 200:
+            return None
+
+        # handle error in case there is a statusCode attr present
+        # and status != 200
+        if resp.status_code != 200 and resp.json().get("statusCode"):
             error = resp.json()
             raise_for_code_and_type(
                 code=error.get("statusCode"),
@@ -27,9 +33,6 @@ class Request:
                 error_type=error.get("name"),
             )
 
-        # some delete calls do not return a body
-        if resp.text == "":
-            return None
         return resp.json()
 
     def __get_headers(self) -> Dict:
@@ -49,6 +52,7 @@ class Request:
         headers = self.__get_headers()
         params = self.params
         verb = self.verb
+
         try:
             return requests.request(verb, url, json=params, headers=headers)
         except requests.HTTPError as e:
