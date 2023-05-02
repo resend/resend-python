@@ -10,7 +10,7 @@ resend.api_key = os.environ["RESEND_API_KEY"]
 
 domain = resend.Domains.create(
     {
-        "name": "prod",
+        "name": "domain.io",
     }
 )
 print(domain)
