@@ -1,3 +1,4 @@
+from warnings import warn
 from typing import Dict, List
 
 import resend
@@ -22,7 +23,7 @@ class Resend:
         attachments: List[Dict] = None,
         tags: List[Dict] = None,
     ):
-        print(
+        warn(
             "[DEPRECATION]: method `send_email` is deprecated. Use resend.Emails.send() instead"  # noqa
         )
         return resend.Emails.send(
