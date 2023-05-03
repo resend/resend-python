@@ -23,7 +23,9 @@ class Resend:
         attachments: List[Dict] = None,
         tags: List[Dict] = None,
     ):
-        warn("[DEPRECATION]: method `send_email` is deprecated. Use resend.Emails.send() instead", DeprecationWarning)
+        warn(
+            "[DEPRECATION]: method `send_email` is deprecated. Use resend.Emails.send() instead",
+            DeprecationWarning)
         return resend.Emails.send(
             {
                 "from": sender,
