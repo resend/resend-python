@@ -49,8 +49,6 @@ params = {
     ],
 }
 
-r = resend.Emails.send(
-
-)
+r = resend.Emails.send(params)
 print(r)
 ```
