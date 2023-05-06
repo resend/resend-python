@@ -5,7 +5,6 @@ import resend
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
-resend.api_key = os.environ["RESEND_API_KEY"]
 
 f = open(
     os.path.join(os.path.dirname(__file__), "../resources/invoice.pdf"), "rb"
