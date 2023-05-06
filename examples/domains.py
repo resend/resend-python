@@ -6,8 +6,6 @@ if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
 
-resend.api_key = os.environ["RESEND_API_KEY"]
-
 domain = resend.Domains.create(
     {
         "name": "domain.io",

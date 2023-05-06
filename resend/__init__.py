@@ -1,3 +1,5 @@
+import os
+
 from .api import Resend
 from .api_keys import ApiKeys
 from .domains import Domains
@@ -6,7 +8,7 @@ from .request import Request
 from .version import get_version
 
 # Config vars
-api_key = None
+api_key = os.environ.get("RESEND_API_KEY")
 
 # API resources
 from .emails import Emails  # noqa
