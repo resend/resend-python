@@ -6,6 +6,8 @@ ADD requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
 
+RUN pip install tox
+
 ENV APP_HOME /app
 
 ADD . $APP_HOME

@@ -81,6 +81,39 @@ class TestResendDomains(unittest.TestCase):
         assert key["status"] == "not_started"
         patcher.stop()
 
+    def test_domains_get(self):
+        resend.api_key = "re_123"
+
+        patcher = patch("resend.Request.make_request")
+        mock = patcher.start()
+        mock.status_code = 200
+        m = MagicMock()
+        m.status_code = 200
+
+        def mock_json():
+            return {
+                "object": "domain",
+                "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
+                "name": "example.com",
+                "status": "not_started",
+                "created_at": "2023-04-26T20:21:26.347412+00:00",
+                "region": "us-east-1",
+            }
+
+        m.json = mock_json
+        mock.return_value = m
+
+        email = resend.Domains.get(
+            domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
+        )
+        assert email["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
+        assert email["object"] == "domain"
+        assert email["name"] == "example.com"
+        assert email["status"] == "not_started"
+        assert email["created_at"] == "2023-04-26T20:21:26.347412+00:00"
+        assert email["region"] == "us-east-1"
+        patcher.stop()
+
     def test_domains_list(self):
         resend.api_key = "re_123"
 
