@@ -13,6 +13,9 @@ domain = resend.Domains.create(
 )
 print(domain)
 
+retrieved = resend.Domains.get(domain_id=domain["id"])
+print(retrieved)
+
 domains = resend.Domains.list()
 print(domains)
 

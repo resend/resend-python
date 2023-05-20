@@ -13,6 +13,12 @@ class Domains:
         return request.Request(path=path, params=params, verb="post").perform()
 
     @classmethod
+    # https://resend.com/docs/api-reference/domains/get-domain
+    def get(cls, domain_id="") -> Dict:
+        path = f"/domains/{domain_id}"
+        return request.Request(path=path, params={}, verb="get").perform()
+
+    @classmethod
     # https://resend.com/docs/api-reference/domains/list-domains
     def list(cls) -> Dict:
         path = "/domains"
