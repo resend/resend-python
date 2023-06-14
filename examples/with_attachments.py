@@ -11,8 +11,8 @@ f = open(
 ).read()
 
 params = {
-    "from": "d@recomendo.io",
-    "to": "to@gmail.com",
+    "from": "onboarding@resend.dev",
+    "to": "delivered@resend.dev",
     "subject": "hi",
     "html": "<strong>hello, world!</strong>",
     "attachments": [{"filename": "invoice.pdf", "content": list(f)}],
