@@ -45,7 +45,7 @@ class Request:
         return {
             "Accept": "application/json",
             "Authorization": f"Bearer {resend.api_key}",
-            "User-Agent": f"python:{get_version()}",
+            "User-Agent": f"resend-python:{get_version()}",
         }
 
     def make_request(self, url: str):
