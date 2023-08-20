@@ -13,9 +13,9 @@ b64 = base64.b64encode(f)
 b64_str = b64.decode('utf-8')
 
 params = {
-    "from": "r@recomendo.io",
-    "to": ["carlosderich@gmail.com"],
-    "subject": "hey with attachments",
+    "from": "onboarding@resend.dev",
+    "to": ["delivered@resend.dev"],
+    "subject": "hello with base64 attachments",
     "html": "<strong>hello, world!</strong>",
     "attachments": [{"filename": "invoice.pdf", "content": b64_str}],
 }
