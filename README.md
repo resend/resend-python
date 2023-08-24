@@ -24,7 +24,7 @@ First, you need to get an API key, which is available in the [Resend Dashboard](
 import resend
 import os
 
-resend.api_key = os.environ["RESEND_API_KEY"]
+resend.api_key = "re_yourkey"
 ```
 
 ## Example
@@ -33,7 +33,7 @@ resend.api_key = os.environ["RESEND_API_KEY"]
 import os
 import resend
 
-resend.api_key = os.environ["RESEND_API_KEY"]
+resend.api_key = "re_yourkey"
 
 params = {
     "from": "onboarding@resend.dev",
