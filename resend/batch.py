@@ -14,4 +14,3 @@ class Batch:
     ) -> List[Dict]:
         path = "/emails/batch"
         return request.Request(path=path, params=params, verb="post").perform()
-
