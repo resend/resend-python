@@ -10,16 +10,16 @@ params = [
     {
         "from": "onboarding@resend.dev",
         "to": ["delivered@resend.dev"],
-        "subject": "hi",
+        "subject": "hey",
         "html": "<strong>hello, world!</strong>",
     },
     {
         "from": "onboarding@resend.dev",
         "to": ["delivered@resend.dev"],
-        "subject": "hi",
+        "subject": "hello",
         "html": "<strong>hello, world!</strong>",
     },
 ]
 
-email = resend.Batch.send(params)
-print(email)
+emails = resend.Batch.send(params)
+print(emails)
