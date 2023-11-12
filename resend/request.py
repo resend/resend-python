@@ -9,7 +9,7 @@ from resend.version import get_version
 
 # This class wraps the HTTP request creation logic
 class Request:
-    base_url: str = "https://api.resend.com"
+    base_url: str = resend.api_url
 
     def __init__(self, path: str, params: Dict, verb: str):
         self.path = path
