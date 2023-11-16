@@ -7,6 +7,6 @@ services:
     command: sleep infinity
     environment:
       RESEND_API_KEY: ${RESEND_API_KEY}
-      RESEND_API_URL: ${RESEND_API_URL}
+      RESEND_API_URL: ${RESEND_API_URL} # defaults value https://api.resend.com
     volumes:
       - .:/app
