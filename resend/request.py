@@ -9,15 +9,13 @@ from resend.version import get_version
 
 # This class wraps the HTTP request creation logic
 class Request:
-    base_url: str = "https://api.resend.com"
-
     def __init__(self, path: str, params: Dict, verb: str):
         self.path = path
         self.params = params
         self.verb = verb
 
     def perform(self):
-        resp = self.make_request(url=f"{self.base_url}{self.path}")
+        resp = self.make_request(url=f"{resend.api_url}{self.path}")
 
         # delete calls do not return a body
         if resp.text == "" and resp.status_code == 200:
