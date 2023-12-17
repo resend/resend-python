@@ -18,14 +18,10 @@ class TestResendBatchSend(unittest.TestCase):
 
         def mock_json():
             return {
-              "data": [
-                {
-                  "id": "ae2014de-c168-4c61-8267-70d2662a1ce1"
-                },
-                {
-                  "id": "faccb7a5-8a28-4e9a-ac64-8da1cc3bc1cb"
-                }
-              ]
+                "data": [
+                    {"id": "ae2014de-c168-4c61-8267-70d2662a1ce1"},
+                    {"id": "faccb7a5-8a28-4e9a-ac64-8da1cc3bc1cb"},
+                ]
             }
 
         m.json = mock_json
@@ -33,16 +29,16 @@ class TestResendBatchSend(unittest.TestCase):
 
         params = [
             {
-              "from": "from@resend.dev",
-              "to": ["to@resend.dev"],
-              "subject": "hey",
-              "html": "<strong>hello, world!</strong>",
+                "from": "from@resend.dev",
+                "to": ["to@resend.dev"],
+                "subject": "hey",
+                "html": "<strong>hello, world!</strong>",
             },
             {
-              "from": "from@resend.dev",
-              "to": ["to@resend.dev"],
-              "subject": "hello",
-              "html": "<strong>hello, world!</strong>",
+                "from": "from@resend.dev",
+                "to": ["to@resend.dev"],
+                "subject": "hello",
+                "html": "<strong>hello, world!</strong>",
             },
         ]
         emails = resend.Batch.send(params)

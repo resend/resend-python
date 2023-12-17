@@ -1,5 +1,5 @@
-from warnings import warn
 from typing import Dict, List
+from warnings import warn
 
 import resend
 
@@ -25,7 +25,8 @@ class Resend:
     ):
         warn(
             "[DEPRECATION]: method `send_email` is deprecated. Use resend.Emails.send() instead",
-            DeprecationWarning)
+            DeprecationWarning,
+        )
         return resend.Emails.send(
             {
                 "from": sender,
