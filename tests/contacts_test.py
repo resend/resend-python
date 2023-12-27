@@ -46,10 +46,8 @@ class TestResendContacts(unittest.TestCase):
 
         def mock_json():
             return {
-                "data": {
-                    "id": "479e3145-dd38-476b-932c-529ceb705947",
-                },
-                "error": None,
+                "object": "contact",
+                "id": "479e3145-dd38-476b-932c-529ceb705947",
             }
 
         m.json = mock_json
@@ -62,8 +60,8 @@ class TestResendContacts(unittest.TestCase):
             "unsubscribed": True,
         }
         contact = resend.Contacts.update(params)
-        assert contact["data"]["id"] == "479e3145-dd38-476b-932c-529ceb705947"
-        assert contact["error"] == None
+        assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
+        assert contact["object"] == "contact"
 
         patcher.stop()
 
