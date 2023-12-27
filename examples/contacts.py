@@ -31,15 +31,11 @@ updated = resend.Contacts.update(update_params)
 print("updated contact !")
 print(updated)
 
-cont = resend.Contacts.get(
-    audience_id=audience_id, id=contact["id"]
-)
+cont = resend.Contacts.get(audience_id=audience_id, id=contact["id"])
 print(cont)
 
 contacts = resend.Contacts.list(audience_id=audience_id)
 print(contacts)
 
-rmed = resend.Contacts.remove(
-    audience_id=audience_id, id=contact["id"]
-)
+rmed = resend.Contacts.remove(audience_id=audience_id, id=contact["id"])
 print(rmed)

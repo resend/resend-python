@@ -131,6 +131,7 @@ class MissingRequiredFieldsError(ResendError):
             error_type=error_type,
         )
 
+
 class ApplicationError(ResendError):
     """see https://resend.com/docs/errors"""
 
@@ -155,6 +156,7 @@ class ApplicationError(ResendError):
             suggested_action=suggested_action,
             error_type=error_type,
         )
+
 
 ERRORS: Dict[str, Dict[str, ResendError]] = {
     "400": {"validation_error": ValidationError},
