@@ -1,6 +1,7 @@
-import os
-import resend
 import base64
+import os
+
+import resend
 
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
@@ -10,7 +11,7 @@ f = open(
 ).read()
 
 b64 = base64.b64encode(f)
-b64_str = b64.decode('utf-8')
+b64_str = b64.decode("utf-8")
 
 params = {
     "from": "onboarding@resend.dev",
