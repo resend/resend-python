@@ -30,7 +30,6 @@ class Request:
                 message=error.get("message"),
                 error_type=error.get("name"),
             )
-
         return resp.json()
 
     def __get_headers(self) -> Dict:

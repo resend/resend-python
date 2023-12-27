@@ -13,6 +13,12 @@ class Contacts:
         return request.Request(path=path, params=params, verb="post").perform()
 
     @classmethod
+    # https://resend.com/docs/api-reference/contacts/update-contact
+    def update(cls, params={}) -> Dict:
+        path = f"/audiences/{params['audience_id']}/contacts/{params['id']}"
+        return request.Request(path=path, params=params, verb="patch").perform()
+
+    @classmethod
     # https://resend.com/docs/api-reference/audiences/list-audiences
     def list(cls, audience_id) -> Dict:
         path = f"/audiences/#{audience_id}/contacts"

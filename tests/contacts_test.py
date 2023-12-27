@@ -35,6 +35,38 @@ class TestResendContacts(unittest.TestCase):
 
         patcher.stop()
 
+    def test_contacts_update(self):
+        resend.api_key = "re_123"
+
+        patcher = patch("resend.Request.make_request")
+        mock = patcher.start()
+        mock.status_code = 200
+        m = MagicMock()
+        m.status_code = 200
+
+        def mock_json():
+            return {
+                "data": {
+                    "id": "479e3145-dd38-476b-932c-529ceb705947",
+                },
+                "error": None,
+            }
+
+        m.json = mock_json
+        mock.return_value = m
+
+        params = {
+            "audience_id": "48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
+            "id": "479e3145-dd38-476b-932c-529ceb705947",
+            "first_name": "Updated",
+            "unsubscribed": True,
+        }
+        contact = resend.Contacts.update(params)
+        assert contact["data"]["id"] == "479e3145-dd38-476b-932c-529ceb705947"
+        assert contact["error"] == None
+
+        patcher.stop()
+
     def test_contacts_get(self):
         resend.api_key = "re_123"
 
