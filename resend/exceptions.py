@@ -120,7 +120,7 @@ class MissingRequiredFieldsError(ResendError):
         suggested_action = """Check the error message
         to see the list of missing fields."""
 
-        if message != "":
+        if message == "":
             message = default_message
 
         ResendError.__init__(
@@ -132,11 +132,38 @@ class MissingRequiredFieldsError(ResendError):
         )
 
 
+class ApplicationError(ResendError):
+    """see https://resend.com/docs/errors"""
+
+    def __init__(
+        self,
+        message,
+        error_type,
+        code,
+    ):
+        default_message = """
+        Something went wrong."""
+
+        suggested_action = """Contact Resend support."""
+
+        if message == "":
+            message = default_message
+
+        ResendError.__init__(
+            self,
+            code=code or 500,
+            message=message,
+            suggested_action=suggested_action,
+            error_type=error_type,
+        )
+
+
 ERRORS: Dict[str, Dict[str, ResendError]] = {
     "400": {"validation_error": ValidationError},
     "422": {"missing_required_fields": MissingRequiredFieldsError},
     "401": {"missing_api_key": MissingApiKeyError},
     "403": {"invalid_api_key": InvalidApiKeyError},
+    "500": {"application_error": ApplicationError},
 }
 
 
@@ -149,4 +176,5 @@ def raise_for_code_and_type(code, error_type, message: str) -> ResendError:
 
     # Raise error from errors list
     error: ResendError = error.get(error_type)
+
     raise error(code=code, message=message, error_type=error_type)

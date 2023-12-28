@@ -4,6 +4,7 @@ from .api import Resend
 from .api_keys import ApiKeys
 from .audiences import Audiences
 from .batch import Batch
+from .contacts import Contacts
 from .domains import Domains
 from .emails import Emails
 from .request import Request
@@ -25,4 +26,5 @@ __all__ = [
     "Domains",
     "Batch",
     "Audiences",
+    "Contacts"
 ]
