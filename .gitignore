@@ -296,6 +296,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+wheel.sh
+
 # C extensions
 *.so
 
