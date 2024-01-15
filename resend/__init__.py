@@ -26,5 +26,5 @@ __all__ = [
     "Domains",
     "Batch",
     "Audiences",
-    "Contacts"
+    "Contacts",
 ]

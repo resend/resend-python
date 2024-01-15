@@ -32,6 +32,9 @@ class Contacts:
 
     @classmethod
     # https://resend.com/docs/api-reference/audiences/delete-audience
-    def remove(cls, audience_id, id) -> Dict:
-        path = f"/audiences/{id}/contacts/{id}"
+    def remove(cls, audience_id, id="", email="") -> Dict:
+        contact = email if id == "" else id
+        if contact == "":
+            raise ValueError("id or email must be provided")
+        path = f"/audiences/{audience_id}/contacts/{contact}"
         return request.Request(path=path, params={}, verb="delete").perform()
