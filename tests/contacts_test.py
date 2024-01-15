@@ -131,6 +131,16 @@ class TestResendContacts(unittest.TestCase):
 
         patcher.stop()
 
+    def test_contacts_remove(self):
+        resend.api_key = "re_123"
+
+        with self.assertRaises(ValueError) as context:
+            resend.Contacts.remove(
+                audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
+            )
+
+        self.assertEqual("id or email must be provided", str(context.exception))
+
     def test_contacts_list(self):
         resend.api_key = "re_123"
 

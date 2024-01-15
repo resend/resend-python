@@ -37,5 +37,9 @@ print(cont)
 contacts = resend.Contacts.list(audience_id=audience_id)
 print(contacts)
 
-rmed = resend.Contacts.remove(audience_id=audience_id, id=contact["id"])
+# remove by email
+rmed = resend.Contacts.remove(audience_id=audience_id, email="sw@example.com")
+
+# remove by id
+# rmed = resend.Contacts.remove(audience_id=audience_id, id=contact["id"])
 print(rmed)
