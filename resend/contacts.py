@@ -19,19 +19,19 @@ class Contacts:
         return request.Request(path=path, params=params, verb="patch").perform()
 
     @classmethod
-    # https://resend.com/docs/api-reference/audiences/list-audiences
+    # https://resend.com/docs/api-reference/contacts/list-contacts
     def list(cls, audience_id) -> Dict:
-        path = f"/audiences/#{audience_id}/contacts"
+        path = f"/audiences/{audience_id}/contacts"
         return request.Request(path=path, params={}, verb="get").perform()
 
     @classmethod
-    # https://resend.com/docs/api-reference/audiences/get-audience
+    # https://resend.com/docs/api-reference/contacts/get-contact
     def get(cls, audience_id, id) -> Dict:
         path = f"/audiences/{audience_id}/contacts/{id}"
         return request.Request(path=path, params={}, verb="get").perform()
 
     @classmethod
-    # https://resend.com/docs/api-reference/audiences/delete-audience
+    # https://resend.com/docs/api-reference/contacts/delete-contact
     def remove(cls, audience_id, id="", email="") -> Dict:
         contact = email if id == "" else id
         if contact == "":
