@@ -17,7 +17,7 @@ retrieved = resend.Domains.get(domain_id=domain["id"])
 print(retrieved)
 
 update_params = {
-    "id": "862f23f9-0cf2-4670-b64c-3af75072597b",
+    "id": domain["id"],
     "open_tracking": True,
     "click_tracking": True,
 }
