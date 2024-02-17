@@ -190,11 +190,8 @@ class TestResendDomains(unittest.TestCase):
 
         def mock_json():
             return {
-                "data": {
-                    "object": "domain",
-                    "id": "479e3145-dd38-476b-932c-529ceb705947",
-                },
-                "error": None,
+                "object": "domain",
+                "id": "479e3145-dd38-476b-932c-529ceb705947",
             }
 
         m.json = mock_json
@@ -206,7 +203,7 @@ class TestResendDomains(unittest.TestCase):
             "click_tracking": True,
         }
         contact = resend.Domains.update(params)
-        assert contact["data"]["id"] == "479e3145-dd38-476b-932c-529ceb705947"
-        assert contact["data"]["object"] == "domain"
+        assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
+        assert contact["object"] == "domain"
 
         patcher.stop()
