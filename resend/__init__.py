@@ -1,7 +1,6 @@
 import os
 
-from .api import Resend
-from .api_keys import ApiKeys
+from .api_keys._api_keys import ApiKeys
 from .audiences import Audiences
 from .batch import Batch
 from .contacts import Contacts
@@ -19,7 +18,6 @@ from .emails import Emails  # noqa
 
 __all__ = [
     "get_version",
-    "Resend",
     "Request",
     "Emails",
     "ApiKeys",
