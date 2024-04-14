@@ -6,30 +6,38 @@ if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
 
-domain = resend.Domains.create(
-    {
-        "name": "domain.io",
-    }
-)
-print(domain)
+domain = resend.Domains.create({
+    "name": "example.com",
+    "region": "us-east-1",
+})
+print(f'Crated domain {domain.name} with id {domain.id}')
 
-retrieved = resend.Domains.get(domain_id=domain["id"])
-print(retrieved)
+retrieved = resend.Domains.get(domain_id=domain.id)
+print(retrieved.__dict__)
+for record in retrieved.records:
+    print(record.__dict__)
 
-update_params = {
-    "id": domain["id"],
+update_params: resend.Domains.UpdateDomainRequestParams = {
+    "id": domain.id,
     "open_tracking": True,
     "click_tracking": True,
 }
 
-updated = resend.Domains.update(update_params)
-print(updated)
+updated_domain = resend.Domains.update(update_params)
+print(f'Updated domain: {updated_domain.id}')
 
 domains = resend.Domains.list()
-print(domains)
+if not domains:
+    print("No domains found")
+for domain in domains:
+    print(domain.__dict__)
 
-resend.Domains.verify(domain_id=domain["id"])
+resend.Domains.verify(domain_id=domain.id)
 print("domain verified")
 
-resend.Domains.remove(domain_id=domain["id"])
-print("domain removed")
+domain = resend.Domains.remove(domain_id=domain.id)
+print(f"domain id: {domain.id} deleted: {domain.deleted}")
+
+domain = resend.Domains.verify(domain_id=domain.id)
+print(f'Verified domain: {domain.id}')
+print(domain.id)

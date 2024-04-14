@@ -4,7 +4,7 @@ from .api_keys._api_keys import ApiKeys
 from .audiences import Audiences
 from .batch import Batch
 from .contacts import Contacts
-from .domains import Domains
+from .domains._domains import Domains
 from .emails import Emails
 from .request import Request
 from .version import get_version

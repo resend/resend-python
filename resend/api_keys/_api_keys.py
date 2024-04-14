@@ -7,9 +7,6 @@ from resend.api_keys._api_key import ApiKey
 
 
 class ApiKeys:
-    """
-    Api Keys module
-    """
 
     class CreateApiKeyRequestParams(TypedDict):
         name: str

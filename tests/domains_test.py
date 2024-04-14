@@ -20,7 +20,7 @@ class TestResendDomains(unittest.TestCase):
             return {
                 "id": "4dd369bc-aa82-4ff3-97de-514ae3000ee0",
                 "name": "example.com",
-                "createdAt": "2023-03-28T17:12:02.059593+00:00",
+                "created_at": "2023-03-28T17:12:02.059593+00:00",
                 "status": "not_started",
                 "records": [
                     {
@@ -66,19 +66,21 @@ class TestResendDomains(unittest.TestCase):
                     },
                 ],
                 "region": "us-east-1",
-                "dnsProvider": "Unidentified",
             }
 
         m.json = mock_json
         mock.return_value = m
 
-        params = {
+        params: resend.Domains.UpdateDomainRequestParams = {
             "name": "example.com",
         }
-        key = resend.Domains.create(params)
-        assert key["id"] == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
-        assert key["name"] == "example.com"
-        assert key["status"] == "not_started"
+        domain = resend.Domains.create(params)
+        assert domain.id == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
+        assert domain.name == "example.com"
+        assert domain.status == "not_started"
+        assert domain.created_at == "2023-03-28T17:12:02.059593+00:00"
+        assert domain.region == "us-east-1"
+
         patcher.stop()
 
     def test_domains_get(self):
@@ -103,15 +105,14 @@ class TestResendDomains(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        email = resend.Domains.get(
+        domain = resend.Domains.get(
             domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
         )
-        assert email["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
-        assert email["object"] == "domain"
-        assert email["name"] == "example.com"
-        assert email["status"] == "not_started"
-        assert email["created_at"] == "2023-04-26T20:21:26.347412+00:00"
-        assert email["region"] == "us-east-1"
+        assert domain.id == "d91cd9bd-1176-453e-8fc1-35364d380206"
+        assert domain.name == "example.com"
+        assert domain.status == "not_started"
+        assert domain.created_at == "2023-04-26T20:21:26.347412+00:00"
+        assert domain.region == "us-east-1"
         patcher.stop()
 
     def test_domains_list(self):
@@ -139,8 +140,12 @@ class TestResendDomains(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        keys = resend.Domains.list()
-        assert keys["data"][0]["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
+        domains = resend.Domains.list()
+        assert domains[0].id == "d91cd9bd-1176-453e-8fc1-35364d380206"
+        assert domains[0].name == "example.com"
+        assert domains[0].status == "not_started"
+        assert domains[0].created_at == "2023-04-26T20:21:26.347412+00:00"
+        assert domains[0].region == "us-east-1"
         patcher.stop()
 
     def test_domains_remove(self):
@@ -152,13 +157,21 @@ class TestResendDomains(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        m.text = ""
+        def mock_json():
+            return {
+                "object": "domain",
+                "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+                "deleted": True
+            }
+
+        m.json = mock_json
         mock.return_value = m
 
-        email = resend.Domains.remove(
+        domain = resend.Domains.remove(
             domain_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
         )
-        assert email is None
+        assert domain.deleted is True
+        assert domain.id == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
         patcher.stop()
 
     def test_domains_verify(self):
@@ -170,13 +183,20 @@ class TestResendDomains(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        m.text = ""
+        def mock_json():
+            return {
+                "object": "domain",
+                "id": "d91cd9bd-1176-453e-8fc1-35364d380206"
+            }
+
+        m.json = mock_json
         mock.return_value = m
 
-        email = resend.Domains.verify(
-            domain_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+        domain = resend.Domains.verify(
+            domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
         )
-        assert email is None
+        assert domain.id == "d91cd9bd-1176-453e-8fc1-35364d380206"
+
         patcher.stop()
 
     def test_domains_update(self):
@@ -197,13 +217,12 @@ class TestResendDomains(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        params = {
+        params: resend.Domains.UpdateDomainRequestParams = {
             "id": "479e3145-dd38-476b-932c-529ceb705947",
             "open_tracking": True,
             "click_tracking": True,
         }
-        contact = resend.Domains.update(params)
-        assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
-        assert contact["object"] == "domain"
+        domain = resend.Domains.update(params)
+        assert domain.id == "479e3145-dd38-476b-932c-529ceb705947"
 
         patcher.stop()
