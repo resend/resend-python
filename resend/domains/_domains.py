@@ -1,38 +1,38 @@
-from typing import List, Any, Dict, Optional, cast
+from typing import List, Any, Dict, cast
 
-from typing_extensions import TypedDict
+from typing_extensions import TypedDict, NotRequired
 from resend import request
 from resend.domains._domain import Domain
 
 class Domains:
 
-    class UpdateDomainRequestParams(TypedDict):
+    class UpdateParams(TypedDict):
         id: str
         """
         The domain ID.
         """
-        click_tracking: bool
+        click_tracking: NotRequired[bool]
         """
         Track clicks within the body of each HTML email.
         """
-        open_tracking: bool
+        open_tracking: NotRequired[bool]
         """
         Track the open rate of each email.
         """
 
-    class CreateDomainRequestParams(TypedDict):
+    class CreateParams(TypedDict):
         name: str
         """
         The domain name.
         """
-        region: str
+        region: NotRequired[str]
         """
         The region where emails will be sent from.
         Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
         """
 
     @classmethod
-    def create(cls, params: CreateDomainRequestParams = {}) -> Domain:
+    def create(cls, params: CreateParams) -> Domain:
         """
         Create a domain through the Resend Email API.
         see more: https://resend.com/docs/api-reference/domains/create-domain
@@ -45,14 +45,16 @@ class Domains:
         )
 
     @classmethod
-    def update(cls, params: UpdateDomainRequestParams = {}) -> Domain:
+    def update(cls, params: UpdateParams) -> Domain:
         """
         Update an existing domain.
         see more: https://resend.com/docs/api-reference/domains/update-domain
         """
         path = f"/domains/{params['id']}"
         return Domain.new_from_request(
-            request.Request(path=path, params=params, verb="patch").perform()
+            request.Request(
+                path=path, params=cast(Dict[Any, Any], params), verb="patch")
+            .perform()
         )
 
     @classmethod

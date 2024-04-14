@@ -71,10 +71,10 @@ class TestResendDomains(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        params: resend.Domains.UpdateDomainRequestParams = {
+        create_params: resend.Domains.CreateParams = {
             "name": "example.com",
         }
-        domain = resend.Domains.create(params)
+        domain = resend.Domains.create(params = create_params)
         assert domain.id == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
         assert domain.name == "example.com"
         assert domain.status == "not_started"
@@ -217,7 +217,7 @@ class TestResendDomains(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        params: resend.Domains.UpdateDomainRequestParams = {
+        params: resend.Domains.UpdateParams = {
             "id": "479e3145-dd38-476b-932c-529ceb705947",
             "open_tracking": True,
             "click_tracking": True,

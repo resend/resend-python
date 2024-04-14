@@ -29,7 +29,7 @@ class ResendError(Exception):
         code: str,
         error_type: str,
         message: str,
-        suggested_action: str = None,
+        suggested_action: str,
     ):
         Exception.__init__(self, message)
         self.code = code
@@ -157,8 +157,8 @@ class ApplicationError(ResendError):
             error_type=error_type,
         )
 
-
-ERRORS: Dict[str, Dict[str, ResendError]] = {
+# Dict with error code -> error type mapping
+ERRORS: Dict[str, Dict[str, type[ResendError]]] = {
     "400": {"validation_error": ValidationError},
     "422": {"missing_required_fields": MissingRequiredFieldsError},
     "401": {"missing_api_key": MissingApiKeyError},
@@ -167,14 +167,34 @@ ERRORS: Dict[str, Dict[str, ResendError]] = {
 }
 
 
-def raise_for_code_and_type(code, error_type, message: str) -> ResendError:
+def raise_for_code_and_type(
+        code: str,
+        error_type: str,
+        message: str) -> ResendError:
     error = ERRORS.get(str(code))
 
     # Handle the case where the error might be unknown
     if error is None or error.get(error_type) is None:
-        raise ResendError(code=code, message=message, error_type=error_type)
+        raise ResendError(
+            code=code,
+            message=message,
+            error_type=error_type,
+            suggested_action=get_suggested_action_for_error(code)
+            )
 
     # Raise error from errors list
-    error: ResendError = error.get(error_type)
+    new_error: type[ResendError] | None = error.get(error_type)
 
-    raise error(code=code, message=message, error_type=error_type)
+    if new_error is not None:
+        raise new_error(
+            code=code,
+            message=message,
+            error_type=error_type,
+            suggested_action=get_suggested_action_for_error(code)
+        )
+    raise TypeError("Error type not found")
+
+
+
+def get_suggested_action_for_error(code: str):
+    return ""

@@ -2,7 +2,7 @@ import os
 
 from .api_keys._api_keys import ApiKeys
 from .audiences import Audiences
-from .batch import Batch
+# from .batch import Batch
 from .contacts import Contacts
 from .domains._domains import Domains
 from .emails import Emails
