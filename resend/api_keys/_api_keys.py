@@ -1,6 +1,6 @@
-from typing import List, Any, Dict, Optional, cast
+from typing import List, Any, Dict, cast
 
-from typing_extensions import TypedDict
+from typing_extensions import TypedDict, NotRequired
 
 from resend import request
 from resend.api_keys._api_key import ApiKey
@@ -8,25 +8,25 @@ from resend.api_keys._api_key import ApiKey
 
 class ApiKeys:
 
-    class CreateApiKeyRequestParams(TypedDict):
+    class CreateParams(TypedDict):
         name: str
         """
         The API key name.
         """
-        permission: Optional[str]
+        permission: NotRequired[str]
         """
         The API key can have full access to Resend's API or be only
         restricted to send emails. * full_access: Can create, delete, get,
         and update any resource. * sending_access: Can only send emails.
         """
-        domain_id: Optional[str]
+        domain_id: NotRequired[str]
         """
         Restrict an API key to send emails only from a specific domain.
         This is only used when the permission is set to sending_access.
         """
 
     @classmethod
-    def create(cls, params: "CreateApiKeyRequestParams") -> ApiKey:
+    def create(cls, params: CreateParams) -> ApiKey:
         """
         Add a new API key to authenticate communications with Resend.
         see more: https://resend.com/docs/api-reference/api-keys/create-api-key

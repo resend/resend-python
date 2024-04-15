@@ -25,7 +25,7 @@ class TestResendApiKeys(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        params = {
+        params: resend.ApiKeys.CreateParams = {
             "name": "prod",
         }
         key = resend.ApiKeys.create(params)
