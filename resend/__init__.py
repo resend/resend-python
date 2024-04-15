@@ -1,7 +1,7 @@
 import os
 
 from .api_keys._api_keys import ApiKeys
-from .contacts import Contacts
+from .contacts._contacts import Contacts
 from .domains._domains import Domains
 from .emails._emails import Emails
 from .audiences._audiences import Audiences
