@@ -2,10 +2,10 @@ import os
 
 from .api_keys._api_keys import ApiKeys
 from .audiences import Audiences
-# from .batch import Batch
 from .contacts import Contacts
 from .domains._domains import Domains
 from .emails._emails import Emails
+from .emails._batch import Batch
 from .request import Request
 from .version import get_version
 
