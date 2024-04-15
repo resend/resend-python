@@ -73,8 +73,13 @@ class Emails:
             ).perform()
         )
 
-    # @classmethod
-    # # https://resend.com/docs/api-reference/emails/retrieve-email
-    # def get(cls, email_id: str = "") -> Dict:
-    #     path = f"/emails/{email_id}"
-    #     return request.Request(path=path, params={}, verb="get").perform()
+    @classmethod
+    def get(cls, email_id: str = "") -> Email:
+        """
+        Retrieve a single email.
+        see more: https://resend.com/docs/api-reference/emails/retrieve-email
+        """
+        path = f"/emails/{email_id}"
+        return Email.new_from_request(
+            request.Request(path=path, params={}, verb="get").perform()
+        )
