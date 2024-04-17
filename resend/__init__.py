@@ -10,8 +10,8 @@ from .request import Request
 from .version import get_version
 
 # Config vars
-api_key: str | None = os.environ.get("RESEND_API_KEY")
-api_url: str | None = os.environ.get("RESEND_API_URL", "https://api.resend.com")
+api_key = os.environ.get("RESEND_API_KEY")
+api_url = os.environ.get("RESEND_API_URL", "https://api.resend.com")
 
 # API resources
 from .emails._emails import Emails  # noqa

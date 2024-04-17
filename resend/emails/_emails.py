@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Union, cast
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -15,7 +15,7 @@ class Emails:
         The email address of the sender.
         "from" is a reserved keyword in python, so we use "sender" here instead
         """
-        to: str | List[str]
+        to: Union[str, List[str]]
         """
         List of email addresses to send the email to.
         """
@@ -23,15 +23,15 @@ class Emails:
         """
         The subject of the email.
         """
-        bcc: NotRequired[List[str] | str]
+        bcc: NotRequired[Union[List[str], str]]
         """
         Bcc
         """
-        cc: NotRequired[List[str] | str]
+        cc: NotRequired[Union[List[str], str]]
         """
         Cc
         """
-        reply_to: NotRequired[List[str] | str]
+        reply_to: NotRequired[Union[List[str], str]]
         """
         Reply to
         """

@@ -26,7 +26,7 @@ class ResendError(Exception):
 
     def __init__(
         self,
-        code: str | int,
+        code: str,
         error_type: str,
         message: str,
         suggested_action: str,
@@ -45,7 +45,7 @@ class MissingApiKeyError(ResendError):
         self,
         message: str,
         error_type: str,
-        code: str | int,
+        code: str,
     ):
         suggested_action = """Include the following header
         Authorization: Bearer YOUR_API_KEY in the request."""
@@ -68,7 +68,7 @@ class InvalidApiKeyError(ResendError):
         self,
         message: str,
         error_type: str,
-        code: str | int,
+        code: str,
     ):
         suggested_action = """Generate a new API key in the dashboard."""
 
@@ -88,7 +88,7 @@ class ValidationError(ResendError):
         self,
         message: str,
         error_type: str,
-        code: str | int,
+        code: str,
     ):
         default_message = """
         The request body is missing one or more required fields."""
@@ -101,7 +101,7 @@ class ValidationError(ResendError):
 
         ResendError.__init__(
             self,
-            code=code or 400,
+            code=code or "400",
             message=message,
             suggested_action=suggested_action,
             error_type=error_type,
@@ -162,19 +162,7 @@ class ApplicationError(ResendError):
 
 
 # Dict with error code -> error type mapping
-ERRORS: Dict[
-    str,
-    Dict[
-        str,
-        type[
-            ValidationError
-            | MissingApiKeyError
-            | MissingRequiredFieldsError
-            | InvalidApiKeyError
-            | ApplicationError
-        ],
-    ],
-] = {
+ERRORS: Dict = {
     "400": {"validation_error": ValidationError},
     "422": {"missing_required_fields": MissingRequiredFieldsError},
     "401": {"missing_api_key": MissingApiKeyError},

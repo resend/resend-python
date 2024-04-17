@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 
 class Email:
@@ -6,7 +6,7 @@ class Email:
     """
     The Email ID.
     """
-    to: List[str] | str
+    to: Union[List[str], str]
     """
     List of email addresses to send the email to.
     """
@@ -31,15 +31,15 @@ class Email:
     """
     The text content of the email.
     """
-    bcc: List[str] | str
+    bcc: Union[List[str], str]
     """
     Bcc
     """
-    cc: List[str] | str
+    cc: Union[List[str], str]
     """
     Cc
     """
-    reply_to: List[str] | str
+    reply_to: Union[List[str], str]
     """
     Reply to
     """
