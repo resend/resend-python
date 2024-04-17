@@ -37,35 +37,34 @@ class TestResendContacts(unittest.TestCase):
 
         patcher.stop()
 
-    # def test_contacts_update(self):
-    #     resend.api_key = "re_123"
+    def test_contacts_update(self):
+        resend.api_key = "re_123"
 
-    #     patcher = patch("resend.Request.make_request")
-    #     mock = patcher.start()
-    #     mock.status_code = 200
-    #     m = MagicMock()
-    #     m.status_code = 200
+        patcher = patch("resend.Request.make_request")
+        mock = patcher.start()
+        mock.status_code = 200
+        m = MagicMock()
+        m.status_code = 200
 
-    #     def mock_json():
-    #         return {
-    #             "object": "contact",
-    #             "id": "479e3145-dd38-476b-932c-529ceb705947",
-    #         }
+        def mock_json():
+            return {
+                "object": "contact",
+                "id": "479e3145-dd38-476b-932c-529ceb705947",
+            }
 
-    #     m.json = mock_json
-    #     mock.return_value = m
+        m.json = mock_json
+        mock.return_value = m
 
-    #     params = {
-    #         "audience_id": "48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
-    #         "id": "479e3145-dd38-476b-932c-529ceb705947",
-    #         "first_name": "Updated",
-    #         "unsubscribed": True,
-    #     }
-    #     contact = resend.Contacts.update(params)
-    #     assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
-    #     assert contact["object"] == "contact"
+        params: resend.Contacts.UpdateParams = {
+            "audience_id": "48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
+            "id": "479e3145-dd38-476b-932c-529ceb705947",
+            "first_name": "Updated",
+            "unsubscribed": True,
+        }
+        contact = resend.Contacts.update(params)
+        assert contact.id == "479e3145-dd38-476b-932c-529ceb705947"
 
-    #     patcher.stop()
+        patcher.stop()
 
     def test_contacts_get(self):
         resend.api_key = "re_123"
@@ -102,44 +101,69 @@ class TestResendContacts(unittest.TestCase):
         assert contact.unsubscribed is False
         patcher.stop()
 
-    # def test_contacts_remove(self):
-    #     resend.api_key = "re_123"
+    def test_contacts_remove_by_id(self):
+        resend.api_key = "re_123"
 
-    #     patcher = patch("resend.Request.make_request")
-    #     mock = patcher.start()
-    #     mock.status_code = 200
-    #     m = MagicMock()
-    #     m.status_code = 200
+        patcher = patch("resend.Request.make_request")
+        mock = patcher.start()
+        mock.status_code = 200
+        m = MagicMock()
+        m.status_code = 200
 
-    #     def mock_json():
-    #         return {
-    #             "object": "contact",
-    #             "id": "520784e2-887d-4c25-b53c-4ad46ad38100",
-    #             "deleted": True,
-    #         }
+        def mock_json():
+            return {
+                "object": "contact",
+                "id": "520784e2-887d-4c25-b53c-4ad46ad38100",
+                "deleted": True,
+            }
 
-    #     m.json = mock_json
-    #     mock.return_value = m
+        m.json = mock_json
+        mock.return_value = m
 
-    #     rmed = resend.Contacts.remove(
-    #         audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
-    #         id="78261eea-8f8b-4381-83c6-79fa7120f1cf",
-    #     )
-    #     assert rmed["object"] == "contact"
-    #     assert rmed["id"] == "520784e2-887d-4c25-b53c-4ad46ad38100"
-    #     assert rmed["deleted"] is True
+        rmed = resend.Contacts.remove(
+            audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
+            id="78261eea-8f8b-4381-83c6-79fa7120f1cf",
+        )
+        assert rmed.id == "520784e2-887d-4c25-b53c-4ad46ad38100"
+        assert rmed.deleted is True
+        patcher.stop()
 
-    #     patcher.stop()
+    def test_contacts_remove_by_email(self):
+        resend.api_key = "re_123"
 
-    # def test_contacts_remove(self):
-    #     resend.api_key = "re_123"
+        patcher = patch("resend.Request.make_request")
+        mock = patcher.start()
+        mock.status_code = 200
+        m = MagicMock()
+        m.status_code = 200
 
-    #     with self.assertRaises(ValueError) as context:
-    #         resend.Contacts.remove(
-    #             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
-    #         )
+        def mock_json():
+            return {
+                "object": "contact",
+                "id": "520784e2-887d-4c25-b53c-4ad46ad38100",
+                "deleted": True,
+            }
 
-    #     self.assertEqual("id or email must be provided", str(context.exception))
+        m.json = mock_json
+        mock.return_value = m
+
+        rmed = resend.Contacts.remove(
+            audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
+            email="someemail@email.com",
+        )
+        assert rmed.id == "520784e2-887d-4c25-b53c-4ad46ad38100"
+        assert rmed.deleted is True
+        patcher.stop()
+
+    def test_contacts_remove_raises(self):
+        resend.api_key = "re_123"
+
+        with self.assertRaises(ValueError) as context:
+            resend.Contacts.remove(
+                audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
+            )
+
+        self.assertEqual("id or email must be provided", str(context.exception))
 
     def test_contacts_list(self):
         resend.api_key = "re_123"

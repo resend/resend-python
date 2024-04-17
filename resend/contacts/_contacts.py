@@ -1,4 +1,4 @@
-from typing import Dict, Any, cast
+from typing import Dict, Any, cast, List
 from typing_extensions import TypedDict, NotRequired
 
 from resend import request
@@ -12,6 +12,32 @@ class Contacts:
         The audience id.
         """
         email: str
+        """
+        The email of the contact.
+        """
+        first_name: NotRequired[str]
+        """
+        The first name of the contact.
+        """
+        last_name: NotRequired[str]
+        """
+        The last name of the contact.
+        """
+        unsubscribed: NotRequired[bool]
+        """
+        The unsubscribed status of the contact.
+        """
+
+    class UpdateParams(TypedDict):
+        audience_id: str
+        """
+        The audience id.
+        """
+        id: str
+        """
+        The contact id.
+        """
+        email: NotRequired[str]
         """
         The email of the contact.
         """
@@ -43,14 +69,23 @@ class Contacts:
             ).perform()
         )
 
-    # @classmethod
-    # # https://resend.com/docs/api-reference/contacts/update-contact
-    # def update(cls, params={}) -> Dict:
-    #     path = f"/audiences/{params['audience_id']}/contacts/{params['id']}"
-    #     return request.Request(path=path, params=params, verb="patch").perform()
+    @classmethod
+    def update(cls, params: UpdateParams) -> Contact:
+        """
+        Update an existing contact.
+        see more: https://resend.com/docs/api-reference/contacts/update-contact
+        """
+        path = f"/audiences/{params['audience_id']}/contacts/{params['id']}"
+        return Contact.new_from_request(
+            request.Request(
+                path=path,
+                params=cast(Dict[Any, Any], params),
+                verb="patch"
+            ).perform()
+        )
 
     @classmethod
-    def list(cls, audience_id: str) -> Contact:
+    def list(cls, audience_id: str) -> List[Contact]:
         """
         List all contacts for the provided audience.
         see more: https://resend.com/docs/api-reference/contacts/list-contacts
@@ -60,7 +95,7 @@ class Contacts:
         return [Contact.new_from_request(contact) for contact in resp["data"]] if "data" in resp else []
 
     @classmethod
-    def get(cls, id, audience_id) -> Contact:
+    def get(cls, id, audience_id: str) -> Contact:
         """
         Get a contact.
         see more: https://resend.com/docs/api-reference/contacts/get-contact
@@ -70,11 +105,17 @@ class Contacts:
             request.Request(path=path, params={}, verb="get").perform()
         )
 
-    # @classmethod
-    # # https://resend.com/docs/api-reference/contacts/delete-contact
-    # def remove(cls, audience_id, id="", email="") -> Dict:
-    #     contact = email if id == "" else id
-    #     if contact == "":
-    #         raise ValueError("id or email must be provided")
-    #     path = f"/audiences/{audience_id}/contacts/{contact}"
-    #     return request.Request(path=path, params={}, verb="delete").perform()
+    @classmethod
+    def remove(cls, audience_id: str, id: str = "", email: str = "") -> Contact:
+        """
+        Remove a contact by ID or by Email
+        see more: https://resend.com/docs/api-reference/contacts/delete-contact
+        """
+        contact = email if id == "" else id
+        if contact == "":
+            raise ValueError("id or email must be provided")
+        path = f"/audiences/{audience_id}/contacts/{contact}"
+
+        return Contact.new_from_request(
+            request.Request(path=path, params={}, verb="delete").perform()
+        )
