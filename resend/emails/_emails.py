@@ -1,12 +1,14 @@
-from typing import Dict, List, cast, Any
-from typing_extensions import TypedDict, NotRequired
+from typing import Any, Dict, List, cast
+
+from typing_extensions import NotRequired, TypedDict
+
 from resend import request
+from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
-from resend.emails._attachment import Attachment
+
 
 class Emails:
-
     class SendParams(TypedDict):
         sender: str
         """
@@ -54,7 +56,6 @@ class Emails:
         List of tags to be added to the email.
         """
 
-
     @classmethod
     def send(cls, params: SendParams) -> Email:
         """
@@ -65,11 +66,10 @@ class Emails:
 
         # we need this workaround here because from is a reserved keyword
         # in python, so we need to use "sender" on the SendParams
-        params["from"] = params["sender"] # type: ignore
+        params["from"] = params["sender"]  # type: ignore
         return Email.new_from_request(
             request.Request(
-                path=path, params=cast(Dict[Any, Any], params),
-                verb="post"
+                path=path, params=cast(Dict[Any, Any], params), verb="post"
             ).perform()
         )
 

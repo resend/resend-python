@@ -26,13 +26,14 @@ class ResendError(Exception):
 
     def __init__(
         self,
-        code: str,
+        code: str | int,
         error_type: str,
         message: str,
         suggested_action: str,
     ):
         Exception.__init__(self, message)
         self.code = code
+        self.message = message
         self.suggested_action = suggested_action
         self.error_type = error_type
 
@@ -42,16 +43,18 @@ class MissingApiKeyError(ResendError):
 
     def __init__(
         self,
-        message,
-        error_type,
-        code,
+        message: str,
+        error_type: str,
+        code: str | int,
     ):
         suggested_action = """Include the following header
         Authorization: Bearer YOUR_API_KEY in the request."""
 
+        message = "Missing API key in the authorization header."
+
         ResendError.__init__(
             self,
-            message="Missing API key in the authorization header.",
+            message=message,
             suggested_action=suggested_action,
             code=code,
             error_type=error_type,
@@ -63,9 +66,9 @@ class InvalidApiKeyError(ResendError):
 
     def __init__(
         self,
-        message,
-        error_type,
-        code,
+        message: str,
+        error_type: str,
+        code: str | int,
     ):
         suggested_action = """Generate a new API key in the dashboard."""
 
@@ -83,9 +86,9 @@ class ValidationError(ResendError):
 
     def __init__(
         self,
-        message,
-        error_type,
-        code,
+        message: str,
+        error_type: str,
+        code: str | int,
     ):
         default_message = """
         The request body is missing one or more required fields."""
@@ -157,8 +160,21 @@ class ApplicationError(ResendError):
             error_type=error_type,
         )
 
+
 # Dict with error code -> error type mapping
-ERRORS: Dict[str, Dict[str, type[ResendError]]] = {
+ERRORS: Dict[
+    str,
+    Dict[
+        str,
+        type[
+            ValidationError
+            | MissingApiKeyError
+            | MissingRequiredFieldsError
+            | InvalidApiKeyError
+            | ApplicationError
+        ],
+    ],
+] = {
     "400": {"validation_error": ValidationError},
     "422": {"missing_required_fields": MissingRequiredFieldsError},
     "401": {"missing_api_key": MissingApiKeyError},
@@ -167,34 +183,22 @@ ERRORS: Dict[str, Dict[str, type[ResendError]]] = {
 }
 
 
-def raise_for_code_and_type(
-        code: str,
-        error_type: str,
-        message: str) -> ResendError:
+def raise_for_code_and_type(code: str, error_type: str, message: str) -> ResendError:
     error = ERRORS.get(str(code))
 
     # Handle the case where the error might be unknown
     if error is None or error.get(error_type) is None:
         raise ResendError(
-            code=code,
-            message=message,
-            error_type=error_type,
-            suggested_action=get_suggested_action_for_error(code)
-            )
+            code=code, message=message, error_type=error_type, suggested_action=""
+        )
 
     # Raise error from errors list
-    new_error: type[ResendError] | None = error.get(error_type)
+    error_from_list = error.get(error_type)
 
-    if new_error is not None:
-        raise new_error(
+    if error_from_list is not None:
+        raise error_from_list(
             code=code,
             message=message,
             error_type=error_type,
-            suggested_action=get_suggested_action_for_error(code)
         )
     raise TypeError("Error type not found")
-
-
-
-def get_suggested_action_for_error(code: str):
-    return ""

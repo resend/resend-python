@@ -28,9 +28,16 @@ class Contact:
     Wether the contact is deleted or not.
     """
 
-    def __init__(self, id: str, email: str,
-                 first_name: str, last_name: str, created_at: str,
-                 unsubscribed: bool, deleted: bool):
+    def __init__(
+        self,
+        id: str,
+        email: str,
+        first_name: str,
+        last_name: str,
+        created_at: str,
+        unsubscribed: bool,
+        deleted: bool,
+    ):
         self.id = id
         self.email = email
         self.first_name = first_name
@@ -48,6 +55,6 @@ class Contact:
             last_name=val["last_name"] if "last_name" in val else "",
             created_at=val["created_at"] if "created_at" in val else "",
             unsubscribed=val["unsubscribed"] if "unsubscribed" in val else False,
-            deleted=val["deleted"] if "deleted" in val else False
+            deleted=val["deleted"] if "deleted" in val else False,
         )
         return contact

@@ -1,12 +1,13 @@
-from typing import List, Any, Dict, cast
+from typing import Any, Dict, List, cast
 
-from typing_extensions import TypedDict, NotRequired
+from typing_extensions import TypedDict
 
 from resend import request
+
 from ._audience import Audience
 
-class Audiences:
 
+class Audiences:
     class CreateParams(TypedDict):
         name: str
         """
@@ -22,9 +23,7 @@ class Audiences:
         path = "/audiences"
         return Audience.new_from_request(
             request.Request(
-                path=path,
-                params=cast(Dict[Any, Any], params),
-                verb="post"
+                path=path, params=cast(Dict[Any, Any], params), verb="post"
             ).perform()
         )
 
@@ -36,7 +35,11 @@ class Audiences:
         """
         path = "/audiences/"
         resp = request.Request(path=path, params={}, verb="get").perform()
-        return [Audience.new_from_request(aud) for aud in resp["data"]] if "data" in resp else []
+        return (
+            [Audience.new_from_request(aud) for aud in resp["data"]]
+            if "data" in resp
+            else []
+        )
 
     @classmethod
     def get(cls, id: str) -> Audience:

@@ -1,8 +1,10 @@
-from typing import Dict, List, Any, cast
+from typing import Any, Dict, List, cast
 
 from resend import request
+
 from ._email import Email
 from ._emails import Emails
+
 
 class Batch:
     @classmethod
@@ -13,8 +15,6 @@ class Batch:
         """
         path = "/emails/batch"
         resp = request.Request(
-            path=path,
-            params=cast(Dict[Any, Any], params),
-            verb="post"
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform()
-        return [Email.new_from_request(val) for val in resp['data']]
+        return [Email.new_from_request(val) for val in resp["data"]]

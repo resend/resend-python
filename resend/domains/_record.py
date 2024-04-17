@@ -28,9 +28,7 @@ class Record:
     The domain record priority.
     """
 
-    def __init__(
-            self, record, name, type, ttl,
-            status, value, priority):
+    def __init__(self, record, name, type, ttl, status, value, priority):
         self.record = record
         self.name = name
         self.type = type

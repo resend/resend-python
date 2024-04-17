@@ -2,8 +2,8 @@ name: tests
 on: [push, pull_request]
 
 jobs:
-  lint:
-    name: Lint
+  ci:
+    name: Lint, Pyroma, Mypy
     runs-on: ubuntu-latest
     strategy:
       matrix:

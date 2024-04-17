@@ -9,9 +9,9 @@ create_params: resend.ApiKeys.CreateParams = {
     "name": "example.com",
 }
 
-key = resend.ApiKeys.create(params = create_params)
+key = resend.ApiKeys.create(params=create_params)
 print("Created new api key")
-print(f'Key id: {key.id} and token: {key.token}')
+print(f"Key id: {key.id} and token: {key.token}")
 
 keys = resend.ApiKeys.list()
 for key in keys:
@@ -20,4 +20,4 @@ for key in keys:
     print(key.created_at)
 
 if len(keys) > 0:
-    resend.ApiKeys.remove(api_key_id= keys[0].id)
+    resend.ApiKeys.remove(api_key_id=keys[0].id)

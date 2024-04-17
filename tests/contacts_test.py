@@ -17,10 +17,7 @@ class TestResendContacts(unittest.TestCase):
         m.status_code = 200
 
         def mock_json():
-            return {
-                "object": "contact",
-                "id": "479e3145-dd38-476b-932c-529ceb705947"
-            }
+            return {"object": "contact", "id": "479e3145-dd38-476b-932c-529ceb705947"}
 
         m.json = mock_json
         mock.return_value = m

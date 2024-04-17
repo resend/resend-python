@@ -1,4 +1,5 @@
 from typing import List
+
 from resend.domains._record import Record
 
 
@@ -32,9 +33,7 @@ class Domain:
     Wether the domain is deleted or not
     """
 
-    def __init__(
-            self, id, name, region, created_at,
-            status, records, deleted=False):
+    def __init__(self, id, name, region, created_at, status, records, deleted=False):
         self.id = id
         self.name = name
         self.created_at = created_at
@@ -51,7 +50,9 @@ class Domain:
             region=val["region"] if "region" in val else None,
             created_at=val["created_at"] if "created_at" in val else None,
             status=val["status"] if "status" in val else None,
-            records = [Record.new_from_request(record) for record in val["records"]] if "records" in val else None,
+            records=[Record.new_from_request(record) for record in val["records"]]
+            if "records" in val
+            else None,
             deleted=val["deleted"] if "deleted" in val else None,
         )
         return domain

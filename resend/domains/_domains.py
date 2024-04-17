@@ -1,11 +1,12 @@
-from typing import List, Any, Dict, cast
+from typing import Any, Dict, List, cast
 
-from typing_extensions import TypedDict, NotRequired
+from typing_extensions import NotRequired, TypedDict
+
 from resend import request
 from resend.domains._domain import Domain
 
-class Domains:
 
+class Domains:
     class UpdateParams(TypedDict):
         id: str
         """
@@ -53,8 +54,8 @@ class Domains:
         path = f"/domains/{params['id']}"
         return Domain.new_from_request(
             request.Request(
-                path=path, params=cast(Dict[Any, Any], params), verb="patch")
-            .perform()
+                path=path, params=cast(Dict[Any, Any], params), verb="patch"
+            ).perform()
         )
 
     @classmethod
@@ -76,7 +77,7 @@ class Domains:
         """
         path = "/domains"
         resp = request.Request(path=path, params={}, verb="get").perform()
-        return [Domain.new_from_request(val) for val in resp['data']]
+        return [Domain.new_from_request(val) for val in resp["data"]]
 
     @classmethod
     def remove(cls, domain_id: str = "") -> Domain:
@@ -90,7 +91,7 @@ class Domains:
         )
 
     @classmethod
-    def verify(cls, domain_id: str = "" ) -> Domain:
+    def verify(cls, domain_id: str = "") -> Domain:
         """
         Verify an existing domain.
         see more: https://resend.com/docs/api-reference/domains/verify-domain

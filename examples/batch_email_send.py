@@ -1,5 +1,6 @@
 import os
 from typing import List
+
 import resend
 
 if not os.environ["RESEND_API_KEY"]:
@@ -23,4 +24,4 @@ params: List[resend.Emails.SendParams] = [
 
 emails = resend.Batch.send(params)
 for email in emails:
-    print(f'Email sent with id: {email.id}')
+    print(f"Email sent with id: {email.id}")

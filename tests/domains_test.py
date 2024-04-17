@@ -74,7 +74,7 @@ class TestResendDomains(unittest.TestCase):
         create_params: resend.Domains.CreateParams = {
             "name": "example.com",
         }
-        domain = resend.Domains.create(params = create_params)
+        domain = resend.Domains.create(params=create_params)
         assert domain.id == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
         assert domain.name == "example.com"
         assert domain.status == "not_started"
@@ -161,7 +161,7 @@ class TestResendDomains(unittest.TestCase):
             return {
                 "object": "domain",
                 "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
-                "deleted": True
+                "deleted": True,
             }
 
         m.json = mock_json
@@ -184,10 +184,7 @@ class TestResendDomains(unittest.TestCase):
         m.status_code = 200
 
         def mock_json():
-            return {
-                "object": "domain",
-                "id": "d91cd9bd-1176-453e-8fc1-35364d380206"
-            }
+            return {"object": "domain", "id": "d91cd9bd-1176-453e-8fc1-35364d380206"}
 
         m.json = mock_json
         mock.return_value = m

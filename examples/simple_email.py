@@ -20,8 +20,8 @@ params: resend.Emails.SendParams = {
 }
 
 email = resend.Emails.send(params)
-print(f'Email sent with id: {email.id}')
+print(f"Email sent with id: {email.id}")
 
 email_resp = resend.Emails.get(email_id=email.id)
-print(f'Retrieved email: {email_resp.id}')
+print(f"Retrieved email: {email_resp.id}")
 print(email_resp.__dict__)

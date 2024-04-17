@@ -1,6 +1,5 @@
-from typing import List, cast
+from typing import List
 
-from typing_extensions import TypedDict, NotRequired
 
 class Email:
     id: str
@@ -50,8 +49,19 @@ class Email:
     """
 
     def __init__(
-            self, id, to, sender, created_at, subject,
-            html, text, bcc, cc, reply_to, last_event):
+        self,
+        id,
+        to,
+        sender,
+        created_at,
+        subject,
+        html,
+        text,
+        bcc,
+        cc,
+        reply_to,
+        last_event,
+    ):
         self.id = id
         self.to = to
         self.sender = sender
@@ -64,17 +74,14 @@ class Email:
         self.reply_to = reply_to
         self.last_event = last_event
 
-
     @staticmethod
     def new_from_request(val) -> "Email":
         email = Email(
             id=val["id"] if "id" in val else "",
             to=val["to"] if "to" in val else "",
-
             # we set sender as the value from "from" here
             # because "from" is a reserved keyword in python
             sender=val["from"] if "from" in val else "",
-
             created_at=val["created_at"] if "created_at" in val else "",
             subject=val["subject"] if "subject" in val else "",
             html=val["html"] if "html" in val else "",

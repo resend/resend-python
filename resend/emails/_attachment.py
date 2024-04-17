@@ -1,5 +1,6 @@
 from typing_extensions import TypedDict
 
+
 class Attachment(TypedDict):
     content: str
     """

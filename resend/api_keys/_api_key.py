@@ -29,4 +29,4 @@ class ApiKey:
             token=val["token"] if "token" in val else None,
             name=val["name"] if "name" in val else None,
             created_at=val["created_at"] if "created_at" in val else None,
-            )
+        )

@@ -74,7 +74,10 @@ class TestResendApiKeys(unittest.TestCase):
         m.text = ""
         mock.return_value = m
 
-        assert(resend.ApiKeys.remove(
-            api_key_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
-        ) is None)
+        assert (
+            resend.ApiKeys.remove(
+                api_key_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            )
+            is None
+        )
         patcher.stop()

@@ -17,7 +17,7 @@ create_params: resend.Contacts.CreateParams = {
 }
 
 contact = resend.Contacts.create(create_params)
-print(f'Created contact with ID: {contact.id}')
+print(f"Created contact with ID: {contact.id}")
 
 update_params: resend.Contacts.UpdateParams = {
     "audience_id": audience_id,
@@ -40,11 +40,13 @@ print(cont.last_name)
 contacts = resend.Contacts.list(audience_id=audience_id)
 print("List of contacts")
 for contact in contacts:
-    print(f'ID: {contact.id}, Email: {contact.email}, First Name: {contact.first_name}, Last Name: {contact.last_name}, Created At: {contact.created_at}, Unsubscribed: {contact.unsubscribed}')
+    print(
+        f"ID: {contact.id}, Email: {contact.email}, First Name: {contact.first_name}, Last Name: {contact.last_name}, Created At: {contact.created_at}, Unsubscribed: {contact.unsubscribed}"
+    )
 
 # remove by email
 # rmed = resend.Contacts.remove(audience_id=audience_id, email=cont.email)
 
 # remove by id
 rmed = resend.Contacts.remove(audience_id=audience_id, id=cont.id)
-print(f'Removed contact - ID: {rmed.id} Deleted: {rmed.deleted}')
+print(f"Removed contact - ID: {rmed.id} Deleted: {rmed.deleted}")

@@ -1,13 +1,12 @@
-from typing import List, Any, Dict, cast
+from typing import Any, Dict, List, cast
 
-from typing_extensions import TypedDict, NotRequired
+from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend.api_keys._api_key import ApiKey
 
 
 class ApiKeys:
-
     class CreateParams(TypedDict):
         name: str
         """
@@ -46,7 +45,7 @@ class ApiKeys:
         """
         path = "/api-keys"
         resp = request.Request(path=path, params={}, verb="get").perform()
-        return [ApiKey.new_from_request(val) for val in resp['data']]
+        return [ApiKey.new_from_request(val) for val in resp["data"]]
 
     @classmethod
     def remove(cls, api_key_id: str = "") -> None:

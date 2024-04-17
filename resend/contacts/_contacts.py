@@ -1,11 +1,13 @@
-from typing import Dict, Any, cast, List
-from typing_extensions import TypedDict, NotRequired
+from typing import Any, Dict, List, cast
+
+from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+
 from ._contact import Contact
 
-class Contacts:
 
+class Contacts:
     class CreateParams(TypedDict):
         audience_id: str
         """
@@ -63,9 +65,7 @@ class Contacts:
         path = f"/audiences/{params['audience_id']}/contacts"
         return Contact.new_from_request(
             request.Request(
-                path=path,
-                params=cast(Dict[Any, Any], params),
-                verb="post"
+                path=path, params=cast(Dict[Any, Any], params), verb="post"
             ).perform()
         )
 
@@ -78,9 +78,7 @@ class Contacts:
         path = f"/audiences/{params['audience_id']}/contacts/{params['id']}"
         return Contact.new_from_request(
             request.Request(
-                path=path,
-                params=cast(Dict[Any, Any], params),
-                verb="patch"
+                path=path, params=cast(Dict[Any, Any], params), verb="patch"
             ).perform()
         )
 
@@ -92,7 +90,11 @@ class Contacts:
         """
         path = f"/audiences/{audience_id}/contacts"
         resp = request.Request(path=path, params={}, verb="get").perform()
-        return [Contact.new_from_request(contact) for contact in resp["data"]] if "data" in resp else []
+        return (
+            [Contact.new_from_request(contact) for contact in resp["data"]]
+            if "data" in resp
+            else []
+        )
 
     @classmethod
     def get(cls, id, audience_id: str) -> Contact:
