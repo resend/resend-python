@@ -25,11 +25,11 @@ class TestResendApiKeys(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        params = {
+        params: resend.ApiKeys.CreateParams = {
             "name": "prod",
         }
         key = resend.ApiKeys.create(params)
-        assert key["id"] == "dacf4072-4119-4d88-932f-6202748ac7c8"
+        assert key.id == "dacf4072-4119-4d88-932f-6202748ac7c8"
         patcher.stop()
 
     def test_api_keys_list(self):
@@ -56,7 +56,10 @@ class TestResendApiKeys(unittest.TestCase):
         mock.return_value = m
 
         keys = resend.ApiKeys.list()
-        assert keys["data"][0]["id"] == "91f3200a-df72-4654-b0cd-f202395f5354"
+        for key in keys:
+            assert key.id == "91f3200a-df72-4654-b0cd-f202395f5354"
+            assert key.name == "Production"
+            assert key.created_at == "2023-04-08T00:11:13.110779+00:00"
         patcher.stop()
 
     def test_api_keys_remove(self):
@@ -71,8 +74,10 @@ class TestResendApiKeys(unittest.TestCase):
         m.text = ""
         mock.return_value = m
 
-        email = resend.ApiKeys.remove(
-            api_key_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+        assert (
+            resend.ApiKeys.remove(
+                api_key_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            )
+            is None
         )
-        assert email is None
         patcher.stop()
