@@ -4,7 +4,6 @@ This module defines the base types for platform-wide error
 codes as outlined in https://resend.com/docs/errors.
 """
 
-
 from typing import Dict
 
 
@@ -172,6 +171,16 @@ ERRORS: Dict = {
 
 
 def raise_for_code_and_type(code: str, error_type: str, message: str) -> ResendError:
+    """Raise the appropriate error based on the code and type.
+
+    Args:
+        code: The error code
+        error_type: The error type
+        message: The error message
+
+    Returns:
+        ResendError: The error object
+    """
     error = ERRORS.get(str(code))
 
     # Handle the case where the error might be unknown

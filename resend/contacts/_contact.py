@@ -48,6 +48,15 @@ class Contact:
 
     @staticmethod
     def new_from_request(val) -> "Contact":
+        """Creates a new Contact object from the
+        JSON response from the API.
+
+        Args:
+            val (Dict): The JSON response from the API
+
+        Returns:
+            Contact: The new Contact object
+        """
         contact = Contact(
             id=val["id"] if "id" in val else "",
             email=val["email"] if "email" in val else "",

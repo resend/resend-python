@@ -61,6 +61,12 @@ class Emails:
         """
         Send an email through the Resend Email API.
         see more: https://resend.com/docs/api-reference/emails/send-email
+
+        Args:
+            params (SendParams): The email parameters
+
+        Returns:
+            Email: The email object that was sent
         """
         path = "/emails"
 
@@ -78,6 +84,12 @@ class Emails:
         """
         Retrieve a single email.
         see more: https://resend.com/docs/api-reference/emails/retrieve-email
+
+        Args:
+            email_id (str): The ID of the email to retrieve
+
+        Returns:
+            Email: The email object that was retrieved
         """
         path = f"/emails/{email_id}"
         return Email.new_from_request(
