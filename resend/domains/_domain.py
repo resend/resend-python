@@ -44,15 +44,26 @@ class Domain:
 
     @staticmethod
     def new_from_request(val) -> "Domain":
+        """Creates a new Domain object from the
+        JSON response from the API.
+
+        Args:
+            val (Dict): The JSON response from the API
+
+        Returns:
+            Domain: The new Domain object
+        """
         domain = Domain(
             id=val["id"] if "id" in val else None,
             name=val["name"] if "name" in val else None,
             region=val["region"] if "region" in val else None,
             created_at=val["created_at"] if "created_at" in val else None,
             status=val["status"] if "status" in val else None,
-            records=[Record.new_from_request(record) for record in val["records"]]
-            if "records" in val
-            else None,
+            records=(
+                [Record.new_from_request(record) for record in val["records"]]
+                if "records" in val
+                else None
+            ),
             deleted=val["deleted"] if "deleted" in val else None,
         )
         return domain

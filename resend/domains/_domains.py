@@ -37,6 +37,12 @@ class Domains:
         """
         Create a domain through the Resend Email API.
         see more: https://resend.com/docs/api-reference/domains/create-domain
+
+        Args:
+            params (CreateParams): The domain creation parameters
+
+        Returns:
+            Domain: The new domain object
         """
         path = "/domains"
         return Domain.new_from_request(
@@ -50,6 +56,12 @@ class Domains:
         """
         Update an existing domain.
         see more: https://resend.com/docs/api-reference/domains/update-domain
+
+        Args:
+            params (UpdateParams): The domain update parameters
+
+        Returns:
+            Domain: The updated domain object
         """
         path = f"/domains/{params['id']}"
         return Domain.new_from_request(
@@ -63,6 +75,12 @@ class Domains:
         """
         Retrieve a single domain for the authenticated user.
         see more: https://resend.com/docs/api-reference/domains/get-domain
+
+        Args:
+            domain_id (str): The domain ID
+
+        Returns:
+            Domain: The domain object
         """
         path = f"/domains/{domain_id}"
         return Domain.new_from_request(
@@ -74,6 +92,9 @@ class Domains:
         """
         Retrieve a list of domains for the authenticated user.
         see more: https://resend.com/docs/api-reference/domains/list-domains
+
+        Returns:
+            List[Domain]: A list of domain objects
         """
         path = "/domains"
         resp = request.Request(path=path, params={}, verb="get").perform()
@@ -84,6 +105,12 @@ class Domains:
         """
         Remove an existing domain.
         see more: https://resend.com/docs/api-reference/domains/remove-domain
+
+        Args:
+            domain_id (str): The domain ID
+
+        Returns:
+            Domain: The removed domain object
         """
         path = f"/domains/{domain_id}"
         return Domain.new_from_request(
@@ -95,6 +122,12 @@ class Domains:
         """
         Verify an existing domain.
         see more: https://resend.com/docs/api-reference/domains/verify-domain
+
+        Args:
+            domain_id (str): The domain ID
+
+        Returns:
+            Domain: The verified domain object
         """
         path = f"/domains/{domain_id}/verify"
         return Domain.new_from_request(

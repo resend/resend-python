@@ -24,6 +24,15 @@ class ApiKey:
 
     @staticmethod
     def new_from_request(val) -> "ApiKey":
+        """Creates a new ApiKey object from the
+        JSON response from the API.
+
+        Args:
+            val (Dict): The JSON response from the API
+
+        Returns:
+            ApiKey: The new ApiKey object
+        """
         return ApiKey(
             id=val["id"],
             token=val["token"] if "token" in val else None,

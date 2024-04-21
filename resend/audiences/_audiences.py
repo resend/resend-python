@@ -19,6 +19,12 @@ class Audiences:
         """
         Create a list of contacts.
         see more: https://resend.com/docs/api-reference/audiences/create-audience
+
+        Args:
+            params (CreateParams): The audience creation parameters
+
+        Returns:
+            Audience: The new audience object
         """
         path = "/audiences"
         return Audience.new_from_request(
@@ -32,6 +38,9 @@ class Audiences:
         """
         Retrieve a list of audiences.
         see more: https://resend.com/docs/api-reference/audiences/list-audiences
+
+        Returns:
+            List[Audience]: A list of audience objects
         """
         path = "/audiences/"
         resp = request.Request(path=path, params={}, verb="get").perform()
@@ -46,6 +55,12 @@ class Audiences:
         """
         Retrieve a single audience.
         see more: https://resend.com/docs/api-reference/audiences/get-audience
+
+        Args:
+            id (str): The audience ID
+
+        Returns:
+            Audience: The audience object
         """
         path = f"/audiences/{id}"
         return Audience.new_from_request(
@@ -57,6 +72,12 @@ class Audiences:
         """
         Delete a single audience.
         see more: https://resend.com/docs/api-reference/audiences/delete-audience
+
+        Args:
+            id (str): The audience ID
+
+        Returns:
+            Audience: The audience object
         """
         path = f"/audiences/{id}"
         return Audience.new_from_request(

@@ -76,6 +76,15 @@ class Email:
 
     @staticmethod
     def new_from_request(val) -> "Email":
+        """Creates a new Email object from the
+        JSON response from the API.
+
+        Args:
+            val (Dict): The JSON response from the API
+
+        Returns:
+            Email: The new Email object
+        """
         email = Email(
             id=val["id"] if "id" in val else "",
             to=val["to"] if "to" in val else "",

@@ -29,6 +29,12 @@ class ApiKeys:
         """
         Add a new API key to authenticate communications with Resend.
         see more: https://resend.com/docs/api-reference/api-keys/create-api-key
+
+        Args:
+            params (CreateParams): The API key creation parameters
+
+        Returns:
+            ApiKey: The new API key object
         """
         path = "/api-keys"
         return ApiKey.new_from_request(
@@ -42,6 +48,9 @@ class ApiKeys:
         """
         Retrieve a list of API keys for the authenticated user.
         see more: https://resend.com/docs/api-reference/api-keys/list-api-keys
+
+        Returns:
+            List[ApiKey]: A list of API key objects
         """
         path = "/api-keys"
         resp = request.Request(path=path, params={}, verb="get").perform()
@@ -52,6 +61,12 @@ class ApiKeys:
         """
         Remove an existing API key.
         see more: https://resend.com/docs/api-reference/api-keys/delete-api-key
+
+        Args:
+            api_key_id (str): The ID of the API key to remove
+
+        Returns:
+            None
         """
         path = f"/api-keys/{api_key_id}"
 

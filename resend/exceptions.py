@@ -4,7 +4,6 @@ This module defines the base types for platform-wide error
 codes as outlined in https://resend.com/docs/errors.
 """
 
-
 from typing import Dict
 
 
@@ -172,6 +171,28 @@ ERRORS: Dict = {
 
 
 def raise_for_code_and_type(code: str, error_type: str, message: str) -> ResendError:
+    """Raise the appropriate error based on the code and type.
+
+    Args:
+        code (str): The error code
+        error_type (str): The error type
+        message (str): The error message
+
+    Raises:
+        ResendError: If it is a Resend err
+            or
+        ValidationError: If the error type is validation_error
+            or
+        MissingRequiredFieldsError: If the error type is missing_required_fields
+            or
+        MissingApiKeyError: If the error type is missing_api_key
+            or
+        InvalidApiKeyError: If the error type is invalid_api_key
+            or
+        ApplicationError: If the error type is application_error
+            or
+        TypeError: If the error type is not found
+    """
     error = ERRORS.get(str(code))
 
     # Handle the case where the error might be unknown

@@ -24,6 +24,15 @@ class Audience:
 
     @staticmethod
     def new_from_request(val) -> "Audience":
+        """Creates a new Audience object from the
+        JSON response from the API.
+
+        Args:
+            val (Dict): The JSON response from the API
+
+        Returns:
+            Audience: The new Audience object
+        """
         audience = Audience(
             id=val["id"] if "id" in val else None,
             name=val["name"] if "name" in val else None,

@@ -61,6 +61,12 @@ class Contacts:
         """
         Create a new contact.
         see more: https://resend.com/docs/api-reference/contacts/create-contact
+
+        Args:
+            params (CreateParams): The contact creation parameters
+
+        Returns:
+            Contact: The new contact object
         """
         path = f"/audiences/{params['audience_id']}/contacts"
         return Contact.new_from_request(
@@ -74,6 +80,12 @@ class Contacts:
         """
         Update an existing contact.
         see more: https://resend.com/docs/api-reference/contacts/update-contact
+
+        Args:
+            params (UpdateParams): The contact update parameters
+
+        Returns:
+            Contact: The updated contact object
         """
         path = f"/audiences/{params['audience_id']}/contacts/{params['id']}"
         return Contact.new_from_request(
@@ -87,6 +99,9 @@ class Contacts:
         """
         List all contacts for the provided audience.
         see more: https://resend.com/docs/api-reference/contacts/list-contacts
+
+        Returns:
+            List[Contact]: A list of contact objects
         """
         path = f"/audiences/{audience_id}/contacts"
         resp = request.Request(path=path, params={}, verb="get").perform()
@@ -101,6 +116,13 @@ class Contacts:
         """
         Get a contact.
         see more: https://resend.com/docs/api-reference/contacts/get-contact
+
+        Args:
+            id (str): The contact ID
+            audience_id (str): The audience ID
+
+        Returns:
+            Contact: The contact object
         """
         path = f"/audiences/{audience_id}/contacts/{id}"
         return Contact.new_from_request(
@@ -112,6 +134,14 @@ class Contacts:
         """
         Remove a contact by ID or by Email
         see more: https://resend.com/docs/api-reference/contacts/delete-contact
+
+        Args:
+            audience_id (str): The audience ID
+            id (str): The contact ID
+            email (str): The contact email
+
+        Returns:
+            Contact: The removed contact object
         """
         contact = email if id == "" else id
         if contact == "":
