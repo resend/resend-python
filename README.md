@@ -6,6 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![PyPI](https://img.shields.io/pypi/v/resend)](https://pypi.org/project/resend/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/resend)](https://pypi.org/project/resend)
+
 ---
 
 ## Installation
@@ -29,13 +30,15 @@ resend.api_key = "re_yourkey"
 
 ## Example
 
+You can get an overview about all parameters in the [Send Email](https://resend.com/docs/api-reference/emails/send-email) API reference.
+
 ```py
 import os
 import resend
 
 resend.api_key = "re_yourkey"
 
-params = {
+params: resend.Emails.SendParams = {
     "from": "onboarding@resend.dev",
     "to": ["delivered@resend.dev"],
     "subject": "hi",
