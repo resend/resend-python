@@ -1,14 +1,14 @@
-from typing import List
+from typing import List, Union
 
 from typing_extensions import NotRequired, TypedDict
 
 
 class Attachment(TypedDict):
-    content: List[int]
+    content: Union[List[int], str]
     """
     Content of an attached file.
     This is a list of integers which is usually translated from a
-    "bytes" type.
+    "bytes" type, OR a string
     Ie: list(open("file.pdf", "rb").read())
     """
     filename: str
