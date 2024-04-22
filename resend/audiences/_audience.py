@@ -1,3 +1,6 @@
+from typing import Any, Dict
+
+
 class Audience:
     id: str
     """
@@ -16,14 +19,14 @@ class Audience:
     Wether the audience was deleted. Only returned on the "remove" call
     """
 
-    def __init__(self, id, name, created_at, deleted=False):
+    def __init__(self, id: str, name: str, created_at: str, deleted: bool = False):
         self.id = id
         self.name = name
         self.created_at = created_at
         self.deleted = deleted
 
     @staticmethod
-    def new_from_request(val) -> "Audience":
+    def new_from_request(val: Dict[Any, Any]) -> "Audience":
         """Creates a new Audience object from the
         JSON response from the API.
 

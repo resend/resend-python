@@ -112,9 +112,9 @@ class MissingRequiredFieldsError(ResendError):
 
     def __init__(
         self,
-        message,
-        error_type,
-        code,
+        message: str,
+        error_type: str,
+        code: str,
     ):
         default_message = """
         The request body is missing one or more required fields."""
@@ -127,7 +127,7 @@ class MissingRequiredFieldsError(ResendError):
 
         ResendError.__init__(
             self,
-            code=code or 422,
+            code=code or "422",
             message=message,
             suggested_action=suggested_action,
             error_type=error_type,
@@ -139,9 +139,9 @@ class ApplicationError(ResendError):
 
     def __init__(
         self,
-        message,
-        error_type,
-        code,
+        message: str,
+        error_type: str,
+        code: str,
     ):
         default_message = """
         Something went wrong."""
@@ -153,7 +153,7 @@ class ApplicationError(ResendError):
 
         ResendError.__init__(
             self,
-            code=code or 500,
+            code=code or "500",
             message=message,
             suggested_action=suggested_action,
             error_type=error_type,
@@ -170,7 +170,7 @@ ERRORS: Dict = {
 }
 
 
-def raise_for_code_and_type(code: str, error_type: str, message: str) -> ResendError:
+def raise_for_code_and_type(code: str, error_type: str, message: str) -> None:
     """Raise the appropriate error based on the code and type.
 
     Args:

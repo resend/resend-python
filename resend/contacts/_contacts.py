@@ -100,6 +100,9 @@ class Contacts:
         List all contacts for the provided audience.
         see more: https://resend.com/docs/api-reference/contacts/list-contacts
 
+        Args:
+            audience_id (str): The audience ID
+
         Returns:
             List[Contact]: A list of contact objects
         """
@@ -112,7 +115,7 @@ class Contacts:
         )
 
     @classmethod
-    def get(cls, id, audience_id: str) -> Contact:
+    def get(cls, id: str, audience_id: str) -> Contact:
         """
         Get a contact.
         see more: https://resend.com/docs/api-reference/contacts/get-contact

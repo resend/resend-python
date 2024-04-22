@@ -55,7 +55,7 @@ class Request:
             "User-Agent": f"resend-python:{get_version()}",
         }
 
-    def make_request(self, url: str):
+    def make_request(self, url: str) -> requests.Response:
         """make_request is a helper function that makes the actual
         HTTP request to the Resend API.
 

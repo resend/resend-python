@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, Dict, List, Union
 
 from resend.domains._record import Record
 
@@ -24,7 +24,7 @@ class Domain:
     """
     The region where emails will be sent from. Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
     """
-    records: List[Record]
+    records: Union[List[Record], None]
     """
     The list of domain records
     """
@@ -33,17 +33,26 @@ class Domain:
     Wether the domain is deleted or not
     """
 
-    def __init__(self, id, name, region, created_at, status, records, deleted=False):
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        region: str,
+        created_at: str,
+        status: str,
+        records: Union[List[Record], None],
+        deleted: bool = False,
+    ):
         self.id = id
         self.name = name
+        self.region = region
         self.created_at = created_at
         self.status = status
-        self.region = region
         self.records = records
         self.deleted = deleted
 
     @staticmethod
-    def new_from_request(val) -> "Domain":
+    def new_from_request(val: Dict[Any, Any]) -> "Domain":
         """Creates a new Domain object from the
         JSON response from the API.
 

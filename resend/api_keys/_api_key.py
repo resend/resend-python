@@ -1,3 +1,6 @@
+from typing import Any, Dict
+
+
 class ApiKey:
     id: str
     """
@@ -23,7 +26,7 @@ class ApiKey:
         self.created_at = created_at
 
     @staticmethod
-    def new_from_request(val) -> "ApiKey":
+    def new_from_request(val: Dict[Any, Any]) -> "ApiKey":
         """Creates a new ApiKey object from the
         JSON response from the API.
 

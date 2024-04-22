@@ -1,3 +1,6 @@
+from typing import Any, Dict
+
+
 class Contact:
     id: str
     """
@@ -47,7 +50,7 @@ class Contact:
         self.deleted = deleted
 
     @staticmethod
-    def new_from_request(val) -> "Contact":
+    def new_from_request(val: Dict[Any, Any]) -> "Contact":
         """Creates a new Contact object from the
         JSON response from the API.
 
