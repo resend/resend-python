@@ -80,7 +80,7 @@ class Emails:
         )
 
     @classmethod
-    def get(cls, email_id: str = "") -> Email:
+    def get(cls, email_id: str) -> Email:
         """
         Retrieve a single email.
         see more: https://resend.com/docs/api-reference/emails/retrieve-email
