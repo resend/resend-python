@@ -1,3 +1,6 @@
+from typing import Any, Dict
+
+
 class Record:
     record: str
     """
@@ -28,7 +31,16 @@ class Record:
     The domain record priority.
     """
 
-    def __init__(self, record, name, type, ttl, status, value, priority):
+    def __init__(
+        self,
+        record: str,
+        name: str,
+        type: str,
+        ttl: str,
+        status: str,
+        value: str,
+        priority: int,
+    ):
         self.record = record
         self.name = name
         self.type = type
@@ -38,7 +50,7 @@ class Record:
         self.priority = priority
 
     @staticmethod
-    def new_from_request(val) -> "Record":
+    def new_from_request(val: Dict[Any, Any]) -> "Record":
         return Record(
             record=val["record"] if "record" in val else None,
             name=val["name"] if "name" in val else None,

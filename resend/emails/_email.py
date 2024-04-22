@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Any, Dict, List, Union
 
 
 class Email:
@@ -50,17 +50,17 @@ class Email:
 
     def __init__(
         self,
-        id,
-        to,
-        sender,
-        created_at,
-        subject,
-        html,
-        text,
-        bcc,
-        cc,
-        reply_to,
-        last_event,
+        id: str,
+        to: Union[List[str], str],
+        sender: str,
+        created_at: str,
+        subject: str,
+        html: str,
+        text: str,
+        bcc: Union[List[str], str],
+        cc: Union[List[str], str],
+        reply_to: Union[List[str], str],
+        last_event: str,
     ):
         self.id = id
         self.to = to
@@ -75,7 +75,7 @@ class Email:
         self.last_event = last_event
 
     @staticmethod
-    def new_from_request(val) -> "Email":
+    def new_from_request(val: Dict[Any, Any]) -> "Email":
         """Creates a new Email object from the
         JSON response from the API.
 
