@@ -12,7 +12,7 @@ f: bytes = open(
 ).read()
 
 # Define the file attachment
-attachments: resend.Attachment = {"filename": "invoice.pdf", "content": list(f)}
+attachment: resend.Attachment = {"filename": "invoice.pdf", "content": list(f)}
 
 # Define the email parameters
 params: resend.Emails.SendParams = {
@@ -20,7 +20,7 @@ params: resend.Emails.SendParams = {
     "to": ["carlosderich@gmail.com"],
     "subject": "hi",
     "html": "<strong>hello, world!</strong>",
-    "attachments": [attachments],
+    "attachments": [attachment],
 }
 
 r = resend.Emails.send(params)
