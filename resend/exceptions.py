@@ -163,7 +163,10 @@ class ApplicationError(ResendError):
 # Dict with error code -> error type mapping
 ERRORS: Dict = {
     "400": {"validation_error": ValidationError},
-    "422": {"missing_required_fields": MissingRequiredFieldsError},
+    "422": {
+        "missing_required_fields": MissingRequiredFieldsError,
+        "validation_error": ValidationError,
+    },
     "401": {"missing_api_key": MissingApiKeyError},
     "403": {"invalid_api_key": InvalidApiKeyError},
     "500": {"application_error": ApplicationError},
@@ -196,7 +199,7 @@ def raise_for_code_and_type(code: str, error_type: str, message: str) -> None:
     error = ERRORS.get(str(code))
 
     # Handle the case where the error might be unknown
-    if error is None or error.get(error_type) is None:
+    if error is None:
         raise ResendError(
             code=code, message=message, error_type=error_type, suggested_action=""
         )
@@ -210,4 +213,7 @@ def raise_for_code_and_type(code: str, error_type: str, message: str) -> None:
             message=message,
             error_type=error_type,
         )
-    raise TypeError("Error type not found")
+    # defaults to ResendError if finally can't find error type
+    raise ResendError(
+        code=code, message=message, error_type=error_type, suggested_action=""
+    )
