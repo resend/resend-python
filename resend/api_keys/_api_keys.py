@@ -57,7 +57,7 @@ class ApiKeys:
         return [ApiKey.new_from_request(val) for val in resp["data"]]
 
     @classmethod
-    def remove(cls, api_key_id: str = "") -> None:
+    def remove(cls, api_key_id: str) -> None:
         """
         Remove an existing API key.
         see more: https://resend.com/docs/api-reference/api-keys/delete-api-key

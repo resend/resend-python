@@ -71,7 +71,7 @@ class Domains:
         )
 
     @classmethod
-    def get(cls, domain_id: str = "") -> Domain:
+    def get(cls, domain_id: str) -> Domain:
         """
         Retrieve a single domain for the authenticated user.
         see more: https://resend.com/docs/api-reference/domains/get-domain
@@ -101,10 +101,10 @@ class Domains:
         return [Domain.new_from_request(val) for val in resp["data"]]
 
     @classmethod
-    def remove(cls, domain_id: str = "") -> Domain:
+    def remove(cls, domain_id: str) -> Domain:
         """
         Remove an existing domain.
-        see more: https://resend.com/docs/api-reference/domains/remove-domain
+        see more: https://resend.com/docs/api-reference/domains/delete-domain
 
         Args:
             domain_id (str): The domain ID
@@ -118,7 +118,7 @@ class Domains:
         )
 
     @classmethod
-    def verify(cls, domain_id: str = "") -> Domain:
+    def verify(cls, domain_id: str) -> Domain:
         """
         Verify an existing domain.
         see more: https://resend.com/docs/api-reference/domains/verify-domain
