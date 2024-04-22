@@ -17,7 +17,7 @@ attachment: resend.Attachment = {"filename": "invoice.pdf", "content": list(f)}
 # Define the email parameters
 params: resend.Emails.SendParams = {
     "sender": "onboarding@resend.dev",
-    "to": ["carlosderich@gmail.com"],
+    "to": ["delivered@resend.dev"],
     "subject": "hi",
     "html": "<strong>hello, world!</strong>",
     "attachments": [attachment],
