@@ -4,8 +4,10 @@ from .api_keys._api_keys import ApiKeys
 from .audiences._audiences import Audiences
 from .contacts._contacts import Contacts
 from .domains._domains import Domains
+from .emails._attachment import Attachment
 from .emails._batch import Batch
 from .emails._emails import Emails
+from .emails._tag import Tag
 from .request import Request
 from .version import get_version
 
@@ -25,4 +27,7 @@ __all__ = [
     "Batch",
     "Audiences",
     "Contacts",
+    # Types
+    "Attachment",
+    "Tag",
 ]
