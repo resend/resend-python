@@ -15,7 +15,7 @@ setup(
     author_email="carlosderich@gmail.com",
     url="https://github.com/resendlabs/resend-python",
     packages=find_packages(exclude=["tests", "tests.*"]),
-    include_package_data=True,
+    package_data={"resend": ["py.typed"]},
     install_requires=install_requires,
     zip_safe=False,
     python_requires=">=3.7",
