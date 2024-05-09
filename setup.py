@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
-
+from setuptools import setup, find_packages
 from resend.version import get_version
 
 install_requires = open("requirements.txt").readlines()
@@ -15,8 +14,8 @@ setup(
     author="Derich Pacheco",
     author_email="carlosderich@gmail.com",
     url="https://github.com/resendlabs/resend-python",
-    packages=["resend"],
-    include_package_data=True,
+    packages=find_packages(exclude=["tests", "tests.*"]),
+    package_data={"resend": ["py.typed"]},
     install_requires=install_requires,
     zip_safe=False,
     python_requires=">=3.7",
