@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import resend
 
@@ -6,20 +7,21 @@ if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
 
-params = [
+params: List[resend.Emails.SendParams] = [
     {
-        "from": "onboarding@resend.dev",
-        "to": ["delivered@resend.dev"],
+        "sender": "onboarding@resend.dev",
+        "to": ["delivered@resende.dev"],
         "subject": "hey",
         "html": "<strong>hello, world!</strong>",
     },
     {
-        "from": "onboarding@resend.dev",
-        "to": ["delivered@resend.dev"],
+        "sender": "onboarding@resend.dev",
+        "to": ["delivered@resende.dev"],
         "subject": "hello",
         "html": "<strong>hello, world!</strong>",
     },
 ]
 
 emails = resend.Batch.send(params)
-print(emails)
+for email in emails:
+    print(f"Email sent with id: {email.id}")

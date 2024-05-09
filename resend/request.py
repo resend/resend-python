@@ -15,6 +15,16 @@ class Request:
         self.verb = verb
 
     def perform(self):
+        """Is the main function that makes the HTTP request
+        to the Resend API. It uses the path, params, and verb attributes
+        to make the request.
+
+        Returns:
+            Dict: The JSON response from the API
+
+        Raises:
+            requests.HTTPError: If the request fails
+        """
         resp = self.make_request(url=f"{resend.api_url}{self.path}")
 
         # delete calls do not return a body
@@ -45,7 +55,19 @@ class Request:
             "User-Agent": f"resend-python:{get_version()}",
         }
 
-    def make_request(self, url: str):
+    def make_request(self, url: str) -> requests.Response:
+        """make_request is a helper function that makes the actual
+        HTTP request to the Resend API.
+
+        Args:
+            url (str): The URL to make the request to
+
+        Returns:
+            requests.Response: The response object from the request
+
+        Raises:
+            requests.HTTPError: If the request fails
+        """
         headers = self.__get_headers()
         params = self.params
         verb = self.verb

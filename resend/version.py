@@ -1,10 +1,8 @@
-__version__ = "0.8.0"
+__version__ = "1.0.0"
 
 
-def get_version():
-    """Returns the current version of this lib
-
-    Returns:
-        str: version number
+def get_version() -> str:
+    """
+    Returns the current version of this lib
     """
     return __version__

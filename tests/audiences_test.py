@@ -26,13 +26,12 @@ class TestResendAudiences(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        params = {
+        params: resend.Audiences.CreateParams = {
             "name": "Python SDK Audience",
         }
         audience = resend.Audiences.create(params)
-        assert audience["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
-        assert audience["name"] == "Registered Users"
-        assert audience["object"] == "audience"
+        assert audience.id == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert audience.name == "Registered Users"
 
         patcher.stop()
 
@@ -56,11 +55,10 @@ class TestResendAudiences(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        audience = resend.Audiences.list()
-        assert audience["object"] == "audience"
-        assert audience["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
-        assert audience["name"] == "Registered Users"
-
+        audience = resend.Audiences.get(id="78261eea-8f8b-4381-83c6-79fa7120f1cf")
+        assert audience.id == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert audience.name == "Registered Users"
+        assert audience.created_at == "2023-10-06T22:59:55.977Z"
         patcher.stop()
 
     def test_audiences_remove(self):
@@ -83,9 +81,8 @@ class TestResendAudiences(unittest.TestCase):
         mock.return_value = m
 
         rmed = resend.Audiences.remove("78261eea-8f8b-4381-83c6-79fa7120f1cf")
-        assert rmed["object"] == "audience"
-        assert rmed["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
-        assert rmed["deleted"] is True
+        assert rmed.id == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert rmed.deleted is True
 
         patcher.stop()
 
@@ -113,9 +110,7 @@ class TestResendAudiences(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        audience = resend.Audiences.list()
-        assert audience["object"] == "list"
-        assert audience["data"][0]["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
-        assert audience["data"][0]["name"] == "Registered Users"
-
+        audiences = resend.Audiences.list()
+        assert audiences[0].id == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert audiences[0].name == "Registered Users"
         patcher.stop()
