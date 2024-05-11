@@ -1,5 +1,5 @@
-from typing import Any, Dict, List
 import unittest
+from typing import Any, Dict, List
 from unittest.mock import MagicMock, patch
 
 import resend

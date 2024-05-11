@@ -1,5 +1,5 @@
 import unittest
-from typing import List
+from typing import Any, Dict, List
 from unittest.mock import MagicMock, patch
 
 import resend
@@ -8,7 +8,7 @@ import resend
 
 
 class TestResendBatchSend(unittest.TestCase):
-    def test_batch_email_send(self):
+    def test_batch_email_send(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -17,7 +17,7 @@ class TestResendBatchSend(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "data": [
                     {"id": "ae2014de-c168-4c61-8267-70d2662a1ce1"},
@@ -28,15 +28,15 @@ class TestResendBatchSend(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        params: resend.Emails.SendParams = [
+        params: List[resend.Emails.SendParams] = [
             {
-                "from": "from@resend.dev",
+                "sender": "from@resend.dev",
                 "to": ["to@resend.dev"],
                 "subject": "hey",
                 "html": "<strong>hello, world!</strong>",
             },
             {
-                "from": "from@resend.dev",
+                "sender": "from@resend.dev",
                 "to": ["to@resend.dev"],
                 "subject": "hello",
                 "html": "<strong>hello, world!</strong>",

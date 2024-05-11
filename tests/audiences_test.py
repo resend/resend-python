@@ -1,5 +1,5 @@
 import unittest
-from typing import List
+from typing import Any, Dict, List
 from unittest.mock import MagicMock, patch
 
 import resend
@@ -8,7 +8,7 @@ import resend
 
 
 class TestResendAudiences(unittest.TestCase):
-    def test_audiences_create(self):
+    def test_audiences_create(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -17,7 +17,7 @@ class TestResendAudiences(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "audience",
                 "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
@@ -36,7 +36,7 @@ class TestResendAudiences(unittest.TestCase):
 
         patcher.stop()
 
-    def test_audiences_get(self):
+    def test_audiences_get(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -45,7 +45,7 @@ class TestResendAudiences(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "audience",
                 "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
@@ -62,7 +62,7 @@ class TestResendAudiences(unittest.TestCase):
         assert audience.created_at == "2023-10-06T22:59:55.977Z"
         patcher.stop()
 
-    def test_audiences_remove(self):
+    def test_audiences_remove(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -71,7 +71,7 @@ class TestResendAudiences(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "audience",
                 "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
@@ -87,7 +87,7 @@ class TestResendAudiences(unittest.TestCase):
 
         patcher.stop()
 
-    def test_audiences_list(self):
+    def test_audiences_list(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -96,7 +96,7 @@ class TestResendAudiences(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "list",
                 "data": [

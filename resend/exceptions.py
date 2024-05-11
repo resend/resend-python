@@ -25,7 +25,7 @@ class ResendError(Exception):
 
     def __init__(
         self,
-        code: str,
+        code: str | int,
         error_type: str,
         message: str,
         suggested_action: str,
@@ -44,7 +44,7 @@ class MissingApiKeyError(ResendError):
         self,
         message: str,
         error_type: str,
-        code: str,
+        code: str | int,
     ):
         suggested_action = """Include the following header
         Authorization: Bearer YOUR_API_KEY in the request."""
@@ -67,7 +67,7 @@ class InvalidApiKeyError(ResendError):
         self,
         message: str,
         error_type: str,
-        code: str,
+        code: str | int,
     ):
         suggested_action = """Generate a new API key in the dashboard."""
 
@@ -87,7 +87,7 @@ class ValidationError(ResendError):
         self,
         message: str,
         error_type: str,
-        code: str,
+        code: str | int,
     ):
         default_message = """
         The request body is missing one or more required fields."""
@@ -114,7 +114,7 @@ class MissingRequiredFieldsError(ResendError):
         self,
         message: str,
         error_type: str,
-        code: str,
+        code: str | int,
     ):
         default_message = """
         The request body is missing one or more required fields."""
@@ -141,7 +141,7 @@ class ApplicationError(ResendError):
         self,
         message: str,
         error_type: str,
-        code: str,
+        code: str | int,
     ):
         default_message = """
         Something went wrong."""
@@ -173,7 +173,7 @@ ERRORS: Dict[str, Dict[str, Any]] = {
 }
 
 
-def raise_for_code_and_type(code: str, error_type: str, message: str) -> None:
+def raise_for_code_and_type(code: str | int, error_type: str, message: str) -> None:
     """Raise the appropriate error based on the code and type.
 
     Args:
