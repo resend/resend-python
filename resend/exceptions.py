@@ -4,7 +4,7 @@ This module defines the base types for platform-wide error
 codes as outlined in https://resend.com/docs/errors.
 """
 
-from typing import Dict
+from typing import Any, Dict
 
 
 class ResendError(Exception):
@@ -161,7 +161,7 @@ class ApplicationError(ResendError):
 
 
 # Dict with error code -> error type mapping
-ERRORS: Dict = {
+ERRORS: Dict[str, Dict[str, Any]] = {
     "400": {"validation_error": ValidationError},
     "422": {
         "missing_required_fields": MissingRequiredFieldsError,

@@ -1,3 +1,4 @@
+from typing import Any, Dict, List
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -7,7 +8,7 @@ import resend
 
 
 class TestResendContacts(unittest.TestCase):
-    def test_contacts_create(self):
+    def test_contacts_create(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -16,7 +17,7 @@ class TestResendContacts(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {"object": "contact", "id": "479e3145-dd38-476b-932c-529ceb705947"}
 
         m.json = mock_json
@@ -29,12 +30,12 @@ class TestResendContacts(unittest.TestCase):
             "last_name": "Wozniak",
             "unsubscribed": True,
         }
-        contact = resend.Contacts.create(params)
+        contact: resend.Contact = resend.Contacts.create(params)
         assert contact.id == "479e3145-dd38-476b-932c-529ceb705947"
 
         patcher.stop()
 
-    def test_contacts_update(self):
+    def test_contacts_update(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -43,7 +44,7 @@ class TestResendContacts(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "contact",
                 "id": "479e3145-dd38-476b-932c-529ceb705947",
@@ -63,7 +64,7 @@ class TestResendContacts(unittest.TestCase):
 
         patcher.stop()
 
-    def test_contacts_get(self):
+    def test_contacts_get(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -72,7 +73,7 @@ class TestResendContacts(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "contact",
                 "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
@@ -86,7 +87,7 @@ class TestResendContacts(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        contact = resend.Contacts.get(
+        contact: resend.Contact = resend.Contacts.get(
             id="e169aa45-1ecf-4183-9955-b1499d5701d3",
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
         )
@@ -98,7 +99,7 @@ class TestResendContacts(unittest.TestCase):
         assert contact.unsubscribed is False
         patcher.stop()
 
-    def test_contacts_remove_by_id(self):
+    def test_contacts_remove_by_id(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -107,7 +108,7 @@ class TestResendContacts(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "contact",
                 "id": "520784e2-887d-4c25-b53c-4ad46ad38100",
@@ -125,7 +126,7 @@ class TestResendContacts(unittest.TestCase):
         assert rmed.deleted is True
         patcher.stop()
 
-    def test_contacts_remove_by_email(self):
+    def test_contacts_remove_by_email(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -134,7 +135,7 @@ class TestResendContacts(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "contact",
                 "id": "520784e2-887d-4c25-b53c-4ad46ad38100",
@@ -144,7 +145,7 @@ class TestResendContacts(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        rmed = resend.Contacts.remove(
+        rmed: resend.Contact = resend.Contacts.remove(
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
             email="someemail@email.com",
         )
@@ -152,7 +153,7 @@ class TestResendContacts(unittest.TestCase):
         assert rmed.deleted is True
         patcher.stop()
 
-    def test_contacts_remove_raises(self):
+    def test_contacts_remove_raises(self) -> None:
         resend.api_key = "re_123"
 
         with self.assertRaises(ValueError) as context:
@@ -162,7 +163,7 @@ class TestResendContacts(unittest.TestCase):
 
         self.assertEqual("id or email must be provided", str(context.exception))
 
-    def test_contacts_list(self):
+    def test_contacts_list(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -171,7 +172,7 @@ class TestResendContacts(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "list",
                 "data": [
@@ -189,7 +190,7 @@ class TestResendContacts(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        contacts = resend.Contacts.list(
+        contacts: List[resend.Contact] = resend.Contacts.list(
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8"
         )
         assert contacts[0].id == "e169aa45-1ecf-4183-9955-b1499d5701d3"

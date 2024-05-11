@@ -1,3 +1,4 @@
+from typing import Any, Dict
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -7,7 +8,7 @@ import resend
 
 
 class TestResendEmail(unittest.TestCase):
-    def test_email_send(self):
+    def test_email_send(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -16,7 +17,7 @@ class TestResendEmail(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
             }
@@ -34,7 +35,7 @@ class TestResendEmail(unittest.TestCase):
         assert email.id == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
         patcher.stop()
 
-    def test_email_get(self):
+    def test_email_get(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -43,7 +44,7 @@ class TestResendEmail(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "email",
                 "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
