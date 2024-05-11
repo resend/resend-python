@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 from unittest.mock import MagicMock, patch
 
 import resend
@@ -28,7 +29,7 @@ class TestResendApiKeys(unittest.TestCase):
         params: resend.ApiKeys.CreateParams = {
             "name": "prod",
         }
-        key = resend.ApiKeys.create(params)
+        key: resend.ApiKey = resend.ApiKeys.create(params)
         assert key.id == "dacf4072-4119-4d88-932f-6202748ac7c8"
         patcher.stop()
 
@@ -55,7 +56,7 @@ class TestResendApiKeys(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        keys = resend.ApiKeys.list()
+        keys: List[resend.ApiKey] = resend.ApiKeys.list()
         for key in keys:
             assert key.id == "91f3200a-df72-4654-b0cd-f202395f5354"
             assert key.name == "Production"

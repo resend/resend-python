@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 from unittest.mock import MagicMock, patch
 
 import resend
@@ -110,7 +111,7 @@ class TestResendAudiences(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        audiences = resend.Audiences.list()
+        audiences: List[resend.Audience] = resend.Audiences.list()
         assert audiences[0].id == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert audiences[0].name == "Registered Users"
         patcher.stop()

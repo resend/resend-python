@@ -30,7 +30,7 @@ class TestResendEmail(unittest.TestCase):
             "subject": "subject",
             "html": "html",
         }
-        email = resend.Emails.send(params)
+        email: resend.Email = resend.Emails.send(params)
         assert email.id == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
         patcher.stop()
 
@@ -62,7 +62,7 @@ class TestResendEmail(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        email = resend.Emails.get(
+        email: resend.Email = resend.Emails.get(
             email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
         )
         assert email.id == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"

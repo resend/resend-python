@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 from unittest.mock import MagicMock, patch
 
 import resend
@@ -41,7 +42,7 @@ class TestResendBatchSend(unittest.TestCase):
                 "html": "<strong>hello, world!</strong>",
             },
         ]
-        emails = resend.Batch.send(params)
+        emails: List[resend.Email] = resend.Batch.send(params)
         assert len(emails) == 2
         assert emails[0].id == "ae2014de-c168-4c61-8267-70d2662a1ce1"
         assert emails[1].id == "faccb7a5-8a28-4e9a-ac64-8da1cc3bc1cb"
