@@ -16,8 +16,10 @@ print(f"Crated domain {domain.name} with id {domain.id}")
 
 retrieved: resend.Domain = resend.Domains.get(domain_id=domain.id)
 print(retrieved.__dict__)
-for record in retrieved.records:
-    print(record.__dict__)
+
+if retrieved.records is not None:
+    for record in retrieved.records:
+        print(record.__dict__)
 
 update_params: resend.Domains.UpdateParams = {
     "id": domain.id,
@@ -37,9 +39,8 @@ for domain in domains:
 resend.Domains.verify(domain_id=domain.id)
 print("domain verified")
 
-domain: resend.Domain = resend.Domains.remove(domain_id=domain.id)
-print(f"domain id: {domain.id} deleted: {domain.deleted}")
+rm_domain: resend.Domain = resend.Domains.remove(domain_id=domain.id)
+print(f"domain id: {domain.id} deleted: {rm_domain.deleted}")
 
-domain: resend.Domain = resend.Domains.verify(domain_id=domain.id)
-print(f"Verified domain: {domain.id}")
-print(domain.id)
+verified_domain: resend.Domain = resend.Domains.verify(domain_id=domain.id)
+print(f"Verified domain: {verified_domain.id}")

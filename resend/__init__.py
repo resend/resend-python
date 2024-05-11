@@ -1,10 +1,12 @@
 import os
 
 from .api_keys._api_keys import ApiKey, ApiKeys
+from .audiences._audience import Audience
 from .audiences._audiences import Audiences
+from .contacts._contact import Contact
 from .contacts._contacts import Contacts
-from .domains._domains import Domains
 from .domains._domain import Domain
+from .domains._domains import Domains
 from .emails._attachment import Attachment
 from .emails._batch import Batch
 from .emails._emails import Email, Emails
@@ -29,6 +31,9 @@ __all__ = [
     "Audiences",
     "Contacts",
     # Types
+    "Audience",
+    "Contact",
+    "Domain",
     "ApiKey",
     "Email",
     "Attachment",

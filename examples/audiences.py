@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import resend
 
@@ -9,15 +10,15 @@ if not os.environ["RESEND_API_KEY"]:
 create_params: resend.Audiences.CreateParams = {
     "name": "New Audience from Python SDK",
 }
-audience = resend.Audiences.create(create_params)
+audience: resend.Audience = resend.Audiences.create(create_params)
 print(f"Created audience: {audience.id}")
 print(f"{audience.name} created")
 
-aud = resend.Audiences.get(audience.id)
+aud: resend.Audience = resend.Audiences.get(audience.id)
 print("Retrieved audience:", aud.id, aud.name, aud.created_at)
 
-audiences = resend.Audiences.list()
+audiences: List[resend.Audience] = resend.Audiences.list()
 print("List of audiences:", [a.id for a in audiences])
 
-rmed = resend.Audiences.remove(id=audience.id)
+rmed: resend.Audience = resend.Audiences.remove(id=audience.id)
 print(f"Deleted audience: {rmed.id} {rmed.deleted}")
