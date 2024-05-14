@@ -1,4 +1,5 @@
-from typing import Any, Dict, Literal
+from typing import Any, Dict
+from typing_extensions import Literal
 
 import requests
 
