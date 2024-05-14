@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import resend
 
@@ -10,13 +11,15 @@ create_params: resend.Domains.CreateParams = {
     "name": "example.com",
     "region": "us-east-1",
 }
-domain = resend.Domains.create(params=create_params)
+domain: resend.Domain = resend.Domains.create(params=create_params)
 print(f"Crated domain {domain.name} with id {domain.id}")
 
-retrieved = resend.Domains.get(domain_id=domain.id)
+retrieved: resend.Domain = resend.Domains.get(domain_id=domain.id)
 print(retrieved.__dict__)
-for record in retrieved.records:
-    print(record.__dict__)
+
+if retrieved.records is not None:
+    for record in retrieved.records:
+        print(record.__dict__)
 
 update_params: resend.Domains.UpdateParams = {
     "id": domain.id,
@@ -24,10 +27,10 @@ update_params: resend.Domains.UpdateParams = {
     "click_tracking": True,
 }
 
-updated_domain = resend.Domains.update(update_params)
+updated_domain: resend.Domain = resend.Domains.update(update_params)
 print(f"Updated domain: {updated_domain.id}")
 
-domains = resend.Domains.list()
+domains: List[resend.Domain] = resend.Domains.list()
 if not domains:
     print("No domains found")
 for domain in domains:
@@ -36,9 +39,8 @@ for domain in domains:
 resend.Domains.verify(domain_id=domain.id)
 print("domain verified")
 
-domain = resend.Domains.remove(domain_id=domain.id)
-print(f"domain id: {domain.id} deleted: {domain.deleted}")
+rm_domain: resend.Domain = resend.Domains.remove(domain_id=domain.id)
+print(f"domain id: {domain.id} deleted: {rm_domain.deleted}")
 
-domain = resend.Domains.verify(domain_id=domain.id)
-print(f"Verified domain: {domain.id}")
-print(domain.id)
+verified_domain: resend.Domain = resend.Domains.verify(domain_id=domain.id)
+print(f"Verified domain: {verified_domain.id}")

@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import resend
 
@@ -9,11 +10,11 @@ create_params: resend.ApiKeys.CreateParams = {
     "name": "example.com",
 }
 
-key = resend.ApiKeys.create(params=create_params)
+key: resend.ApiKey = resend.ApiKeys.create(params=create_params)
 print("Created new api key")
 print(f"Key id: {key.id} and token: {key.token}")
 
-keys = resend.ApiKeys.list()
+keys: List[resend.ApiKey] = resend.ApiKeys.list()
 for key in keys:
     print(key.id)
     print(key.name)

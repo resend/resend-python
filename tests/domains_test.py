@@ -1,4 +1,5 @@
 import unittest
+from typing import Any, Dict
 from unittest.mock import MagicMock, patch
 
 import resend
@@ -7,7 +8,7 @@ import resend
 
 
 class TestResendDomains(unittest.TestCase):
-    def test_domains_create(self):
+    def test_domains_create(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -16,7 +17,7 @@ class TestResendDomains(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "id": "4dd369bc-aa82-4ff3-97de-514ae3000ee0",
                 "name": "example.com",
@@ -83,7 +84,7 @@ class TestResendDomains(unittest.TestCase):
 
         patcher.stop()
 
-    def test_domains_get(self):
+    def test_domains_get(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -92,7 +93,7 @@ class TestResendDomains(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "domain",
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
@@ -115,7 +116,7 @@ class TestResendDomains(unittest.TestCase):
         assert domain.region == "us-east-1"
         patcher.stop()
 
-    def test_domains_list(self):
+    def test_domains_list(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -124,7 +125,7 @@ class TestResendDomains(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "data": [
                     {
@@ -148,7 +149,7 @@ class TestResendDomains(unittest.TestCase):
         assert domains[0].region == "us-east-1"
         patcher.stop()
 
-    def test_domains_remove(self):
+    def test_domains_remove(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -157,7 +158,7 @@ class TestResendDomains(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "domain",
                 "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
@@ -174,7 +175,7 @@ class TestResendDomains(unittest.TestCase):
         assert domain.id == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
         patcher.stop()
 
-    def test_domains_verify(self):
+    def test_domains_verify(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -183,7 +184,7 @@ class TestResendDomains(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {"object": "domain", "id": "d91cd9bd-1176-453e-8fc1-35364d380206"}
 
         m.json = mock_json
@@ -196,7 +197,7 @@ class TestResendDomains(unittest.TestCase):
 
         patcher.stop()
 
-    def test_domains_update(self):
+    def test_domains_update(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -205,7 +206,7 @@ class TestResendDomains(unittest.TestCase):
         m = MagicMock()
         m.status_code = 200
 
-        def mock_json():
+        def mock_json() -> Dict[Any, Any]:
             return {
                 "object": "domain",
                 "id": "479e3145-dd38-476b-932c-529ceb705947",

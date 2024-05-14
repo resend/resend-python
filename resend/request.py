@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Any, Dict
 
 import requests
 
@@ -9,12 +9,12 @@ from resend.version import get_version
 
 # This class wraps the HTTP request creation logic
 class Request:
-    def __init__(self, path: str, params: Dict, verb: str):
+    def __init__(self, path: str, params: Dict[Any, Any], verb: str):
         self.path = path
         self.params = params
         self.verb = verb
 
-    def perform(self):
+    def perform(self) -> Any:
         """Is the main function that makes the HTTP request
         to the Resend API. It uses the path, params, and verb attributes
         to make the request.
@@ -42,7 +42,7 @@ class Request:
             )
         return resp.json()
 
-    def __get_headers(self) -> Dict:
+    def __get_headers(self) -> Dict[Any, Any]:
         """get_headers returns the HTTP headers that will be
         used for every req.
 
