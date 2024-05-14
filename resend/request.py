@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Literal
 
 import requests
 
@@ -6,11 +6,12 @@ import resend
 from resend.exceptions import raise_for_code_and_type
 from resend.version import get_version
 
+RequestVerb = Literal["get", "post", "put", "patch", "delete"]
+
 
 # This class wraps the HTTP request creation logic
 class Request:
-
-    def __init__(self, path: str, params: Any, verb: str):
+    def __init__(self, path: str, params: Dict[Any, Any], verb: RequestVerb):
         self.path = path
         self.params = params
         self.verb = verb
