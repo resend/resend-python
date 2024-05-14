@@ -52,6 +52,6 @@ params: resend.Emails.SendParams = {
     ],
 }
 
-r = resend.Emails.send(params)
-print(r)
+email: resend.Email = resend.Emails.send(params)
+print(email)
 ```
