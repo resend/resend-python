@@ -15,13 +15,13 @@ class Emails:
         """
         The email address of the sender.
         "from" is a reserved keyword in python.
-        So we accept either from_ or sender
+        So we accept either "from_" or "sender"
         """
         sender: NotRequired[str]
         """
         The email address of the sender.
         "from" is a reserved keyword in python.
-        So accept either "from_" or "sender"
+        So we accept either "from_" or "sender"
         """
         to: Union[str, List[str]]
         """
