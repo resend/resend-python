@@ -7,7 +7,7 @@ if not os.environ["RESEND_API_KEY"]:
 
 params: resend.Emails.SendParams = {
     "from_": "onboarding@resend.dev",
-    "to": ["carlosderich@gmail.com"],
+    "to": ["delivered@resend.dev"],
     "subject": "hi",
     "html": "<strong>hello, world!</strong>",
     "reply_to": "to@gmail.com",
