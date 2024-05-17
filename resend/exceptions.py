@@ -173,7 +173,9 @@ ERRORS: Dict[str, Dict[str, Any]] = {
 }
 
 
-def raise_for_code_and_type(code: Union[str, int], error_type: str, message: str) -> None:
+def raise_for_code_and_type(
+    code: Union[str, int], error_type: str, message: str
+) -> None:
     """Raise the appropriate error based on the code and type.
 
     Args:

@@ -20,7 +20,7 @@ b64_attachment: resend.Attachment = {"filename": "file.html", "content": b64_str
 
 # Email params
 params: resend.Emails.SendParams = {
-    "sender": "onboarding@resend.dev",
+    "from_": "onboarding@resend.dev",
     "to": ["delivered@resend.dev"],
     "subject": "hello with base64 attachments",
     "html": "<strong>hello, world!</strong>",

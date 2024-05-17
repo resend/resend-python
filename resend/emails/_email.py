@@ -10,10 +10,16 @@ class Email:
     """
     List of email addresses to send the email to.
     """
+    from_: str
+    """
+    The email address of the sender.
+    "from" is a reserved keyword in python.
+    So accept either "from_" or "sender"
+    """
     sender: str
     """
     The email address of the sender. "from" is a reserved keyword in python.
-    So we use "sender" here instead
+    So accept either "from_" or "sender"
     """
     created_at: str
     """
@@ -52,6 +58,7 @@ class Email:
         self,
         id: str,
         to: Union[List[str], str],
+        from_: str,
         sender: str,
         created_at: str,
         subject: str,
@@ -64,6 +71,7 @@ class Email:
     ):
         self.id = id
         self.to = to
+        self.from_ = from_
         self.sender = sender
         self.created_at = created_at
         self.subject = subject
@@ -90,6 +98,7 @@ class Email:
             to=val["to"] if "to" in val else "",
             # we set sender as the value from "from" here
             # because "from" is a reserved keyword in python
+            from_=val["from"] if "from" in val else "",
             sender=val["from"] if "from" in val else "",
             created_at=val["created_at"] if "created_at" in val else "",
             subject=val["subject"] if "subject" in val else "",

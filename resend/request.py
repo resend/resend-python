@@ -9,7 +9,8 @@ from resend.version import get_version
 
 # This class wraps the HTTP request creation logic
 class Request:
-    def __init__(self, path: str, params: Dict[Any, Any], verb: str):
+
+    def __init__(self, path: str, params: Any, verb: str):
         self.path = path
         self.params = params
         self.verb = verb
