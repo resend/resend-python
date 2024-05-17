@@ -9,15 +9,10 @@ from resend.version import get_version
 
 # This class wraps the HTTP request creation logic
 class Request:
-    def __init__(self, path: str, params: Dict[Any, Any], verb: str):
+
+    def __init__(self, path: str, params: Any, verb: str):
         self.path = path
-
-        if isinstance(params, list):
-            self.params = [self.__replace_params(p) for p in params]
-        else:
-            self.params = self.__replace_params(params)
-
-        import pdb; pdb.set_trace()
+        self.params = params
         self.verb = verb
 
     def perform(self) -> Any:
@@ -82,14 +77,3 @@ class Request:
             return requests.request(verb, url, json=params, headers=headers)
         except requests.HTTPError as e:
             raise e
-
-    def __replace_params(self, params) -> Dict[Any, Any]:
-        # we need this workaround here because "from" is a reserved keyword
-        # in python, so accept either "sender" or "from_" in the SendParams class
-        if "from_" in params:
-            params["from"] = params["from_"]  # type: ignore
-            params.pop("from_")
-        elif "sender" in params:
-            params["from"] = params["sender"]  # type: ignore
-            params.pop("sender")
-        return params

@@ -6,6 +6,7 @@ from resend import request
 from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
+from resend.utils import replace_params
 
 
 class Emails:
@@ -76,10 +77,12 @@ class Emails:
             Email: The email object that was sent
         """
         path = "/emails"
+
+        # replace "from_" or "sender" with "from"
+        p = replace_params(cast(Dict[Any, Any], params))
+
         return Email.new_from_request(
-            request.Request(
-                path=path, params=cast(Dict[Any, Any], params), verb="post"
-            ).perform()
+            request.Request(path=path, params=p, verb="post").perform()
         )
 
     @classmethod
