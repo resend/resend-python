@@ -6,8 +6,8 @@ if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
 params: resend.Emails.SendParams = {
-    "sender": "onboarding@resend.dev",
-    "to": ["delivered@resend.dev"],
+    "from_": "onboarding@resend.dev",
+    "to": ["carlosderich@gmail.com"],
     "subject": "hi",
     "html": "<strong>hello, world!</strong>",
     "reply_to": "to@gmail.com",

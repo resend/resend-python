@@ -10,10 +10,17 @@ from resend.emails._tag import Tag
 
 class Emails:
     class SendParams(TypedDict):
-        sender: str
+        from_: NotRequired[str]
         """
         The email address of the sender.
-        "from" is a reserved keyword in python, so we use "sender" here instead
+        "from" is a reserved keyword in python.
+        So we accept either from_ or sender
+        """
+        sender: NotRequired[str]
+        """
+        The email address of the sender.
+        "from" is a reserved keyword in python.
+        So accept either "from_" or "sender"
         """
         to: Union[str, List[str]]
         """
@@ -69,10 +76,6 @@ class Emails:
             Email: The email object that was sent
         """
         path = "/emails"
-
-        # we need this workaround here because from is a reserved keyword
-        # in python, so we need to use "sender" on the SendParams
-        params["from"] = params["sender"]  # type: ignore
         return Email.new_from_request(
             request.Request(
                 path=path, params=cast(Dict[Any, Any], params), verb="post"
