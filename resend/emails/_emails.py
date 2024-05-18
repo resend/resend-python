@@ -8,61 +8,26 @@ from resend.emails._email import Email
 from resend.emails._tag import Tag
 from resend.utils import replace_params
 
+_SendParamsType = TypedDict(
+        '_SendParamsType',
+        {
+            "from": str,
+            "to": Union[str, List[str]],
+            "subject": str,
+            "bcc": NotRequired[Union[List[str], str]],
+            "cc": NotRequired[Union[List[str], str]],
+            "reply_to": NotRequired[Union[List[str], str]],
+            "html": NotRequired[str],
+            "text": NotRequired[str],
+            "headers": NotRequired[Dict[str, str]],
+            "attachments": NotRequired[List[Attachment]],
+            "tags": NotRequired[List[Tag]],
+        }
+    )
 
 class Emails:
-    class SendParams(TypedDict):
-        from_: NotRequired[str]
-        """
-        The email address of the sender.
-        "from" is a reserved keyword in python.
-        So we accept either "from_" or "sender"
-        """
-        sender: NotRequired[str]
-        """
-        The email address of the sender.
-        "from" is a reserved keyword in python.
-        So we accept either "from_" or "sender"
-        """
-        to: Union[str, List[str]]
-        """
-        List of email addresses to send the email to.
-        """
-        subject: str
-        """
-        The subject of the email.
-        """
-        bcc: NotRequired[Union[List[str], str]]
-        """
-        Bcc
-        """
-        cc: NotRequired[Union[List[str], str]]
-        """
-        Cc
-        """
-        reply_to: NotRequired[Union[List[str], str]]
-        """
-        Reply to
-        """
-        html: NotRequired[str]
-        """
-        The HTML content of the email.
-        """
-        text: NotRequired[str]
-        """
-        The text content of the email.
-        """
-        headers: NotRequired[Dict[str, str]]
-        """
-        Custom headers to be added to the email.
-        """
-        attachments: NotRequired[List[Attachment]]
-        """
-        List of attachments to be added to the email.
-        """
-        tags: NotRequired[List[Tag]]
-        """
-        List of tags to be added to the email.
-        """
+    class SendParams(_SendParamsType):
+        ...
 
     @classmethod
     def send(cls, params: SendParams) -> Email:
