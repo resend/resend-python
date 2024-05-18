@@ -14,12 +14,7 @@ class Email:
     """
     The email address of the sender.
     "from" is a reserved keyword in python.
-    So accept either "from_" or "sender"
-    """
-    sender: str
-    """
-    The email address of the sender. "from" is a reserved keyword in python.
-    So accept either "from_" or "sender"
+    So accept either "from_"
     """
     created_at: str
     """
@@ -59,7 +54,6 @@ class Email:
         id: str,
         to: Union[List[str], str],
         from_: str,
-        sender: str,
         created_at: str,
         subject: str,
         html: str,
@@ -72,7 +66,6 @@ class Email:
         self.id = id
         self.to = to
         self.from_ = from_
-        self.sender = sender
         self.created_at = created_at
         self.subject = subject
         self.html = html
@@ -96,10 +89,7 @@ class Email:
         email = Email(
             id=val["id"] if "id" in val else "",
             to=val["to"] if "to" in val else "",
-            # we set sender as the value from "from" here
-            # because "from" is a reserved keyword in python
             from_=val["from"] if "from" in val else "",
-            sender=val["from"] if "from" in val else "",
             created_at=val["created_at"] if "created_at" in val else "",
             subject=val["subject"] if "subject" in val else "",
             html=val["html"] if "html" in val else "",

@@ -8,7 +8,7 @@ import resend
 
 
 class TestResendEmail(unittest.TestCase):
-    def test_email_send_with_sender(self) -> None:
+    def test_email_send_with_from(self) -> None:
         resend.api_key = "re_123"
 
         patcher = patch("resend.Request.make_request")
@@ -27,34 +27,7 @@ class TestResendEmail(unittest.TestCase):
 
         params: resend.Emails.SendParams = {
             "to": "to@email.com",
-            "sender": "from@email.com",
-            "subject": "subject",
-            "html": "html",
-        }
-        email: resend.Email = resend.Emails.send(params)
-        assert email.id == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
-        patcher.stop()
-
-    def test_email_send_with_from_(self) -> None:
-        resend.api_key = "re_123"
-
-        patcher = patch("resend.Request.make_request")
-        mock = patcher.start()
-        mock.status_code = 200
-        m = MagicMock()
-        m.status_code = 200
-
-        def mock_json() -> Dict[Any, Any]:
-            return {
-                "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
-            }
-
-        m.json = mock_json
-        mock.return_value = m
-
-        params: resend.Emails.SendParams = {
-            "to": "to@email.com",
-            "from_": "from@email.com",
+            "from": "from@email.com",
             "subject": "subject",
             "html": "html",
         }

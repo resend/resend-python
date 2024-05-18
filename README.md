@@ -39,7 +39,7 @@ import resend
 resend.api_key = "re_yourkey"
 
 params: resend.Emails.SendParams = {
-    "from_": "onboarding@resend.dev",
+    "from": "onboarding@resend.dev",
     "to": ["delivered@resend.dev"],
     "subject": "hi",
     "html": "<strong>hello, world!</strong>",

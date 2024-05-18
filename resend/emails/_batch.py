@@ -1,7 +1,6 @@
 from typing import Any, Dict, List, cast
 
 from resend import request
-from resend.utils import replace_params
 
 from ._email import Email
 from ._emails import Emails
@@ -22,10 +21,7 @@ class Batch:
         """
         path = "/emails/batch"
 
-        # loop through the list of params and replace "from_" or "sender" with "from"
-        replaced_params = [
-            replace_params(cast(Dict[Any, Any], param)) for param in params
-        ]
+        replaced_params = [cast(Dict[Any, Any], param) for param in params]
 
         resp = request.Request(path=path, params=replaced_params, verb="post").perform()
         return [Email.new_from_request(val) for val in resp["data"]]

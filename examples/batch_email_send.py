@@ -10,13 +10,13 @@ if not os.environ["RESEND_API_KEY"]:
 
 params: List[resend.Emails.SendParams] = [
     {
-        "from_": "onboarding@resend.dev",
+        "from": "onboarding@resend.dev",
         "to": ["delivered@resend.dev"],
         "subject": "hey",
         "html": "<strong>hello, world!</strong>",
     },
     {
-        "from_": "onboarding@resend.dev",
+        "from": "onboarding@resend.dev",
         "to": ["delivered@resend.dev"],
         "subject": "hello",
         "html": "<strong>hello, world!</strong>",

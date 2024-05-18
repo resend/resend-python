@@ -6,28 +6,27 @@ from resend import request
 from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
-from resend.utils import replace_params
 
 _SendParamsType = TypedDict(
-        '_SendParamsType',
-        {
-            "from": str,
-            "to": Union[str, List[str]],
-            "subject": str,
-            "bcc": NotRequired[Union[List[str], str]],
-            "cc": NotRequired[Union[List[str], str]],
-            "reply_to": NotRequired[Union[List[str], str]],
-            "html": NotRequired[str],
-            "text": NotRequired[str],
-            "headers": NotRequired[Dict[str, str]],
-            "attachments": NotRequired[List[Attachment]],
-            "tags": NotRequired[List[Tag]],
-        }
-    )
+    "_SendParamsType",
+    {
+        "from": str,
+        "to": Union[str, List[str]],
+        "subject": str,
+        "bcc": NotRequired[Union[List[str], str]],
+        "cc": NotRequired[Union[List[str], str]],
+        "reply_to": NotRequired[Union[List[str], str]],
+        "html": NotRequired[str],
+        "text": NotRequired[str],
+        "headers": NotRequired[Dict[str, str]],
+        "attachments": NotRequired[List[Attachment]],
+        "tags": NotRequired[List[Tag]],
+    },
+)
+
 
 class Emails:
-    class SendParams(_SendParamsType):
-        ...
+    class SendParams(_SendParamsType): ...
 
     @classmethod
     def send(cls, params: SendParams) -> Email:
@@ -42,12 +41,10 @@ class Emails:
             Email: The email object that was sent
         """
         path = "/emails"
-
-        # replace "from_" or "sender" with "from"
-        p = replace_params(cast(Dict[Any, Any], params))
-
         return Email.new_from_request(
-            request.Request(path=path, params=p, verb="post").perform()
+            request.Request(
+                path=path, params=cast(Dict[Any, Any], params), verb="post"
+            ).perform()
         )
 
     @classmethod
