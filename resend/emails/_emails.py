@@ -26,7 +26,8 @@ _SendParamsType = TypedDict(
 
 
 class Emails:
-    class SendParams(_SendParamsType): ...
+    class SendParams(_SendParamsType):
+        pass
 
     @classmethod
     def send(cls, params: SendParams) -> Email:
