@@ -1,7 +1,7 @@
 # Resend Python SDK
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-![Build](https://github.com/drish/resend-py/actions/workflows/test.yaml/badge.svg)
+![Build](https://github.com/drish/resend-py/actions/workflows/ci.yaml/badge.svg)
 [![codecov](https://codecov.io/gh/drish/resend-py/branch/main/graph/badge.svg?token=GGD39PPFM0)](https://codecov.io/gh/drish/resend-py)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![PyPI](https://img.shields.io/pypi/v/resend)](https://pypi.org/project/resend/)
