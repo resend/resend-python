@@ -1,16 +1,23 @@
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
 
 import requests
+from typing_extensions import Literal
 
 import resend
 from resend.exceptions import raise_for_code_and_type
 from resend.version import get_version
 
+RequestVerb = Literal["get", "post", "put", "patch", "delete"]
+
 
 # This class wraps the HTTP request creation logic
 class Request:
-
-    def __init__(self, path: str, params: Any, verb: str):
+    def __init__(
+        self,
+        path: str,
+        params: Union[Dict[Any, Any], List[Dict[Any, Any]]],
+        verb: RequestVerb,
+    ):
         self.path = path
         self.params = params
         self.verb = verb
