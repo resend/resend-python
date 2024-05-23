@@ -19,7 +19,7 @@ setup(
     package_data={"resend": ["py.typed"]},
     install_requires=install_requires,
     zip_safe=False,
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     keywords=["email", "email platform"],
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -27,7 +27,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
