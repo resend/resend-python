@@ -34,7 +34,6 @@ class Request:
             requests.HTTPError: If the request fails
         """
         resp = self.make_request(url=f"{resend.api_url}{self.path}")
-
         # delete calls do not return a body
         if resp.text == "" and resp.status_code == 200:
             return None

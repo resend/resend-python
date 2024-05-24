@@ -30,13 +30,13 @@ class TestResendBatchSend(unittest.TestCase):
 
         params: List[resend.Emails.SendParams] = [
             {
-                "from_": "from@resend.dev",
+                "from": "from@resend.dev",
                 "to": ["to@resend.dev"],
                 "subject": "hey",
                 "html": "<strong>hello, world!</strong>",
             },
             {
-                "from_": "from@resend.dev",
+                "from": "from@resend.dev",
                 "to": ["to@resend.dev"],
                 "subject": "hello",
                 "html": "<strong>hello, world!</strong>",
