@@ -31,4 +31,4 @@ except resend.exceptions.ResendError as e:
     exit(1)
 
 for email in emails:
-    print(f"Email sent with id: {email.id}")
+    print(f"Email sent with id: {email["id"]}")
