@@ -96,8 +96,8 @@ class Email:
         email = Email(
             id=val["id"] if "id" in val else "",
             to=val["to"] if "to" in val else "",
-            # we set sender as the value from "from" here
-            # because "from" is a reserved keyword in python
+            # from is a reserved keyword in python
+            # so we set both from_ and sender here
             from_=val["from"] if "from" in val else "",
             sender=val["from"] if "from" in val else "",
             created_at=val["created_at"] if "created_at" in val else "",

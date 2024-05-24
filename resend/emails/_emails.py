@@ -8,6 +8,23 @@ from resend.emails._email import Email
 from resend.emails._tag import Tag
 from resend.utils import replace_params
 
+SendParamsFrom = TypedDict(
+    "SendParamsFrom",
+    {
+        "from": str,
+        "to": Union[str, List[str]],
+        "subject": str,
+        "bcc": NotRequired[Union[List[str], str]],
+        "cc": NotRequired[Union[List[str], str]],
+        "reply_to": NotRequired[Union[List[str], str]],
+        "html": NotRequired[str],
+        "text": NotRequired[str],
+        "headers": NotRequired[Dict[str, str]],
+        "attachments": NotRequired[List[Attachment]],
+        "tags": NotRequired[List[Tag]],
+    },
+)
+
 
 class SendParamsDefault(TypedDict):
     to: Union[str, List[str]]
@@ -71,7 +88,7 @@ class SendParamsSender(SendParamsDefault):
 
 
 class Emails:
-    SendParams = Union[SendParamsFrom_, SendParamsSender]
+    SendParams = Union[SendParamsFrom, SendParamsFrom_, SendParamsSender]
 
     @classmethod
     def send(cls, params: SendParams) -> Email:

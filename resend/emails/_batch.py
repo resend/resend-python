@@ -23,6 +23,7 @@ class Batch:
         path = "/emails/batch"
 
         # loop through the list of params and replace "from_" or "sender" with "from"
+        # if they're present
         replaced_params = [
             replace_params(cast(Dict[Any, Any], param)) for param in params
         ]

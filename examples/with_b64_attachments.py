@@ -20,7 +20,7 @@ b64_attachment: resend.Attachment = {"filename": "invoice.pdf", "content": b64_s
 
 # Email params
 params: resend.Emails.SendParams = {
-    "from_": "onboarding@resend.dev",
+    "from": "onboarding@resend.dev",
     "to": ["delivered@resend.dev"],
     "subject": "hello with base64 attachments",
     "html": "<strong>hello, world!</strong>",
