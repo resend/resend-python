@@ -54,14 +54,14 @@ class Emails:
     # SendParamsFrom is declared with functional TypedDict syntax here because
     # "from" is a reserved keyword in Python, and this is the best way to
     # support type-checking for it.
-    SendParamsFrom = TypedDict(
-        "SendParamsFrom",
+    _SendParamsFrom = TypedDict(
+        "_SendParamsFrom",
         {
             "from": str,
         },
     )
 
-    class SendParams(SendParamsDefault, SendParamsFrom):
+    class SendParams(SendParamsDefault, _SendParamsFrom):
         """SendParams is the class that wraps the parameters for the send method.
 
         Attributes:
