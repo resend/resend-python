@@ -6,89 +6,78 @@ from resend import request
 from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
-from resend.utils import replace_params
-
-SendParamsFrom = TypedDict(
-    "SendParamsFrom",
-    {
-        "from": str,
-        "to": Union[str, List[str]],
-        "subject": str,
-        "bcc": NotRequired[Union[List[str], str]],
-        "cc": NotRequired[Union[List[str], str]],
-        "reply_to": NotRequired[Union[List[str], str]],
-        "html": NotRequired[str],
-        "text": NotRequired[str],
-        "headers": NotRequired[Dict[str, str]],
-        "attachments": NotRequired[List[Attachment]],
-        "tags": NotRequired[List[Tag]],
-    },
-)
-
-
-class SendParamsDefault(TypedDict):
-    to: Union[str, List[str]]
-    """
-    List of email addresses to send the email to.
-    """
-    subject: str
-    """
-    The subject of the email.
-    """
-    bcc: NotRequired[Union[List[str], str]]
-    """
-    Bcc
-    """
-    cc: NotRequired[Union[List[str], str]]
-    """
-    Cc
-    """
-    reply_to: NotRequired[Union[List[str], str]]
-    """
-    Reply to
-    """
-    html: NotRequired[str]
-    """
-    The HTML content of the email.
-    """
-    text: NotRequired[str]
-    """
-    The text content of the email.
-    """
-    headers: NotRequired[Dict[str, str]]
-    """
-    Custom headers to be added to the email.
-    """
-    attachments: NotRequired[List[Attachment]]
-    """
-    List of attachments to be added to the email.
-    """
-    tags: NotRequired[List[Tag]]
-    """
-    List of tags to be added to the email.
-    """
-
-
-class SendParamsFrom_(SendParamsDefault):
-    from_: str
-    """
-    The email address of the sender.
-    "from" is a reserved keyword in python.
-    So we accept either "from_" or "sender"
-    """
-
-
-class SendParamsSender(SendParamsDefault):
-    sender: str
-    """
-    The email address of the sender.
-    "from" is a reserved keyword in python.
-    So we accept either "from_" or "sender"
-    """
 
 
 class Emails:
-    SendParams = Union[SendParamsFrom, SendParamsFrom_, SendParamsSender]
+
+    class SendParamsDefault(TypedDict):
+        to: Union[str, List[str]]
+        """
+        List of email addresses to send the email to.
+        """
+        subject: str
+        """
+        The subject of the email.
+        """
+        bcc: NotRequired[Union[List[str], str]]
+        """
+        Bcc
+        """
+        cc: NotRequired[Union[List[str], str]]
+        """
+        Cc
+        """
+        reply_to: NotRequired[Union[List[str], str]]
+        """
+        Reply to
+        """
+        html: NotRequired[str]
+        """
+        The HTML content of the email.
+        """
+        text: NotRequired[str]
+        """
+        The text content of the email.
+        """
+        headers: NotRequired[Dict[str, str]]
+        """
+        Custom headers to be added to the email.
+        """
+        attachments: NotRequired[List[Attachment]]
+        """
+        List of attachments to be added to the email.
+        """
+        tags: NotRequired[List[Tag]]
+        """
+        List of tags to be added to the email.
+        """
+
+    # SendParamsFrom is declared with functional TypedDict syntax here because
+    # "from" is a reserved keyword in Python, and this is the best way to
+    # support type-checking for it.
+    _SendParamsFrom = TypedDict(
+        "_SendParamsFrom",
+        {
+            "from": str,
+        },
+    )
+
+    class SendParams(SendParamsDefault, _SendParamsFrom):
+        """SendParams is the class that wraps the parameters for the send method.
+
+        Attributes:
+            from (str): The email address to send the email from.
+            to (Union[str, List[str]]): List of email addresses to send the email to.
+            subject (str): The subject of the email.
+            bcc (NotRequired[Union[List[str], str]]): Bcc
+            cc (NotRequired[Union[List[str], str]]): Cc
+            reply_to (NotRequired[Union[List[str], str]]): Reply to
+            html (NotRequired[str]): The HTML content of the email.
+            text (NotRequired[str]): The text content of the email.
+            headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
+            attachments (NotRequired[List[Attachment]]): List of attachments to be added to the email.
+            tags (NotRequired[List[Tag]]): List of tags to be added to the email.
+        """
 
     @classmethod
     def send(cls, params: SendParams) -> Email:
@@ -104,11 +93,11 @@ class Emails:
         """
         path = "/emails"
 
-        # replace "from_" or "sender" with "from"
-        p = replace_params(cast(Dict[Any, Any], params))
-
-        return Email.new_from_request(
-            request.Request(path=path, params=p, verb="post").perform()
+        return cast(
+            Email,
+            request.Request(
+                path=path, params=cast(Dict[Any, Any], params), verb="post"
+            ).perform(),
         )
 
     @classmethod
@@ -124,6 +113,4 @@ class Emails:
             Email: The email object that was retrieved
         """
         path = f"/emails/{email_id}"
-        return Email.new_from_request(
-            request.Request(path=path, params={}, verb="get").perform()
-        )
+        return cast(Email, request.Request(path=path, params={}, verb="get").perform())

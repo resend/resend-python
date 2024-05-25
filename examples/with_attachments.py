@@ -23,6 +23,6 @@ params: resend.Emails.SendParams = {
     "attachments": [attachment],
 }
 
-r: resend.Email = resend.Emails.send(params)
+email: resend.Email = resend.Emails.send(params)
 print("Sent email with attachment")
-print(f"Email ID: {r.id}")
+print(email)

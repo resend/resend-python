@@ -30,7 +30,7 @@ class TestResendApiKeys(unittest.TestCase):
             "name": "prod",
         }
         key: resend.ApiKey = resend.ApiKeys.create(params)
-        assert key.id == "dacf4072-4119-4d88-932f-6202748ac7c8"
+        assert key["id"] == "dacf4072-4119-4d88-932f-6202748ac7c8"
         patcher.stop()
 
     def test_api_keys_list(self) -> None:
@@ -56,11 +56,11 @@ class TestResendApiKeys(unittest.TestCase):
         m.json = mock_json
         mock.return_value = m
 
-        keys: List[resend.ApiKey] = resend.ApiKeys.list()
-        for key in keys:
-            assert key.id == "91f3200a-df72-4654-b0cd-f202395f5354"
-            assert key.name == "Production"
-            assert key.created_at == "2023-04-08T00:11:13.110779+00:00"
+        keys: resend.ApiKeys.ListResponse = resend.ApiKeys.list()
+        for key in keys["data"]:
+            assert key["id"] == "91f3200a-df72-4654-b0cd-f202395f5354"
+            assert key["name"] == "Production"
+            assert key["created_at"] == "2023-04-08T00:11:13.110779+00:00"
         patcher.stop()
 
     def test_api_keys_remove(self) -> None:

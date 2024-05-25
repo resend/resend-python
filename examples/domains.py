@@ -12,35 +12,33 @@ create_params: resend.Domains.CreateParams = {
     "region": "us-east-1",
 }
 domain: resend.Domain = resend.Domains.create(params=create_params)
-print(f"Crated domain {domain.name} with id {domain.id}")
+print(domain)
 
-retrieved: resend.Domain = resend.Domains.get(domain_id=domain.id)
-print(retrieved.__dict__)
+retrieved: resend.Domain = resend.Domains.get(domain_id=domain["id"])
+print(retrieved)
 
-if retrieved.records is not None:
-    for record in retrieved.records:
-        print(record.__dict__)
+if retrieved["records"] is not None:
+    for record in retrieved["records"]:
+        print(record)
 
 update_params: resend.Domains.UpdateParams = {
-    "id": domain.id,
+    "id": domain["id"],
     "open_tracking": True,
     "click_tracking": True,
 }
 
 updated_domain: resend.Domain = resend.Domains.update(update_params)
-print(f"Updated domain: {updated_domain.id}")
+print(f"Updated domain: {updated_domain['id']}")
 
-domains: List[resend.Domain] = resend.Domains.list()
+domains: resend.Domains.ListResponse = resend.Domains.list()
 if not domains:
     print("No domains found")
-for domain in domains:
-    print(domain.__dict__)
+for domain in domains["data"]:
+    print(domain)
 
-resend.Domains.verify(domain_id=domain.id)
-print("domain verified")
+verified_domain: resend.Domain = resend.Domains.verify(domain_id=domain["id"])
+print(f"Verified")
+print(verified_domain)
 
-rm_domain: resend.Domain = resend.Domains.remove(domain_id=domain.id)
-print(f"domain id: {domain.id} deleted: {rm_domain.deleted}")
-
-verified_domain: resend.Domain = resend.Domains.verify(domain_id=domain.id)
-print(f"Verified domain: {verified_domain.id}")
+rm_domain: resend.Domain = resend.Domains.remove(domain_id=domain["id"])
+print(rm_domain)

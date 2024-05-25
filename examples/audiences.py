@@ -11,14 +11,15 @@ create_params: resend.Audiences.CreateParams = {
     "name": "New Audience from Python SDK",
 }
 audience: resend.Audience = resend.Audiences.create(create_params)
-print(f"Created audience: {audience.id}")
-print(f"{audience.name} created")
+print(f"Created audience: {audience['id']}")
+print(audience)
 
-aud: resend.Audience = resend.Audiences.get(audience.id)
-print("Retrieved audience:", aud.id, aud.name, aud.created_at)
+aud: resend.Audience = resend.Audiences.get(audience["id"])
+print("Retrieved audience: ", aud)
 
-audiences: List[resend.Audience] = resend.Audiences.list()
-print("List of audiences:", [a.id for a in audiences])
+audiences: resend.Audiences.ListResponse = resend.Audiences.list()
+print("List of audiences:", [a["id"] for a in audiences["data"]])
 
-rmed: resend.Audience = resend.Audiences.remove(id=audience.id)
-print(f"Deleted audience: {rmed.id} {rmed.deleted}")
+rmed: resend.Audience = resend.Audiences.remove(id=audience["id"])
+print(f"Deleted audience")
+print(rmed)

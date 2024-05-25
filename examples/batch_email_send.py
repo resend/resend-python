@@ -24,11 +24,10 @@ params: List[resend.Emails.SendParams] = [
 ]
 
 try:
-    emails = resend.Batch.send(params)
+    emails: resend.Batch.SendResponse = resend.Batch.send(params)
+    for email in emails["data"]:
+        print(f"Email id: {email['id']}")
 except resend.exceptions.ResendError as e:
     print("Failed to send batch emails")
     print(f"Error: {e}")
     exit(1)
-
-for email in emails:
-    print(f"Email sent with id: {email.id}")

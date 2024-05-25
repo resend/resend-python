@@ -1,9 +1,11 @@
-from typing import Any, Dict, List, Union
+from typing import List, Union
+
+from typing_extensions import TypedDict
 
 from resend.domains._record import Record
 
 
-class Domain:
+class Domain(TypedDict):
     id: str
     """
     The domain ID
@@ -32,47 +34,3 @@ class Domain:
     """
     Wether the domain is deleted or not
     """
-
-    def __init__(
-        self,
-        id: str,
-        name: str,
-        region: str,
-        created_at: str,
-        status: str,
-        records: Union[List[Record], None],
-        deleted: bool = False,
-    ):
-        self.id = id
-        self.name = name
-        self.region = region
-        self.created_at = created_at
-        self.status = status
-        self.records = records
-        self.deleted = deleted
-
-    @staticmethod
-    def new_from_request(val: Dict[Any, Any]) -> "Domain":
-        """Creates a new Domain object from the
-        JSON response from the API.
-
-        Args:
-            val (Dict): The JSON response from the API
-
-        Returns:
-            Domain: The new Domain object
-        """
-        domain = Domain(
-            id=val["id"] if "id" in val else None,
-            name=val["name"] if "name" in val else None,
-            region=val["region"] if "region" in val else None,
-            created_at=val["created_at"] if "created_at" in val else None,
-            status=val["status"] if "status" in val else None,
-            records=(
-                [Record.new_from_request(record) for record in val["records"]]
-                if "records" in val
-                else None
-            ),
-            deleted=val["deleted"] if "deleted" in val else None,
-        )
-        return domain
