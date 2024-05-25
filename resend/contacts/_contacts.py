@@ -7,7 +7,23 @@ from resend import request
 from ._contact import Contact
 
 
+class _ListResponse(TypedDict):
+    data: List[Contact]
+    """
+    A list of contact objects
+    """
+
+
 class Contacts:
+
+    class ListResponse(_ListResponse):
+        """
+        ListResponse type that wraps a list of contact objects
+
+        Attributes:
+            data (List[Contact]): A list of contact objects
+        """
+
     class CreateParams(TypedDict):
         audience_id: str
         """
@@ -69,11 +85,10 @@ class Contacts:
             Contact: The new contact object
         """
         path = f"/audiences/{params['audience_id']}/contacts"
-        return Contact.new_from_request(
-            request.Request(
-                path=path, params=cast(Dict[Any, Any], params), verb="post"
-            ).perform()
-        )
+        resp = request.Request(
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform()
+        return cast(Contact, resp)
 
     @classmethod
     def update(cls, params: UpdateParams) -> Contact:
@@ -88,14 +103,13 @@ class Contacts:
             Contact: The updated contact object
         """
         path = f"/audiences/{params['audience_id']}/contacts/{params['id']}"
-        return Contact.new_from_request(
-            request.Request(
-                path=path, params=cast(Dict[Any, Any], params), verb="patch"
-            ).perform()
-        )
+        resp = request.Request(
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+        ).perform()
+        return cast(Contact, resp)
 
     @classmethod
-    def list(cls, audience_id: str) -> List[Contact]:
+    def list(cls, audience_id: str) -> ListResponse:
         """
         List all contacts for the provided audience.
         see more: https://resend.com/docs/api-reference/contacts/list-contacts
@@ -104,15 +118,11 @@ class Contacts:
             audience_id (str): The audience ID
 
         Returns:
-            List[Contact]: A list of contact objects
+            ListResponse: A list of contact objects
         """
         path = f"/audiences/{audience_id}/contacts"
         resp = request.Request(path=path, params={}, verb="get").perform()
-        return (
-            [Contact.new_from_request(contact) for contact in resp["data"]]
-            if "data" in resp
-            else []
-        )
+        return cast(_ListResponse, resp)
 
     @classmethod
     def get(cls, id: str, audience_id: str) -> Contact:
@@ -128,9 +138,8 @@ class Contacts:
             Contact: The contact object
         """
         path = f"/audiences/{audience_id}/contacts/{id}"
-        return Contact.new_from_request(
-            request.Request(path=path, params={}, verb="get").perform()
-        )
+        resp = request.Request(path=path, params={}, verb="get").perform()
+        return cast(Contact, resp)
 
     @classmethod
     def remove(cls, audience_id: str, id: str = "", email: str = "") -> Contact:
@@ -151,6 +160,5 @@ class Contacts:
             raise ValueError("id or email must be provided")
         path = f"/audiences/{audience_id}/contacts/{contact}"
 
-        return Contact.new_from_request(
-            request.Request(path=path, params={}, verb="delete").perform()
-        )
+        resp = request.Request(path=path, params={}, verb="delete").perform()
+        return cast(Contact, resp)

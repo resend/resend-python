@@ -7,6 +7,7 @@ from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
 
+
 class Emails:
 
     class SendParamsDefault(TypedDict):
@@ -92,9 +93,12 @@ class Emails:
         """
         path = "/emails"
 
-        return cast(Email, request.Request(
-            path=path, params=cast(Dict[Any, Any], params), verb="post"
-        ).perform())
+        return cast(
+            Email,
+            request.Request(
+                path=path, params=cast(Dict[Any, Any], params), verb="post"
+            ).perform(),
+        )
 
     @classmethod
     def get(cls, email_id: str) -> Email:
@@ -110,4 +114,3 @@ class Emails:
         """
         path = f"/emails/{email_id}"
         return cast(Email, request.Request(path=path, params={}, verb="get").perform())
-

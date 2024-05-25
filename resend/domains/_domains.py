@@ -5,11 +5,13 @@ from typing_extensions import NotRequired, TypedDict
 from resend import request
 from resend.domains._domain import Domain
 
+
 class _ListResponse(TypedDict):
     data: List[Domain]
     """
     A list of domain objects
     """
+
 
 class Domains:
 
@@ -60,8 +62,8 @@ class Domains:
         """
         path = "/domains"
         resp = request.Request(
-                path=path, params=cast(Dict[Any, Any], params), verb="post"
-            ).perform()
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform()
         return cast(Domain, resp)
 
     @classmethod
@@ -78,8 +80,8 @@ class Domains:
         """
         path = f"/domains/{params['id']}"
         resp = request.Request(
-                path=path, params=cast(Dict[Any, Any], params), verb="patch"
-            ).perform()
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+        ).perform()
         return cast(Domain, resp)
 
     @classmethod

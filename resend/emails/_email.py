@@ -1,17 +1,17 @@
-from typing import Any, Dict, List, Union
+from typing import List, Union
 
 from typing_extensions import TypedDict
 
 # Uses functional typed dict syntax here in order to support "from" reserved keyword
-FromParam = TypedDict(
-    "FromParam",
+_FromParam = TypedDict(
+    "_FromParam",
     {
         "from": str,
     },
 )
 
 
-class EmailDefault(TypedDict):
+class _EmailDefaultAttrs(_FromParam):
     id: str
     """
     The Email ID.
@@ -53,7 +53,8 @@ class EmailDefault(TypedDict):
     The last event of the email.
     """
 
-class Email(FromParam, EmailDefault):
+
+class Email(_EmailDefaultAttrs):
     """
     Email type that wraps the email object
 

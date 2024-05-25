@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, cast
+
 from typing_extensions import TypedDict
 
 from resend import request
@@ -6,11 +7,13 @@ from resend import request
 from ._email import Email
 from ._emails import Emails
 
+
 class _SendResponse(TypedDict):
     data: List[Email]
     """
     A list of email objects
     """
+
 
 class Batch:
 
@@ -36,4 +39,9 @@ class Batch:
         """
         path = "/emails/batch"
 
-        return cast(_SendResponse, request.Request(path=path, params=cast(List[Dict[Any, Any]], params), verb="post").perform())
+        return cast(
+            _SendResponse,
+            request.Request(
+                path=path, params=cast(List[Dict[Any, Any]], params), verb="post"
+            ).perform(),
+        )

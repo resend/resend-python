@@ -13,6 +13,7 @@ class _ListResponse(TypedDict):
     A list of audience objects
     """
 
+
 class Audiences:
 
     class ListResponse(_ListResponse):
@@ -43,8 +44,8 @@ class Audiences:
         """
         path = "/audiences"
         resp = request.Request(
-                path=path, params=cast(Dict[Any, Any], params), verb="post"
-            ).perform()
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform()
         return cast(Audience, resp)
 
     @classmethod

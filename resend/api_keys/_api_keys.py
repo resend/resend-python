@@ -5,11 +5,13 @@ from typing_extensions import NotRequired, TypedDict
 from resend import request
 from resend.api_keys._api_key import ApiKey
 
+
 class _ListResponse(TypedDict):
     data: List[ApiKey]
     """
     A list of API key objects
     """
+
 
 class ApiKeys:
 
@@ -51,10 +53,12 @@ class ApiKeys:
             ApiKey: The new API key object
         """
         path = "/api-keys"
-        return cast(ApiKey, request.Request(
+        return cast(
+            ApiKey,
+            request.Request(
                 path=path, params=cast(Dict[Any, Any], params), verb="post"
-            ).perform())
-
+            ).perform(),
+        )
 
     @classmethod
     def list(cls) -> ListResponse:

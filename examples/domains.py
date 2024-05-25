@@ -12,7 +12,7 @@ create_params: resend.Domains.CreateParams = {
     "region": "us-east-1",
 }
 domain: resend.Domain = resend.Domains.create(params=create_params)
-print(f"Crated domain {domain["name"]} with id {domain["id"]}")
+print(domain)
 
 retrieved: resend.Domain = resend.Domains.get(domain_id=domain["id"])
 print(retrieved)
@@ -28,7 +28,7 @@ update_params: resend.Domains.UpdateParams = {
 }
 
 updated_domain: resend.Domain = resend.Domains.update(update_params)
-print(f"Updated domain: {updated_domain["id"]}")
+print(f"Updated domain: {updated_domain['id']}")
 
 domains: resend.Domains.ListResponse = resend.Domains.list()
 if not domains:

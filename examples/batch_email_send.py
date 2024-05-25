@@ -31,5 +31,3 @@ except resend.exceptions.ResendError as e:
     print("Failed to send batch emails")
     print(f"Error: {e}")
     exit(1)
-
-

@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Union
+from typing import List, Union
+
 from typing_extensions import TypedDict
 
 from resend.domains._record import Record
