@@ -5,8 +5,22 @@ from typing_extensions import NotRequired, TypedDict
 from resend import request
 from resend.domains._domain import Domain
 
+class _ListResponse(TypedDict):
+    data: List[Domain]
+    """
+    A list of domain objects
+    """
 
 class Domains:
+
+    class ListResponse(_ListResponse):
+        """
+        ListResponse type that wraps a list of domain objects
+
+        Attributes:
+            data (List[Domain]): A list of domain objects
+        """
+
     class UpdateParams(TypedDict):
         id: str
         """
@@ -45,11 +59,10 @@ class Domains:
             Domain: The new domain object
         """
         path = "/domains"
-        return Domain.new_from_request(
-            request.Request(
+        resp = request.Request(
                 path=path, params=cast(Dict[Any, Any], params), verb="post"
             ).perform()
-        )
+        return cast(Domain, resp)
 
     @classmethod
     def update(cls, params: UpdateParams) -> Domain:
@@ -64,11 +77,10 @@ class Domains:
             Domain: The updated domain object
         """
         path = f"/domains/{params['id']}"
-        return Domain.new_from_request(
-            request.Request(
+        resp = request.Request(
                 path=path, params=cast(Dict[Any, Any], params), verb="patch"
             ).perform()
-        )
+        return cast(Domain, resp)
 
     @classmethod
     def get(cls, domain_id: str) -> Domain:
@@ -83,22 +95,21 @@ class Domains:
             Domain: The domain object
         """
         path = f"/domains/{domain_id}"
-        return Domain.new_from_request(
-            request.Request(path=path, params={}, verb="get").perform()
-        )
+        resp = request.Request(path=path, params={}, verb="get").perform()
+        return cast(Domain, resp)
 
     @classmethod
-    def list(cls) -> List[Domain]:
+    def list(cls) -> ListResponse:
         """
         Retrieve a list of domains for the authenticated user.
         see more: https://resend.com/docs/api-reference/domains/list-domains
 
         Returns:
-            List[Domain]: A list of domain objects
+            ListResponse: A list of domain objects
         """
         path = "/domains"
         resp = request.Request(path=path, params={}, verb="get").perform()
-        return [Domain.new_from_request(val) for val in resp["data"]]
+        return cast(_ListResponse, resp)
 
     @classmethod
     def remove(cls, domain_id: str) -> Domain:
@@ -113,9 +124,8 @@ class Domains:
             Domain: The removed domain object
         """
         path = f"/domains/{domain_id}"
-        return Domain.new_from_request(
-            request.Request(path=path, params={}, verb="delete").perform()
-        )
+        resp = request.Request(path=path, params={}, verb="delete").perform()
+        return cast(Domain, resp)
 
     @classmethod
     def verify(cls, domain_id: str) -> Domain:
@@ -130,6 +140,5 @@ class Domains:
             Domain: The verified domain object
         """
         path = f"/domains/{domain_id}/verify"
-        return Domain.new_from_request(
-            request.Request(path=path, params={}, verb="post").perform()
-        )
+        resp = request.Request(path=path, params={}, verb="post").perform()
+        return cast(Domain, resp)

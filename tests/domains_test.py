@@ -76,11 +76,11 @@ class TestResendDomains(unittest.TestCase):
             "name": "example.com",
         }
         domain = resend.Domains.create(params=create_params)
-        assert domain.id == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
-        assert domain.name == "example.com"
-        assert domain.status == "not_started"
-        assert domain.created_at == "2023-03-28T17:12:02.059593+00:00"
-        assert domain.region == "us-east-1"
+        assert domain["id"] == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
+        assert domain["name"] == "example.com"
+        assert domain["status"] == "not_started"
+        assert domain["created_at"] == "2023-03-28T17:12:02.059593+00:00"
+        assert domain["region"] == "us-east-1"
 
         patcher.stop()
 
@@ -109,11 +109,11 @@ class TestResendDomains(unittest.TestCase):
         domain = resend.Domains.get(
             domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
         )
-        assert domain.id == "d91cd9bd-1176-453e-8fc1-35364d380206"
-        assert domain.name == "example.com"
-        assert domain.status == "not_started"
-        assert domain.created_at == "2023-04-26T20:21:26.347412+00:00"
-        assert domain.region == "us-east-1"
+        assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
+        assert domain["name"] == "example.com"
+        assert domain["status"] == "not_started"
+        assert domain["created_at"] == "2023-04-26T20:21:26.347412+00:00"
+        assert domain["region"] == "us-east-1"
         patcher.stop()
 
     def test_domains_list(self) -> None:
@@ -142,11 +142,11 @@ class TestResendDomains(unittest.TestCase):
         mock.return_value = m
 
         domains = resend.Domains.list()
-        assert domains[0].id == "d91cd9bd-1176-453e-8fc1-35364d380206"
-        assert domains[0].name == "example.com"
-        assert domains[0].status == "not_started"
-        assert domains[0].created_at == "2023-04-26T20:21:26.347412+00:00"
-        assert domains[0].region == "us-east-1"
+        assert domains["data"][0]["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
+        assert domains["data"][0]["name"] == "example.com"
+        assert domains["data"][0]["status"] == "not_started"
+        assert domains["data"][0]["created_at"] == "2023-04-26T20:21:26.347412+00:00"
+        assert domains["data"][0]["region"] == "us-east-1"
         patcher.stop()
 
     def test_domains_remove(self) -> None:
@@ -171,8 +171,8 @@ class TestResendDomains(unittest.TestCase):
         domain = resend.Domains.remove(
             domain_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
         )
-        assert domain.deleted is True
-        assert domain.id == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+        assert domain["deleted"] is True
+        assert domain["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
         patcher.stop()
 
     def test_domains_verify(self) -> None:
@@ -193,7 +193,7 @@ class TestResendDomains(unittest.TestCase):
         domain = resend.Domains.verify(
             domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
         )
-        assert domain.id == "d91cd9bd-1176-453e-8fc1-35364d380206"
+        assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
 
         patcher.stop()
 
@@ -221,6 +221,6 @@ class TestResendDomains(unittest.TestCase):
             "click_tracking": True,
         }
         domain = resend.Domains.update(params)
-        assert domain.id == "479e3145-dd38-476b-932c-529ceb705947"
+        assert domain["id"] == "479e3145-dd38-476b-932c-529ceb705947"
 
         patcher.stop()
