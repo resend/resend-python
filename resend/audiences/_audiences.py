@@ -7,7 +7,22 @@ from resend import request
 from ._audience import Audience
 
 
+class _ListResponse(TypedDict):
+    data: List[Audience]
+    """
+    A list of audience objects
+    """
+
 class Audiences:
+
+    class ListResponse(_ListResponse):
+        """
+        ListResponse type that wraps a list of audience objects
+
+        Attributes:
+            data (List[Audience]): A list of audience objects
+        """
+
     class CreateParams(TypedDict):
         name: str
         """
@@ -27,28 +42,23 @@ class Audiences:
             Audience: The new audience object
         """
         path = "/audiences"
-        return Audience.new_from_request(
-            request.Request(
+        resp = request.Request(
                 path=path, params=cast(Dict[Any, Any], params), verb="post"
             ).perform()
-        )
+        return cast(Audience, resp)
 
     @classmethod
-    def list(cls) -> List[Audience]:
+    def list(cls) -> ListResponse:
         """
         Retrieve a list of audiences.
         see more: https://resend.com/docs/api-reference/audiences/list-audiences
 
         Returns:
-            List[Audience]: A list of audience objects
+            ListResponse: A list of audience objects
         """
         path = "/audiences/"
         resp = request.Request(path=path, params={}, verb="get").perform()
-        return (
-            [Audience.new_from_request(aud) for aud in resp["data"]]
-            if "data" in resp
-            else []
-        )
+        return cast(_ListResponse, resp)
 
     @classmethod
     def get(cls, id: str) -> Audience:
@@ -63,9 +73,8 @@ class Audiences:
             Audience: The audience object
         """
         path = f"/audiences/{id}"
-        return Audience.new_from_request(
-            request.Request(path=path, params={}, verb="get").perform()
-        )
+        resp = request.Request(path=path, params={}, verb="get").perform()
+        return cast(Audience, resp)
 
     @classmethod
     def remove(cls, id: str) -> Audience:
@@ -80,6 +89,5 @@ class Audiences:
             Audience: The audience object
         """
         path = f"/audiences/{id}"
-        return Audience.new_from_request(
-            request.Request(path=path, params={}, verb="delete").perform()
-        )
+        resp = request.Request(path=path, params={}, verb="delete").perform()
+        return cast(Audience, resp)
