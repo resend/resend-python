@@ -78,8 +78,6 @@ class Emails:
             tags (NotRequired[List[Tag]]): List of tags to be added to the email.
         """
 
-        pass
-
     @classmethod
     def send(cls, params: SendParams) -> Email:
         """

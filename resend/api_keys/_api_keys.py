@@ -5,8 +5,22 @@ from typing_extensions import NotRequired, TypedDict
 from resend import request
 from resend.api_keys._api_key import ApiKey
 
+class _ListResponse(TypedDict):
+    data: List[ApiKey]
+    """
+    A list of API key objects
+    """
 
 class ApiKeys:
+
+    class ListResponse(_ListResponse):
+        """
+        ListResponse type that wraps a list of API key objects
+
+        Attributes:
+            data (List[Dict[str, Any]]): A list of API key objects
+        """
+
     class CreateParams(TypedDict):
         name: str
         """
@@ -37,24 +51,23 @@ class ApiKeys:
             ApiKey: The new API key object
         """
         path = "/api-keys"
-        return ApiKey.new_from_request(
-            request.Request(
+        return cast(ApiKey, request.Request(
                 path=path, params=cast(Dict[Any, Any], params), verb="post"
-            ).perform()
-        )
+            ).perform())
+
 
     @classmethod
-    def list(cls) -> List[ApiKey]:
+    def list(cls) -> ListResponse:
         """
         Retrieve a list of API keys for the authenticated user.
         see more: https://resend.com/docs/api-reference/api-keys/list-api-keys
 
         Returns:
-            List[ApiKey]: A list of API key objects
+            ListResponse: A list of API key objects
         """
         path = "/api-keys"
         resp = request.Request(path=path, params={}, verb="get").perform()
-        return [ApiKey.new_from_request(val) for val in resp["data"]]
+        return cast(_ListResponse, resp)
 
     @classmethod
     def remove(cls, api_key_id: str) -> None:

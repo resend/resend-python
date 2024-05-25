@@ -12,13 +12,13 @@ create_params: resend.ApiKeys.CreateParams = {
 
 key: resend.ApiKey = resend.ApiKeys.create(params=create_params)
 print("Created new api key")
-print(f"Key id: {key.id} and token: {key.token}")
+print(f"Key id: {key['id']} and token: {key['token']}")
 
-keys: List[resend.ApiKey] = resend.ApiKeys.list()
-for key in keys:
-    print(key.id)
-    print(key.name)
-    print(key.created_at)
+keys: resend.ApiKeys.ListResponse = resend.ApiKeys.list()
+for key in keys["data"]:
+    print(key["id"])
+    print(key["name"])
+    print(key["created_at"])
 
 if len(keys) > 0:
-    resend.ApiKeys.remove(api_key_id=keys[0].id)
+    resend.ApiKeys.remove(api_key_id=keys["data"][0]["id"])

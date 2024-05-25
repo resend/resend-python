@@ -42,7 +42,7 @@ class TestResendBatchSend(unittest.TestCase):
                 "html": "<strong>hello, world!</strong>",
             },
         ]
-        emails: resend.Batch.BatchEmails = resend.Batch.send(params)
+        emails: resend.Batch.SendResponse = resend.Batch.send(params)
         assert len(emails["data"]) == 2
         assert emails["data"][0]["id"] == "ae2014de-c168-4c61-8267-70d2662a1ce1"
         assert emails["data"][1]["id"] == "faccb7a5-8a28-4e9a-ac64-8da1cc3bc1cb"
