@@ -60,6 +60,7 @@ class Email(_EmailDefaultAttrs):
 
     Attributes:
         id (str): The Email ID.
+        from (str): The email address the email was sent from.
         to (Union[List[str], str]): List of email addresses to send the email to.
         created_at (str): When the email was created.
         subject (str): The subject of the email.
