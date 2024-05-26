@@ -8,61 +8,62 @@ from resend.emails._email import Email
 from resend.emails._tag import Tag
 
 
+class _SendParamsDefault(TypedDict):
+    to: Union[str, List[str]]
+    """
+    List of email addresses to send the email to.
+    """
+    subject: str
+    """
+    The subject of the email.
+    """
+    bcc: NotRequired[Union[List[str], str]]
+    """
+    Bcc
+    """
+    cc: NotRequired[Union[List[str], str]]
+    """
+    Cc
+    """
+    reply_to: NotRequired[Union[List[str], str]]
+    """
+    Reply to
+    """
+    html: NotRequired[str]
+    """
+    The HTML content of the email.
+    """
+    text: NotRequired[str]
+    """
+    The text content of the email.
+    """
+    headers: NotRequired[Dict[str, str]]
+    """
+    Custom headers to be added to the email.
+    """
+    attachments: NotRequired[List[Attachment]]
+    """
+    List of attachments to be added to the email.
+    """
+    tags: NotRequired[List[Tag]]
+    """
+    List of tags to be added to the email.
+    """
+
+
+# SendParamsFrom is declared with functional TypedDict syntax here because
+# "from" is a reserved keyword in Python, and this is the best way to
+# support type-checking for it.
+_SendParamsFrom = TypedDict(
+    "_SendParamsFrom",
+    {
+        "from": str,
+    },
+)
+
+
 class Emails:
-
-    class SendParamsDefault(TypedDict):
-        to: Union[str, List[str]]
-        """
-        List of email addresses to send the email to.
-        """
-        subject: str
-        """
-        The subject of the email.
-        """
-        bcc: NotRequired[Union[List[str], str]]
-        """
-        Bcc
-        """
-        cc: NotRequired[Union[List[str], str]]
-        """
-        Cc
-        """
-        reply_to: NotRequired[Union[List[str], str]]
-        """
-        Reply to
-        """
-        html: NotRequired[str]
-        """
-        The HTML content of the email.
-        """
-        text: NotRequired[str]
-        """
-        The text content of the email.
-        """
-        headers: NotRequired[Dict[str, str]]
-        """
-        Custom headers to be added to the email.
-        """
-        attachments: NotRequired[List[Attachment]]
-        """
-        List of attachments to be added to the email.
-        """
-        tags: NotRequired[List[Tag]]
-        """
-        List of tags to be added to the email.
-        """
-
-    # SendParamsFrom is declared with functional TypedDict syntax here because
-    # "from" is a reserved keyword in Python, and this is the best way to
-    # support type-checking for it.
-    _SendParamsFrom = TypedDict(
-        "_SendParamsFrom",
-        {
-            "from": str,
-        },
-    )
-
-    class SendParams(SendParamsDefault, _SendParamsFrom):
+    class SendParams(_SendParamsDefault, _SendParamsFrom):
         """SendParams is the class that wraps the parameters for the send method.
 
         Attributes:
