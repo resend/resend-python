@@ -7,8 +7,18 @@ from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
 
+# SendParamsFrom is declared with functional TypedDict syntax here because
+# "from" is a reserved keyword in Python, and this is the best way to
+# support type-checking for it.
+_SendParamsFrom = TypedDict(
+    "_SendParamsFrom",
+    {
+        "from": str,
+    },
+)
 
-class _SendParamsDefault(TypedDict):
+
+class _SendParamsDefault(_SendParamsFrom):
     to: Union[str, List[str]]
     """
     List of email addresses to send the email to.
@@ -51,19 +61,8 @@ class _SendParamsDefault(TypedDict):
     """
 
 
-# SendParamsFrom is declared with functional TypedDict syntax here because
-# "from" is a reserved keyword in Python, and this is the best way to
-# support type-checking for it.
-_SendParamsFrom = TypedDict(
-    "_SendParamsFrom",
-    {
-        "from": str,
-    },
-)
-
-
 class Emails:
-    class SendParams(_SendParamsDefault, _SendParamsFrom):
+    class SendParams(_SendParamsDefault):
         """SendParams is the class that wraps the parameters for the send method.
 
         Attributes:
