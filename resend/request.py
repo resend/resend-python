@@ -1,7 +1,7 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Type, Union, cast
 
 import requests
-from typing_extensions import Literal
+from typing_extensions import Generic, Literal, TypeVar
 
 import resend
 from resend.exceptions import raise_for_code_and_type
@@ -9,9 +9,11 @@ from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
 
+T = TypeVar("T")
+
 
 # This class wraps the HTTP request creation logic
-class Request:
+class Request(Generic[T]):
     def __init__(
         self,
         path: str,
@@ -22,7 +24,7 @@ class Request:
         self.params = params
         self.verb = verb
 
-    def perform(self) -> Any:
+    def perform(self) -> Union[T, None]:
         """Is the main function that makes the HTTP request
         to the Resend API. It uses the path, params, and verb attributes
         to make the request.
@@ -47,7 +49,7 @@ class Request:
                 message=error.get("message"),
                 error_type=error.get("name"),
             )
-        return resp.json()
+        return cast(T, resp.json())
 
     def __get_headers(self) -> Dict[Any, Any]:
         """get_headers returns the HTTP headers that will be
