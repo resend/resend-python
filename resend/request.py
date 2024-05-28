@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Type, Union, cast
+from typing import Any, Dict, List, Union, cast
 
 import requests
 from typing_extensions import Generic, Literal, TypeVar
