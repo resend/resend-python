@@ -1,7 +1,7 @@
-from typing import Any, Dict, List, Union, cast
+from typing import Any, Dict, Generic, List, Union, cast
 
 import requests
-from typing_extensions import Generic, Literal, TypeVar
+from typing_extensions import Literal, TypeVar
 
 import resend
 from resend.exceptions import raise_for_code_and_type
