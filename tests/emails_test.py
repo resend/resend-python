@@ -1,30 +1,17 @@
-import unittest
-from typing import Any, Dict
-from unittest.mock import MagicMock, patch
-
 import resend
+from tests.conftest import ResendBaseTest
 
 # flake8: noqa
 
 
-class TestResendEmail(unittest.TestCase):
+class TestResendEmail(ResendBaseTest):
 
     def test_email_send_with_from(self) -> None:
-        resend.api_key = "re_123"
-
-        patcher = patch("resend.Request.make_request")
-        mock = patcher.start()
-        mock.status_code = 200
-        m = MagicMock()
-        m.status_code = 200
-
-        def mock_json() -> Dict[Any, Any]:
-            return {
+        self.set_mock_json(
+            {
                 "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
             }
-
-        m.json = mock_json
-        mock.return_value = m
+        )
 
         params: resend.Emails.SendParams = {
             "to": "to@email.com",
@@ -34,19 +21,10 @@ class TestResendEmail(unittest.TestCase):
         }
         email: resend.Email = resend.Emails.send(params)
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
-        patcher.stop()
 
     def test_email_get(self) -> None:
-        resend.api_key = "re_123"
-
-        patcher = patch("resend.Request.make_request")
-        mock = patcher.start()
-        mock.status_code = 200
-        m = MagicMock()
-        m.status_code = 200
-
-        def mock_json() -> Dict[Any, Any]:
-            return {
+        self.set_mock_json(
+            {
                 "object": "email",
                 "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
                 "to": ["james@bond.com"],
@@ -60,12 +38,9 @@ class TestResendEmail(unittest.TestCase):
                 "reply_to": [None],
                 "last_event": "delivered",
             }
-
-        m.json = mock_json
-        mock.return_value = m
+        )
 
         email: resend.Email = resend.Emails.get(
             email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
         )
         assert email["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
-        patcher.stop()
