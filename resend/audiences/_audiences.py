@@ -3,6 +3,7 @@ from typing import Any, Dict, List, cast
 from typing_extensions import TypedDict
 
 from resend import request
+from resend.exceptions import NoContentError
 
 from ._audience import Audience
 
@@ -43,10 +44,12 @@ class Audiences:
             Audience: The new audience object
         """
         path = "/audiences"
-        resp = request.Request(
+        resp = request.Request[Audience](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform()
-        return cast(Audience, resp)
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def list(cls) -> ListResponse:
@@ -58,8 +61,12 @@ class Audiences:
             ListResponse: A list of audience objects
         """
         path = "/audiences/"
-        resp = request.Request(path=path, params={}, verb="get").perform()
-        return cast(_ListResponse, resp)
+        resp = request.Request[_ListResponse](
+            path=path, params={}, verb="get"
+        ).perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def get(cls, id: str) -> Audience:
@@ -74,8 +81,10 @@ class Audiences:
             Audience: The audience object
         """
         path = f"/audiences/{id}"
-        resp = request.Request(path=path, params={}, verb="get").perform()
-        return cast(Audience, resp)
+        resp = request.Request[Audience](path=path, params={}, verb="get").perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def remove(cls, id: str) -> Audience:
@@ -90,5 +99,7 @@ class Audiences:
             Audience: The audience object
         """
         path = f"/audiences/{id}"
-        resp = request.Request(path=path, params={}, verb="delete").perform()
-        return cast(Audience, resp)
+        resp = request.Request[Audience](path=path, params={}, verb="delete").perform()
+        if resp is None:
+            raise NoContentError()
+        return resp

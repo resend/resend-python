@@ -4,6 +4,7 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend.api_keys._api_key import ApiKey
+from resend.exceptions import NoContentError
 
 
 class _ListResponse(TypedDict):
@@ -53,9 +54,12 @@ class ApiKeys:
             ApiKey: The new API key object
         """
         path = "/api-keys"
-        return request.Request[ApiKey](
+        resp = request.Request[ApiKey](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def list(cls) -> ListResponse:
@@ -67,9 +71,12 @@ class ApiKeys:
             ListResponse: A list of API key objects
         """
         path = "/api-keys"
-        return request.Request[cls.ListResponse](
+        resp = request.Request[_ListResponse](
             path=path, params={}, verb="get"
         ).perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def remove(cls, api_key_id: str) -> None:

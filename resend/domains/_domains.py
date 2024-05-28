@@ -4,6 +4,7 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend.domains._domain import Domain
+from resend.exceptions import NoContentError
 
 
 class _ListResponse(TypedDict):
@@ -61,10 +62,12 @@ class Domains:
             Domain: The new domain object
         """
         path = "/domains"
-        resp = request.Request(
+        resp = request.Request[Domain](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform()
-        return cast(Domain, resp)
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def update(cls, params: UpdateParams) -> Domain:
@@ -79,10 +82,12 @@ class Domains:
             Domain: The updated domain object
         """
         path = f"/domains/{params['id']}"
-        resp = request.Request(
+        resp = request.Request[Domain](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform()
-        return cast(Domain, resp)
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def get(cls, domain_id: str) -> Domain:
@@ -97,8 +102,10 @@ class Domains:
             Domain: The domain object
         """
         path = f"/domains/{domain_id}"
-        resp = request.Request(path=path, params={}, verb="get").perform()
-        return cast(Domain, resp)
+        resp = request.Request[Domain](path=path, params={}, verb="get").perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def list(cls) -> ListResponse:
@@ -110,8 +117,12 @@ class Domains:
             ListResponse: A list of domain objects
         """
         path = "/domains"
-        resp = request.Request(path=path, params={}, verb="get").perform()
-        return cast(_ListResponse, resp)
+        resp = request.Request[_ListResponse](
+            path=path, params={}, verb="get"
+        ).perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def remove(cls, domain_id: str) -> Domain:
@@ -126,8 +137,10 @@ class Domains:
             Domain: The removed domain object
         """
         path = f"/domains/{domain_id}"
-        resp = request.Request(path=path, params={}, verb="delete").perform()
-        return cast(Domain, resp)
+        resp = request.Request[Domain](path=path, params={}, verb="delete").perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def verify(cls, domain_id: str) -> Domain:
@@ -142,5 +155,7 @@ class Domains:
             Domain: The verified domain object
         """
         path = f"/domains/{domain_id}/verify"
-        resp = request.Request(path=path, params={}, verb="post").perform()
-        return cast(Domain, resp)
+        resp = request.Request[Domain](path=path, params={}, verb="post").perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
