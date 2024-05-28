@@ -225,7 +225,6 @@ class NoContentError(Exception):
     """Raised when the response body is empty."""
 
     def __init__(self) -> None:
-        self.message = (
-            "No content was returned from the API.\nPlease contact Resend support."
-        )
+        self.message = """No content was returned from the API.
+            Please contact Resend support."""
         Exception.__init__(self, self.message)
