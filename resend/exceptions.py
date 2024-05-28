@@ -1,7 +1,7 @@
 """Resend Exceptions module.
 
 This module defines the base types for platform-wide error
-codes as outlined in https://resend.com/docs/errors.
+codes as outlined in https://resend.com/docs/api-reference/errors.
 """
 
 from typing import Any, Dict, Union
@@ -38,7 +38,7 @@ class ResendError(Exception):
 
 
 class MissingApiKeyError(ResendError):
-    """see https://resend.com/docs/errors"""
+    """see https://resend.com/docs/api-reference/errors"""
 
     def __init__(
         self,
@@ -61,7 +61,7 @@ class MissingApiKeyError(ResendError):
 
 
 class InvalidApiKeyError(ResendError):
-    """see https://resend.com/docs/errors"""
+    """see https://resend.com/docs/api-reference/errors"""
 
     def __init__(
         self,
@@ -81,7 +81,7 @@ class InvalidApiKeyError(ResendError):
 
 
 class ValidationError(ResendError):
-    """see https://resend.com/docs/errors"""
+    """see https://resend.com/docs/api-reference/errors"""
 
     def __init__(
         self,
@@ -108,7 +108,7 @@ class ValidationError(ResendError):
 
 
 class MissingRequiredFieldsError(ResendError):
-    """see https://resend.com/docs/errors"""
+    """see https://resend.com/docs/api-reference/errors"""
 
     def __init__(
         self,
@@ -135,7 +135,7 @@ class MissingRequiredFieldsError(ResendError):
 
 
 class ApplicationError(ResendError):
-    """see https://resend.com/docs/errors"""
+    """see https://resend.com/docs/api-reference/errors"""
 
     def __init__(
         self,
