@@ -219,3 +219,13 @@ def raise_for_code_and_type(
     raise ResendError(
         code=code, message=message, error_type=error_type, suggested_action=""
     )
+
+
+class NoContentError(Exception):
+    """Raised when the response body is empty."""
+
+    def __init__(self) -> None:
+        self.message = (
+            "No content was returned from the API.\nPlease contact Resend support."
+        )
+        Exception.__init__(self, self.message)
