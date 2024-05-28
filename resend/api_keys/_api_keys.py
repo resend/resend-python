@@ -53,12 +53,9 @@ class ApiKeys:
             ApiKey: The new API key object
         """
         path = "/api-keys"
-        return cast(
-            ApiKey,
-            request.Request(
-                path=path, params=cast(Dict[Any, Any], params), verb="post"
-            ).perform(),
-        )
+        return request.Request[ApiKey](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform()
 
     @classmethod
     def list(cls) -> ListResponse:
@@ -70,8 +67,9 @@ class ApiKeys:
             ListResponse: A list of API key objects
         """
         path = "/api-keys"
-        resp = request.Request(path=path, params={}, verb="get").perform()
-        return cast(_ListResponse, resp)
+        return request.Request[cls.ListResponse](
+            path=path, params={}, verb="get"
+        ).perform()
 
     @classmethod
     def remove(cls, api_key_id: str) -> None:
@@ -88,5 +86,5 @@ class ApiKeys:
         path = f"/api-keys/{api_key_id}"
 
         # This would raise if failed
-        request.Request(path=path, params={}, verb="delete").perform()
+        _ = request.Request[None](path=path, params={}, verb="delete").perform()
         return None
