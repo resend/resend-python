@@ -6,6 +6,7 @@ from resend import request
 from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
+from resend.exceptions import NoContentError
 
 # SendParamsFrom is declared with functional TypedDict syntax here because
 # "from" is a reserved keyword in Python, and this is the best way to
@@ -92,13 +93,14 @@ class Emails:
             Email: The email object that was sent
         """
         path = "/emails"
-
-        return cast(
-            Email,
-            request.Request(
-                path=path, params=cast(Dict[Any, Any], params), verb="post"
-            ).perform(),
-        )
+        resp = request.Request[Email](
+            path=path,
+            params=cast(Dict[Any, Any], params),
+            verb="post",
+        ).perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     @classmethod
     def get(cls, email_id: str) -> Email:
@@ -113,4 +115,11 @@ class Emails:
             Email: The email object that was retrieved
         """
         path = f"/emails/{email_id}"
-        return cast(Email, request.Request(path=path, params={}, verb="get").perform())
+        resp = request.Request[Email](
+            path=path,
+            params={},
+            verb="get",
+        ).perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
