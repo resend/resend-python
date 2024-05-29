@@ -39,9 +39,7 @@ class Batch:
         """
         path = "/emails/batch"
 
-        return cast(
-            _SendResponse,
-            request.Request(
-                path=path, params=cast(List[Dict[Any, Any]], params), verb="post"
-            ).perform(),
-        )
+        resp = request.Request[_SendResponse](
+            path=path, params=cast(List[Dict[Any, Any]], params), verb="post"
+        ).perform_with_content()
+        return resp

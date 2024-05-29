@@ -88,9 +88,7 @@ class Contacts:
         path = f"/audiences/{params['audience_id']}/contacts"
         resp = request.Request[Contact](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
-        ).perform()
-        if resp is None:
-            raise NoContentError()
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -108,9 +106,7 @@ class Contacts:
         path = f"/audiences/{params['audience_id']}/contacts/{params['id']}"
         resp = request.Request[Contact](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
-        ).perform()
-        if resp is None:
-            raise NoContentError()
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -128,9 +124,7 @@ class Contacts:
         path = f"/audiences/{audience_id}/contacts"
         resp = request.Request[_ListResponse](
             path=path, params={}, verb="get"
-        ).perform()
-        if resp is None:
-            raise NoContentError()
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -147,9 +141,9 @@ class Contacts:
             Contact: The contact object
         """
         path = f"/audiences/{audience_id}/contacts/{id}"
-        resp = request.Request[Contact](path=path, params={}, verb="get").perform()
-        if resp is None:
-            raise NoContentError()
+        resp = request.Request[Contact](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -171,7 +165,7 @@ class Contacts:
             raise ValueError("id or email must be provided")
         path = f"/audiences/{audience_id}/contacts/{contact}"
 
-        resp = request.Request[Contact](path=path, params={}, verb="delete").perform()
-        if resp is None:
-            raise NoContentError()
+        resp = request.Request[Contact](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
         return resp

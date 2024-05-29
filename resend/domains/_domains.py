@@ -64,9 +64,7 @@ class Domains:
         path = "/domains"
         resp = request.Request[Domain](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
-        ).perform()
-        if resp is None:
-            raise NoContentError()
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -84,9 +82,7 @@ class Domains:
         path = f"/domains/{params['id']}"
         resp = request.Request[Domain](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
-        ).perform()
-        if resp is None:
-            raise NoContentError()
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -102,9 +98,9 @@ class Domains:
             Domain: The domain object
         """
         path = f"/domains/{domain_id}"
-        resp = request.Request[Domain](path=path, params={}, verb="get").perform()
-        if resp is None:
-            raise NoContentError()
+        resp = request.Request[Domain](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -119,9 +115,7 @@ class Domains:
         path = "/domains"
         resp = request.Request[_ListResponse](
             path=path, params={}, verb="get"
-        ).perform()
-        if resp is None:
-            raise NoContentError()
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -137,9 +131,9 @@ class Domains:
             Domain: The removed domain object
         """
         path = f"/domains/{domain_id}"
-        resp = request.Request[Domain](path=path, params={}, verb="delete").perform()
-        if resp is None:
-            raise NoContentError()
+        resp = request.Request[Domain](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -155,7 +149,7 @@ class Domains:
             Domain: The verified domain object
         """
         path = f"/domains/{domain_id}/verify"
-        resp = request.Request[Domain](path=path, params={}, verb="post").perform()
-        if resp is None:
-            raise NoContentError()
+        resp = request.Request[Domain](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
         return resp

@@ -46,9 +46,7 @@ class Audiences:
         path = "/audiences"
         resp = request.Request[Audience](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
-        ).perform()
-        if resp is None:
-            raise NoContentError()
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -63,9 +61,7 @@ class Audiences:
         path = "/audiences/"
         resp = request.Request[_ListResponse](
             path=path, params={}, verb="get"
-        ).perform()
-        if resp is None:
-            raise NoContentError()
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -81,9 +77,9 @@ class Audiences:
             Audience: The audience object
         """
         path = f"/audiences/{id}"
-        resp = request.Request[Audience](path=path, params={}, verb="get").perform()
-        if resp is None:
-            raise NoContentError()
+        resp = request.Request[Audience](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -99,7 +95,7 @@ class Audiences:
             Audience: The audience object
         """
         path = f"/audiences/{id}"
-        resp = request.Request[Audience](path=path, params={}, verb="delete").perform()
-        if resp is None:
-            raise NoContentError()
+        resp = request.Request[Audience](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
         return resp

@@ -56,9 +56,7 @@ class ApiKeys:
         path = "/api-keys"
         resp = request.Request[ApiKey](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
-        ).perform()
-        if resp is None:
-            raise NoContentError()
+        ).perform_with_content()
         return resp
 
     @classmethod
@@ -73,9 +71,7 @@ class ApiKeys:
         path = "/api-keys"
         resp = request.Request[_ListResponse](
             path=path, params={}, verb="get"
-        ).perform()
-        if resp is None:
-            raise NoContentError()
+        ).perform_with_content()
         return resp
 
     @classmethod
