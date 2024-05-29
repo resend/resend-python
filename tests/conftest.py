@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
@@ -21,7 +21,7 @@ class ResendBaseTest(TestCase):
     def tearDown(self) -> None:
         self.patcher.stop()
 
-    def set_mock_json(self, mock_json: Dict[Any, Any]) -> None:
+    def set_mock_json(self, mock_json: Any) -> None:
         """Auxiliary function to set the mock json return value"""
         self.m.json = lambda: mock_json
 

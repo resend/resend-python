@@ -1,4 +1,5 @@
 import resend
+from resend.exceptions import NoContentError
 from tests.conftest import ResendBaseTest
 
 # flake8: noqa
@@ -69,6 +70,14 @@ class TestResendDomains(ResendBaseTest):
         assert domain["created_at"] == "2023-03-28T17:12:02.059593+00:00"
         assert domain["region"] == "us-east-1"
 
+    def test_should_create_domains_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        create_params: resend.Domains.CreateParams = {
+            "name": "example.com",
+        }
+        with self.assertRaises(NoContentError):
+            _ = resend.Domains.create(params=create_params)
+
     def test_domains_get(self) -> None:
         self.set_mock_json(
             {
@@ -89,6 +98,13 @@ class TestResendDomains(ResendBaseTest):
         assert domain["status"] == "not_started"
         assert domain["created_at"] == "2023-04-26T20:21:26.347412+00:00"
         assert domain["region"] == "us-east-1"
+
+    def test_should_get_domains_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Domains.get(
+                domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
+            )
 
     def test_domains_list(self) -> None:
         self.set_mock_json(
@@ -112,6 +128,11 @@ class TestResendDomains(ResendBaseTest):
         assert domains["data"][0]["created_at"] == "2023-04-26T20:21:26.347412+00:00"
         assert domains["data"][0]["region"] == "us-east-1"
 
+    def test_should_list_domains_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Domains.list()
+
     def test_domains_remove(self) -> None:
         self.set_mock_json(
             {
@@ -127,6 +148,13 @@ class TestResendDomains(ResendBaseTest):
         assert domain["deleted"] is True
         assert domain["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
 
+    def test_should_remove_domains_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Domains.remove(
+                domain_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            )
+
     def test_domains_verify(self) -> None:
         self.set_mock_json(
             {"object": "domain", "id": "d91cd9bd-1176-453e-8fc1-35364d380206"}
@@ -136,6 +164,13 @@ class TestResendDomains(ResendBaseTest):
             domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
         )
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
+
+    def test_should_verify_domains_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Domains.verify(
+                domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
+            )
 
     def test_domains_update(self) -> None:
         self.set_mock_json(
@@ -152,3 +187,13 @@ class TestResendDomains(ResendBaseTest):
         }
         domain = resend.Domains.update(params)
         assert domain["id"] == "479e3145-dd38-476b-932c-529ceb705947"
+
+    def test_should_update_domains_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        params: resend.Domains.UpdateParams = {
+            "id": "479e3145-dd38-476b-932c-529ceb705947",
+            "open_tracking": True,
+            "click_tracking": True,
+        }
+        with self.assertRaises(NoContentError):
+            _ = resend.Domains.update(params)
