@@ -6,7 +6,6 @@ from resend import request
 from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
-from resend.exceptions import NoContentError
 
 # SendParamsFrom is declared with functional TypedDict syntax here because
 # "from" is a reserved keyword in Python, and this is the best way to
