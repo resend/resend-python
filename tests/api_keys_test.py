@@ -1,49 +1,27 @@
-import unittest
-from typing import Any, Dict, List
-from unittest.mock import MagicMock, patch
-
 import resend
+from tests.conftest import ResendBaseTest
 
 # flake8: noqa
 
 
-class TestResendApiKeys(unittest.TestCase):
+class TestResendApiKeys(ResendBaseTest):
     def test_api_keys_create(self) -> None:
-        resend.api_key = "re_123"
-
-        patcher = patch("resend.Request.make_request")
-        mock = patcher.start()
-        mock.status_code = 200
-        m = MagicMock()
-        m.status_code = 200
-
-        def mock_json() -> Dict[Any, Any]:
-            return {
+        self.set_mock_json(
+            {
                 "id": "dacf4072-4119-4d88-932f-6202748ac7c8",
                 "token": "re_c1tpEyD8_NKFusih9vKVQknRAQfmFcWCv",
             }
-
-        m.json = mock_json
-        mock.return_value = m
+        )
 
         params: resend.ApiKeys.CreateParams = {
             "name": "prod",
         }
         key: resend.ApiKey = resend.ApiKeys.create(params)
         assert key["id"] == "dacf4072-4119-4d88-932f-6202748ac7c8"
-        patcher.stop()
 
     def test_api_keys_list(self) -> None:
-        resend.api_key = "re_123"
-
-        patcher = patch("resend.Request.make_request")
-        mock = patcher.start()
-        mock.status_code = 200
-        m = MagicMock()
-        m.status_code = 200
-
-        def mock_json() -> Dict[Any, Any]:
-            return {
+        self.set_mock_json(
+            {
                 "data": [
                     {
                         "id": "91f3200a-df72-4654-b0cd-f202395f5354",
@@ -52,28 +30,16 @@ class TestResendApiKeys(unittest.TestCase):
                     }
                 ]
             }
-
-        m.json = mock_json
-        mock.return_value = m
+        )
 
         keys: resend.ApiKeys.ListResponse = resend.ApiKeys.list()
         for key in keys["data"]:
             assert key["id"] == "91f3200a-df72-4654-b0cd-f202395f5354"
             assert key["name"] == "Production"
             assert key["created_at"] == "2023-04-08T00:11:13.110779+00:00"
-        patcher.stop()
 
     def test_api_keys_remove(self) -> None:
-        resend.api_key = "re_123"
-
-        patcher = patch("resend.Request.make_request")
-        mock = patcher.start()
-        mock.status_code = 200
-        m = MagicMock()
-        m.status_code = 200
-
-        m.text = ""
-        mock.return_value = m
+        self.set_mock_text("")
 
         assert (
             resend.ApiKeys.remove(
@@ -81,4 +47,3 @@ class TestResendApiKeys(unittest.TestCase):
             )
             is None
         )
-        patcher.stop()
