@@ -4,7 +4,7 @@ import requests
 from typing_extensions import Literal, TypeVar
 
 import resend
-from resend.exceptions import raise_for_code_and_type
+from resend.exceptions import NoContentError, raise_for_code_and_type
 from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
@@ -30,7 +30,7 @@ class Request(Generic[T]):
         to make the request.
 
         Returns:
-            Dict: The JSON response from the API
+            Union[T, None]: A generic type of the Request class or None
 
         Raises:
             requests.HTTPError: If the request fails
@@ -50,6 +50,25 @@ class Request(Generic[T]):
                 error_type=error.get("name"),
             )
         return cast(T, resp.json())
+
+    def perform_with_content(self) -> T:
+        """
+        Perform an HTTP request and return the response content.
+
+        This method sends an HTTP request to the specified path with the given parameters
+        and HTTP verb. It uses the generic type `T` to specify the expected type of the
+        response content. If the response content is `None`, it raises a `NoContentError`.
+
+        Returns:
+            T: The content of the response, cast to the specified type `T`.
+
+        Raises:
+            NoContentError: If the response content is `None`.
+        """
+        resp = self.perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     def __get_headers(self) -> Dict[Any, Any]:
         """get_headers returns the HTTP headers that will be
