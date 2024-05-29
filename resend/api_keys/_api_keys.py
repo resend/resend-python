@@ -88,5 +88,5 @@ class ApiKeys:
         path = f"/api-keys/{api_key_id}"
 
         # This would raise if failed
-        _ = request.Request[None](path=path, params={}, verb="delete").perform()
+        request.Request[None](path=path, params={}, verb="delete").perform()
         return None

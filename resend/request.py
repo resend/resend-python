@@ -55,12 +55,8 @@ class Request(Generic[T]):
         """
         Perform an HTTP request and return the response content.
 
-        This method sends an HTTP request to the specified path with the given parameters
-        and HTTP verb. It uses the generic type `T` to specify the expected type of the
-        response content. If the response content is `None`, it raises a `NoContentError`.
-
         Returns:
-            T: The content of the response, cast to the specified type `T`.
+            T: The content of the response
 
         Raises:
             NoContentError: If the response content is `None`.
