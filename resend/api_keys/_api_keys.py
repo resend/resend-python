@@ -4,7 +4,6 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend.api_keys._api_key import ApiKey
-from resend.exceptions import NoContentError
 
 
 class _ListResponse(TypedDict):

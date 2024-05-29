@@ -3,7 +3,6 @@ from typing import Any, Dict, List, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
-from resend.exceptions import NoContentError
 
 from ._contact import Contact
 

@@ -4,7 +4,6 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend.domains._domain import Domain
-from resend.exceptions import NoContentError
 
 
 class _ListResponse(TypedDict):
