@@ -43,10 +43,10 @@ class Audiences:
             Audience: The new audience object
         """
         path = "/audiences"
-        resp = request.Request(
+        resp = request.Request[Audience](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
-        ).perform()
-        return cast(Audience, resp)
+        ).perform_with_content()
+        return resp
 
     @classmethod
     def list(cls) -> ListResponse:
@@ -58,8 +58,10 @@ class Audiences:
             ListResponse: A list of audience objects
         """
         path = "/audiences/"
-        resp = request.Request(path=path, params={}, verb="get").perform()
-        return cast(_ListResponse, resp)
+        resp = request.Request[_ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
 
     @classmethod
     def get(cls, id: str) -> Audience:
@@ -74,8 +76,10 @@ class Audiences:
             Audience: The audience object
         """
         path = f"/audiences/{id}"
-        resp = request.Request(path=path, params={}, verb="get").perform()
-        return cast(Audience, resp)
+        resp = request.Request[Audience](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
 
     @classmethod
     def remove(cls, id: str) -> Audience:
@@ -90,5 +94,7 @@ class Audiences:
             Audience: The audience object
         """
         path = f"/audiences/{id}"
-        resp = request.Request(path=path, params={}, verb="delete").perform()
-        return cast(Audience, resp)
+        resp = request.Request[Audience](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp

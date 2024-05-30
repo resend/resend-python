@@ -1,17 +1,19 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, Generic, List, Union, cast
 
 import requests
-from typing_extensions import Literal
+from typing_extensions import Literal, TypeVar
 
 import resend
-from resend.exceptions import raise_for_code_and_type
+from resend.exceptions import NoContentError, raise_for_code_and_type
 from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
 
+T = TypeVar("T")
+
 
 # This class wraps the HTTP request creation logic
-class Request:
+class Request(Generic[T]):
     def __init__(
         self,
         path: str,
@@ -22,13 +24,13 @@ class Request:
         self.params = params
         self.verb = verb
 
-    def perform(self) -> Any:
+    def perform(self) -> Union[T, None]:
         """Is the main function that makes the HTTP request
         to the Resend API. It uses the path, params, and verb attributes
         to make the request.
 
         Returns:
-            Dict: The JSON response from the API
+            Union[T, None]: A generic type of the Request class or None
 
         Raises:
             requests.HTTPError: If the request fails
@@ -47,7 +49,22 @@ class Request:
                 message=error.get("message"),
                 error_type=error.get("name"),
             )
-        return resp.json()
+        return cast(T, resp.json())
+
+    def perform_with_content(self) -> T:
+        """
+        Perform an HTTP request and return the response content.
+
+        Returns:
+            T: The content of the response
+
+        Raises:
+            NoContentError: If the response content is `None`.
+        """
+        resp = self.perform()
+        if resp is None:
+            raise NoContentError()
+        return resp
 
     def __get_headers(self) -> Dict[Any, Any]:
         """get_headers returns the HTTP headers that will be

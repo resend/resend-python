@@ -85,10 +85,10 @@ class Contacts:
             Contact: The new contact object
         """
         path = f"/audiences/{params['audience_id']}/contacts"
-        resp = request.Request(
+        resp = request.Request[Contact](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
-        ).perform()
-        return cast(Contact, resp)
+        ).perform_with_content()
+        return resp
 
     @classmethod
     def update(cls, params: UpdateParams) -> Contact:
@@ -103,10 +103,10 @@ class Contacts:
             Contact: The updated contact object
         """
         path = f"/audiences/{params['audience_id']}/contacts/{params['id']}"
-        resp = request.Request(
+        resp = request.Request[Contact](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
-        ).perform()
-        return cast(Contact, resp)
+        ).perform_with_content()
+        return resp
 
     @classmethod
     def list(cls, audience_id: str) -> ListResponse:
@@ -121,8 +121,10 @@ class Contacts:
             ListResponse: A list of contact objects
         """
         path = f"/audiences/{audience_id}/contacts"
-        resp = request.Request(path=path, params={}, verb="get").perform()
-        return cast(_ListResponse, resp)
+        resp = request.Request[_ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
 
     @classmethod
     def get(cls, id: str, audience_id: str) -> Contact:
@@ -138,8 +140,10 @@ class Contacts:
             Contact: The contact object
         """
         path = f"/audiences/{audience_id}/contacts/{id}"
-        resp = request.Request(path=path, params={}, verb="get").perform()
-        return cast(Contact, resp)
+        resp = request.Request[Contact](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
 
     @classmethod
     def remove(cls, audience_id: str, id: str = "", email: str = "") -> Contact:
@@ -160,5 +164,7 @@ class Contacts:
             raise ValueError("id or email must be provided")
         path = f"/audiences/{audience_id}/contacts/{contact}"
 
-        resp = request.Request(path=path, params={}, verb="delete").perform()
-        return cast(Contact, resp)
+        resp = request.Request[Contact](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
