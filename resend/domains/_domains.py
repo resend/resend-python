@@ -19,10 +19,6 @@ class _CreateResponse(ShortDomain):
     """
     The list of domain records
     """
-    dnsProvider: str
-    """
-    The domain DNS provider
-    """
 
 
 class _VerifyResponse(TypedDict):
@@ -58,7 +54,8 @@ class Domains:
             name (str): The domain name
             created_at (str): When domain was created
             status (str): Status of the domain: not_started, etc..
-            region (str): The region where emails will be sent from. Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
+            region (str): The region where emails will be sent from. 
+                Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
             records (List[Record]): The list of domain records
             dnsProvider (str): The domain DNS provider
         """

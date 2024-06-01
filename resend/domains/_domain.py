@@ -24,9 +24,10 @@ class ShortDomain(TypedDict):
     """
     Status of the domain: not_started, etc..
     """
-    region: str
+    region: Literal['us-east-1', 'eu-west-1', 'sa-east-1', 'ap-northeast-1']
     """
-    The region where emails will be sent from. Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
+    The region where emails will be sent from. 
+    Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
     """
 
 
