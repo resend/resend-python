@@ -1,27 +1,85 @@
 from typing import Any, Dict, List, cast
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 
-from ._contact import Contact
+from ._contact import Contact, ContactObject, ShortContact
 
 
 class _ListResponse(TypedDict):
-    data: List[Contact]
+    object: Literal["list"]
+    """
+    The object type
+    """
+    data: List[ShortContact]
     """
     A list of contact objects
     """
 
 
+class _CreateUpdateRemoveResponse(TypedDict):
+    object: ContactObject
+    """
+    The object type
+    """
+    id: str
+    """
+    The contact id
+    """
+
+
+class _CreateResponse(_CreateUpdateRemoveResponse):
+    pass
+
+
+class _UpdateResponse(_CreateUpdateRemoveResponse):
+    pass
+
+
+class _RemoveResponse(_CreateUpdateRemoveResponse):
+    deleted: bool
+    """
+    The deleted status of the contact
+    """
+
+
 class Contacts:
+
+    class CreateResponse(_CreateResponse):
+        """
+        Class that wraps the response of the create contact endpoint
+
+        Attributes:
+            object (Literal["contact"]): The object type
+            id (str): The contact ID
+        """
+
+    class UpdateResponse(_UpdateResponse):
+        """
+        Class that wraps the response of the update contact endpoint
+
+        Attributes:
+            object (Literal["contact"]): The object type
+            id (str): The contact ID
+        """
 
     class ListResponse(_ListResponse):
         """
         ListResponse type that wraps a list of contact objects
 
         Attributes:
-            data (List[Contact]): A list of contact objects
+            data (List[ShortContact]): A list of contact objects
+        """
+
+    class RemoveResponse(_RemoveResponse):
+        """
+        Class that wraps the response of the remove contact endpoint
+
+        Attributes:
+            object (Literal["contact"]): The object type
+            id (str): The contact ID
+            deleted (bool): The deleted status of the contact
         """
 
     class CreateParams(TypedDict):
@@ -73,7 +131,7 @@ class Contacts:
         """
 
     @classmethod
-    def create(cls, params: CreateParams) -> Contact:
+    def create(cls, params: CreateParams) -> CreateResponse:
         """
         Create a new contact.
         see more: https://resend.com/docs/api-reference/contacts/create-contact
@@ -85,13 +143,13 @@ class Contacts:
             Contact: The new contact object
         """
         path = f"/audiences/{params['audience_id']}/contacts"
-        resp = request.Request[Contact](
+        resp = request.Request[_CreateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
 
     @classmethod
-    def update(cls, params: UpdateParams) -> Contact:
+    def update(cls, params: UpdateParams) -> UpdateResponse:
         """
         Update an existing contact.
         see more: https://resend.com/docs/api-reference/contacts/update-contact
@@ -103,7 +161,7 @@ class Contacts:
             Contact: The updated contact object
         """
         path = f"/audiences/{params['audience_id']}/contacts/{params['id']}"
-        resp = request.Request[Contact](
+        resp = request.Request[_UpdateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
@@ -146,7 +204,7 @@ class Contacts:
         return resp
 
     @classmethod
-    def remove(cls, audience_id: str, id: str = "", email: str = "") -> Contact:
+    def remove(cls, audience_id: str, id: str = "", email: str = "") -> RemoveResponse:
         """
         Remove a contact by ID or by Email
         see more: https://resend.com/docs/api-reference/contacts/delete-contact
@@ -164,7 +222,7 @@ class Contacts:
             raise ValueError("id or email must be provided")
         path = f"/audiences/{audience_id}/contacts/{contact}"
 
-        resp = request.Request[Contact](
+        resp = request.Request[_RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp

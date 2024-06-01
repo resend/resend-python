@@ -11,7 +11,7 @@ create_params: resend.Domains.CreateParams = {
     "name": "example.com",
     "region": "us-east-1",
 }
-domain: resend.Domain = resend.Domains.create(params=create_params)
+domain: resend.Domains.CreateResponse = resend.Domains.create(params=create_params)
 print(domain)
 
 retrieved: resend.Domain = resend.Domains.get(domain_id=domain["id"])
@@ -27,18 +27,20 @@ update_params: resend.Domains.UpdateParams = {
     "click_tracking": True,
 }
 
-updated_domain: resend.Domain = resend.Domains.update(update_params)
+updated_domain: resend.Domains.UpdateResponse = resend.Domains.update(update_params)
 print(f"Updated domain: {updated_domain['id']}")
 
 domains: resend.Domains.ListResponse = resend.Domains.list()
 if not domains:
     print("No domains found")
-for domain in domains["data"]:
-    print(domain)
+for d in domains["data"]:
+    print(d)
 
-verified_domain: resend.Domain = resend.Domains.verify(domain_id=domain["id"])
+verified_domain: resend.Domains.VerifyResponse = resend.Domains.verify(
+    domain_id=domain["id"]
+)
 print(f"Verified")
 print(verified_domain)
 
-rm_domain: resend.Domain = resend.Domains.remove(domain_id=domain["id"])
+rm_domain: resend.Domains.RemoveResponse = resend.Domains.remove(domain_id=domain["id"])
 print(rm_domain)

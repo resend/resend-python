@@ -69,6 +69,8 @@ class TestResendDomains(ResendBaseTest):
         assert domain["status"] == "not_started"
         assert domain["created_at"] == "2023-03-28T17:12:02.059593+00:00"
         assert domain["region"] == "us-east-1"
+        if domain["records"]:
+            assert domain["records"][0]["record"] == "SPF"
 
     def test_should_create_domains_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
@@ -93,6 +95,7 @@ class TestResendDomains(ResendBaseTest):
         domain = resend.Domains.get(
             domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
         )
+        assert domain["object"] == "domain"
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
         assert domain["name"] == "example.com"
         assert domain["status"] == "not_started"
@@ -163,6 +166,7 @@ class TestResendDomains(ResendBaseTest):
         domain = resend.Domains.verify(
             domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
         )
+        assert domain["object"] == "domain"
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
 
     def test_should_verify_domains_raise_exception_when_no_content(self) -> None:

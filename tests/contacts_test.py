@@ -18,7 +18,7 @@ class TestResendContacts(ResendBaseTest):
             "last_name": "Wozniak",
             "unsubscribed": True,
         }
-        contact: resend.Contact = resend.Contacts.create(params)
+        contact: resend.Contacts.CreateResponse = resend.Contacts.create(params)
         assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
 
     def test_should_create_contacts_raise_exception_when_no_content(self) -> None:
@@ -78,6 +78,7 @@ class TestResendContacts(ResendBaseTest):
             id="e169aa45-1ecf-4183-9955-b1499d5701d3",
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
         )
+        assert contact["object"] == "contact"
         assert contact["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
         assert contact["email"] == "steve.wozniak@gmail.com"
         assert contact["first_name"] == "Steve"
@@ -102,10 +103,11 @@ class TestResendContacts(ResendBaseTest):
             }
         )
 
-        rmed = resend.Contacts.remove(
+        rmed: resend.Contacts.RemoveResponse = resend.Contacts.remove(
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
             id="78261eea-8f8b-4381-83c6-79fa7120f1cf",
         )
+        assert rmed["object"] == "contact"
         assert rmed["id"] == "520784e2-887d-4c25-b53c-4ad46ad38100"
         assert rmed["deleted"] is True
 
@@ -126,10 +128,11 @@ class TestResendContacts(ResendBaseTest):
             }
         )
 
-        rmed: resend.Contact = resend.Contacts.remove(
+        rmed: resend.Contacts.RemoveResponse = resend.Contacts.remove(
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
             email="someemail@email.com",
         )
+        assert rmed["object"] == "contact"
         assert rmed["id"] == "520784e2-887d-4c25-b53c-4ad46ad38100"
         assert rmed["deleted"] is True
 
@@ -173,6 +176,7 @@ class TestResendContacts(ResendBaseTest):
         contacts: resend.Contacts.ListResponse = resend.Contacts.list(
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8"
         )
+        assert contacts["object"] == "list"
         assert contacts["data"][0]["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
         assert contacts["data"][0]["email"] == "steve.wozniak@gmail.com"
         assert contacts["data"][0]["first_name"] == "Steve"

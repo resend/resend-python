@@ -13,7 +13,27 @@ class _ListResponse(TypedDict):
     """
 
 
+class _CreateResponse(TypedDict):
+    id: str
+    """
+    The api key ID
+    """
+    token: str
+    """
+    The api key token
+    """
+
+
 class ApiKeys:
+
+    class CreateResponse(_CreateResponse):
+        """
+        Class that wraps the response of the create API key endpoint
+
+        Attributes:
+            id (str): The API key ID
+            token (str): The API key token
+        """
 
     class ListResponse(_ListResponse):
         """
@@ -41,7 +61,7 @@ class ApiKeys:
         """
 
     @classmethod
-    def create(cls, params: CreateParams) -> ApiKey:
+    def create(cls, params: CreateParams) -> CreateResponse:
         """
         Add a new API key to authenticate communications with Resend.
         see more: https://resend.com/docs/api-reference/api-keys/create-api-key
@@ -53,7 +73,7 @@ class ApiKeys:
             ApiKey: The new API key object
         """
         path = "/api-keys"
-        resp = request.Request[ApiKey](
+        resp = request.Request[_CreateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp

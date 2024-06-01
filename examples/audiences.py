@@ -10,7 +10,7 @@ if not os.environ["RESEND_API_KEY"]:
 create_params: resend.Audiences.CreateParams = {
     "name": "New Audience from Python SDK",
 }
-audience: resend.Audience = resend.Audiences.create(create_params)
+audience: resend.Audiences.CreateResponse = resend.Audiences.create(create_params)
 print(f"Created audience: {audience['id']}")
 print(audience)
 
@@ -20,6 +20,6 @@ print("Retrieved audience: ", aud)
 audiences: resend.Audiences.ListResponse = resend.Audiences.list()
 print("List of audiences:", [a["id"] for a in audiences["data"]])
 
-rmed: resend.Audience = resend.Audiences.remove(id=audience["id"])
+rmed: resend.Audiences.RemoveResponse = resend.Audiences.remove(id=audience["id"])
 print(f"Deleted audience")
 print(rmed)

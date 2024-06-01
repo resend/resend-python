@@ -1,26 +1,102 @@
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Union, cast
 
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
-from resend.domains._domain import Domain
+from resend.domains._domain import Domain, DomainObject, ShortDomain
+from resend.domains._record import Record
 
 
 class _ListResponse(TypedDict):
-    data: List[Domain]
+    data: List[ShortDomain]
     """
     A list of domain objects
     """
 
 
+class _CreateResponse(ShortDomain):
+    records: Union[List[Record], None]
+    """
+    The list of domain records
+    """
+    dnsProvider: str
+    """
+    The domain DNS provider
+    """
+
+
+class _VerifyResponse(TypedDict):
+    object: DomainObject
+    """
+    The object type
+    """
+    id: str
+    """
+    The domain ID
+    """
+
+
+class _UpdateResponse(_VerifyResponse):
+    pass
+
+
+class _RemoveResponse(_VerifyResponse):
+    deleted: bool
+    """
+    The domain deletion status
+    """
+
+
 class Domains:
+
+    class CreateResponse(_CreateResponse):
+        """
+        CreateResponse type that wraps a domain object
+
+        Attributes:
+            id (str): The domain ID
+            name (str): The domain name
+            created_at (str): When domain was created
+            status (str): Status of the domain: not_started, etc..
+            region (str): The region where emails will be sent from. Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
+            records (List[Record]): The list of domain records
+            dnsProvider (str): The domain DNS provider
+        """
 
     class ListResponse(_ListResponse):
         """
         ListResponse type that wraps a list of domain objects
 
         Attributes:
-            data (List[Domain]): A list of domain objects
+            data (List[ShortDomain]): A list of domain objects
+        """
+
+    class RemoveResponse(_RemoveResponse):
+        """
+        RemoveResponse type that wraps a domain object
+
+        Attributes:
+            object (str): The object type
+            id (str): The domain ID
+            deleted (bool): The domain deletion status
+        """
+
+    class VerifyResponse(_VerifyResponse):
+        """
+        VerifyResponse type that wraps a domain object
+
+        Attributes:
+            object (str): The object type
+            id (str): The domain ID
+        """
+
+    class UpdateResponse(_UpdateResponse):
+        """
+        UpdateResponse type that wraps a domain object
+
+        Attributes:
+            object (str): The object type
+            id (str): The domain ID
         """
 
     class UpdateParams(TypedDict):
@@ -49,7 +125,7 @@ class Domains:
         """
 
     @classmethod
-    def create(cls, params: CreateParams) -> Domain:
+    def create(cls, params: CreateParams) -> CreateResponse:
         """
         Create a domain through the Resend Email API.
         see more: https://resend.com/docs/api-reference/domains/create-domain
@@ -61,13 +137,13 @@ class Domains:
             Domain: The new domain object
         """
         path = "/domains"
-        resp = request.Request[Domain](
+        resp = request.Request[_CreateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
 
     @classmethod
-    def update(cls, params: UpdateParams) -> Domain:
+    def update(cls, params: UpdateParams) -> UpdateResponse:
         """
         Update an existing domain.
         see more: https://resend.com/docs/api-reference/domains/update-domain
@@ -79,7 +155,7 @@ class Domains:
             Domain: The updated domain object
         """
         path = f"/domains/{params['id']}"
-        resp = request.Request[Domain](
+        resp = request.Request[_UpdateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
@@ -118,7 +194,7 @@ class Domains:
         return resp
 
     @classmethod
-    def remove(cls, domain_id: str) -> Domain:
+    def remove(cls, domain_id: str) -> RemoveResponse:
         """
         Remove an existing domain.
         see more: https://resend.com/docs/api-reference/domains/delete-domain
@@ -130,13 +206,13 @@ class Domains:
             Domain: The removed domain object
         """
         path = f"/domains/{domain_id}"
-        resp = request.Request[Domain](
+        resp = request.Request[_RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp
 
     @classmethod
-    def verify(cls, domain_id: str) -> Domain:
+    def verify(cls, domain_id: str) -> VerifyResponse:
         """
         Verify an existing domain.
         see more: https://resend.com/docs/api-reference/domains/verify-domain
@@ -148,7 +224,7 @@ class Domains:
             Domain: The verified domain object
         """
         path = f"/domains/{domain_id}/verify"
-        resp = request.Request[Domain](
+        resp = request.Request[_VerifyResponse](
             path=path, params={}, verb="post"
         ).perform_with_content()
         return resp

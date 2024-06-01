@@ -19,7 +19,7 @@ params: resend.Emails.SendParams = {
     ],
 }
 
-email: resend.Email = resend.Emails.send(params)
+email: resend.Emails.SendResponse = resend.Emails.send(params)
 print(f"Sent email")
 print("Email ID: ", email["id"])
 

@@ -1,7 +1,9 @@
-from typing_extensions import TypedDict
+from typing_extensions import Literal, TypedDict
+
+ContactObject = Literal["contact"]
 
 
-class Contact(TypedDict):
+class ShortContact(TypedDict):
     id: str
     """
     The contact id.
@@ -26,7 +28,10 @@ class Contact(TypedDict):
     """
     The unsubscribed status of the contact.
     """
-    deleted: bool
+
+
+class Contact(ShortContact):
+    object: ContactObject
     """
-    Wether the contact is deleted or not.
+    The object type
     """

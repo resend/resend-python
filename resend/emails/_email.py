@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from typing_extensions import TypedDict
+from typing_extensions import Literal, TypedDict
 
 # Uses functional typed dict syntax here in order to support "from" reserved keyword
 _FromParam = TypedDict(
@@ -12,6 +12,10 @@ _FromParam = TypedDict(
 
 
 class _EmailDefaultAttrs(_FromParam):
+    object: Literal["email"]
+    """
+    The object type
+    """
     id: str
     """
     The Email ID.
@@ -59,6 +63,7 @@ class Email(_EmailDefaultAttrs):
     Email type that wraps the email object
 
     Attributes:
+        object (Literal["email"]): The object type
         id (str): The Email ID.
         from (str): The email address the email was sent from.
         to (Union[List[str], str]): List of email addresses to send the email to.

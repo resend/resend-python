@@ -1,27 +1,82 @@
 from typing import Any, Dict, List, cast
 
-from typing_extensions import TypedDict
+from typing_extensions import Literal, TypedDict
 
 from resend import request
 
-from ._audience import Audience
+from ._audience import Audience, AudienceObject, ShortAudience
 
 
 class _ListResponse(TypedDict):
-    data: List[Audience]
+    object: Literal["list"]
+    """
+    The object type
+    """
+    data: List[ShortAudience]
     """
     A list of audience objects
     """
 
 
+class _CreateResponse(TypedDict):
+    object: AudienceObject
+    """
+    The object type
+    """
+    id: str
+    """
+    The unique identifier of the audience.
+    """
+    name: str
+    """
+    The name of the audience.
+    """
+
+
+class _RemoveResponse(TypedDict):
+    object: AudienceObject
+    """
+    The object type
+    """
+    id: str
+    """
+    The unique identifier of the audience.
+    """
+    deleted: bool
+    """
+    Whether the audience was deleted.
+    """
+
+
 class Audiences:
+
+    class CreateResponse(_CreateResponse):
+        """
+        Class that wraps the response of the create audience endpoint
+
+        Attributes:
+            object (str): The object type
+            id (str): The audience ID
+            name (str): The audience name
+        """
 
     class ListResponse(_ListResponse):
         """
         ListResponse type that wraps a list of audience objects
 
         Attributes:
-            data (List[Audience]): A list of audience objects
+            object (str): The object type
+            data (List[ShortAudience]): A list of audience objects
+        """
+
+    class RemoveResponse(_RemoveResponse):
+        """
+        Class that wraps the response of the remove audience endpoint
+
+        Attributes:
+            object (str): The object type
+            id (str): The audience ID
+            deleted (bool): Whether the audience was deleted
         """
 
     class CreateParams(TypedDict):
@@ -31,7 +86,7 @@ class Audiences:
         """
 
     @classmethod
-    def create(cls, params: CreateParams) -> Audience:
+    def create(cls, params: CreateParams) -> CreateResponse:
         """
         Create a list of contacts.
         see more: https://resend.com/docs/api-reference/audiences/create-audience
@@ -43,7 +98,7 @@ class Audiences:
             Audience: The new audience object
         """
         path = "/audiences"
-        resp = request.Request[Audience](
+        resp = request.Request[_CreateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
@@ -82,7 +137,7 @@ class Audiences:
         return resp
 
     @classmethod
-    def remove(cls, id: str) -> Audience:
+    def remove(cls, id: str) -> RemoveResponse:
         """
         Delete a single audience.
         see more: https://resend.com/docs/api-reference/audiences/delete-audience
@@ -94,7 +149,7 @@ class Audiences:
             Audience: The audience object
         """
         path = f"/audiences/{id}"
-        resp = request.Request[Audience](
+        resp = request.Request[_RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp

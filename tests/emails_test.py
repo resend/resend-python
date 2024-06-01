@@ -19,7 +19,7 @@ class TestResendEmail(ResendBaseTest):
             "subject": "subject",
             "html": "html",
         }
-        email: resend.Email = resend.Emails.send(params)
+        email: resend.Emails.SendResponse = resend.Emails.send(params)
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
 
     def test_should_send_email_raise_exception_when_no_content(self) -> None:
@@ -55,6 +55,7 @@ class TestResendEmail(ResendBaseTest):
             email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
         )
         assert email["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+        assert email["object"] == "email"
 
     def test_should_get_email_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
