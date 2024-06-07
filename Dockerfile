@@ -1,4 +1,4 @@
-FROM python:3.8.0
+FROM python:3.12.4
 
 RUN pip install --upgrade pip
 
