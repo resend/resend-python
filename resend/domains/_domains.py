@@ -1,6 +1,6 @@
-from typing import Any, Dict, List, Literal, cast
+from typing import Any, Dict, List, cast
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 from resend.domains._domain import Domain
