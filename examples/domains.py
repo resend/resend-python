@@ -14,9 +14,7 @@ create_params: resend.Domains.CreateParams = {
 domain: resend.Domain = resend.Domains.create(params=create_params)
 print(domain)
 
-retrieved: resend.Domain = resend.Domains.get(
-    domain_id=domain["id"]
-)
+retrieved: resend.Domain = resend.Domains.get(domain_id=domain["id"])
 if retrieved["records"] is not None:
     for record in retrieved["records"]:
         print(record)
