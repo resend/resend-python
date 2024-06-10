@@ -184,6 +184,7 @@ class TestResendDomains(ResendBaseTest):
             "id": "479e3145-dd38-476b-932c-529ceb705947",
             "open_tracking": True,
             "click_tracking": True,
+            "tls": "opportunistic",
         }
         domain = resend.Domains.update(params)
         assert domain["id"] == "479e3145-dd38-476b-932c-529ceb705947"

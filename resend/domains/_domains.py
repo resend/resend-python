@@ -1,9 +1,11 @@
 from typing import Any, Dict, List, cast
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 from resend.domains._domain import Domain
+
+TlsOptions = Literal["enforced", "opportunistic"]
 
 
 class _ListResponse(TypedDict):
@@ -35,6 +37,17 @@ class Domains:
         open_tracking: NotRequired[bool]
         """
         Track the open rate of each email.
+        """
+        tls: NotRequired[TlsOptions]
+        """
+        default: "opportunistic"
+        opportunistic: Opportunistic TLS means that it always attempts to make a
+        secure connection to the receiving mail server.
+        If it can't establish a secure connection, it sends the message unencrypted.
+
+        enforced: Enforced TLS on the other hand, requires that the email
+        communication must use TLS no matter what.
+        If the receiving server does not support TLS, the email will not be sent.
         """
 
     class CreateParams(TypedDict):
