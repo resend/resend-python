@@ -14,9 +14,9 @@ create_params: resend.Domains.CreateParams = {
 domain: resend.Domain = resend.Domains.create(params=create_params)
 print(domain)
 
-retrieved: resend.Domain = resend.Domains.get(domain_id=domain["id"])
-print(retrieved)
-
+retrieved: resend.Domain = resend.Domains.get(
+    domain_id=domain["id"]
+)
 if retrieved["records"] is not None:
     for record in retrieved["records"]:
         print(record)
@@ -25,6 +25,7 @@ update_params: resend.Domains.UpdateParams = {
     "id": domain["id"],
     "open_tracking": True,
     "click_tracking": True,
+    "tls": "enforced",
 }
 
 updated_domain: resend.Domain = resend.Domains.update(update_params)
