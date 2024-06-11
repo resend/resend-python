@@ -6,10 +6,6 @@ class ApiKey(TypedDict):
     """
     The api key ID
     """
-    token: str
-    """
-    The api key token
-    """
     name: str
     """
     The api key token

@@ -1,11 +1,13 @@
 from typing import List, Union
 
-from typing_extensions import TypedDict
+from typing_extensions import Literal, TypedDict
 
 from resend.domains._record import Record
 
+DomainObject = Literal["domain"]
 
-class Domain(TypedDict):
+
+class ShortDomain(TypedDict):
     id: str
     """
     The domain ID
@@ -22,15 +24,19 @@ class Domain(TypedDict):
     """
     Status of the domain: not_started, etc..
     """
-    region: str
+    region: Literal["us-east-1", "eu-west-1", "sa-east-1", "ap-northeast-1"]
     """
-    The region where emails will be sent from. Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
+    The region where emails will be sent from.
+    Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
+    """
+
+
+class Domain(ShortDomain):
+    object: DomainObject
+    """
+    The object type
     """
     records: Union[List[Record], None]
     """
     The list of domain records
-    """
-    deleted: bool
-    """
-    Wether the domain is deleted or not
     """

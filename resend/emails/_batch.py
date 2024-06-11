@@ -4,12 +4,11 @@ from typing_extensions import TypedDict
 
 from resend import request
 
-from ._email import Email
 from ._emails import Emails
 
 
 class _SendResponse(TypedDict):
-    data: List[Email]
+    data: List[Emails.SendResponse]
     """
     A list of email objects
     """
@@ -22,7 +21,7 @@ class Batch:
         SendResponse type that wraps a list of email objects
 
         Attributes:
-            data (List[Email]): A list of email objects
+            data (List[Emails.SendResponse]): A list of SendResponse objects
         """
 
     @classmethod

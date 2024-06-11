@@ -83,8 +83,10 @@ class TestResendAudiences(ResendBaseTest):
         )
 
         audiences: resend.Audiences.ListResponse = resend.Audiences.list()
+        assert audiences["object"] == "list"
         assert audiences["data"][0]["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert audiences["data"][0]["name"] == "Registered Users"
+        assert audiences["data"][0]["created_at"] == "2023-10-06T22:59:55.977Z"
 
     def test_should_list_audiences_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)

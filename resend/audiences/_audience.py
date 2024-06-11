@@ -1,7 +1,9 @@
-from typing_extensions import TypedDict
+from typing_extensions import Literal, TypedDict
+
+AudienceObject = Literal["audience"]
 
 
-class Audience(TypedDict):
+class ShortAudience(TypedDict):
     id: str
     """
     The unique identifier of the audience.
@@ -14,7 +16,10 @@ class Audience(TypedDict):
     """
     The date and time the audience was created.
     """
-    deleted: bool
+
+
+class Audience(ShortAudience):
+    object: AudienceObject
     """
-    Wether the audience was deleted. Only returned on the "remove" call
+    The object type
     """

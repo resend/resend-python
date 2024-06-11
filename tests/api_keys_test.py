@@ -17,7 +17,7 @@ class TestResendApiKeys(ResendBaseTest):
         params: resend.ApiKeys.CreateParams = {
             "name": "prod",
         }
-        key: resend.ApiKey = resend.ApiKeys.create(params)
+        key: resend.ApiKeys.CreateResponse = resend.ApiKeys.create(params)
         assert key["id"] == "dacf4072-4119-4d88-932f-6202748ac7c8"
 
     def test_should_create_api_key_raise_exception_when_no_content(self) -> None:

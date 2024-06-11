@@ -61,7 +61,22 @@ class _SendParamsDefault(_SendParamsFrom):
     """
 
 
+class _SendResponse(TypedDict):
+    id: str
+    """
+    The email ID
+    """
+
+
 class Emails:
+    class SendResponse(_SendResponse):
+        """
+        SendResponse type that wraps a email object
+
+        Attributes:
+            id (str): The email ID
+        """
+
     class SendParams(_SendParamsDefault):
         """SendParams is the class that wraps the parameters for the send method.
 
@@ -80,7 +95,7 @@ class Emails:
         """
 
     @classmethod
-    def send(cls, params: SendParams) -> Email:
+    def send(cls, params: SendParams) -> SendResponse:
         """
         Send an email through the Resend Email API.
         see more: https://resend.com/docs/api-reference/emails/send-email
@@ -92,7 +107,7 @@ class Emails:
             Email: The email object that was sent
         """
         path = "/emails"
-        resp = request.Request[Email](
+        resp = request.Request[_SendResponse](
             path=path,
             params=cast(Dict[Any, Any], params),
             verb="post",
