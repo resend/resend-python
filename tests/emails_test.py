@@ -1,5 +1,7 @@
+from unittest.mock import MagicMock
+
 import resend
-from resend.exceptions import NoContentError
+from resend.exceptions import NoContentError, ResendError
 from tests.conftest import ResendBaseTest
 
 # flake8: noqa
@@ -62,3 +64,20 @@ class TestResendEmail(ResendBaseTest):
             _ = resend.Emails.get(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
             )
+
+    def test_email_response_html(self) -> None:
+        self.set_magic_mock_obj(
+            MagicMock(
+                status_code=200,
+                headers={"content-type": "text/html; charset=utf-8"},
+                text="<strong>hello, world!</strong>",
+            )
+        )
+        params: resend.Emails.SendParams = {
+            "to": "to@email.com",
+            "from": "from@email.com",
+            "subject": "subject",
+            "html": "html",
+        }
+        with self.assertRaises(ResendError):
+            _ = resend.Emails.send(params)
