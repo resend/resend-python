@@ -19,3 +19,7 @@ class Attachment(TypedDict):
     """
     Path where the attachment file is hosted
     """
+    content_type: NotRequired[str]
+    """
+    Content type for the attachment, if not set will be derived from the filename property
+    """
