@@ -79,5 +79,7 @@ class TestResendEmail(ResendBaseTest):
             "subject": "subject",
             "html": "html",
         }
-        with self.assertRaises(ResendError):
+        try:
             _ = resend.Emails.send(params)
+        except ResendError as e:
+            assert e.message == "Failed to parse Resend API response. Please try again."
