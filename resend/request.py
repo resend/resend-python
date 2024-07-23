@@ -36,12 +36,22 @@ class Request(Generic[T]):
             requests.HTTPError: If the request fails
         """
         resp = self.make_request(url=f"{resend.api_url}{self.path}")
+
         # delete calls do not return a body
         if resp.text == "" and resp.status_code == 200:
             return None
 
+        # this is a safety net, if we get here it means the Resend API is having issues
+        # and most likely the gateway is returning htmls
+        if "application/json" not in resp.headers["content-type"]:
+            raise_for_code_and_type(
+                code=500,
+                message="Failed to parse Resend API response. Please try again.",
+                error_type="InternalServerError",
+            )
+
         # handle error in case there is a statusCode attr present
-        # and status != 200
+        # and status != 200 and response is a json.
         if resp.status_code != 200 and resp.json().get("statusCode"):
             error = resp.json()
             raise_for_code_and_type(
