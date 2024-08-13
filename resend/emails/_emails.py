@@ -33,6 +33,9 @@ class _UpdateEmailResponse(TypedDict):
 
 class _CancelScheduledEmailResponse(TypedDict):
     object: str
+    """
+    The object type: email
+    """
     id: str
     """
     The ID of the scheduled email that was cancelled.
