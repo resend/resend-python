@@ -7,6 +7,15 @@ from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
 
+
+class _CancelScheduledEmailResponse(TypedDict):
+    object: str
+    id: str
+    """
+    The ID of the scheduled email that was cancelled.
+    """
+
+
 # SendParamsFrom is declared with functional TypedDict syntax here because
 # "from" is a reserved keyword in Python, and this is the best way to
 # support type-checking for it.
@@ -59,9 +68,24 @@ class _SendParamsDefault(_SendParamsFrom):
     """
     List of tags to be added to the email.
     """
+    scheduled_at: NotRequired[str]
+    """
+    Schedule email to be sent later.
+    The date should be in ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
+    """
 
 
 class Emails:
+
+    class CancelScheduledEmailResponse(_CancelScheduledEmailResponse):
+        """
+        CancelScheduledEmailResponse type that wraps the ID of the scheduled email that was cancelled
+
+        Attributes:
+            object (str): The object type
+            id (str): The ID of the scheduled email that was cancelled
+        """
+
     class SendParams(_SendParamsDefault):
         """SendParams is the class that wraps the parameters for the send method.
 
@@ -116,5 +140,25 @@ class Emails:
             path=path,
             params={},
             verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    def cancel(cls, email_id: str) -> CancelScheduledEmailResponse:
+        """
+        Cancel a scheduled email.
+        see more: https://resend.com/docs/api-reference/emails/cancel-email
+
+        Args:
+            email_id (str): The ID of the scheduled email to cancel
+
+        Returns:
+            CancelScheduledEmailResponse: The response object that contains the ID of the scheduled email that was cancelled
+        """
+        path = f"/emails/{email_id}/cancel"
+        resp = request.Request[_CancelScheduledEmailResponse](
+            path=path,
+            params={},
+            verb="post",
         ).perform_with_content()
         return resp
