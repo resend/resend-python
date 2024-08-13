@@ -17,11 +17,21 @@ params: resend.Emails.SendParams = {
 # when scheduled_at is not in ISO 8601 format
 email: resend.Email = resend.Emails.send(params)
 
-print(f"Email scheduled")
-print("Email ID: ", email["id"])
+print(f"Email scheduled: {email['id']}")
+
+update_params: resend.Emails.UpdateParams = {
+    "id": email["id"],
+    "scheduled_at": "2024-09-07T11:52:01.858Z",
+}
+
+updated_email: resend.Emails.UpdateEmailResponse = resend.Emails.update(
+    params=update_params
+)
+
+print(f"Email updated: {updated_email['id']}")
 
 cancel_resp: resend.Emails.CancelScheduledEmailResponse = resend.Emails.cancel(
     email_id=email["id"]
 )
 
-print(f"Canceled email: {cancel_resp['id']}")
+print(f"Email cancelled: {cancel_resp['id']}")

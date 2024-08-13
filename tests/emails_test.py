@@ -84,6 +84,21 @@ class TestResendEmail(ResendBaseTest):
         except ResendError as e:
             assert e.message == "Failed to parse Resend API response. Please try again."
 
+    def test_update_email(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            }
+        )
+        update_params: resend.Emails.UpdateParams = {
+            "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            "scheduled_at": "2024-09-07T11:52:01.858Z",
+        }
+        updated_email: resend.Emails.UpdateEmailResponse = resend.Emails.update(
+            params=update_params
+        )
+        assert updated_email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
     def test_cancel_scheduled_email(self) -> None:
         self.set_mock_json(
             {

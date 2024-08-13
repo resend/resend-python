@@ -8,6 +8,29 @@ from resend.emails._email import Email
 from resend.emails._tag import Tag
 
 
+class _UpdateParams(TypedDict):
+    id: str
+    """
+    The ID of the email to update.
+    """
+    scheduled_at: NotRequired[str]
+    """
+    Schedule email to be sent later.
+    The date should be in ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
+    """
+
+
+class _UpdateEmailResponse(TypedDict):
+    object: str
+    """
+    The object type: email
+    """
+    id: str
+    """
+    The ID of the scheduled email that was cancelled.
+    """
+
+
 class _CancelScheduledEmailResponse(TypedDict):
     object: str
     id: str
@@ -86,6 +109,25 @@ class Emails:
             id (str): The ID of the scheduled email that was cancelled
         """
 
+    class UpdateEmailResponse(_UpdateEmailResponse):
+        """
+        UpdateEmailResponse is the type for the updated email response.
+
+        Attributes:
+            object (str): The object type
+            id (str): The ID of the updated email.
+        """
+
+    class UpdateParams(_UpdateParams):
+        """
+        UpdateParams is the class that wraps the parameters for the update method.
+
+        Attributes:
+            id (str): The ID of the email to update.
+            scheduled_at (NotRequired[str]): Schedule email to be sent later. \
+            The date should be in ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
+        """
+
     class SendParams(_SendParamsDefault):
         """SendParams is the class that wraps the parameters for the send method.
 
@@ -160,5 +202,25 @@ class Emails:
             path=path,
             params={},
             verb="post",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    def update(cls, params: UpdateParams) -> UpdateEmailResponse:
+        """
+        Update an email.
+        see more: https://resend.com/docs/api-reference/emails/update-email
+
+        Args:
+            params (UpdateParams): The email parameters to update
+
+        Returns:
+            Email: The email object that was updated
+        """
+        path = f"/emails/{params['id']}"
+        resp = request.Request[_UpdateEmailResponse](
+            path=path,
+            params=cast(Dict[Any, Any], params),
+            verb="patch",
         ).perform_with_content()
         return resp
