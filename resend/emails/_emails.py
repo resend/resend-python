@@ -105,7 +105,7 @@ class Emails:
 
     class CancelScheduledEmailResponse(_CancelScheduledEmailResponse):
         """
-        CancelScheduledEmailResponse type that wraps the ID of the scheduled email that was cancelled
+        CancelScheduledEmailResponse is the type that wraps the response of the email that was cancelled
 
         Attributes:
             object (str): The object type
