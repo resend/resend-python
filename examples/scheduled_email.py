@@ -14,7 +14,11 @@ params: resend.Emails.SendParams = {
 }
 
 # Throws a resend.exceptions.ValidationError
-# when scheduled_at is not in ISO 8601 format
+# when scheduled_at is not in ISO 8601 format.
+#
+# Here is an example on how to create a date in the ISO 8601 format:
+# from datetime import datetime
+# datetime.now().isoformat()
 email: resend.Email = resend.Emails.send(params)
 
 print(f"Email scheduled: {email['id']}")
@@ -34,4 +38,4 @@ cancel_resp: resend.Emails.CancelScheduledEmailResponse = resend.Emails.cancel(
     email_id=email["id"]
 )
 
-print(f"Email cancelled: {cancel_resp['id']}")
+print(f"Email canceled: {cancel_resp['id']}")

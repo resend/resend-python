@@ -27,7 +27,7 @@ class _UpdateEmailResponse(TypedDict):
     """
     id: str
     """
-    The ID of the scheduled email that was cancelled.
+    The ID of the scheduled email that was canceled.
     """
 
 
@@ -38,7 +38,7 @@ class _CancelScheduledEmailResponse(TypedDict):
     """
     id: str
     """
-    The ID of the scheduled email that was cancelled.
+    The ID of the scheduled email that was canceled.
     """
 
 
@@ -105,11 +105,11 @@ class Emails:
 
     class CancelScheduledEmailResponse(_CancelScheduledEmailResponse):
         """
-        CancelScheduledEmailResponse is the type that wraps the response of the email that was cancelled
+        CancelScheduledEmailResponse is the type that wraps the response of the email that was canceled
 
         Attributes:
             object (str): The object type
-            id (str): The ID of the scheduled email that was cancelled
+            id (str): The ID of the scheduled email that was canceled
         """
 
     class UpdateEmailResponse(_UpdateEmailResponse):
@@ -198,7 +198,7 @@ class Emails:
             email_id (str): The ID of the scheduled email to cancel
 
         Returns:
-            CancelScheduledEmailResponse: The response object that contains the ID of the scheduled email that was cancelled
+            CancelScheduledEmailResponse: The response object that contains the ID of the scheduled email that was canceled
         """
         path = f"/emails/{email_id}/cancel"
         resp = request.Request[_CancelScheduledEmailResponse](
