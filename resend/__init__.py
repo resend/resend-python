@@ -4,6 +4,10 @@ from .api_keys._api_key import ApiKey
 from .api_keys._api_keys import ApiKeys
 from .audiences._audience import Audience
 from .audiences._audiences import Audiences
+from .broadcasts._broadcast import Broadcast
+from .broadcasts._broadcasts import (Broadcasts, CreateBroadcastResponse,
+                                     RemoveBroadcastResponse,
+                                     SendBroadcastResponse)
 from .contacts._contact import Contact
 from .contacts._contacts import Contacts
 from .domains._domain import Domain
@@ -32,6 +36,7 @@ __all__ = [
     "Batch",
     "Audiences",
     "Contacts",
+    "Broadcasts",
     # Types
     "Audience",
     "Contact",
@@ -40,4 +45,8 @@ __all__ = [
     "Email",
     "Attachment",
     "Tag",
+    "CreateBroadcastResponse",
+    "SendBroadcastResponse",
+    "RemoveBroadcastResponse",
+    "Broadcast",
 ]
