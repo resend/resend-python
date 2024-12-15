@@ -57,3 +57,16 @@ class TestResendBroadcasts(ResendBaseTest):
         }
         broadcast = resend.Broadcasts.send(params)
         assert broadcast["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e791"
+
+    def test_broadcasts_remove(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "broadcasts",
+                "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+                "deleted": True,
+            }
+        )
+
+        rmed = resend.Broadcasts.remove("78261eea-8f8b-4381-83c6-79fa7120f1cf")
+        assert rmed["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert rmed["deleted"] is True

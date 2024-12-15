@@ -6,6 +6,7 @@ codes as outlined in https://resend.com/docs/api-reference/errors.
 
 from typing import Any, Dict, Union
 
+
 class ResendError(Exception):
     """Base class for all errors raised by Resend SDK.
     This is the parent class of all exceptions (server side)

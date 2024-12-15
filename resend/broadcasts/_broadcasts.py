@@ -91,7 +91,7 @@ class Broadcasts:
             from (str): The sender email address
             audience_id (str): The ID of the audience you want to send to.
             subject (str): Email subject.
-            reply_to (NotRequired[Union[List[str], str]]): Reply-to email address. For multiple addresses, send as an array of strings.
+            reply_to (NotRequired[Union[List[str], str]]): Reply-to email address(es).
             html (NotRequired[str]): The HTML version of the message.
             text (NotRequired[str]): The text version of the message.
             name (NotRequired[str]): The friendly name of the broadcast. Only used for internal reference.

@@ -24,13 +24,21 @@ broadcast: resend.CreateBroadcastResponse = resend.Broadcasts.create(create_para
 print("Created broadcast !")
 print(broadcast)
 
-retrieved: resend.Broadcast = resend.Broadcasts.get(id=broadcast["id"])
-print("retrieved broadcast !")
-print(retrieved)
-
 send_params: resend.Broadcasts.SendParams = {
     "broadcast_id": broadcast["id"],
 }
 sent: resend.SendBroadcastResponse = resend.Broadcasts.send(send_params)
-print("Sent broadcast !")
+print("Sent broadcast !\n")
 print(sent)
+
+retrieved: resend.Broadcast = resend.Broadcasts.get(id=broadcast["id"])
+print("retrieved broadcast !\n")
+print(retrieved)
+
+if retrieved["status"] == "draft":
+    removed: resend.RemoveBroadcastResponse = resend.Broadcasts.remove(id=broadcast["id"])
+    print("Removed broadcast !\n")
+    print(removed)
+    print("\n")
+else:
+    print("Broadcast is not in draft status, cannot remove it.\n")
