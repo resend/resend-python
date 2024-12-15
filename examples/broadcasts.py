@@ -44,3 +44,7 @@ if retrieved["status"] == "draft":
     print("\n")
 else:
     print("Broadcast is not in draft status, cannot remove it.\n")
+
+list_response: resend.Broadcasts.ListResponse = resend.Broadcasts.list()
+print("List of broadcasts !\n")
+print(list_response)

@@ -97,3 +97,21 @@ class TestResendBroadcasts(ResendBaseTest):
         )
 
         broadcasts: resend.Broadcasts.ListResponse = resend.Broadcasts.list()
+        assert broadcasts["object"] == "list"
+        assert len(broadcasts["data"]) == 2
+
+        broadcast = broadcasts["data"][0]
+        assert broadcast["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+        assert broadcast["audience_id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert broadcast["status"] == "draft"
+        assert broadcast["created_at"] == "2024-11-01T15:13:31.723Z"
+        assert broadcast["scheduled_at"] is None
+        assert broadcast["sent_at"] is None
+
+        broadcast = broadcasts["data"][1]
+        assert broadcast["id"] == "559ac32e-9ef5-46fb-82a1-b76b840c0f7b"
+        assert broadcast["audience_id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert broadcast["status"] == "sent"
+        assert broadcast["created_at"] == "2024-12-01T19:32:22.980Z"
+        assert broadcast["scheduled_at"] == "2024-12-02T19:32:22.980Z"
+        assert broadcast["sent_at"] == "2024-12-02T19:32:22.980Z"
