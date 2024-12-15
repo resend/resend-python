@@ -18,7 +18,7 @@ from .emails._email import Email
 from .emails._emails import Emails
 from .emails._tag import Tag
 from .request import Request
-from .version import get_version
+from .version import get_version, __version__
 
 # Config vars
 api_key = os.environ.get("RESEND_API_KEY")
@@ -28,6 +28,7 @@ api_url = os.environ.get("RESEND_API_URL", "https://api.resend.com")
 from .emails._emails import Emails  # noqa
 
 __all__ = [
+    "__version__"
     "get_version",
     "Request",
     "Emails",
