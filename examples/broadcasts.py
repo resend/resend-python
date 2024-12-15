@@ -20,14 +20,14 @@ create_params: resend.Broadcasts.CreateParams = {
     "name": "Hello, world!",
 }
 
-broadcast: resend.CreateBroadcastResponse = resend.Broadcasts.create(create_params)
+broadcast: resend.Broadcasts.CreateResponse = resend.Broadcasts.create(create_params)
 print("Created broadcast !")
 print(broadcast)
 
 send_params: resend.Broadcasts.SendParams = {
     "broadcast_id": broadcast["id"],
 }
-sent: resend.SendBroadcastResponse = resend.Broadcasts.send(send_params)
+sent: resend.Broadcasts.SendResponse = resend.Broadcasts.send(send_params)
 print("Sent broadcast !\n")
 print(sent)
 
@@ -36,7 +36,9 @@ print("retrieved broadcast !\n")
 print(retrieved)
 
 if retrieved["status"] == "draft":
-    removed: resend.RemoveBroadcastResponse = resend.Broadcasts.remove(id=broadcast["id"])
+    removed: resend.Broadcasts.RemoveResponse = resend.Broadcasts.remove(
+        id=broadcast["id"]
+    )
     print("Removed broadcast !\n")
     print(removed)
     print("\n")

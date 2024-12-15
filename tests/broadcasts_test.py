@@ -15,7 +15,7 @@ class TestResendBroadcasts(ResendBaseTest):
             "subject": "Hello, world!",
             "name": "Python SDK Broadcast",
         }
-        broadcast = resend.Broadcasts.create(params)
+        broadcast: resend.Broadcasts.CreateResponse = resend.Broadcasts.create(params)
         assert broadcast["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
 
     def test_broadcasts_get(self) -> None:
@@ -70,3 +70,30 @@ class TestResendBroadcasts(ResendBaseTest):
         rmed = resend.Broadcasts.remove("78261eea-8f8b-4381-83c6-79fa7120f1cf")
         assert rmed["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert rmed["deleted"] is True
+
+    def test_broadcasts_list(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "data": [
+                    {
+                        "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+                        "audience_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+                        "status": "draft",
+                        "created_at": "2024-11-01T15:13:31.723Z",
+                        "scheduled_at": None,
+                        "sent_at": None,
+                    },
+                    {
+                        "id": "559ac32e-9ef5-46fb-82a1-b76b840c0f7b",
+                        "audience_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+                        "status": "sent",
+                        "created_at": "2024-12-01T19:32:22.980Z",
+                        "scheduled_at": "2024-12-02T19:32:22.980Z",
+                        "sent_at": "2024-12-02T19:32:22.980Z",
+                    },
+                ],
+            }
+        )
+
+        broadcasts: resend.Broadcasts.ListResponse = resend.Broadcasts.list()

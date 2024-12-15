@@ -17,6 +17,43 @@ _CreateParamsFrom = TypedDict(
 )
 
 
+class _CreateResponse(TypedDict):
+    id: str
+    """
+    id of the created broadcast
+    """
+
+
+class _SendResponse(_CreateResponse):
+    pass
+
+
+class _RemoveResponse(TypedDict):
+    object: str
+    """
+    object type: "broadcast"
+    """
+    id: str
+    """
+    id of the removed broadcast
+    """
+    deleted: bool
+    """
+    True if the broadcast was deleted
+    """
+
+
+class _ListResponse(TypedDict):
+    object: str
+    """
+    object type: "list"
+    """
+    data: List[Broadcast]
+    """
+    A list of broadcast objects
+    """
+
+
 class _CreateParamsDefault(_CreateParamsFrom):
     audience_id: str
     """
@@ -56,32 +93,6 @@ class _SendBroadcastParams(TypedDict):
     """
 
 
-class CreateBroadcastResponse(TypedDict):
-    id: str
-    """
-    id of the created broadcast
-    """
-
-
-class SendBroadcastResponse(CreateBroadcastResponse):
-    pass
-
-
-class RemoveBroadcastResponse(TypedDict):
-    object: str
-    """
-    object type: "broadcast"
-    """
-    id: str
-    """
-    id of the removed broadcast
-    """
-    deleted: bool
-    """
-    True if the broadcast was deleted
-    """
-
-
 class Broadcasts:
 
     class CreateParams(_CreateParamsDefault):
@@ -106,16 +117,43 @@ class Broadcasts:
             The date should be in language natural (e.g.: in 1 min) or ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
         """
 
-    # class ListResponse(_ListResponse):
-    #     """
-    #     ListResponse type that wraps a list of audience objects
+    class CreateResponse(_CreateResponse):
+        """
+        CreateResponse is the class that wraps the response of the create method.
 
-    #     Attributes:
-    #         data (List[Audience]): A list of audience objects
-    #     """
+        Attributes:
+            id (str): id of the created broadcast
+        """
+
+    class SendResponse(_SendResponse):
+        """
+        SendResponse is the class that wraps the response of the send method.
+
+        Attributes:
+            id (str): id of the created broadcast
+        """
+
+    class ListResponse(_ListResponse):
+        """
+        ListResponse is the class that wraps the response of the list method.
+
+        Attributes:
+            object (str): object type: "list"
+            data (List[Broadcast]): A list of broadcast objects
+        """
+
+    class RemoveResponse(_RemoveResponse):
+        """
+        RemoveResponse is the class that wraps the response of the remove method.
+
+        Attributes:
+            object (str): object type: "broadcast"
+            id (str): id of the removed broadcast
+            deleted (bool): True if the broadcast was deleted
+        """
 
     @classmethod
-    def create(cls, params: CreateParams) -> CreateBroadcastResponse:
+    def create(cls, params: CreateParams) -> CreateResponse:
         """
         Create a broadcast.
         see more: https://resend.com/docs/api-reference/broadcasts/create-broadcast
@@ -124,16 +162,16 @@ class Broadcasts:
             params (CreateParams): The audience creation parameters
 
         Returns:
-            CreateBroadcastResponse: The new broadcast object response
+            CreateResponse: The new broadcast object response
         """
         path = "/broadcasts"
-        resp = request.Request[CreateBroadcastResponse](
+        resp = request.Request[_CreateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
 
     @classmethod
-    def send(cls, params: SendParams) -> SendBroadcastResponse:
+    def send(cls, params: SendParams) -> SendResponse:
         """
         Sends a broadcast.
         see more: https://resend.com/docs/api-reference/broadcasts/send-broadcast
@@ -142,28 +180,28 @@ class Broadcasts:
             params (CreateParams): The audience creation parameters
 
         Returns:
-            SendBroadcastResponse: The new broadcast object response
+            SendResponse: The new broadcast object response
         """
         path = f"/broadcasts/{params['broadcast_id']}/send"
-        resp = request.Request[SendBroadcastResponse](
+        resp = request.Request[_SendResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
 
-    # @classmethod
-    # def list(cls) -> ListResponse:
-    #     """
-    #     Retrieve a list of audiences.
-    #     see more: https://resend.com/docs/api-reference/audiences/list-audiences
+    @classmethod
+    def list(cls) -> ListResponse:
+        """
+        Retrieve a list of broadcasts.
+        see more: https://resend.com/docs/api-reference/broadcasts/list-broadcasts
 
-    #     Returns:
-    #         ListResponse: A list of audience objects
-    #     """
-    #     path = "/audiences/"
-    #     resp = request.Request[_ListResponse](
-    #         path=path, params={}, verb="get"
-    #     ).perform_with_content()
-    #     return resp
+        Returns:
+            ListResponse: A list of broadcast objects
+        """
+        path = "/broadcasts/"
+        resp = request.Request[_ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
 
     @classmethod
     def get(cls, id: str) -> Broadcast:
@@ -184,7 +222,7 @@ class Broadcasts:
         return resp
 
     @classmethod
-    def remove(cls, id: str) -> RemoveBroadcastResponse:
+    def remove(cls, id: str) -> RemoveResponse:
         """
         Delete a single broadcast.
         see more: https://resend.com/docs/api-reference/broadcasts/delete-broadcasts
@@ -193,10 +231,10 @@ class Broadcasts:
             id (str): The broadcast ID
 
         Returns:
-            RemoveBroadcastResponse: The remove response object
+            RemoveResponse: The remove response object
         """
         path = f"/broadcasts/{id}"
-        resp = request.Request[RemoveBroadcastResponse](
+        resp = request.Request[_RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp
