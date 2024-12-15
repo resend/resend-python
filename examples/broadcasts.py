@@ -12,7 +12,7 @@ audience_id: str = "78b8d3bc-a55a-45a3-aee6-6ec0a5e13d7e"
 
 create_params: resend.Broadcasts.CreateParams = {
     "audience_id": audience_id,
-    "from": "hi@presenteia.se",
+    "from": "onboarding@resend.dev",
     "subject": "Hello, world!",
     "html": "<p>Hello, world!</p>",
     "text": "Hello, world!",
