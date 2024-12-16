@@ -24,27 +24,27 @@ broadcast: resend.Broadcasts.CreateResponse = resend.Broadcasts.create(create_pa
 print("Created broadcast !")
 print(broadcast)
 
-send_params: resend.Broadcasts.SendParams = {
-    "broadcast_id": broadcast["id"],
-}
-sent: resend.Broadcasts.SendResponse = resend.Broadcasts.send(send_params)
-print("Sent broadcast !\n")
-print(sent)
+# send_params: resend.Broadcasts.SendParams = {
+#     "broadcast_id": broadcast["id"],
+# }
+# sent: resend.Broadcasts.SendResponse = resend.Broadcasts.send(send_params)
+# print("Sent broadcast !\n")
+# print(sent)
 
-retrieved: resend.Broadcast = resend.Broadcasts.get(id=broadcast["id"])
-print("retrieved broadcast !\n")
-print(retrieved)
+# retrieved: resend.Broadcast = resend.Broadcasts.get(id=broadcast["id"])
+# print("retrieved broadcast !\n")
+# print(retrieved)
 
-if retrieved["status"] == "draft":
-    removed: resend.Broadcasts.RemoveResponse = resend.Broadcasts.remove(
-        id=broadcast["id"]
-    )
-    print("Removed broadcast !\n")
-    print(removed)
-    print("\n")
-else:
-    print("Broadcast is not in draft status, cannot remove it.\n")
+# if retrieved["status"] == "draft":
+#     removed: resend.Broadcasts.RemoveResponse = resend.Broadcasts.remove(
+#         id=broadcast["id"]
+#     )
+#     print("Removed broadcast !\n")
+#     print(removed)
+#     print("\n")
+# else:
+#     print("Broadcast is not in draft status, cannot remove it.\n")
 
-list_response: resend.Broadcasts.ListResponse = resend.Broadcasts.list()
-print("List of broadcasts !\n")
-print(list_response)
+# list_response: resend.Broadcasts.ListResponse = resend.Broadcasts.list()
+# print("List of broadcasts !\n")
+# print(list_response)
