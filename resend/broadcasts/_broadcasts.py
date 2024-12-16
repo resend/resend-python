@@ -210,7 +210,7 @@ class Broadcasts:
         see more: https://resend.com/docs/api-reference/broadcasts/get-broadcast
 
         Args:
-            id (str): The audience ID
+            id (str): The broadcast ID
 
         Returns:
             Broadcast: The broadcast object
