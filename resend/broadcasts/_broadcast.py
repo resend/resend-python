@@ -46,7 +46,7 @@ class Broadcast(_FromParam):
     """
     created_at: str
     """
-    The date and time the audience was created.
+    The date and time the broadcast was created.
     """
     scheduled_at: str
     """
