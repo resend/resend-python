@@ -114,7 +114,7 @@ class Broadcasts:
         Attributes:
             broadcast_id (str): The ID of the broadcast to send.
             scheduled_at (NotRequired[str]): Schedule email to be sent later.
-            The date should be in language natural (e.g.: in 1 min) or ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
+            The date should be in natural language (e.g.: in 1 min) or ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
         """
 
     class CreateResponse(_CreateResponse):
