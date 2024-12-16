@@ -177,7 +177,7 @@ class Broadcasts:
         see more: https://resend.com/docs/api-reference/broadcasts/send-broadcast
 
         Args:
-            params (CreateParams): The audience creation parameters
+            params (CreateParams): The broadcast creation parameters
 
         Returns:
             SendResponse: The new broadcast object response
