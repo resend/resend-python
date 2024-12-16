@@ -26,7 +26,7 @@ class Broadcast(_FromParam):
     """
     name: str
     """
-    The name of the audience.
+    The name of the broadcast.
     """
     subject: str
     """
