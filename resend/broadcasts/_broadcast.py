@@ -18,7 +18,7 @@ class Broadcast(_FromParam):
     """
     id: str
     """
-    The unique identifier of the audience.
+    The unique identifier of the broadcast.
     """
     audience_id: str
     """
