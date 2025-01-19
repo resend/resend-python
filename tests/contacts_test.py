@@ -50,6 +50,19 @@ class TestResendContacts(ResendBaseTest):
         contact = resend.Contacts.update(params)
         assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
 
+    def test_contacts_update_missing_required_params(self) -> None:
+
+        params: resend.Contacts.UpdateParams = {
+            "audience_id": "48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
+            "first_name": "Updated",
+            "unsubscribed": True,
+        }
+
+        try:
+            resend.Contacts.update(params)
+        except ValueError as e:
+            assert str(e) == "id or email must be provided"
+
     def test_should_update_contacts_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
         params: resend.Contacts.UpdateParams = {
