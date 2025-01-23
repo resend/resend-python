@@ -51,7 +51,7 @@ class Contacts:
         """
         The audience id.
         """
-        id: str
+        id: NotRequired[str]
         """
         The contact id.
         """
@@ -102,7 +102,12 @@ class Contacts:
         Returns:
             Contact: The updated contact object
         """
-        path = f"/audiences/{params['audience_id']}/contacts/{params['id']}"
+        if params.get("id") is None and params.get("email") is None:
+            raise ValueError("id or email must be provided")
+
+        val = params.get("id") if params.get("id") is not None else params.get("email")
+
+        path = f"/audiences/{params['audience_id']}/contacts/{val}"
         resp = request.Request[Contact](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
