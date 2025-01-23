@@ -8,7 +8,7 @@ if not os.environ["RESEND_API_KEY"]:
 
 # replace with some audience id
 audience_id: str = "78b8d3bc-a55a-45a3-aee6-6ec0a5e13d7e"
-contact_id = "b5c95127-937b-4872-a765-06636e5f73da"
+contact_id: str = "b5c95127-937b-4872-a765-06636e5f73da"
 
 create_params: resend.Contacts.CreateParams = {
     "audience_id": audience_id,
