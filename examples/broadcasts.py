@@ -26,7 +26,6 @@ print(broadcast)
 
 update_params: resend.Broadcasts.UpdateParams = {
     "broadcast_id": broadcast["id"],
-    "audience_id": audience_id,
     "html": "<p>Hello, world! Updated</p>",
     "text": "Hello, world! Updated",
     "name": "Hello, world! Updated",

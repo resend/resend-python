@@ -100,7 +100,7 @@ class _UpdateParamsDefault(_UpdateParamsFrom):
     """
     The ID of the broadcast you want to update.
     """
-    audience_id: str
+    audience_id: NotRequired[str]
     """
     The ID of the audience you want to send to.
     """
