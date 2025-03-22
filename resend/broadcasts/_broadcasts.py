@@ -16,11 +16,25 @@ _CreateParamsFrom = TypedDict(
     },
 )
 
+_UpdateParamsFrom = TypedDict(
+    "_UpdateParamsFrom",
+    {
+        "from": NotRequired[str],
+    },
+)
+
 
 class _CreateResponse(TypedDict):
     id: str
     """
     id of the created broadcast
+    """
+
+
+class _UpdateResponse(TypedDict):
+    id: str
+    """
+    id of the updated broadcast
     """
 
 
@@ -81,6 +95,37 @@ class _CreateParamsDefault(_CreateParamsFrom):
     """
 
 
+class _UpdateParamsDefault(_UpdateParamsFrom):
+    broadcast_id: str
+    """
+    The ID of the broadcast you want to update.
+    """
+    audience_id: str
+    """
+    The ID of the audience you want to send to.
+    """
+    subject: NotRequired[str]
+    """
+    Email subject.
+    """
+    reply_to: NotRequired[Union[List[str], str]]
+    """
+    Reply-to email address. For multiple addresses, send as an array of strings.
+    """
+    html: NotRequired[str]
+    """
+    The HTML version of the message.
+    """
+    text: NotRequired[str]
+    """
+    The text version of the message.
+    """
+    name: NotRequired[str]
+    """
+    The friendly name of the broadcast. Only used for internal reference.
+    """
+
+
 class _SendBroadcastParams(TypedDict):
     broadcast_id: str
     """
@@ -108,6 +153,20 @@ class Broadcasts:
             name (NotRequired[str]): The friendly name of the broadcast. Only used for internal reference.
         """
 
+    class UpdateParams(_UpdateParamsDefault):
+        """UpdateParams is the class that wraps the parameters for the update method.
+
+        Attributes:
+            broadcast_id (str): The ID of the broadcast you want to update.
+            audience_id (str): The ID of the audience you want to send to.
+            from (str): The sender email address
+            subject (NotRequired[str]): Email subject.
+            reply_to (NotRequired[Union[List[str], str]]): Reply-to email address(es).
+            html (NotRequired[str]): The HTML version of the message.
+            text (NotRequired[str]): The text version of the message.
+            name (NotRequired[str]): The friendly name of the broadcast. Only used for internal reference.
+        """
+
     class SendParams(_SendBroadcastParams):
         """SendParams is the class that wraps the parameters for the send method.
 
@@ -123,6 +182,14 @@ class Broadcasts:
 
         Attributes:
             id (str): id of the created broadcast
+        """
+
+    class UpdateResponse(_UpdateResponse):
+        """
+        UpdateResponse is the class that wraps the response of the update method.
+
+        Attributes:
+            id (str): id of the updated broadcast
         """
 
     class SendResponse(_SendResponse):
@@ -167,6 +234,24 @@ class Broadcasts:
         path = "/broadcasts"
         resp = request.Request[_CreateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    def update(cls, params: UpdateParams) -> UpdateResponse:
+        """
+        Update a broadcast.
+        see more: https://resend.com/docs/api-reference/broadcasts/update-broadcast
+
+        Args:
+            params (UpdateParams): The broadcast update parameters
+
+        Returns:
+            UpdateResponse: The updated broadcast object response
+        """
+        path = f"/broadcasts/{params['broadcast_id']}"
+        resp = request.Request[_UpdateResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
 

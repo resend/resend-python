@@ -18,6 +18,18 @@ class TestResendBroadcasts(ResendBaseTest):
         broadcast: resend.Broadcasts.CreateResponse = resend.Broadcasts.create(params)
         assert broadcast["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
 
+    def test_broadcasts_update(self) -> None:
+        self.set_mock_json({"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"})
+
+        params: resend.Broadcasts.UpdateParams = {
+            "broadcast_id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            "audience_id": "78b8d3bc-a55a-45a3-aee6-6ec0a5e13d7e",
+            "subject": "Hello, world! Updated!",
+            "name": "Python SDK Broadcast",
+        }
+        broadcast: resend.Broadcasts.UpdateResponse = resend.Broadcasts.update(params)
+        assert broadcast["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
     def test_broadcasts_get(self) -> None:
         self.set_mock_json(
             {
