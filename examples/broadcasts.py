@@ -16,13 +16,26 @@ create_params: resend.Broadcasts.CreateParams = {
     "subject": "Hello, world!",
     "html": "<p>Hello, world!</p>",
     "text": "Hello, world!",
-    "reply_to": ["lel@lel.com", "lil@lil.com"],
+    "reply_to": ["foo@resend.dev", "bar@resend.dev"],
     "name": "Hello, world!",
 }
 
 broadcast: resend.Broadcasts.CreateResponse = resend.Broadcasts.create(create_params)
 print("Created broadcast !")
 print(broadcast)
+
+update_params: resend.Broadcasts.UpdateParams = {
+    "broadcast_id": broadcast["id"],
+    "html": "<p>Hello, world! Updated</p>",
+    "text": "Hello, world! Updated",
+    "name": "Hello, world! Updated",
+}
+
+updated_broadcast: resend.Broadcasts.UpdateResponse = resend.Broadcasts.update(
+    update_params
+)
+print("Updated broadcast!")
+print(updated_broadcast)
 
 send_params: resend.Broadcasts.SendParams = {
     "broadcast_id": broadcast["id"],
