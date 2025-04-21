@@ -48,7 +48,7 @@ class TestResendRequest(unittest.TestCase):
 
         mock_requests.return_value = mock_response
 
-        req = request.Request[dict[str, Any]](
+        req = request.Request[Dict[str, Any]](
             path="/test",
             params={},
             verb="post",
