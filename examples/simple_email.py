@@ -19,11 +19,19 @@ params: resend.Emails.SendParams = {
     ],
 }
 
-email: resend.Email = resend.Emails.send(params)
-print(f"Sent email")
-print("Email ID: ", email["id"])
 
-email_resp: resend.Email = resend.Emails.get(email_id=email["id"])
+# Without Idempotency Key
+email_idempotent: resend.Email = resend.Emails.send(params)
+print(f"Sent email without idempotency key: {email_idempotent['id']}")
+
+# With Idempotency Key
+options: resend.Emails.SendOptions = {
+    "idempotency_key": "44",
+}
+email_non_idempotent: resend.Email = resend.Emails.send(params, options)
+print(f"Sent email with idempotency key: {email_non_idempotent['id']}")
+
+email_resp: resend.Email = resend.Emails.get(email_id=email_non_idempotent["id"])
 print(f"Retrieved email: {email_resp['id']}")
 print("Email ID: ", email_resp["id"])
 print("Email from: ", email_resp["from"])

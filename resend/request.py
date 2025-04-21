@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, List, Union, cast
+from typing import Any, Dict, Generic, List, Optional, Union, cast
 
 import requests
 from typing_extensions import Literal, TypeVar
@@ -19,10 +19,12 @@ class Request(Generic[T]):
         path: str,
         params: Union[Dict[Any, Any], List[Dict[Any, Any]]],
         verb: RequestVerb,
+        options: Optional[Dict[str, Any]] = None,
     ):
         self.path = path
         self.params = params
         self.verb = verb
+        self.options = options
 
     def perform(self) -> Union[T, None]:
         """Is the main function that makes the HTTP request
@@ -83,11 +85,17 @@ class Request(Generic[T]):
         Returns:
             Dict: configured HTTP Headers
         """
-        return {
+        headers = {
             "Accept": "application/json",
             "Authorization": f"Bearer {resend.api_key}",
             "User-Agent": f"resend-python:{get_version()}",
         }
+
+        # Add the Idempotency-Key header if the verb is POST
+        # and the options dict contains the key
+        if self.verb == "post" and (self.options and "idempotency_key" in self.options):
+            headers["Idempotency-Key"] = self.options["idempotency_key"]
+        return headers
 
     def make_request(self, url: str) -> requests.Response:
         """make_request is a helper function that makes the actual
