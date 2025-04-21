@@ -1,5 +1,5 @@
 import unittest
-from typing import Any
+from typing import Any, Dict
 from unittest.mock import MagicMock, Mock, patch
 
 from resend import request
@@ -18,7 +18,7 @@ class TestResendRequest(unittest.TestCase):
 
         mock_requests.return_value = mock_response
 
-        req = request.Request[dict[str, Any]](
+        req = request.Request[Dict[str, Any]](
             path="/test",
             params={},
             verb="post",
