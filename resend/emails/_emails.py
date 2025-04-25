@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -6,6 +6,15 @@ from resend import request
 from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
+
+
+class _SendOptions(TypedDict):
+    idempotency_key: NotRequired[str]
+    """
+    Unique key that ensures the same operation is not processed multiple times.
+    Allows for safe retries without duplicating operations.
+    If provided, will be sent as the `Idempotency-Key` header.
+    """
 
 
 class _UpdateParams(TypedDict):
@@ -148,14 +157,25 @@ class Emails:
             tags (NotRequired[List[Tag]]): List of tags to be added to the email.
         """
 
+    class SendOptions(_SendOptions):
+        """
+        SendOptions is the class that wraps the options for the send method.
+
+        Attributes:
+            idempotency_key (NotRequired[str]): Unique key that ensures the same operation is not processed multiple times.
+            Allows for safe retries without duplicating operations.
+            If provided, will be sent as the `Idempotency-Key` header.
+        """
+
     @classmethod
-    def send(cls, params: SendParams) -> Email:
+    def send(cls, params: SendParams, options: Optional[SendOptions] = None) -> Email:
         """
         Send an email through the Resend Email API.
         see more: https://resend.com/docs/api-reference/emails/send-email
 
         Args:
             params (SendParams): The email parameters
+            options (SendOptions): The email options
 
         Returns:
             Email: The email object that was sent
@@ -165,6 +185,7 @@ class Emails:
             path=path,
             params=cast(Dict[Any, Any], params),
             verb="post",
+            options=cast(Dict[Any, Any], options),
         ).perform_with_content()
         return resp
 
