@@ -33,7 +33,7 @@ print("updated contact !")
 print(updated)
 
 cont_by_id: resend.Contact = resend.Contacts.get(
-    email=contact["id"], audience_id=audience_id
+    id=contact["id"], audience_id=audience_id
 )
 print("Retrieved contact by ID")
 print(cont_by_id)
