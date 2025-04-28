@@ -7,8 +7,7 @@ if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
 # replace with some audience id
-audience_id: str = "78b8d3bc-a55a-45a3-aee6-6ec0a5e13d7e"
-contact_id: str = "b5c95127-937b-4872-a765-06636e5f73da"
+audience_id: str = "ca4e37c5-a82a-4199-a3b8-bf912a6472aa"
 
 create_params: resend.Contacts.CreateParams = {
     "audience_id": audience_id,
@@ -24,7 +23,7 @@ print(contact)
 
 update_params: resend.Contacts.UpdateParams = {
     "audience_id": audience_id,
-    "id": contact_id,
+    "id": contact["id"],
     "unsubscribed": False,
     "first_name": "Steve",
 }
@@ -33,9 +32,17 @@ updated: resend.Contact = resend.Contacts.update(update_params)
 print("updated contact !")
 print(updated)
 
-cont: resend.Contact = resend.Contacts.get(audience_id=audience_id, id=contact["id"])
-print("Retrieved contact")
-print(cont)
+cont_by_id: resend.Contact = resend.Contacts.get(
+    email=contact["id"], audience_id=audience_id
+)
+print("Retrieved contact by ID")
+print(cont_by_id)
+
+cont_by_email: resend.Contact = resend.Contacts.get(
+    email="sw@exmple.com", audience_id=audience_id
+)
+print("Retrieved contact by Email")
+print(cont_by_email)
 
 contacts: resend.Contacts.ListResponse = resend.Contacts.list(audience_id=audience_id)
 print("List of contacts")
@@ -43,7 +50,7 @@ for contact in contacts["data"]:
     print(contact)
 
 # remove by email
-rmed = resend.Contacts.remove(audience_id=audience_id, email=cont["email"])
+rmed = resend.Contacts.remove(audience_id=audience_id, email=contact["email"])
 
 # remove by id
 # rmed: resend.Contact = resend.Contacts.remove(audience_id=audience_id, id=cont["id"])
