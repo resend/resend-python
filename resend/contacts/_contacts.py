@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Optional, cast
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -132,7 +132,9 @@ class Contacts:
         return resp
 
     @classmethod
-    def get(cls, id: str, audience_id: str) -> Contact:
+    def get(
+        cls, audience_id: str, id: Optional[str] = None, email: Optional[str] = None
+    ) -> Contact:
         """
         Get a contact.
         see more: https://resend.com/docs/api-reference/contacts/get-contact
@@ -140,18 +142,25 @@ class Contacts:
         Args:
             id (str): The contact ID
             audience_id (str): The audience ID
+            email (Optional[str]): The contact email
 
         Returns:
             Contact: The contact object
         """
-        path = f"/audiences/{audience_id}/contacts/{id}"
+        contact = email if id is None else id
+        if contact is None:
+            raise ValueError("id or email must be provided")
+
+        path = f"/audiences/{audience_id}/contacts/{contact}"
         resp = request.Request[Contact](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
 
     @classmethod
-    def remove(cls, audience_id: str, id: str = "", email: str = "") -> Contact:
+    def remove(
+        cls, audience_id: str, id: Optional[str] = None, email: Optional[str] = None
+    ) -> Contact:
         """
         Remove a contact by ID or by Email
         see more: https://resend.com/docs/api-reference/contacts/delete-contact
@@ -164,8 +173,8 @@ class Contacts:
         Returns:
             Contact: The removed contact object
         """
-        contact = email if id == "" else id
-        if contact == "":
+        contact = email if id is None else id
+        if contact is None:
             raise ValueError("id or email must be provided")
         path = f"/audiences/{audience_id}/contacts/{contact}"
 
