@@ -1,6 +1,6 @@
-from typing import Any, Dict, List, NotRequired, Optional, cast
+from typing import Any, Dict, List, Optional, cast
 
-from typing_extensions import TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 
