@@ -24,10 +24,28 @@ params: List[resend.Emails.SendParams] = [
 ]
 
 try:
+    # Send batch emails
+    print("sending without idempotency_key")
     emails: resend.Batch.SendResponse = resend.Batch.send(params)
     for email in emails["data"]:
         print(f"Email id: {email['id']}")
-except resend.exceptions.ResendError as e:
+except resend.exceptions.ResendError as err:
     print("Failed to send batch emails")
-    print(f"Error: {e}")
+    print(f"Error: {err}")
+    exit(1)
+
+try:
+    # Send batch emails with idempotency_key
+    print("sending with idempotency_key")
+
+    options: resend.Batch.SendOptions = {
+        "idempotency_key": "af477dc78aa9fa91fff3b8c0d4a2e1a5",
+    }
+
+    e: resend.Batch.SendResponse = resend.Batch.send(params, options=options)
+    for email in e["data"]:
+        print(f"Email id: {email['id']}")
+except resend.exceptions.ResendError as err:
+    print("Failed to send batch emails")
+    print(f"Error: {err}")
     exit(1)
