@@ -8,7 +8,7 @@ if not os.environ["RESEND_API_KEY"]:
 
 
 create_params: resend.Domains.CreateParams = {
-    "name": "drish.dev",
+    "name": "example.com",
     "region": "us-east-1",
     "custom_return_path": "outbound",
 }
