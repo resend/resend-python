@@ -8,8 +8,9 @@ if not os.environ["RESEND_API_KEY"]:
 
 
 create_params: resend.Domains.CreateParams = {
-    "name": "example.com",
+    "name": "drish.dev",
     "region": "us-east-1",
+    "custom_return_path": "outbound",
 }
 domain: resend.Domain = resend.Domains.create(params=create_params)
 print(domain)
