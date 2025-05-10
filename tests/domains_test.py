@@ -62,6 +62,8 @@ class TestResendDomains(ResendBaseTest):
 
         create_params: resend.Domains.CreateParams = {
             "name": "example.com",
+            "region": "us-east-1",
+            "custom_return_path": "send",
         }
         domain = resend.Domains.create(params=create_params)
         assert domain["id"] == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"

@@ -60,6 +60,12 @@ class Domains:
         The region where emails will be sent from.
         Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
         """
+        custom_return_path: NotRequired[str]
+        """
+        By default, Resend will use the `send` subdomain for the Return-Path address.
+        You can change this by setting the optional `custom_return_path` parameter
+        when creating a domain via the API or under Advanced options in the dashboard.
+        """
 
     @classmethod
     def create(cls, params: CreateParams) -> Domain:
