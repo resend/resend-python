@@ -1,6 +1,7 @@
 from typing import Any, Dict, Generic, List, Optional, Union, cast
 
 import requests
+import json
 from typing_extensions import Literal, TypeVar
 
 import resend
@@ -27,41 +28,23 @@ class Request(Generic[T]):
         self.options = options
 
     def perform(self) -> Union[T, None]:
-        """Is the main function that makes the HTTP request
-        to the Resend API. It uses the path, params, and verb attributes
-        to make the request.
+        data = self.make_request(url=f"{resend.api_url}{self.path}")
 
-        Returns:
-            Union[T, None]: A generic type of the Request class or None
-
-        Raises:
-            requests.HTTPError: If the request fails
-        """
-        resp = self.make_request(url=f"{resend.api_url}{self.path}")
-
-        # delete calls do not return a body
-        if resp.text == "" and resp.status_code == 200:
+        if self.verb == "delete":
             return None
 
-        # this is a safety net, if we get here it means the Resend API is having issues
-        # and most likely the gateway is returning htmls
-        if "application/json" not in resp.headers["content-type"]:
+        if (
+            isinstance(data, dict)
+            and data.get("statusCode")
+            and data.get("statusCode") != 200
+        ):
             raise_for_code_and_type(
-                code=500,
-                message="Failed to parse Resend API response. Please try again.",
-                error_type="InternalServerError",
+                code=data.get("statusCode") or 500,
+                message=data.get("message", "Unknown error"),
+                error_type=data.get("name", "InternalServerError"),
             )
 
-        # handle error in case there is a statusCode attr present
-        # and status != 200 and response is a json.
-        if resp.status_code != 200 and resp.json().get("statusCode"):
-            error = resp.json()
-            raise_for_code_and_type(
-                code=error.get("statusCode"),
-                message=error.get("message"),
-                error_type=error.get("name"),
-            )
-        return cast(T, resp.json())
+        return cast(T, data)
 
     def perform_with_content(self) -> T:
         """
@@ -97,24 +80,30 @@ class Request(Generic[T]):
             headers["Idempotency-Key"] = self.options["idempotency_key"]
         return headers
 
-    def make_request(self, url: str) -> requests.Response:
-        """make_request is a helper function that makes the actual
-        HTTP request to the Resend API.
-
-        Args:
-            url (str): The URL to make the request to
-
-        Returns:
-            requests.Response: The response object from the request
-
-        Raises:
-            requests.HTTPError: If the request fails
-        """
+    def make_request(self, url: str) -> Dict[str, Any]:
         headers = self.__get_headers()
-        params = self.params
-        verb = self.verb
+
+        content, status_code, resp_headers = resend.default_http_client.request(
+            method=self.verb,
+            url=url,
+            headers=headers,
+            json=self.params,
+        )
+
+        content_type = resp_headers.get("Content-Type", "")
+
+        if "application/json" not in content_type:
+            raise_for_code_and_type(
+                code=500,
+                message="Expected JSON response but got: " + content_type,
+                error_type="InternalServerError",
+            )
 
         try:
-            return requests.request(verb, url, json=params, headers=headers)
-        except requests.HTTPError as e:
-            raise e
+            return json.loads(content)
+        except json.JSONDecodeError:
+            raise_for_code_and_type(
+                code=500,
+                message="Failed to decode JSON response",
+                error_type="InternalServerError",
+            )

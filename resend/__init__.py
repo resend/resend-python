@@ -15,12 +15,17 @@ from .emails._batch import Batch
 from .emails._email import Email
 from .emails._emails import Emails
 from .emails._tag import Tag
+from .http_client import HTTPClient
+from .http_client_requests import RequestsClient
 from .request import Request
 from .version import __version__, get_version
 
 # Config vars
 api_key = os.environ.get("RESEND_API_KEY")
 api_url = os.environ.get("RESEND_API_URL", "https://api.resend.com")
+
+# HTTP Client
+default_http_client: HTTPClient = RequestsClient()
 
 # API resources
 from .emails._emails import Emails  # noqa
