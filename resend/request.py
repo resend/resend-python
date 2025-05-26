@@ -1,7 +1,6 @@
+import json
 from typing import Any, Dict, Generic, List, Optional, Union, cast
 
-import requests
-import json
 from typing_extensions import Literal, TypeVar
 
 import resend
@@ -9,16 +8,17 @@ from resend.exceptions import NoContentError, raise_for_code_and_type
 from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
-
 T = TypeVar("T")
 
+ParamsType = Union[Dict[str, Any], List[Dict[str, Any]]]
+HeadersType = Dict[str, str]
 
-# This class wraps the HTTP request creation logic
+
 class Request(Generic[T]):
     def __init__(
         self,
         path: str,
-        params: Union[Dict[Any, Any], List[Dict[Any, Any]]],
+        params: ParamsType,
         verb: RequestVerb,
         options: Optional[Dict[str, Any]] = None,
     ):
@@ -30,14 +30,7 @@ class Request(Generic[T]):
     def perform(self) -> Union[T, None]:
         data = self.make_request(url=f"{resend.api_url}{self.path}")
 
-        if self.verb == "delete":
-            return None
-
-        if (
-            isinstance(data, dict)
-            and data.get("statusCode")
-            and data.get("statusCode") != 200
-        ):
+        if isinstance(data, dict) and data.get("statusCode") not in (None, 200):
             raise_for_code_and_type(
                 code=data.get("statusCode") or 500,
                 message=data.get("message", "Unknown error"),
@@ -47,60 +40,55 @@ class Request(Generic[T]):
         return cast(T, data)
 
     def perform_with_content(self) -> T:
-        """
-        Perform an HTTP request and return the response content.
-
-        Returns:
-            T: The content of the response
-
-        Raises:
-            NoContentError: If the response content is `None`.
-        """
         resp = self.perform()
         if resp is None:
             raise NoContentError()
         return resp
 
-    def __get_headers(self) -> Dict[Any, Any]:
-        """get_headers returns the HTTP headers that will be
-        used for every req.
-
-        Returns:
-            Dict: configured HTTP Headers
-        """
-        headers = {
+    def __get_headers(self) -> HeadersType:
+        headers: HeadersType = {
             "Accept": "application/json",
             "Authorization": f"Bearer {resend.api_key}",
             "User-Agent": f"resend-python:{get_version()}",
         }
 
-        # Add the Idempotency-Key header if the verb is POST
-        # and the options dict contains the key
-        if self.verb == "post" and (self.options and "idempotency_key" in self.options):
-            headers["Idempotency-Key"] = self.options["idempotency_key"]
+        if self.verb == "post" and self.options and "idempotency_key" in self.options:
+            headers["Idempotency-Key"] = str(self.options["idempotency_key"])
+
         return headers
 
-    def make_request(self, url: str) -> Dict[str, Any]:
+    def make_request(self, url: str) -> Union[Dict[str, Any], List[Any]]:
         headers = self.__get_headers()
 
-        content, status_code, resp_headers = resend.default_http_client.request(
+        if isinstance(self.params, dict):
+            json_params: Optional[Union[Dict[str, Any], List[Any]]] = {
+                str(k): v for k, v in self.params.items()
+            }
+        elif isinstance(self.params, list):
+            json_params = [dict(item) for item in self.params]
+        else:
+            json_params = None
+
+        content, _status_code, resp_headers = resend.default_http_client.request(
             method=self.verb,
             url=url,
             headers=headers,
-            json=self.params,
+            json=json_params,
         )
 
-        content_type = resp_headers.get("Content-Type", "")
+        content_type = {k.lower(): v for k, v in resp_headers.items()}.get(
+            "content-type", ""
+        )
 
         if "application/json" not in content_type:
             raise_for_code_and_type(
                 code=500,
-                message="Expected JSON response but got: " + content_type,
+                message=f"Expected JSON response but got: {content_type}",
                 error_type="InternalServerError",
             )
 
         try:
-            return json.loads(content)
+            return cast(Union[Dict[str, Any], List[Any]], json.loads(content))
         except json.JSONDecodeError:
             raise_for_code_and_type(
                 code=500,

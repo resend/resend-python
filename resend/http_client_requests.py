@@ -14,7 +14,7 @@ class RequestsClient(HTTPClient):
         method: str,
         url: str,
         headers: Mapping[str, str],
-        json: Optional[Union[dict, list]] = None,
+        json: Optional[Union[dict[str, object], list[object]]] = None,
     ) -> Tuple[bytes, int, Mapping[str, str]]:
         try:
             resp = requests.request(

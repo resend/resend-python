@@ -50,4 +50,6 @@ __all__ = [
     "Attachment",
     "Tag",
     "Broadcast",
+    # Default HTTP Client
+    "RequestsClient",
 ]

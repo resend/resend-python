@@ -7,13 +7,13 @@ from resend.version import get_version
 
 
 class TestResendRequest(unittest.TestCase):
-    @patch("resend.request.requests.request")
+    @patch("resend.http_client_requests.requests.request")
     @patch("resend.api_key", new="test_key")
     def test_request_idempotency_key_is_set(self, mock_requests: MagicMock) -> None:
         mock_response = Mock()
-        mock_response.text = "{}"
+        mock_response.content = b"{}"
         mock_response.status_code = 200
-        mock_response.headers = {"content-type": "application/json"}
+        mock_response.headers = {"Content-Type": "application/json"}
         mock_response.json.return_value = {}
 
         mock_requests.return_value = mock_response
@@ -37,11 +37,11 @@ class TestResendRequest(unittest.TestCase):
         self.assertEqual(headers["User-Agent"], f"resend-python:{get_version()}")
         self.assertEqual(headers["Idempotency-Key"], "abc-123")
 
-    @patch("resend.request.requests.request")
+    @patch("resend.http_client_requests.requests.request")
     @patch("resend.api_key", new="test_key")
     def test_request_idempotency_key_is_not_set(self, mock_requests: MagicMock) -> None:
         mock_response = Mock()
-        mock_response.text = "{}"
+        mock_response.content = b"{}"
         mock_response.status_code = 200
         mock_response.headers = {"content-type": "application/json"}
         mock_response.json.return_value = {}

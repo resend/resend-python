@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Mapping, Optional, Tuple, Union
+from typing import Mapping, Optional, Tuple, Union
 
 
 class HTTPClient(ABC):
@@ -9,6 +9,6 @@ class HTTPClient(ABC):
         method: str,
         url: str,
         headers: Mapping[str, str],
-        json: Optional[Union[dict, list]] = None,
+        json: Optional[Union[dict[str, object], list[object]]] = None,
     ) -> Tuple[bytes, int, Mapping[str, str]]:
         pass
