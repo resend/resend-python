@@ -4,7 +4,8 @@ from typing import Any, Dict, Generic, List, Optional, Union, cast
 from typing_extensions import Literal, TypeVar
 
 import resend
-from resend.exceptions import NoContentError, raise_for_code_and_type
+from resend.exceptions import (NoContentError, ResendError,
+                               raise_for_code_and_type)
 from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
@@ -69,12 +70,22 @@ class Request(Generic[T]):
         else:
             json_params = None
 
-        content, _status_code, resp_headers = resend.default_http_client.request(
-            method=self.verb,
-            url=url,
-            headers=headers,
-            json=json_params,
-        )
+        try:
+            content, _status_code, resp_headers = resend.default_http_client.request(
+                method=self.verb,
+                url=url,
+                headers=headers,
+                json=json_params,
+            )
+
+        # Safety net around the HTTP Client
+        except Exception as e:
+            raise ResendError(
+                code=500,
+                message=str(e),
+                error_type="HttpClientError",
+                suggested_action="Request failed, please try again.",
+            )
 
         content_type = {k.lower(): v for k, v in resp_headers.items()}.get(
             "content-type", ""

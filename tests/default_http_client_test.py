@@ -1,8 +1,11 @@
-from typing import cast
+from typing import Any, Dict, Mapping, Tuple, cast
 from unittest import TestCase
 from unittest.mock import create_autospec
 
+import pytest
+
 import resend
+import resend.exceptions
 from resend.http_client import HTTPClient
 
 
@@ -40,3 +43,22 @@ class TestDefaultHttpClientUsage(TestCase):
         assert kwargs["method"] == "post"
         assert "/emails" in kwargs["url"]
         assert kwargs["json"]["subject"] == "Hi!"
+
+    def test_perform_raises_resend_error_on_runtime_error(self) -> None:
+        class RaisesClient(resend.http_client.HTTPClient):
+            def request(
+                self, *args: object, **kwargs: object
+            ) -> Tuple[bytes, int, Mapping[str, str]]:
+                raise RuntimeError("Connection broken")
+
+        resend.default_http_client = RaisesClient()
+
+        request: resend.Request[Dict[str, Any]] = resend.Request(
+            path="/emails", params={}, verb="post"
+        )
+
+        with pytest.raises(resend.exceptions.ResendError) as exc:
+            request.perform()
+
+        assert "Connection broken" in str(exc.value)
+        assert exc.value.error_type == "HttpClientError"
