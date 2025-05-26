@@ -10,6 +10,7 @@ import resend
 class ResendBaseTest(TestCase):
     def setUp(self) -> None:
         resend.api_key = "re_123"
+        resend.default_http_client = resend.RequestsClient()
         self.patcher = patch("resend.request.Request.make_request")
         self.mock = self.patcher.start()
 

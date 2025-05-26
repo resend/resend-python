@@ -1,4 +1,4 @@
-from typing import Mapping, Optional, Tuple, Union, List, Dict
+from typing import Dict, List, Mapping, Optional, Tuple, Union
 
 import requests
 

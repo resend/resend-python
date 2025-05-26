@@ -1,8 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import Mapping, Optional, Tuple, Union, List, Dict
+from typing import Dict, List, Mapping, Optional, Tuple, Union
 
 
 class HTTPClient(ABC):
+    """
+    Abstract base class for HTTP clients.
+    This class defines the interface for making HTTP requests.
+    Subclasses should implement the `request` method.
+    """
+
     @abstractmethod
     def request(
         self,
