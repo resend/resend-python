@@ -18,6 +18,15 @@ from .emails._tag import Tag
 from .http_client import HTTPClient
 from .http_client_requests import RequestsClient
 from .request import Request
+
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from .http_client_async import AsyncHTTPClient
+    from .http_client_httpx import HTTPXClient
+    from .async_request import AsyncRequest
+except ImportError:
+    # Async classes not available without httpx dependency
+    pass
 from .version import __version__, get_version
 
 # Config vars
@@ -50,6 +59,18 @@ __all__ = [
     "Attachment",
     "Tag",
     "Broadcast",
-    # Default HTTP Client
+    # HTTP Clients
+    "HTTPClient",
     "RequestsClient",
 ]
+
+# Add async exports if available
+try:
+    from .http_client_httpx import HTTPXClient
+    __all__.extend([
+        "AsyncHTTPClient", 
+        "HTTPXClient",
+        "AsyncRequest"
+    ])
+except ImportError:
+    pass

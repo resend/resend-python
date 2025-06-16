@@ -7,6 +7,12 @@ from resend.emails._attachment import Attachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 
 class _SendOptions(TypedDict):
     idempotency_key: NotRequired[str]
@@ -243,6 +249,88 @@ class Emails:
         """
         path = f"/emails/{params['id']}"
         resp = request.Request[_UpdateEmailResponse](
+            path=path,
+            params=cast(Dict[Any, Any], params),
+            verb="patch",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def send_async(cls, params: SendParams, options: Optional[SendOptions] = None) -> Email:
+        """
+        Send an email through the Resend Email API (async version).
+        see more: https://resend.com/docs/api-reference/emails/send-email
+
+        Args:
+            params (SendParams): The email parameters
+            options (SendOptions): The email options
+
+        Returns:
+            Email: The email object that was sent
+        """
+        path = "/emails"
+        resp = await AsyncRequest[Email](
+            path=path,
+            params=cast(Dict[Any, Any], params),
+            verb="post",
+            options=cast(Dict[Any, Any], options),
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, email_id: str) -> Email:
+        """
+        Retrieve a single email (async version).
+        see more: https://resend.com/docs/api-reference/emails/retrieve-email
+
+        Args:
+            email_id (str): The ID of the email to retrieve
+
+        Returns:
+            Email: The email object that was retrieved
+        """
+        path = f"/emails/{email_id}"
+        resp = await AsyncRequest[Email](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def cancel_async(cls, email_id: str) -> CancelScheduledEmailResponse:
+        """
+        Cancel a scheduled email (async version).
+        see more: https://resend.com/docs/api-reference/emails/cancel-email
+
+        Args:
+            email_id (str): The ID of the scheduled email to cancel
+
+        Returns:
+            CancelScheduledEmailResponse: The response object that contains the ID of the scheduled email that was canceled
+        """
+        path = f"/emails/{email_id}/cancel"
+        resp = await AsyncRequest[_CancelScheduledEmailResponse](
+            path=path,
+            params={},
+            verb="post",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> UpdateEmailResponse:
+        """
+        Update an email (async version).
+        see more: https://resend.com/docs/api-reference/emails/update-email
+
+        Args:
+            params (UpdateParams): The email parameters to update
+
+        Returns:
+            Email: The email object that was updated
+        """
+        path = f"/emails/{params['id']}"
+        resp = await AsyncRequest[_UpdateEmailResponse](
             path=path,
             params=cast(Dict[Any, Any], params),
             verb="patch",
