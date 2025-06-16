@@ -71,7 +71,12 @@ class Request(Generic[T]):
             json_params = None
 
         try:
-            content, _status_code, resp_headers = resend.default_http_client.request(
+            # Cast to HTTPClient for type checking - sync context expects sync client
+            from resend.http_client import HTTPClient
+
+            sync_client = cast(HTTPClient, resend.default_http_client)
+
+            content, _status_code, resp_headers = sync_client.request(
                 method=self.verb,
                 url=url,
                 headers=headers,

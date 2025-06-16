@@ -2,13 +2,12 @@ import asyncio
 import os
 
 import resend
-from resend import HTTPXClient
 
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
 # Set up async HTTP client
-resend.default_http_client = HTTPXClient()
+resend.default_http_client = resend.HTTPXClient()
 
 params: resend.Emails.SendParams = {
     "from": "onboarding@resend.dev",
@@ -25,7 +24,7 @@ params: resend.Emails.SendParams = {
 }
 
 
-async def main():
+async def main() -> None:
     # Without Idempotency Key
     email_non_idempotent: resend.Email = await resend.Emails.send_async(params)
     print(f"Sent email without idempotency key: {email_non_idempotent['id']}")
@@ -37,7 +36,9 @@ async def main():
     email_idempotent: resend.Email = await resend.Emails.send_async(params, options)
     print(f"Sent email with idempotency key: {email_idempotent['id']}")
 
-    email_resp: resend.Email = await resend.Emails.get_async(email_id=email_non_idempotent["id"])
+    email_resp: resend.Email = await resend.Emails.get_async(
+        email_id=email_non_idempotent["id"]
+    )
     print(f"Retrieved email: {email_resp['id']}")
     print("Email ID: ", email_resp["id"])
     print("Email from: ", email_resp["from"])

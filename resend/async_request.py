@@ -6,6 +6,7 @@ from typing_extensions import Literal, TypeVar
 import resend
 from resend.exceptions import (NoContentError, ResendError,
                                raise_for_code_and_type)
+from resend.http_client_async import AsyncHTTPClient
 from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
@@ -71,7 +72,9 @@ class AsyncRequest(Generic[T]):
             json_params = None
 
         try:
-            content, _status_code, resp_headers = await resend.default_http_client.request(
+            # Cast to AsyncHTTPClient for type checking - user must set HTTPXClient
+            async_client = cast(AsyncHTTPClient, resend.default_http_client)
+            content, _status_code, resp_headers = await async_client.request(
                 method=self.verb,
                 url=url,
                 headers=headers,

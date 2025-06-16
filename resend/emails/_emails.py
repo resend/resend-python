@@ -256,7 +256,9 @@ class Emails:
         return resp
 
     @classmethod
-    async def send_async(cls, params: SendParams, options: Optional[SendOptions] = None) -> Email:
+    async def send_async(
+        cls, params: SendParams, options: Optional[SendOptions] = None
+    ) -> Email:
         """
         Send an email through the Resend Email API (async version).
         see more: https://resend.com/docs/api-reference/emails/send-email
