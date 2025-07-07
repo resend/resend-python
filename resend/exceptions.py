@@ -4,7 +4,7 @@ This module defines the base types for platform-wide error
 codes as outlined in https://resend.com/docs/api-reference/errors.
 """
 
-from typing import Any, Dict, Union
+from typing import Any, Dict, NoReturn, Union
 
 
 class ResendError(Exception):
@@ -175,7 +175,7 @@ ERRORS: Dict[str, Dict[str, Any]] = {
 
 def raise_for_code_and_type(
     code: Union[str, int], error_type: str, message: str
-) -> None:
+) -> NoReturn:
     """Raise the appropriate error based on the code and type.
 
     Args:
