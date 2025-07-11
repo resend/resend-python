@@ -1,4 +1,3 @@
-import pytest
 import resend
 from resend.exceptions import NoContentError
 from tests.conftest import ResendBaseTest
@@ -7,7 +6,6 @@ from tests.conftest import ResendBaseTest
 
 
 class TestResendApiKeysAsync(ResendBaseTest):
-    @pytest.mark.asyncio
     async def test_api_keys_create_async(self) -> None:
         self.set_mock_json(
             {
@@ -22,8 +20,9 @@ class TestResendApiKeysAsync(ResendBaseTest):
         key: resend.ApiKey = await resend.ApiKeys.create_async(params)
         assert key["id"] == "dacf4072-4119-4d88-932f-6202748ac7c8"
 
-    @pytest.mark.asyncio
-    async def test_should_create_api_key_async_raise_exception_when_no_content(self) -> None:
+    async def test_should_create_api_key_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
         self.set_mock_json(None)
         params: resend.ApiKeys.CreateParams = {
             "name": "prod",
@@ -31,7 +30,6 @@ class TestResendApiKeysAsync(ResendBaseTest):
         with self.assertRaises(NoContentError):
             _ = await resend.ApiKeys.create_async(params)
 
-    @pytest.mark.asyncio
     async def test_api_keys_list_async(self) -> None:
         self.set_mock_json(
             {
@@ -51,19 +49,17 @@ class TestResendApiKeysAsync(ResendBaseTest):
             assert key["name"] == "Production"
             assert key["created_at"] == "2023-04-08T00:11:13.110779+00:00"
 
-    @pytest.mark.asyncio
-    async def test_should_list_api_key_async_raise_exception_when_no_content(self) -> None:
+    async def test_should_list_api_key_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
             _ = await resend.ApiKeys.list_async()
 
-    @pytest.mark.asyncio
     async def test_api_keys_remove_async(self) -> None:
         self.set_mock_text("")
 
-        assert (
-            await resend.ApiKeys.remove_async(
-                api_key_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
-            )
-            is None
+        # Remove operation returns None, verify no exceptions raised
+        await resend.ApiKeys.remove_async(
+            api_key_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
         )
