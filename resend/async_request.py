@@ -6,6 +6,7 @@ from typing_extensions import Literal, TypeVar
 import resend
 from resend.exceptions import (NoContentError, ResendError,
                                raise_for_code_and_type)
+from resend.http_client_async import AsyncHTTPClient
 from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
@@ -15,7 +16,7 @@ ParamsType = Union[Dict[str, Any], List[Dict[str, Any]]]
 HeadersType = Dict[str, str]
 
 
-class Request(Generic[T]):
+class AsyncRequest(Generic[T]):
     def __init__(
         self,
         path: str,
@@ -28,8 +29,8 @@ class Request(Generic[T]):
         self.verb = verb
         self.options = options
 
-    def perform(self) -> Union[T, None]:
-        data = self.make_request(url=f"{resend.api_url}{self.path}")
+    async def perform(self) -> Union[T, None]:
+        data = await self.make_request(url=f"{resend.api_url}{self.path}")
 
         if isinstance(data, dict) and data.get("statusCode") not in (None, 200):
             raise_for_code_and_type(
@@ -40,8 +41,8 @@ class Request(Generic[T]):
 
         return cast(T, data)
 
-    def perform_with_content(self) -> T:
-        resp = self.perform()
+    async def perform_with_content(self) -> T:
+        resp = await self.perform()
         if resp is None:
             raise NoContentError()
         return resp
@@ -58,7 +59,7 @@ class Request(Generic[T]):
 
         return headers
 
-    def make_request(self, url: str) -> Union[Dict[str, Any], List[Any]]:
+    async def make_request(self, url: str) -> Union[Dict[str, Any], List[Any]]:
         headers = self.__get_headers()
 
         if isinstance(self.params, dict):
@@ -71,12 +72,9 @@ class Request(Generic[T]):
             json_params = None
 
         try:
-            # Cast to HTTPClient for type checking - sync context expects sync client
-            from resend.http_client import HTTPClient
-
-            sync_client = cast(HTTPClient, resend.default_http_client)
-
-            content, _status_code, resp_headers = sync_client.request(
+            # Cast to AsyncHTTPClient for type checking - user must set HTTPXClient
+            async_client = cast(AsyncHTTPClient, resend.default_http_client)
+            content, _status_code, resp_headers = await async_client.request(
                 method=self.verb,
                 url=url,
                 headers=headers,
