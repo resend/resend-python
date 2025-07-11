@@ -55,3 +55,44 @@ params: resend.Emails.SendParams = {
 email: resend.Email = resend.Emails.send(params)
 print(email)
 ```
+
+## Async Support
+
+The SDK supports async operations for improved performance in async applications. To use async features, you need to install the async dependencies:
+
+```bash
+pip install resend[async]
+```
+
+### Async Example
+
+```py
+import asyncio
+import os
+import resend
+
+resend.api_key = "re_yourkey"
+# Set up async HTTP client
+resend.default_http_client = resend.HTTPXClient()
+
+async def main():
+    params: resend.Emails.SendParams = {
+        "from": "onboarding@resend.dev",
+        "to": ["delivered@resend.dev"],
+        "subject": "hi",
+        "html": "<strong>hello, world!</strong>",
+        "reply_to": "to@gmail.com",
+        "bcc": "bcc@resend.dev",
+        "cc": ["cc@resend.dev"],
+        "tags": [
+            {"name": "tag1", "value": "tagvalue1"},
+            {"name": "tag2", "value": "tagvalue2"},
+        ],
+    }
+
+    email: resend.Email = await resend.Emails.send_async(params)
+    print(email)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
