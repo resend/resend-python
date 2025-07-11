@@ -61,6 +61,7 @@ __all__ = [
     "Broadcast",
     # HTTP Clients
     "HTTPClient",
+    # Default HTTP Client
     "RequestsClient",
 ]
 
