@@ -27,3 +27,18 @@ class Attachment(TypedDict):
     """
     Content ID for inline attachments used in HTML content with cid: references
     """
+
+
+class RemoteAttachment(TypedDict):
+    path: str
+    """
+    Path where the remote attachment file is hosted
+    """
+    filename: NotRequired[str]
+    """
+    Name of attached file.
+    """
+    inline_content_id: NotRequired[str]
+    """
+    Content ID for inline attachments used in HTML content with cid: references
+    """
