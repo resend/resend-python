@@ -10,7 +10,7 @@ from .contacts._contact import Contact
 from .contacts._contacts import Contacts
 from .domains._domain import Domain
 from .domains._domains import Domains
-from .emails._attachment import Attachment
+from .emails._attachment import Attachment, RemoteAttachment
 from .emails._batch import Batch
 from .emails._email import Email
 from .emails._emails import Emails
@@ -48,6 +48,7 @@ __all__ = [
     "ApiKey",
     "Email",
     "Attachment",
+    "RemoteAttachment",
     "Tag",
     "Broadcast",
     # Default HTTP Client

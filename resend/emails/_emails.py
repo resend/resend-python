@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Union, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
-from resend.emails._attachment import Attachment
+from resend.emails._attachment import Attachment, RemoteAttachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
 
@@ -95,7 +95,7 @@ class _SendParamsDefault(_SendParamsFrom):
     """
     Custom headers to be added to the email.
     """
-    attachments: NotRequired[List[Attachment]]
+    attachments: NotRequired[List[Union[Attachment, RemoteAttachment]]]
     """
     List of attachments to be added to the email.
     """
@@ -153,7 +153,7 @@ class Emails:
             html (NotRequired[str]): The HTML content of the email.
             text (NotRequired[str]): The text content of the email.
             headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
-            attachments (NotRequired[List[Attachment]]): List of attachments to be added to the email.
+            attachments (NotRequired[List[Union[Attachment, RemoteAttachment]]]): List of attachments to be added to the email.
             tags (NotRequired[List[Tag]]): List of tags to be added to the email.
         """
 

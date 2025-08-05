@@ -109,3 +109,50 @@ class TestResendEmail(ResendBaseTest):
             email_id="49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
         )
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
+    def test_email_send_with_attachment(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            }
+        )
+
+        attachment: resend.Attachment = {
+            "filename": "test.pdf",
+            "content": [1, 2, 3, 4, 5],
+            "content_type": "application/pdf",
+        }
+
+        params: resend.Emails.SendParams = {
+            "to": "to@email.com",
+            "from": "from@email.com",
+            "subject": "subject",
+            "html": "html",
+            "attachments": [attachment],
+        }
+        email: resend.Email = resend.Emails.send(params)
+        assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
+    def test_email_send_with_inline_attachment(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            }
+        )
+
+        attachment: resend.Attachment = {
+            "filename": "image.png",
+            "content": [1, 2, 3, 4, 5],
+            "content_type": "image/png",
+            "inline_content_id": "my-image",
+        }
+
+        params: resend.Emails.SendParams = {
+            "to": "to@email.com",
+            "from": "from@email.com",
+            "subject": "subject",
+            "html": '<img src="cid:my-image" />',
+            "attachments": [attachment],
+        }
+        email: resend.Email = resend.Emails.send(params)
+        assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
