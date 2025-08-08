@@ -25,6 +25,10 @@ class Attachment(TypedDict):
     """
     inline_content_id: NotRequired[str]
     """
+    Alternative way to set the Content ID for inline attachments (same as content_id)
+    """
+    content_id: NotRequired[str]
+    """
     Content ID for inline attachments used in HTML content with cid: references
     """
 
@@ -39,6 +43,10 @@ class RemoteAttachment(TypedDict):
     Name of attached file.
     """
     inline_content_id: NotRequired[str]
+    """
+    Alternative way to set the Content ID for inline attachments (same as content_id)
+    """
+    content_id: NotRequired[str]
     """
     Content ID for inline attachments used in HTML content with cid: references
     """

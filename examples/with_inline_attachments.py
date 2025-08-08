@@ -31,11 +31,11 @@ local_email: resend.Email = resend.Emails.send(local_params)
 print("Sent email with local inline attachment")
 print(local_email)
 
-# Send email with remote inline attachment
+# Send email with remote inline attachment using content_id
 remote_attachment: resend.RemoteAttachment = {
     "filename": "remote-resend-wordmark-black.png",
     "path": "https://resend.com/static/brand/resend-wordmark-black.png",
-    "inline_content_id": "my-test-image",
+    "content_id": "my-test-image",  # Using content_id as alternative to inline_content_id
 }
 
 remote_params: resend.Emails.SendParams = {

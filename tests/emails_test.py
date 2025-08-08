@@ -144,7 +144,7 @@ class TestResendEmail(ResendBaseTest):
             "filename": "image.png",
             "content": [1, 2, 3, 4, 5],
             "content_type": "image/png",
-            "inline_content_id": "my-image",
+            "content_id": "my-image",
         }
 
         params: resend.Emails.SendParams = {
