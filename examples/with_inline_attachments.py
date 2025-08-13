@@ -16,7 +16,7 @@ local_attachment: resend.Attachment = {
     "content": list(f),
     "content_type": "image/png",
     # This is the content ID that will be used in the HTML to reference the image
-    "inline_content_id": "my-test-image",
+    "content_id": "my-test-image",
 }
 
 local_params: resend.Emails.SendParams = {
@@ -35,7 +35,7 @@ print(local_email)
 remote_attachment: resend.RemoteAttachment = {
     "filename": "remote-resend-wordmark-black.png",
     "path": "https://resend.com/static/brand/resend-wordmark-black.png",
-    "content_id": "my-test-image",  # Using content_id as alternative to inline_content_id
+    "content_id": "my-test-image",
 }
 
 remote_params: resend.Emails.SendParams = {
