@@ -1,4 +1,5 @@
 import os
+from typing import Union
 
 from .api_keys._api_key import ApiKey
 from .api_keys._api_keys import ApiKeys
@@ -16,16 +17,24 @@ from .emails._email import Email
 from .emails._emails import Emails
 from .emails._tag import Tag
 from .http_client import HTTPClient
+from .http_client_async import \
+    AsyncHTTPClient  # Okay to import AsyncHTTPClient since it is just an interface.
 from .http_client_requests import RequestsClient
 from .request import Request
 from .version import __version__, get_version
+
+# Type for clients that support both sync and async
+ResendHTTPClient = Union[HTTPClient, AsyncHTTPClient]
+
+# This is the client that is set by default HTTP Client
+# But this can be overridden by the user and set to an async client.
+default_http_client: ResendHTTPClient = RequestsClient()
+
 
 # Config vars
 api_key = os.environ.get("RESEND_API_KEY")
 api_url = os.environ.get("RESEND_API_URL", "https://api.resend.com")
 
-# HTTP Client
-default_http_client: HTTPClient = RequestsClient()
 
 # API resources
 from .emails._emails import Emails  # noqa
@@ -51,6 +60,17 @@ __all__ = [
     "RemoteAttachment",
     "Tag",
     "Broadcast",
+    # HTTP Clients
+    "HTTPClient",
     # Default HTTP Client
     "RequestsClient",
 ]
+
+# Add async exports if available
+try:
+    from .async_request import AsyncRequest  # noqa: F401
+    from .http_client_httpx import HTTPXClient  # noqa: F401
+
+    __all__.extend(["AsyncHTTPClient", "HTTPXClient", "AsyncRequest"])
+except ImportError:
+    pass
