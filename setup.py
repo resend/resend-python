@@ -22,7 +22,6 @@ setup(
     python_requires=">=3.7",
     keywords=["email", "email platform"],
     classifiers=[
-        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",

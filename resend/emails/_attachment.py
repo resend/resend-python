@@ -19,3 +19,34 @@ class Attachment(TypedDict):
     """
     Path where the attachment file is hosted
     """
+    content_type: NotRequired[str]
+    """
+    Content type for the attachment, if not set will be derived from the filename property
+    """
+    inline_content_id: NotRequired[str]
+    """
+    Alternative way to set the Content ID for inline attachments (same as content_id)
+    """
+    content_id: NotRequired[str]
+    """
+    Content ID for inline attachments used in HTML content with cid: references
+    """
+
+
+class RemoteAttachment(TypedDict):
+    path: str
+    """
+    Path where the remote attachment file is hosted
+    """
+    filename: NotRequired[str]
+    """
+    Name of attached file.
+    """
+    inline_content_id: NotRequired[str]
+    """
+    Alternative way to set the Content ID for inline attachments (same as content_id)
+    """
+    content_id: NotRequired[str]
+    """
+    Content ID for inline attachments used in HTML content with cid: references
+    """

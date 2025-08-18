@@ -1,10 +1,12 @@
 from typing import Any, Dict, List, Union, cast
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 from resend.domains._domain import Domain, DomainObject, ShortDomain
 from resend.domains._record import Record
+
+TlsOptions = Literal["enforced", "opportunistic"]
 
 
 class _ListResponse(TypedDict):
@@ -109,6 +111,17 @@ class Domains:
         """
         Track the open rate of each email.
         """
+        tls: NotRequired[TlsOptions]
+        """
+        default: "opportunistic"
+        opportunistic: Opportunistic TLS means that it always attempts to make a
+        secure connection to the receiving mail server.
+        If it can't establish a secure connection, it sends the message unencrypted.
+
+        enforced: Enforced TLS on the other hand, requires that the email
+        communication must use TLS no matter what.
+        If the receiving server does not support TLS, the email will not be sent.
+        """
 
     class CreateParams(TypedDict):
         name: str
@@ -119,6 +132,12 @@ class Domains:
         """
         The region where emails will be sent from.
         Possible values: us-east-1' | 'eu-west-1' | 'sa-east-1' | 'ap-northeast-1'
+        """
+        custom_return_path: NotRequired[str]
+        """
+        By default, Resend will use the `send` subdomain for the Return-Path address.
+        You can change this by setting the optional `custom_return_path` parameter
+        when creating a domain via the API or under Advanced options in the dashboard.
         """
 
     @classmethod

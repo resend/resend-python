@@ -1,102 +1,108 @@
-from typing import Any, Dict, Generic, List, Union, cast
+import json
+from typing import Any, Dict, Generic, List, Optional, Union, cast
 
-import requests
 from typing_extensions import Literal, TypeVar
 
 import resend
-from resend.exceptions import NoContentError, raise_for_code_and_type
+from resend.exceptions import (NoContentError, ResendError,
+                               raise_for_code_and_type)
 from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
-
 T = TypeVar("T")
 
+ParamsType = Union[Dict[str, Any], List[Dict[str, Any]]]
+HeadersType = Dict[str, str]
 
-# This class wraps the HTTP request creation logic
+
 class Request(Generic[T]):
     def __init__(
         self,
         path: str,
-        params: Union[Dict[Any, Any], List[Dict[Any, Any]]],
+        params: ParamsType,
         verb: RequestVerb,
+        options: Optional[Dict[str, Any]] = None,
     ):
         self.path = path
         self.params = params
         self.verb = verb
+        self.options = options
 
     def perform(self) -> Union[T, None]:
-        """Is the main function that makes the HTTP request
-        to the Resend API. It uses the path, params, and verb attributes
-        to make the request.
+        data = self.make_request(url=f"{resend.api_url}{self.path}")
 
-        Returns:
-            Union[T, None]: A generic type of the Request class or None
-
-        Raises:
-            requests.HTTPError: If the request fails
-        """
-        resp = self.make_request(url=f"{resend.api_url}{self.path}")
-        # delete calls do not return a body
-        if resp.text == "" and resp.status_code == 200:
-            return None
-
-        # handle error in case there is a statusCode attr present
-        # and status != 200
-        if resp.status_code != 200 and resp.json().get("statusCode"):
-            error = resp.json()
+        if isinstance(data, dict) and data.get("statusCode") not in (None, 200):
             raise_for_code_and_type(
-                code=error.get("statusCode"),
-                message=error.get("message"),
-                error_type=error.get("name"),
+                code=data.get("statusCode") or 500,
+                message=data.get("message", "Unknown error"),
+                error_type=data.get("name", "InternalServerError"),
             )
-        return cast(T, resp.json())
+
+        return cast(T, data)
 
     def perform_with_content(self) -> T:
-        """
-        Perform an HTTP request and return the response content.
-
-        Returns:
-            T: The content of the response
-
-        Raises:
-            NoContentError: If the response content is `None`.
-        """
         resp = self.perform()
         if resp is None:
             raise NoContentError()
         return resp
 
-    def __get_headers(self) -> Dict[Any, Any]:
-        """get_headers returns the HTTP headers that will be
-        used for every req.
-
-        Returns:
-            Dict: configured HTTP Headers
-        """
-        return {
+    def __get_headers(self) -> HeadersType:
+        headers: HeadersType = {
             "Accept": "application/json",
             "Authorization": f"Bearer {resend.api_key}",
             "User-Agent": f"resend-python:{get_version()}",
         }
 
-    def make_request(self, url: str) -> requests.Response:
-        """make_request is a helper function that makes the actual
-        HTTP request to the Resend API.
+        if self.verb == "post" and self.options and "idempotency_key" in self.options:
+            headers["Idempotency-Key"] = str(self.options["idempotency_key"])
 
-        Args:
-            url (str): The URL to make the request to
+        return headers
 
-        Returns:
-            requests.Response: The response object from the request
-
-        Raises:
-            requests.HTTPError: If the request fails
-        """
+    def make_request(self, url: str) -> Union[Dict[str, Any], List[Any]]:
         headers = self.__get_headers()
-        params = self.params
-        verb = self.verb
+
+        if isinstance(self.params, dict):
+            json_params: Optional[Union[Dict[str, Any], List[Any]]] = {
+                str(k): v for k, v in self.params.items()
+            }
+        elif isinstance(self.params, list):
+            json_params = [dict(item) for item in self.params]
+        else:
+            json_params = None
 
         try:
-            return requests.request(verb, url, json=params, headers=headers)
-        except requests.HTTPError as e:
-            raise e
+            content, _status_code, resp_headers = resend.default_http_client.request(
+                method=self.verb,
+                url=url,
+                headers=headers,
+                json=json_params,
+            )
+
+        # Safety net around the HTTP Client
+        except Exception as e:
+            raise ResendError(
+                code=500,
+                message=str(e),
+                error_type="HttpClientError",
+                suggested_action="Request failed, please try again.",
+            )
+
+        content_type = {k.lower(): v for k, v in resp_headers.items()}.get(
+            "content-type", ""
+        )
+
+        if "application/json" not in content_type:
+            raise_for_code_and_type(
+                code=500,
+                message=f"Expected JSON response but got: {content_type}",
+                error_type="InternalServerError",
+            )
+
+        try:
+            return cast(Union[Dict[str, Any], List[Any]], json.loads(content))
+        except json.JSONDecodeError:
+            raise_for_code_and_type(
+                code=500,
+                message="Failed to decode JSON response",
+                error_type="InternalServerError",
+            )

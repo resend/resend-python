@@ -10,13 +10,12 @@ if not os.environ["RESEND_API_KEY"]:
 create_params: resend.Domains.CreateParams = {
     "name": "example.com",
     "region": "us-east-1",
+    "custom_return_path": "outbound",
 }
 domain: resend.Domains.CreateResponse = resend.Domains.create(params=create_params)
 print(domain)
 
 retrieved: resend.Domain = resend.Domains.get(domain_id=domain["id"])
-print(retrieved)
-
 if retrieved["records"] is not None:
     for record in retrieved["records"]:
         print(record)
@@ -25,6 +24,7 @@ update_params: resend.Domains.UpdateParams = {
     "id": domain["id"],
     "open_tracking": True,
     "click_tracking": True,
+    "tls": "enforced",
 }
 
 updated_domain: resend.Domains.UpdateResponse = resend.Domains.update(update_params)

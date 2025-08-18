@@ -50,6 +50,19 @@ class TestResendContacts(ResendBaseTest):
         contact = resend.Contacts.update(params)
         assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
 
+    def test_contacts_update_missing_required_params(self) -> None:
+
+        params: resend.Contacts.UpdateParams = {
+            "audience_id": "48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
+            "first_name": "Updated",
+            "unsubscribed": True,
+        }
+
+        try:
+            resend.Contacts.update(params)
+        except ValueError as e:
+            assert str(e) == "id or email must be provided"
+
     def test_should_update_contacts_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
         params: resend.Contacts.UpdateParams = {
@@ -85,6 +98,40 @@ class TestResendContacts(ResendBaseTest):
         assert contact["last_name"] == "Wozniak"
         assert contact["created_at"] == "2023-10-06T23:47:56.678Z"
         assert contact["unsubscribed"] is False
+
+    def test_contacts_get_by_email(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "contact",
+                "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
+                "email": "steve@woz.com",
+                "first_name": "Steve",
+                "last_name": "Wozniak",
+                "created_at": "2023-10-06T23:47:56.678Z",
+                "unsubscribed": False,
+            }
+        )
+
+        contact: resend.Contact = resend.Contacts.get(
+            email="steve@woz.com",
+            audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
+        )
+        assert contact["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
+        assert contact["email"] == "steve@woz.com"
+        assert contact["first_name"] == "Steve"
+        assert contact["last_name"] == "Wozniak"
+        assert contact["created_at"] == "2023-10-06T23:47:56.678Z"
+        assert contact["unsubscribed"] is False
+
+    def test_contacts_get_raises(self) -> None:
+        resend.api_key = "re_123"
+
+        with self.assertRaises(ValueError) as context:
+            resend.Contacts.get(
+                audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
+            )
+
+        self.assertEqual("id or email must be provided", str(context.exception))
 
     def test_should_get_contacts_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)

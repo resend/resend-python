@@ -1,0 +1,8 @@
+[flake8]
+exclude =
+    __pycache__
+    .tox
+    build
+    .pytest_cache
+    .mypy_cache
+    .vscode

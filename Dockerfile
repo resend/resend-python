@@ -1,4 +1,4 @@
-FROM python:3.8.0
+FROM python:3.13.4
 
 RUN pip install --upgrade pip
 
@@ -7,6 +7,8 @@ ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 RUN pip install tox
+RUN pip install setuptools==68.2.2
+RUN pip install wheel
 
 ENV APP_HOME /app
 
