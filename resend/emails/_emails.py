@@ -61,7 +61,6 @@ _SendParamsFrom = TypedDict(
     },
 )
 
-
 class _SendParamsDefault(_SendParamsFrom):
     to: Union[str, List[str]]
     """
@@ -108,7 +107,6 @@ class _SendParamsDefault(_SendParamsFrom):
     Schedule email to be sent later.
     The date should be in ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
     """
-
 
 class Emails:
 
@@ -166,9 +164,15 @@ class Emails:
             Allows for safe retries without duplicating operations.
             If provided, will be sent as the `Idempotency-Key` header.
         """
+    
+    class SendResponse(TypedDict):
+        id: str
+        """
+        The sent Email ID.
+        """
 
     @classmethod
-    def send(cls, params: SendParams, options: Optional[SendOptions] = None) -> Email:
+    def send(cls, params: SendParams, options: Optional[SendOptions] = None) -> SendResponse:
         """
         Send an email through the Resend Email API.
         see more: https://resend.com/docs/api-reference/emails/send-email
@@ -178,7 +182,7 @@ class Emails:
             options (SendOptions): The email options
 
         Returns:
-            Email: The email object that was sent
+            id: The ID of the sent email
         """
         path = "/emails"
         resp = request.Request[Email](
