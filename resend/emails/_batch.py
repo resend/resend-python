@@ -6,11 +6,13 @@ from resend import request
 
 from ._emails import Emails
 
+
 class SendEmailResponse(TypedDict):
     id: str
     """
     The sent Email ID.
     """
+
 
 class Batch:
 

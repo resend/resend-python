@@ -53,6 +53,7 @@ class _EmailDefaultAttrs(_FromParam):
     The last event of the email.
     """
 
+
 class Email(_EmailDefaultAttrs):
     """
     Email type that wraps the email object

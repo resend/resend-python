@@ -61,6 +61,7 @@ _SendParamsFrom = TypedDict(
     },
 )
 
+
 class _SendParamsDefault(_SendParamsFrom):
     to: Union[str, List[str]]
     """
@@ -107,6 +108,7 @@ class _SendParamsDefault(_SendParamsFrom):
     Schedule email to be sent later.
     The date should be in ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
     """
+
 
 class Emails:
 
