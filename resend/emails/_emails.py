@@ -166,7 +166,7 @@ class Emails:
             Allows for safe retries without duplicating operations.
             If provided, will be sent as the `Idempotency-Key` header.
         """
-    
+
     class SendResponse(TypedDict):
         id: str
         """
