@@ -17,7 +17,6 @@ class SendEmailResponse(TypedDict):
 class Batch:
 
     class SendOptions(TypedDict):
-        idempotency_key: NotRequired[str]
         """
         SendOptions is the class that wraps the options for the batch send method.
 
@@ -25,6 +24,13 @@ class Batch:
             idempotency_key (NotRequired[str]): Unique key that ensures the same operation is not processed multiple times.
             Allows for safe retries without duplicating operations.
             If provided, will be sent as the `Idempotency-Key` header.
+        """
+
+        idempotency_key: NotRequired[str]
+        """
+        Unique key that ensures the same operation is not processed multiple times.
+        Allows for safe retries without duplicating operations.
+        If provided, will be sent as the `Idempotency-Key` header.
         """
 
     class SendResponse(TypedDict):

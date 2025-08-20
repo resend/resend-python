@@ -21,7 +21,7 @@ class TestResendEmail(ResendBaseTest):
             "subject": "subject",
             "html": "html",
         }
-        email: resend.Email = resend.Emails.send(params)
+        email: resend.Emails.SendResponse = resend.Emails.send(params)
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
 
     def test_should_send_email_raise_exception_when_no_content(self) -> None:
@@ -130,7 +130,7 @@ class TestResendEmail(ResendBaseTest):
             "html": "html",
             "attachments": [attachment],
         }
-        email: resend.Email = resend.Emails.send(params)
+        email: resend.Emails.SendResponse = resend.Emails.send(params)
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
 
     def test_email_send_with_inline_attachment(self) -> None:
@@ -154,5 +154,5 @@ class TestResendEmail(ResendBaseTest):
             "html": '<img src="cid:my-image" />',
             "attachments": [attachment],
         }
-        email: resend.Email = resend.Emails.send(params)
+        email: resend.Emails.SendResponse = resend.Emails.send(params)
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"

@@ -27,7 +27,7 @@ local_params: resend.Emails.SendParams = {
     "attachments": [local_attachment],
 }
 
-local_email: resend.Email = resend.Emails.send(local_params)
+local_email: resend.Emails.SendResponse = resend.Emails.send(local_params)
 print("Sent email with local inline attachment")
 print(local_email)
 
@@ -46,6 +46,6 @@ remote_params: resend.Emails.SendParams = {
     "attachments": [remote_attachment],
 }
 
-remote_email: resend.Email = resend.Emails.send(remote_params)
+remote_email: resend.Emails.SendResponse = resend.Emails.send(remote_params)
 print("Sent email with remote inline attachment")
 print(remote_email)

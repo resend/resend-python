@@ -8,15 +8,6 @@ from resend.emails._email import Email
 from resend.emails._tag import Tag
 
 
-class _SendOptions(TypedDict):
-    idempotency_key: NotRequired[str]
-    """
-    Unique key that ensures the same operation is not processed multiple times.
-    Allows for safe retries without duplicating operations.
-    If provided, will be sent as the `Idempotency-Key` header.
-    """
-
-
 class _UpdateParams(TypedDict):
     id: str
     """
@@ -157,7 +148,7 @@ class Emails:
             tags (NotRequired[List[Tag]]): List of tags to be added to the email.
         """
 
-    class SendOptions(_SendOptions):
+    class SendOptions(TypedDict):
         """
         SendOptions is the class that wraps the options for the send method.
 
@@ -167,14 +158,30 @@ class Emails:
             If provided, will be sent as the `Idempotency-Key` header.
         """
 
+        idempotency_key: NotRequired[str]
+        """
+        Unique key that ensures the same operation is not processed multiple times.
+        Allows for safe retries without duplicating operations.
+        If provided, will be sent as the `Idempotency-Key` header.
+        """
+
     class SendResponse(TypedDict):
+        """
+        SendResponse is the type that wraps the response of the email that was sent.
+
+        Attributes:
+            id (str): The ID of the sent email
+        """
+
         id: str
         """
         The sent Email ID.
         """
 
     @classmethod
-    def send(cls, params: SendParams, options: Optional[SendOptions] = None) -> SendResponse:
+    def send(
+        cls, params: SendParams, options: Optional[SendOptions] = None
+    ) -> SendResponse:
         """
         Send an email through the Resend Email API.
         see more: https://resend.com/docs/api-reference/emails/send-email
