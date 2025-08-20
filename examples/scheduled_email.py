@@ -19,7 +19,7 @@ params: resend.Emails.SendParams = {
 # Here is an example on how to create a date in the ISO 8601 format:
 # from datetime import datetime
 # datetime.now().isoformat()
-email: resend.Email = resend.Emails.send(params)
+email: resend.Emails.SendResponse = resend.Emails.send(params)
 
 print(f"Email scheduled: {email['id']}")
 

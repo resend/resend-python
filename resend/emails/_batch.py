@@ -4,29 +4,19 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 
-from ._email import Email
 from ._emails import Emails
 
 
-class _SendOptions(TypedDict):
-    idempotency_key: NotRequired[str]
+class SendEmailResponse(TypedDict):
+    id: str
     """
-    Unique key that ensures the same operation is not processed multiple times.
-    Allows for safe retries without duplicating operations.
-    If provided, will be sent as the `Idempotency-Key` header.
-    """
-
-
-class _SendResponse(TypedDict):
-    data: List[Email]
-    """
-    A list of email objects
+    The sent Email ID.
     """
 
 
 class Batch:
 
-    class SendOptions(_SendOptions):
+    class SendOptions(TypedDict):
         """
         SendOptions is the class that wraps the options for the batch send method.
 
@@ -36,12 +26,17 @@ class Batch:
             If provided, will be sent as the `Idempotency-Key` header.
         """
 
-    class SendResponse(_SendResponse):
+        idempotency_key: NotRequired[str]
         """
-        SendResponse type that wraps a list of email objects
+        Unique key that ensures the same operation is not processed multiple times.
+        Allows for safe retries without duplicating operations.
+        If provided, will be sent as the `Idempotency-Key` header.
+        """
 
-        Attributes:
-            data (List[Email]): A list of email objects
+    class SendResponse(TypedDict):
+        data: List[SendEmailResponse]
+        """
+        A list of email objects
         """
 
     @classmethod
@@ -61,7 +56,7 @@ class Batch:
         """
         path = "/emails/batch"
 
-        resp = request.Request[_SendResponse](
+        resp = request.Request[Batch.SendResponse](
             path=path,
             params=cast(List[Dict[Any, Any]], params),
             verb="post",
