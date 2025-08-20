@@ -6,21 +6,37 @@ from resend import request
 from resend.api_keys._api_key import ApiKey
 
 
-class _ListResponse(TypedDict):
-    data: List[ApiKey]
-    """
-    A list of API key objects
-    """
-
-
 class ApiKeys:
 
-    class ListResponse(_ListResponse):
+    class ListResponse(TypedDict):
         """
         ListResponse type that wraps a list of API key objects
 
         Attributes:
             data (List[Dict[str, Any]]): A list of API key objects
+        """
+
+        data: List[ApiKey]
+        """
+        A list of API key objects
+        """
+
+    class CreateApiKeyResponse(TypedDict):
+        """
+        CreateApiKeyResponse is the type that wraps the response of the API key that was created
+
+        Attributes:
+            id (str): The ID of the created API key
+            token (str): The token of the created API key
+        """
+
+        id: str
+        """
+        The ID of the created API key
+        """
+        token: str
+        """
+        The token of the created API key
         """
 
     class CreateParams(TypedDict):
@@ -41,7 +57,7 @@ class ApiKeys:
         """
 
     @classmethod
-    def create(cls, params: CreateParams) -> ApiKey:
+    def create(cls, params: CreateParams) -> CreateApiKeyResponse:
         """
         Add a new API key to authenticate communications with Resend.
         see more: https://resend.com/docs/api-reference/api-keys/create-api-key
@@ -50,10 +66,10 @@ class ApiKeys:
             params (CreateParams): The API key creation parameters
 
         Returns:
-            ApiKey: The new API key object
+            CreateApiKeyResponse: The created API key response with id and token
         """
         path = "/api-keys"
-        resp = request.Request[ApiKey](
+        resp = request.Request[ApiKeys.CreateApiKeyResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
@@ -68,7 +84,7 @@ class ApiKeys:
             ListResponse: A list of API key objects
         """
         path = "/api-keys"
-        resp = request.Request[_ListResponse](
+        resp = request.Request[ApiKeys.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp

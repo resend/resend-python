@@ -10,7 +10,7 @@ create_params: resend.ApiKeys.CreateParams = {
     "name": "example.com",
 }
 
-key: resend.ApiKey = resend.ApiKeys.create(params=create_params)
+key: resend.ApiKeys.CreateApiKeyResponse = resend.ApiKeys.create(params=create_params)
 print("Created new api key")
 print(f"Key id: {key['id']} and token: {key['token']}")
 
