@@ -12,7 +12,9 @@ create_params: resend.Domains.CreateParams = {
     "region": "us-east-1",
     "custom_return_path": "outbound",
 }
-domain: resend.Domain = resend.Domains.create(params=create_params)
+domain: resend.Domains.CreateDomainResponse = resend.Domains.create(
+    params=create_params
+)
 print(domain)
 
 retrieved: resend.Domain = resend.Domains.get(domain_id=domain["id"])
