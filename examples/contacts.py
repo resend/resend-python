@@ -17,8 +17,8 @@ create_params: resend.Contacts.CreateParams = {
     "unsubscribed": False,
 }
 
-contact: resend.Contact = resend.Contacts.create(create_params)
-print("Created contact !")
+contact: resend.Contacts.CreateContactResponse = resend.Contacts.create(create_params)
+print("Created contact with ID: {}".format(contact["id"]))
 print(contact)
 
 update_params: resend.Contacts.UpdateParams = {
@@ -28,8 +28,8 @@ update_params: resend.Contacts.UpdateParams = {
     "first_name": "Steve",
 }
 
-updated: resend.Contact = resend.Contacts.update(update_params)
-print("updated contact !")
+updated: resend.Contacts.UpdateContactResponse = resend.Contacts.update(update_params)
+print("updated contact with ID: {}".format(updated["id"]))
 print(updated)
 
 cont_by_id: resend.Contact = resend.Contacts.get(
@@ -46,11 +46,11 @@ print(cont_by_email)
 
 contacts: resend.Contacts.ListResponse = resend.Contacts.list(audience_id=audience_id)
 print("List of contacts")
-for contact in contacts["data"]:
-    print(contact)
+for c in contacts["data"]:
+    print(c)
 
 # remove by email
-rmed = resend.Contacts.remove(audience_id=audience_id, email=contact["email"])
+rmed = resend.Contacts.remove(audience_id=audience_id, email=cont_by_email["email"])
 
 # remove by id
 # rmed: resend.Contact = resend.Contacts.remove(audience_id=audience_id, id=cont["id"])

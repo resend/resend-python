@@ -18,7 +18,7 @@ class TestResendContacts(ResendBaseTest):
             "last_name": "Wozniak",
             "unsubscribed": True,
         }
-        contact: resend.Contact = resend.Contacts.create(params)
+        contact: resend.Contacts.CreateContactResponse = resend.Contacts.create(params)
         assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
 
     def test_should_create_contacts_raise_exception_when_no_content(self) -> None:
