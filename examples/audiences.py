@@ -10,7 +10,9 @@ if not os.environ["RESEND_API_KEY"]:
 create_params: resend.Audiences.CreateParams = {
     "name": "New Audience from Python SDK",
 }
-audience: resend.Audience = resend.Audiences.create(create_params)
+audience: resend.Audiences.CreateAudienceResponse = resend.Audiences.create(
+    create_params
+)
 print(f"Created audience: {audience['id']}")
 print(audience)
 

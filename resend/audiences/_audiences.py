@@ -7,21 +7,42 @@ from resend import request
 from ._audience import Audience
 
 
-class _ListResponse(TypedDict):
-    data: List[Audience]
-    """
-    A list of audience objects
-    """
-
-
 class Audiences:
 
-    class ListResponse(_ListResponse):
+    class ListResponse(TypedDict):
         """
         ListResponse type that wraps a list of audience objects
 
         Attributes:
             data (List[Audience]): A list of audience objects
+        """
+
+        data: List[Audience]
+        """
+        A list of audience objects
+        """
+
+    class CreateAudienceResponse(TypedDict):
+        """
+        CreateAudienceResponse is the type that wraps the response of the audience that was created
+
+        Attributes:
+            id (str): The ID of the created audience
+            name (str): The name of the created audience
+            created_at (str): When the audience was created
+        """
+
+        id: str
+        """
+        The ID of the created audience
+        """
+        name: str
+        """
+        The name of the created audience
+        """
+        created_at: str
+        """
+        When the audience was created
         """
 
     class CreateParams(TypedDict):
@@ -31,7 +52,7 @@ class Audiences:
         """
 
     @classmethod
-    def create(cls, params: CreateParams) -> Audience:
+    def create(cls, params: CreateParams) -> CreateAudienceResponse:
         """
         Create a list of contacts.
         see more: https://resend.com/docs/api-reference/audiences/create-audience
@@ -40,10 +61,11 @@ class Audiences:
             params (CreateParams): The audience creation parameters
 
         Returns:
-            Audience: The new audience object
+            CreateAudienceResponse: The created audience response
         """
+
         path = "/audiences"
-        resp = request.Request[Audience](
+        resp = request.Request[Audiences.CreateAudienceResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
@@ -58,7 +80,7 @@ class Audiences:
             ListResponse: A list of audience objects
         """
         path = "/audiences/"
-        resp = request.Request[_ListResponse](
+        resp = request.Request[Audiences.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
