@@ -58,7 +58,6 @@ class Audiences:
             object (str): The object type, "audience"
             id (str): The ID of the created audience
             name (str): The name of the created audience
-            created_at (str): When the audience was created
         """
 
         object: str
