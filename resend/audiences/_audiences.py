@@ -27,11 +27,16 @@ class Audiences:
         CreateAudienceResponse is the type that wraps the response of the audience that was created
 
         Attributes:
+            object (str): The object type, "audience"
             id (str): The ID of the created audience
             name (str): The name of the created audience
             created_at (str): When the audience was created
         """
 
+        object: str
+        """
+        The object type, "audience"
+        """
         id: str
         """
         The ID of the created audience
@@ -39,10 +44,6 @@ class Audiences:
         name: str
         """
         The name of the created audience
-        """
-        created_at: str
-        """
-        When the audience was created
         """
 
     class CreateParams(TypedDict):

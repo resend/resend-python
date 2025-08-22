@@ -9,14 +9,42 @@ from ._contact import Contact
 
 class Contacts:
 
+    class RemoveContactResponse(TypedDict):
+        """
+        RemoveContactResponse is the type that wraps the response of the contact that was removed
+
+        Attributes:
+            object (str): 'contact'
+            contact (str): The ID of the removed contact
+            deleted (bool): Whether the contact was deleted
+        """
+
+        object: str
+        """
+        The object type: contact
+        """
+        contact: str
+        """
+        The ID of the removed contact.
+        """
+        deleted: bool
+        """
+        Whether the contact was deleted.
+        """
+
     class ListResponse(TypedDict):
         """
         ListResponse type that wraps a list of contact objects
 
         Attributes:
+            object (str): The object type: list
             data (List[Contact]): A list of contact objects
         """
 
+        object: str
+        """
+        The object type: list
+        """
         data: List[Contact]
         """
         A list of contact objects
@@ -195,7 +223,7 @@ class Contacts:
     @classmethod
     def remove(
         cls, audience_id: str, id: Optional[str] = None, email: Optional[str] = None
-    ) -> Contact:
+    ) -> RemoveContactResponse:
         """
         Remove a contact by ID or by Email
         see more: https://resend.com/docs/api-reference/contacts/delete-contact
@@ -206,14 +234,14 @@ class Contacts:
             email (str): The contact email
 
         Returns:
-            Contact: The removed contact object
+            RemoveContactResponse: The removed contact response object
         """
         contact = email if id is None else id
         if contact is None:
             raise ValueError("id or email must be provided")
         path = f"/audiences/{audience_id}/contacts/{contact}"
 
-        resp = request.Request[Contact](
+        resp = request.Request[Contacts.RemoveContactResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp

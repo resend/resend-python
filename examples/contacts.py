@@ -50,10 +50,12 @@ for c in contacts["data"]:
     print(c)
 
 # remove by email
-rmed = resend.Contacts.remove(audience_id=audience_id, email=cont_by_email["email"])
+rmed: resend.Contacts.RemoveContactResponse = resend.Contacts.remove(
+    audience_id=audience_id, email=cont_by_email["email"]
+)
 
 # remove by id
-# rmed: resend.Contact = resend.Contacts.remove(audience_id=audience_id, id=cont["id"])
+# rmed: resend.Contacts.RemoveContactResponse = resend.Contacts.remove(audience_id=audience_id, id=cont["id"])
 
-print(f"Removed contact")
+print(f"Removed contact with ID: {rmed['contact']}")
 print(rmed)
