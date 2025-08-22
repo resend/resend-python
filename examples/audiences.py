@@ -22,6 +22,8 @@ print("Retrieved audience: ", aud)
 audiences: resend.Audiences.ListResponse = resend.Audiences.list()
 print("List of audiences:", [a["id"] for a in audiences["data"]])
 
-rmed: resend.Audience = resend.Audiences.remove(id=audience["id"])
-print(f"Deleted audience")
+rmed: resend.Audiences.RemoveAudienceResponse = resend.Audiences.remove(
+    id=audience["id"]
+)
+print(f"Deleted audience with ID: {audience['id']}")
 print(rmed)
