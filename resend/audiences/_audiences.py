@@ -37,9 +37,14 @@ class Audiences:
         ListResponse type that wraps a list of audience objects
 
         Attributes:
+            object (str): The object type, "list"
             data (List[Audience]): A list of audience objects
         """
 
+        object: str
+        """
+        The object type, "list"
+        """
         data: List[Audience]
         """
         A list of audience objects
