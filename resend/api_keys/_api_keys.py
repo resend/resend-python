@@ -13,7 +13,7 @@ class ApiKeys:
         ListResponse type that wraps a list of API key objects
 
         Attributes:
-            data (List[Dict[str, Any]]): A list of API key objects
+            data (List[ApiKey]): A list of API key objects
         """
 
         data: List[ApiKey]
