@@ -59,7 +59,10 @@ class TestResendAudiences(ResendBaseTest):
             }
         )
 
-        rmed = resend.Audiences.remove("78261eea-8f8b-4381-83c6-79fa7120f1cf")
+        rmed: resend.Audiences.RemoveAudienceResponse = resend.Audiences.remove(
+            "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        )
+        assert rmed["object"] == "audience"
         assert rmed["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert rmed["deleted"] is True
 

@@ -7,21 +7,83 @@ from resend import request
 from ._contact import Contact
 
 
-class _ListResponse(TypedDict):
-    data: List[Contact]
-    """
-    A list of contact objects
-    """
-
-
 class Contacts:
 
-    class ListResponse(_ListResponse):
+    class RemoveContactResponse(TypedDict):
+        """
+        RemoveContactResponse is the type that wraps the response of the contact that was removed
+
+        Attributes:
+            object (str): 'contact'
+            contact (str): The ID of the removed contact
+            deleted (bool): Whether the contact was deleted
+        """
+
+        object: str
+        """
+        The object type: contact
+        """
+        contact: str
+        """
+        The ID of the removed contact.
+        """
+        deleted: bool
+        """
+        Whether the contact was deleted.
+        """
+
+    class ListResponse(TypedDict):
         """
         ListResponse type that wraps a list of contact objects
 
         Attributes:
+            object (str): The object type: list
             data (List[Contact]): A list of contact objects
+        """
+
+        object: str
+        """
+        The object type: list
+        """
+        data: List[Contact]
+        """
+        A list of contact objects
+        """
+
+    class CreateContactResponse(TypedDict):
+        """
+        CreateContactResponse is the type that wraps the response of the contact that was created
+
+        Attributes:
+            object (str): The ID of the created contact
+            id (str): The ID of the created contact
+        """
+
+        object: str
+        """
+        The object type: email
+        """
+        id: str
+        """
+        The ID of the scheduled email that was canceled.
+        """
+
+    class UpdateContactResponse(TypedDict):
+        """
+        UpdateContactResponse is the type that wraps the response of the contact that was updated
+
+        Attributes:
+            object (str): The ID of the updated contact
+            id (str): The ID of the updated contact
+        """
+
+        object: str
+        """
+        The object type: email
+        """
+        id: str
+        """
+        The ID of the updated contact.
         """
 
     class CreateParams(TypedDict):
@@ -73,7 +135,7 @@ class Contacts:
         """
 
     @classmethod
-    def create(cls, params: CreateParams) -> Contact:
+    def create(cls, params: CreateParams) -> CreateContactResponse:
         """
         Create a new contact.
         see more: https://resend.com/docs/api-reference/contacts/create-contact
@@ -82,16 +144,17 @@ class Contacts:
             params (CreateParams): The contact creation parameters
 
         Returns:
-            Contact: The new contact object
+            CreateContactResponse: The created contact response
         """
+
         path = f"/audiences/{params['audience_id']}/contacts"
-        resp = request.Request[Contact](
+        resp = request.Request[Contacts.CreateContactResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
 
     @classmethod
-    def update(cls, params: UpdateParams) -> Contact:
+    def update(cls, params: UpdateParams) -> UpdateContactResponse:
         """
         Update an existing contact.
         see more: https://resend.com/docs/api-reference/contacts/update-contact
@@ -100,7 +163,7 @@ class Contacts:
             params (UpdateParams): The contact update parameters
 
         Returns:
-            Contact: The updated contact object
+            UpdateContactResponse: The updated contact response.
         """
         if params.get("id") is None and params.get("email") is None:
             raise ValueError("id or email must be provided")
@@ -108,7 +171,7 @@ class Contacts:
         val = params.get("id") if params.get("id") is not None else params.get("email")
 
         path = f"/audiences/{params['audience_id']}/contacts/{val}"
-        resp = request.Request[Contact](
+        resp = request.Request[Contacts.UpdateContactResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
@@ -126,7 +189,7 @@ class Contacts:
             ListResponse: A list of contact objects
         """
         path = f"/audiences/{audience_id}/contacts"
-        resp = request.Request[_ListResponse](
+        resp = request.Request[Contacts.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
@@ -160,7 +223,7 @@ class Contacts:
     @classmethod
     def remove(
         cls, audience_id: str, id: Optional[str] = None, email: Optional[str] = None
-    ) -> Contact:
+    ) -> RemoveContactResponse:
         """
         Remove a contact by ID or by Email
         see more: https://resend.com/docs/api-reference/contacts/delete-contact
@@ -171,14 +234,14 @@ class Contacts:
             email (str): The contact email
 
         Returns:
-            Contact: The removed contact object
+            RemoveContactResponse: The removed contact response object
         """
         contact = email if id is None else id
         if contact is None:
             raise ValueError("id or email must be provided")
         path = f"/audiences/{audience_id}/contacts/{contact}"
 
-        resp = request.Request[Contact](
+        resp = request.Request[Contacts.RemoveContactResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp

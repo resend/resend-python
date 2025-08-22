@@ -1,28 +1,65 @@
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Union, cast
 
 from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 from resend.domains._domain import Domain
+from resend.domains._record import Record
 
 TlsOptions = Literal["enforced", "opportunistic"]
 
 
-class _ListResponse(TypedDict):
-    data: List[Domain]
-    """
-    A list of domain objects
-    """
-
-
 class Domains:
 
-    class ListResponse(_ListResponse):
+    class ListResponse(TypedDict):
         """
         ListResponse type that wraps a list of domain objects
 
         Attributes:
             data (List[Domain]): A list of domain objects
+        """
+
+        data: List[Domain]
+        """
+        A list of domain objects
+        """
+
+    class CreateDomainResponse(TypedDict):
+        """
+        CreateDomainResponse is the type that wraps the response of the domain that was created
+
+        Attributes:
+            id (str): The ID of the created domain
+            name (str): The name of the created domain
+            created_at (str): When the domain was created
+            status (str): Status of the domain
+            region (str): The region where emails will be sent from
+            records (Union[List[Record], None]): The list of domain records
+        """
+
+        id: str
+        """
+        The ID of the created domain
+        """
+        name: str
+        """
+        The name of the created domain
+        """
+        created_at: str
+        """
+        When the domain was created
+        """
+        status: str
+        """
+        Status of the domain
+        """
+        region: str
+        """
+        The region where emails will be sent from
+        """
+        records: Union[List[Record], None]
+        """
+        The list of domain records
         """
 
     class UpdateParams(TypedDict):
@@ -68,7 +105,7 @@ class Domains:
         """
 
     @classmethod
-    def create(cls, params: CreateParams) -> Domain:
+    def create(cls, params: CreateParams) -> CreateDomainResponse:
         """
         Create a domain through the Resend Email API.
         see more: https://resend.com/docs/api-reference/domains/create-domain
@@ -77,10 +114,10 @@ class Domains:
             params (CreateParams): The domain creation parameters
 
         Returns:
-            Domain: The new domain object
+            CreateDomainResponse: The created domain response
         """
         path = "/domains"
-        resp = request.Request[Domain](
+        resp = request.Request[Domains.CreateDomainResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
@@ -131,7 +168,7 @@ class Domains:
             ListResponse: A list of domain objects
         """
         path = "/domains"
-        resp = request.Request[_ListResponse](
+        resp = request.Request[Domains.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp

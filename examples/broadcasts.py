@@ -1,8 +1,6 @@
 import os
-from typing import List
 
 import resend
-import resend.broadcasts
 
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
@@ -21,7 +19,7 @@ create_params: resend.Broadcasts.CreateParams = {
 }
 
 broadcast: resend.Broadcasts.CreateResponse = resend.Broadcasts.create(create_params)
-print("Created broadcast !")
+print("Created broadcast with ID: {}".format(broadcast["id"]))
 print(broadcast)
 
 update_params: resend.Broadcasts.UpdateParams = {

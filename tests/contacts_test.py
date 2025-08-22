@@ -18,7 +18,7 @@ class TestResendContacts(ResendBaseTest):
             "last_name": "Wozniak",
             "unsubscribed": True,
         }
-        contact: resend.Contact = resend.Contacts.create(params)
+        contact: resend.Contacts.CreateContactResponse = resend.Contacts.create(params)
         assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
 
     def test_should_create_contacts_raise_exception_when_no_content(self) -> None:
@@ -93,8 +93,8 @@ class TestResendContacts(ResendBaseTest):
         )
         assert contact["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
         assert contact["email"] == "steve.wozniak@gmail.com"
-        assert contact["first_name"] == "Steve"
-        assert contact["last_name"] == "Wozniak"
+        assert contact.get("first_name") == "Steve"
+        assert contact.get("last_name") == "Wozniak"
         assert contact["created_at"] == "2023-10-06T23:47:56.678Z"
         assert contact["unsubscribed"] is False
 
@@ -144,7 +144,7 @@ class TestResendContacts(ResendBaseTest):
         self.set_mock_json(
             {
                 "object": "contact",
-                "id": "520784e2-887d-4c25-b53c-4ad46ad38100",
+                "contact": "520784e2-887d-4c25-b53c-4ad46ad38100",
                 "deleted": True,
             }
         )
@@ -153,7 +153,7 @@ class TestResendContacts(ResendBaseTest):
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
             id="78261eea-8f8b-4381-83c6-79fa7120f1cf",
         )
-        assert rmed["id"] == "520784e2-887d-4c25-b53c-4ad46ad38100"
+        assert rmed["contact"] == "520784e2-887d-4c25-b53c-4ad46ad38100"
         assert rmed["deleted"] is True
 
     def test_should_remove_contacts_by_id_raise_exception_when_no_content(self) -> None:
@@ -168,16 +168,16 @@ class TestResendContacts(ResendBaseTest):
         self.set_mock_json(
             {
                 "object": "contact",
-                "id": "520784e2-887d-4c25-b53c-4ad46ad38100",
+                "contact": "520784e2-887d-4c25-b53c-4ad46ad38100",
                 "deleted": True,
             }
         )
 
-        rmed: resend.Contact = resend.Contacts.remove(
+        rmed: resend.Contacts.RemoveContactResponse = resend.Contacts.remove(
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
             email="someemail@email.com",
         )
-        assert rmed["id"] == "520784e2-887d-4c25-b53c-4ad46ad38100"
+        assert rmed["contact"] == "520784e2-887d-4c25-b53c-4ad46ad38100"
         assert rmed["deleted"] is True
 
     def test_should_remove_contacts_by_email_raise_exception_when_no_content(
@@ -222,8 +222,8 @@ class TestResendContacts(ResendBaseTest):
         )
         assert contacts["data"][0]["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
         assert contacts["data"][0]["email"] == "steve.wozniak@gmail.com"
-        assert contacts["data"][0]["first_name"] == "Steve"
-        assert contacts["data"][0]["last_name"] == "Wozniak"
+        assert contacts["data"][0].get("first_name") == "Steve"
+        assert contacts["data"][0].get("last_name") == "Wozniak"
         assert contacts["data"][0]["created_at"] == "2023-10-06T23:47:56.678Z"
         assert contacts["data"][0]["unsubscribed"] is False
 

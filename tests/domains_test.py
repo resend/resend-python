@@ -65,7 +65,9 @@ class TestResendDomains(ResendBaseTest):
             "region": "us-east-1",
             "custom_return_path": "send",
         }
-        domain = resend.Domains.create(params=create_params)
+        domain: resend.Domains.CreateDomainResponse = resend.Domains.create(
+            params=create_params
+        )
         assert domain["id"] == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
         assert domain["name"] == "example.com"
         assert domain["status"] == "not_started"
