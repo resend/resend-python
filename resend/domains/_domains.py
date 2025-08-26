@@ -6,6 +6,12 @@ from resend import request
 from resend.domains._domain import Domain
 from resend.domains._record import Record
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 TlsOptions = Literal["enforced", "opportunistic"]
 
 
@@ -205,6 +211,111 @@ class Domains:
         """
         path = f"/domains/{domain_id}/verify"
         resp = request.Request[Domain](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> Domain:
+        """
+        Create a domain through the Resend Email API (async).
+        see more: https://resend.com/docs/api-reference/domains/create-domain
+
+        Args:
+            params (CreateParams): The domain creation parameters
+
+        Returns:
+            Domain: The new domain object
+        """
+        path = "/domains"
+        resp = await AsyncRequest[Domain](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> Domain:
+        """
+        Update an existing domain (async).
+        see more: https://resend.com/docs/api-reference/domains/update-domain
+
+        Args:
+            params (UpdateParams): The domain update parameters
+
+        Returns:
+            Domain: The updated domain object
+        """
+        path = f"/domains/{params['id']}"
+        resp = await AsyncRequest[Domain](
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, domain_id: str) -> Domain:
+        """
+        Retrieve a single domain for the authenticated user (async).
+        see more: https://resend.com/docs/api-reference/domains/get-domain
+
+        Args:
+            domain_id (str): The domain ID
+
+        Returns:
+            Domain: The domain object
+        """
+        path = f"/domains/{domain_id}"
+        resp = await AsyncRequest[Domain](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls) -> ListResponse:
+        """
+        Retrieve a list of domains for the authenticated user (async).
+        see more: https://resend.com/docs/api-reference/domains/list-domains
+
+        Returns:
+            ListResponse: A list of domain objects
+        """
+        path = "/domains"
+        resp = await AsyncRequest[_ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(cls, domain_id: str) -> Domain:
+        """
+        Remove an existing domain (async).
+        see more: https://resend.com/docs/api-reference/domains/delete-domain
+
+        Args:
+            domain_id (str): The domain ID
+
+        Returns:
+            Domain: The removed domain object
+        """
+        path = f"/domains/{domain_id}"
+        resp = await AsyncRequest[Domain](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def verify_async(cls, domain_id: str) -> Domain:
+        """
+        Verify an existing domain (async).
+        see more: https://resend.com/docs/api-reference/domains/verify-domain
+
+        Args:
+            domain_id (str): The domain ID
+
+        Returns:
+            Domain: The verified domain object
+        """
+        path = f"/domains/{domain_id}/verify"
+        resp = await AsyncRequest[Domain](
             path=path, params={}, verb="post"
         ).perform_with_content()
         return resp

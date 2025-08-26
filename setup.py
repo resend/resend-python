@@ -18,6 +18,9 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     package_data={"resend": ["py.typed"]},
     install_requires=install_requires,
+    extras_require={
+        "async": ["httpx>=0.24.0"],
+    },
     zip_safe=False,
     python_requires=">=3.7",
     keywords=["email", "email platform"],

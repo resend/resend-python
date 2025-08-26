@@ -6,6 +6,12 @@ from resend import request
 
 from ._contact import Contact
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 
 class Contacts:
 
@@ -242,6 +248,117 @@ class Contacts:
         path = f"/audiences/{audience_id}/contacts/{contact}"
 
         resp = request.Request[Contacts.RemoveContactResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> Contact:
+        """
+        Create a new contact (async).
+        see more: https://resend.com/docs/api-reference/contacts/create-contact
+
+        Args:
+            params (CreateParams): The contact creation parameters
+
+        Returns:
+            Contact: The new contact object
+        """
+        path = f"/audiences/{params['audience_id']}/contacts"
+        resp = await AsyncRequest[Contact](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> Contact:
+        """
+        Update an existing contact (async).
+        see more: https://resend.com/docs/api-reference/contacts/update-contact
+
+        Args:
+            params (UpdateParams): The contact update parameters
+
+        Returns:
+            Contact: The updated contact object
+        """
+        if params.get("id") is None and params.get("email") is None:
+            raise ValueError("id or email must be provided")
+
+        val = params.get("id") if params.get("id") is not None else params.get("email")
+
+        path = f"/audiences/{params['audience_id']}/contacts/{val}"
+        resp = await AsyncRequest[Contact](
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, audience_id: str) -> ListResponse:
+        """
+        List all contacts for the provided audience (async).
+        see more: https://resend.com/docs/api-reference/contacts/list-contacts
+
+        Args:
+            audience_id (str): The audience ID
+
+        Returns:
+            ListResponse: A list of contact objects
+        """
+        path = f"/audiences/{audience_id}/contacts"
+        resp = await AsyncRequest[_ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(
+        cls, audience_id: str, id: Optional[str] = None, email: Optional[str] = None
+    ) -> Contact:
+        """
+        Get a contact (async).
+        see more: https://resend.com/docs/api-reference/contacts/get-contact
+
+        Args:
+            audience_id (str): The audience ID
+            id (Optional[str]): The contact ID
+            email (Optional[str]): The contact email
+
+        Returns:
+            Contact: The contact object
+        """
+        contact = email if id is None else id
+        if contact is None:
+            raise ValueError("id or email must be provided")
+
+        path = f"/audiences/{audience_id}/contacts/{contact}"
+        resp = await AsyncRequest[Contact](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(
+        cls, audience_id: str, id: Optional[str] = None, email: Optional[str] = None
+    ) -> Contact:
+        """
+        Remove a contact by ID or by Email (async).
+        see more: https://resend.com/docs/api-reference/contacts/delete-contact
+
+        Args:
+            audience_id (str): The audience ID
+            id (Optional[str]): The contact ID
+            email (Optional[str]): The contact email
+
+        Returns:
+            Contact: The removed contact object
+        """
+        contact = email if id is None else id
+        if contact is None:
+            raise ValueError("id or email must be provided")
+        path = f"/audiences/{audience_id}/contacts/{contact}"
+
+        resp = await AsyncRequest[Contact](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp
