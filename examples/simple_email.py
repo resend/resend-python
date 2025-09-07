@@ -43,7 +43,6 @@ print("Email reply_to: ", email_resp["reply_to"])
 print("Email bcc: ", email_resp["bcc"])
 print("Email cc: ", email_resp["cc"])
 
-# List emails example
 print("\n--- Listing Emails ---")
 
 # List all emails
