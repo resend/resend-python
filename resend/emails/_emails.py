@@ -178,6 +178,52 @@ class Emails:
         The sent Email ID.
         """
 
+    class ListParams(TypedDict):
+        """
+        ListParams is the class that wraps the parameters for the list method.
+
+        Attributes:
+            limit (NotRequired[int]): The maximum number of emails to return. Defaults to 10, maximum 100.
+            after (NotRequired[str]): Return emails after this cursor for pagination.
+            before (NotRequired[str]): Return emails before this cursor for pagination.
+        """
+
+        limit: NotRequired[int]
+        """
+        The maximum number of emails to return. Defaults to 10, maximum 100.
+        """
+        after: NotRequired[str]
+        """
+        Return emails after this cursor for pagination.
+        """
+        before: NotRequired[str]
+        """
+        Return emails before this cursor for pagination.
+        """
+
+    class ListResponse(TypedDict):
+        """
+        ListResponse is the type that wraps the response for listing emails.
+
+        Attributes:
+            object (str): The object type: "list"
+            data (List[Email]): The list of email objects.
+            has_more (bool): Whether there are more emails available for pagination.
+        """
+
+        object: str
+        """
+        The object type: "list"
+        """
+        data: List[Email]
+        """
+        The list of email objects.
+        """
+        has_more: bool
+        """
+        Whether there are more emails available for pagination.
+        """
+
     @classmethod
     def send(
         cls, params: SendParams, options: Optional[SendOptions] = None
@@ -259,5 +305,35 @@ class Emails:
             path=path,
             params=cast(Dict[Any, Any], params),
             verb="patch",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    def list(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of emails.
+        see more: https://resend.com/docs/api-reference/emails/list-emails
+
+        Args:
+            params (Optional[ListParams]): The list parameters for pagination
+
+        Returns:
+            ListResponse: A paginated list of email objects
+        """
+        path = "/emails"
+        query_params: Dict[str, Union[int, str]] = {}
+
+        if params:
+            if "limit" in params:
+                query_params["limit"] = params["limit"]
+            if "after" in params:
+                query_params["after"] = params["after"]
+            if "before" in params:
+                query_params["before"] = params["before"]
+
+        resp = request.Request[Emails.ListResponse](
+            path=path,
+            params=query_params,
+            verb="get",
         ).perform_with_content()
         return resp

@@ -42,3 +42,21 @@ print("Email created_at: ", email_resp["created_at"])
 print("Email reply_to: ", email_resp["reply_to"])
 print("Email bcc: ", email_resp["bcc"])
 print("Email cc: ", email_resp["cc"])
+
+# List emails example
+print("\n--- Listing Emails ---")
+
+# List all emails
+all_emails = resend.Emails.list()
+print(f"Total emails in this batch: {len(all_emails['data'])}")
+print(f"Has more emails: {all_emails['has_more']}")
+
+# List with pagination
+paginated_emails = resend.Emails.list(params={"limit": 5})
+print(f"Retrieved {len(paginated_emails['data'])} emails (limited to 5)")
+
+# Example with cursor-based pagination
+if paginated_emails["data"]:
+    last_email_id = paginated_emails["data"][-1]["id"]
+    next_page = resend.Emails.list(params={"limit": 5, "after": last_email_id})
+    print(f"Next page has {len(next_page['data'])} emails")
