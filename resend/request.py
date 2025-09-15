@@ -56,6 +56,9 @@ class Request(Generic[T]):
         if self.verb == "post" and self.options and "idempotency_key" in self.options:
             headers["Idempotency-Key"] = str(self.options["idempotency_key"])
 
+        if self.verb == "post" and self.options and "batch_validation" in self.options:
+            headers["x-batch-validation"] = str(self.options["batch_validation"])
+
         return headers
 
     def make_request(self, url: str) -> Union[Dict[str, Any], List[Any]]:
