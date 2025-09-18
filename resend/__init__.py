@@ -11,7 +11,7 @@ from .contacts._contacts import Contacts
 from .domains._domain import Domain
 from .domains._domains import Domains
 from .emails._attachment import Attachment, RemoteAttachment
-from .emails._batch import Batch
+from .emails._batch import Batch, BatchValidationError
 from .emails._email import Email
 from .emails._emails import Emails
 from .emails._tag import Tag
@@ -51,6 +51,7 @@ __all__ = [
     "RemoteAttachment",
     "Tag",
     "Broadcast",
+    "BatchValidationError",
     # Default HTTP Client
     "RequestsClient",
 ]
