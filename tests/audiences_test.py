@@ -112,14 +112,14 @@ class TestResendAudiences(ResendBaseTest):
                         "id": "audience-2",
                         "name": "Second Audience",
                         "created_at": "2023-10-07T22:59:55.977Z",
-                    }
+                    },
                 ],
             }
         )
 
         params: resend.Audiences.ListParams = {
             "limit": 10,
-            "after": "previous-audience-id"
+            "after": "previous-audience-id",
         }
         audiences: resend.Audiences.ListResponse = resend.Audiences.list(params=params)
         assert audiences["object"] == "list"
@@ -145,7 +145,7 @@ class TestResendAudiences(ResendBaseTest):
 
         params: resend.Audiences.ListParams = {
             "limit": 5,
-            "before": "later-audience-id"
+            "before": "later-audience-id",
         }
         audiences: resend.Audiences.ListResponse = resend.Audiences.list(params=params)
         assert audiences["object"] == "list"

@@ -39,7 +39,7 @@ class TestResendApiKeys(ResendBaseTest):
                         "name": "Production",
                         "created_at": "2023-04-08T00:11:13.110779+00:00",
                     }
-                ]
+                ],
             }
         )
 
@@ -71,15 +71,12 @@ class TestResendApiKeys(ResendBaseTest):
                         "id": "test-key-2",
                         "name": "Test Key 2",
                         "created_at": "2023-04-09T00:11:13.110779+00:00",
-                    }
-                ]
+                    },
+                ],
             }
         )
 
-        params: resend.ApiKeys.ListParams = {
-            "limit": 10,
-            "after": "previous-key-id"
-        }
+        params: resend.ApiKeys.ListParams = {"limit": 10, "after": "previous-key-id"}
         keys: resend.ApiKeys.ListResponse = resend.ApiKeys.list(params=params)
         assert keys["object"] == "list"
         assert keys["has_more"] is True
@@ -98,14 +95,11 @@ class TestResendApiKeys(ResendBaseTest):
                         "name": "Test Key 3",
                         "created_at": "2023-04-07T00:11:13.110779+00:00",
                     }
-                ]
+                ],
             }
         )
 
-        params: resend.ApiKeys.ListParams = {
-            "limit": 5,
-            "before": "later-key-id"
-        }
+        params: resend.ApiKeys.ListParams = {"limit": 5, "before": "later-key-id"}
         keys: resend.ApiKeys.ListResponse = resend.ApiKeys.list(params=params)
         assert keys["object"] == "list"
         assert keys["has_more"] is False

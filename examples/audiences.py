@@ -27,9 +27,11 @@ print("\n--- Using pagination parameters ---")
 if audiences["data"]:
     paginated_params: resend.Audiences.ListParams = {
         "limit": 5,
-        "after": audiences["data"][0]["id"]
+        "after": audiences["data"][0]["id"],
     }
-    paginated_audiences: resend.Audiences.ListResponse = resend.Audiences.list(params=paginated_params)
+    paginated_audiences: resend.Audiences.ListResponse = resend.Audiences.list(
+        params=paginated_params
+    )
     print(f"Retrieved {len(paginated_audiences['data'])} audiences with pagination")
     print(f"Has more audiences: {paginated_audiences['has_more']}")
 else:
