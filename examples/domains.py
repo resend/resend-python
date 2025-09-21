@@ -44,9 +44,11 @@ print("\n--- Using pagination parameters ---")
 if domains["data"]:
     paginated_params: resend.Domains.ListParams = {
         "limit": 2,
-        "after": domains["data"][0]["id"]
+        "after": domains["data"][0]["id"],
     }
-    paginated_domains: resend.Domains.ListResponse = resend.Domains.list(params=paginated_params)
+    paginated_domains: resend.Domains.ListResponse = resend.Domains.list(
+        params=paginated_params
+    )
     print(f"Retrieved {len(paginated_domains['data'])} domains with pagination")
     print(f"Has more domains: {paginated_domains['has_more']}")
 else:

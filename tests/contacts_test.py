@@ -256,14 +256,14 @@ class TestResendContacts(ResendBaseTest):
                         "last_name": "Two",
                         "created_at": "2023-10-07T23:47:56.678Z",
                         "unsubscribed": False,
-                    }
+                    },
                 ],
             }
         )
 
         params: resend.Contacts.ListParams = {
             "limit": 10,
-            "after": "previous-contact-id"
+            "after": "previous-contact-id",
         }
         contacts: resend.Contacts.ListResponse = resend.Contacts.list(
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8", params=params
@@ -292,10 +292,7 @@ class TestResendContacts(ResendBaseTest):
             }
         )
 
-        params: resend.Contacts.ListParams = {
-            "limit": 5,
-            "before": "later-contact-id"
-        }
+        params: resend.Contacts.ListParams = {"limit": 5, "before": "later-contact-id"}
         contacts: resend.Contacts.ListResponse = resend.Contacts.list(
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8", params=params
         )

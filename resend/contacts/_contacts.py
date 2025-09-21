@@ -201,7 +201,9 @@ class Contacts:
         return resp
 
     @classmethod
-    def list(cls, audience_id: str, params: Optional[ListParams] = None) -> ListResponse:
+    def list(
+        cls, audience_id: str, params: Optional[ListParams] = None
+    ) -> ListResponse:
         """
         List all contacts for the provided audience.
         see more: https://resend.com/docs/api-reference/contacts/list-contacts

@@ -123,7 +123,7 @@ class TestResendDomains(ResendBaseTest):
                         "created_at": "2023-04-26T20:21:26.347412+00:00",
                         "region": "us-east-1",
                     }
-                ]
+                ],
             }
         )
 
@@ -226,15 +226,12 @@ class TestResendDomains(ResendBaseTest):
                         "status": "not_started",
                         "created_at": "2023-04-27T20:21:26.347412+00:00",
                         "region": "us-west-2",
-                    }
-                ]
+                    },
+                ],
             }
         )
 
-        params: resend.Domains.ListParams = {
-            "limit": 10,
-            "after": "previous-domain-id"
-        }
+        params: resend.Domains.ListParams = {"limit": 10, "after": "previous-domain-id"}
         domains: resend.Domains.ListResponse = resend.Domains.list(params=params)
         assert domains["object"] == "list"
         assert domains["has_more"] is True
@@ -255,14 +252,11 @@ class TestResendDomains(ResendBaseTest):
                         "created_at": "2023-04-25T20:21:26.347412+00:00",
                         "region": "eu-west-1",
                     }
-                ]
+                ],
             }
         )
 
-        params: resend.Domains.ListParams = {
-            "limit": 5,
-            "before": "later-domain-id"
-        }
+        params: resend.Domains.ListParams = {"limit": 5, "before": "later-domain-id"}
         domains: resend.Domains.ListResponse = resend.Domains.list(params=params)
         assert domains["object"] == "list"
         assert domains["has_more"] is False

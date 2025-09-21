@@ -55,7 +55,7 @@ print("\n--- Using pagination parameters ---")
 if contacts["data"]:
     paginated_params: resend.Contacts.ListParams = {
         "limit": 2,
-        "after": contacts["data"][0]["id"]
+        "after": contacts["data"][0]["id"],
     }
     paginated_contacts: resend.Contacts.ListResponse = resend.Contacts.list(
         audience_id=audience_id, params=paginated_params
