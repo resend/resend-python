@@ -290,7 +290,8 @@ class Broadcasts:
 
         Args:
             params (Optional[ListParams]): Optional pagination parameters
-                - limit: Number of broadcasts to retrieve (max 100, min 1). If not provided, all broadcasts will be returned without pagination.
+                - limit: Number of broadcasts to retrieve (max 100, min 1).
+                  If not provided, all broadcasts will be returned without pagination.
                 - after: ID after which to retrieve more broadcasts
                 - before: ID before which to retrieve more broadcasts
 

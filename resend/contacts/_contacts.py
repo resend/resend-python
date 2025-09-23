@@ -211,7 +211,8 @@ class Contacts:
         Args:
             audience_id (str): The audience ID
             params (Optional[ListParams]): Optional pagination parameters
-                - limit: Number of contacts to retrieve (max 100, min 1). If not provided, all contacts will be returned without pagination.
+                - limit: Number of contacts to retrieve (max 100, min 1).
+                  If not provided, all contacts will be returned without pagination.
                 - after: ID after which to retrieve more contacts
                 - before: ID before which to retrieve more contacts
 

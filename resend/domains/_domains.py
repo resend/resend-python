@@ -195,7 +195,8 @@ class Domains:
 
         Args:
             params (Optional[ListParams]): Optional pagination parameters
-                - limit: Number of domains to retrieve (max 100, min 1). If not provided, all domains will be returned without pagination.
+                - limit: Number of domains to retrieve (max 100, min 1).
+                  If not provided, all domains will be returned without pagination.
                 - after: ID after which to retrieve more domains
                 - before: ID before which to retrieve more domains
 

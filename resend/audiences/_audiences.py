@@ -130,7 +130,8 @@ class Audiences:
 
         Args:
             params (Optional[ListParams]): Optional pagination parameters
-                - limit: Number of audiences to retrieve (max 100, min 1). If not provided, all audiences will be returned without pagination.
+                - limit: Number of audiences to retrieve (max 100, min 1).
+                  If not provided, all audiences will be returned without pagination.
                 - after: ID after which to retrieve more audiences
                 - before: ID before which to retrieve more audiences
 
