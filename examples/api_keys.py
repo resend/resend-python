@@ -22,5 +22,19 @@ for key in keys["data"]:
     print(key["name"])
     print(key["created_at"])
 
+print("\n--- Using pagination parameters ---")
+if keys["data"]:
+    paginated_params: resend.ApiKeys.ListParams = {
+        "limit": 8,
+        "after": keys["data"][0]["id"],
+    }
+    paginated_keys: resend.ApiKeys.ListResponse = resend.ApiKeys.list(
+        params=paginated_params
+    )
+    print(f"Retrieved {len(paginated_keys['data'])} keys with pagination")
+    print(f"Has more keys: {paginated_keys['has_more']}")
+else:
+    print("No keys available for pagination example")
+
 if len(keys["data"]) > 0:
     resend.ApiKeys.remove(api_key_id=keys["data"][0]["id"])

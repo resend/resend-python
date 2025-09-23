@@ -46,8 +46,24 @@ print(cont_by_email)
 
 contacts: resend.Contacts.ListResponse = resend.Contacts.list(audience_id=audience_id)
 print("List of contacts")
+print(f"Found {len(contacts['data'])} contacts")
+print(f"Has more contacts: {contacts['has_more']}")
 for c in contacts["data"]:
     print(c)
+
+print("\n--- Using pagination parameters ---")
+if contacts["data"]:
+    paginated_params: resend.Contacts.ListParams = {
+        "limit": 2,
+        "after": contacts["data"][0]["id"],
+    }
+    paginated_contacts: resend.Contacts.ListResponse = resend.Contacts.list(
+        audience_id=audience_id, params=paginated_params
+    )
+    print(f"Retrieved {len(paginated_contacts['data'])} contacts with pagination")
+    print(f"Has more contacts: {paginated_contacts['has_more']}")
+else:
+    print("No contacts available for pagination example")
 
 # remove by email
 rmed: resend.Contacts.RemoveContactResponse = resend.Contacts.remove(

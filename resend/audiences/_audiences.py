@@ -1,8 +1,9 @@
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Optional, cast
 
-from typing_extensions import TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend.pagination_helper import PaginationHelper
 
 from ._audience import Audience
 
@@ -32,22 +33,45 @@ class Audiences:
         Whether the audience was deleted
         """
 
+    class ListParams(TypedDict):
+        limit: NotRequired[int]
+        """
+        Number of audiences to retrieve. Maximum is 100, and minimum is 1.
+        """
+        after: NotRequired[str]
+        """
+        The ID after which we'll retrieve more audiences (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the before parameter.
+        """
+        before: NotRequired[str]
+        """
+        The ID before which we'll retrieve more audiences (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the after parameter.
+        """
+
     class ListResponse(TypedDict):
         """
-        ListResponse type that wraps a list of audience objects
+        ListResponse type that wraps a list of audience objects with pagination metadata
 
         Attributes:
-            object (str): The object type, "list"
+            object (str): The object type, always "list"
             data (List[Audience]): A list of audience objects
+            has_more (bool): Whether there are more results available
         """
 
         object: str
         """
-        The object type, "list"
+        The object type, always "list"
         """
         data: List[Audience]
         """
         A list of audience objects
+        """
+        has_more: bool
+        """
+        Whether there are more results available for pagination
         """
 
     class CreateAudienceResponse(TypedDict):
@@ -99,15 +123,24 @@ class Audiences:
         return resp
 
     @classmethod
-    def list(cls) -> ListResponse:
+    def list(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve a list of audiences.
         see more: https://resend.com/docs/api-reference/audiences/list-audiences
 
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+                - limit: Number of audiences to retrieve (max 100, min 1).
+                  If not provided, all audiences will be returned without pagination.
+                - after: ID after which to retrieve more audiences
+                - before: ID before which to retrieve more audiences
+
         Returns:
             ListResponse: A list of audience objects
         """
-        path = "/audiences/"
+        base_path = "/audiences"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[Audiences.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()

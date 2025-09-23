@@ -87,6 +87,7 @@ class TestResendBroadcasts(ResendBaseTest):
         self.set_mock_json(
             {
                 "object": "list",
+                "has_more": False,
                 "data": [
                     {
                         "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
@@ -110,6 +111,7 @@ class TestResendBroadcasts(ResendBaseTest):
 
         broadcasts: resend.Broadcasts.ListResponse = resend.Broadcasts.list()
         assert broadcasts["object"] == "list"
+        assert broadcasts["has_more"] is False
         assert len(broadcasts["data"]) == 2
 
         broadcast = broadcasts["data"][0]
@@ -127,3 +129,72 @@ class TestResendBroadcasts(ResendBaseTest):
         assert broadcast["created_at"] == "2024-12-01T19:32:22.980Z"
         assert broadcast["scheduled_at"] == "2024-12-02T19:32:22.980Z"
         assert broadcast["sent_at"] == "2024-12-02T19:32:22.980Z"
+
+    def test_broadcasts_list_with_pagination_params(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": True,
+                "data": [
+                    {
+                        "id": "broadcast-1",
+                        "audience_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+                        "status": "draft",
+                        "created_at": "2024-11-01T15:13:31.723Z",
+                        "scheduled_at": None,
+                        "sent_at": None,
+                    },
+                    {
+                        "id": "broadcast-2",
+                        "audience_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+                        "status": "sent",
+                        "created_at": "2024-12-01T19:32:22.980Z",
+                        "scheduled_at": "2024-12-02T19:32:22.980Z",
+                        "sent_at": "2024-12-02T19:32:22.980Z",
+                    },
+                ],
+            }
+        )
+
+        params: resend.Broadcasts.ListParams = {
+            "limit": 10,
+            "after": "previous-broadcast-id",
+        }
+        broadcasts: resend.Broadcasts.ListResponse = resend.Broadcasts.list(
+            params=params
+        )
+        assert broadcasts["object"] == "list"
+        assert broadcasts["has_more"] is True
+        assert len(broadcasts["data"]) == 2
+        assert broadcasts["data"][0]["id"] == "broadcast-1"
+        assert broadcasts["data"][1]["id"] == "broadcast-2"
+
+    def test_broadcasts_list_with_before_param(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "broadcast-3",
+                        "audience_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+                        "status": "draft",
+                        "created_at": "2024-10-01T15:13:31.723Z",
+                        "scheduled_at": None,
+                        "sent_at": None,
+                    }
+                ],
+            }
+        )
+
+        params: resend.Broadcasts.ListParams = {
+            "limit": 5,
+            "before": "later-broadcast-id",
+        }
+        broadcasts: resend.Broadcasts.ListResponse = resend.Broadcasts.list(
+            params=params
+        )
+        assert broadcasts["object"] == "list"
+        assert broadcasts["has_more"] is False
+        assert len(broadcasts["data"]) == 1
+        assert broadcasts["data"][0]["id"] == "broadcast-3"
