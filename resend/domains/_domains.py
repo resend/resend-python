@@ -1,27 +1,56 @@
-from typing import Any, Dict, List, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 from resend.domains._domain import Domain
 from resend.domains._record import Record
+from resend.pagination_helper import PaginationHelper
 
 TlsOptions = Literal["enforced", "opportunistic"]
 
 
 class Domains:
 
+    class ListParams(TypedDict):
+        limit: NotRequired[int]
+        """
+        Number of domains to retrieve. Maximum is 100, and minimum is 1.
+        """
+        after: NotRequired[str]
+        """
+        The ID after which we'll retrieve more domains (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the before parameter.
+        """
+        before: NotRequired[str]
+        """
+        The ID before which we'll retrieve more domains (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the after parameter.
+        """
+
     class ListResponse(TypedDict):
         """
-        ListResponse type that wraps a list of domain objects
+        ListResponse type that wraps a list of domain objects with pagination metadata
 
         Attributes:
+            object (str): The object type, always "list"
             data (List[Domain]): A list of domain objects
+            has_more (bool): Whether there are more results available
         """
 
+        object: str
+        """
+        The object type, always "list"
+        """
         data: List[Domain]
         """
         A list of domain objects
+        """
+        has_more: bool
+        """
+        Whether there are more results available for pagination
         """
 
     class CreateDomainResponse(TypedDict):
@@ -159,15 +188,24 @@ class Domains:
         return resp
 
     @classmethod
-    def list(cls) -> ListResponse:
+    def list(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve a list of domains for the authenticated user.
         see more: https://resend.com/docs/api-reference/domains/list-domains
 
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+                - limit: Number of domains to retrieve (max 100, min 1).
+                  If not provided, all domains will be returned without pagination.
+                - after: ID after which to retrieve more domains
+                - before: ID before which to retrieve more domains
+
         Returns:
             ListResponse: A list of domain objects
         """
-        path = "/domains"
+        base_path = "/domains"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[Domains.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()

@@ -75,6 +75,7 @@ class TestResendAudiences(ResendBaseTest):
         self.set_mock_json(
             {
                 "object": "list",
+                "has_more": False,
                 "data": [
                     {
                         "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
@@ -86,6 +87,8 @@ class TestResendAudiences(ResendBaseTest):
         )
 
         audiences: resend.Audiences.ListResponse = resend.Audiences.list()
+        assert audiences["object"] == "list"
+        assert audiences["has_more"] is False
         assert audiences["data"][0]["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert audiences["data"][0]["name"] == "Registered Users"
 
@@ -93,3 +96,59 @@ class TestResendAudiences(ResendBaseTest):
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
             _ = resend.Audiences.list()
+
+    def test_audiences_list_with_pagination_params(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": True,
+                "data": [
+                    {
+                        "id": "audience-1",
+                        "name": "First Audience",
+                        "created_at": "2023-10-06T22:59:55.977Z",
+                    },
+                    {
+                        "id": "audience-2",
+                        "name": "Second Audience",
+                        "created_at": "2023-10-07T22:59:55.977Z",
+                    },
+                ],
+            }
+        )
+
+        params: resend.Audiences.ListParams = {
+            "limit": 10,
+            "after": "previous-audience-id",
+        }
+        audiences: resend.Audiences.ListResponse = resend.Audiences.list(params=params)
+        assert audiences["object"] == "list"
+        assert audiences["has_more"] is True
+        assert len(audiences["data"]) == 2
+        assert audiences["data"][0]["id"] == "audience-1"
+        assert audiences["data"][1]["id"] == "audience-2"
+
+    def test_audiences_list_with_before_param(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "audience-3",
+                        "name": "Third Audience",
+                        "created_at": "2023-10-05T22:59:55.977Z",
+                    }
+                ],
+            }
+        )
+
+        params: resend.Audiences.ListParams = {
+            "limit": 5,
+            "before": "later-audience-id",
+        }
+        audiences: resend.Audiences.ListResponse = resend.Audiences.list(params=params)
+        assert audiences["object"] == "list"
+        assert audiences["has_more"] is False
+        assert len(audiences["data"]) == 1
+        assert audiences["data"][0]["id"] == "audience-3"

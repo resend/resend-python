@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend.pagination_helper import PaginationHelper
 
 from ._contact import Contact
 
@@ -32,22 +33,45 @@ class Contacts:
         Whether the contact was deleted.
         """
 
+    class ListParams(TypedDict):
+        limit: NotRequired[int]
+        """
+        Number of contacts to retrieve. Maximum is 100, and minimum is 1.
+        """
+        after: NotRequired[str]
+        """
+        The ID after which we'll retrieve more contacts (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the before parameter.
+        """
+        before: NotRequired[str]
+        """
+        The ID before which we'll retrieve more contacts (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the after parameter.
+        """
+
     class ListResponse(TypedDict):
         """
-        ListResponse type that wraps a list of contact objects
+        ListResponse type that wraps a list of contact objects with pagination metadata
 
         Attributes:
-            object (str): The object type: list
+            object (str): The object type, always "list"
             data (List[Contact]): A list of contact objects
+            has_more (bool): Whether there are more results available
         """
 
         object: str
         """
-        The object type: list
+        The object type, always "list"
         """
         data: List[Contact]
         """
         A list of contact objects
+        """
+        has_more: bool
+        """
+        Whether there are more results available for pagination
         """
 
     class CreateContactResponse(TypedDict):
@@ -177,18 +201,27 @@ class Contacts:
         return resp
 
     @classmethod
-    def list(cls, audience_id: str) -> ListResponse:
+    def list(
+        cls, audience_id: str, params: Optional[ListParams] = None
+    ) -> ListResponse:
         """
         List all contacts for the provided audience.
         see more: https://resend.com/docs/api-reference/contacts/list-contacts
 
         Args:
             audience_id (str): The audience ID
+            params (Optional[ListParams]): Optional pagination parameters
+                - limit: Number of contacts to retrieve (max 100, min 1).
+                  If not provided, all contacts will be returned without pagination.
+                - after: ID after which to retrieve more contacts
+                - before: ID before which to retrieve more contacts
 
         Returns:
             ListResponse: A list of contact objects
         """
-        path = f"/audiences/{audience_id}/contacts"
+        base_path = f"/audiences/{audience_id}/contacts"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[Contacts.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
