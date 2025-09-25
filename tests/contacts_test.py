@@ -204,6 +204,7 @@ class TestResendContacts(ResendBaseTest):
         self.set_mock_json(
             {
                 "object": "list",
+                "has_more": False,
                 "data": [
                     {
                         "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
@@ -220,6 +221,8 @@ class TestResendContacts(ResendBaseTest):
         contacts: resend.Contacts.ListResponse = resend.Contacts.list(
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8"
         )
+        assert contacts["object"] == "list"
+        assert contacts["has_more"] is False
         assert contacts["data"][0]["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
         assert contacts["data"][0]["email"] == "steve.wozniak@gmail.com"
         assert contacts["data"][0].get("first_name") == "Steve"
@@ -231,3 +234,69 @@ class TestResendContacts(ResendBaseTest):
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
             _ = resend.Contacts.list(audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8")
+
+    def test_contacts_list_with_pagination_params(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": True,
+                "data": [
+                    {
+                        "id": "contact-1",
+                        "email": "contact1@example.com",
+                        "first_name": "Contact",
+                        "last_name": "One",
+                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "unsubscribed": False,
+                    },
+                    {
+                        "id": "contact-2",
+                        "email": "contact2@example.com",
+                        "first_name": "Contact",
+                        "last_name": "Two",
+                        "created_at": "2023-10-07T23:47:56.678Z",
+                        "unsubscribed": False,
+                    },
+                ],
+            }
+        )
+
+        params: resend.Contacts.ListParams = {
+            "limit": 10,
+            "after": "previous-contact-id",
+        }
+        contacts: resend.Contacts.ListResponse = resend.Contacts.list(
+            audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8", params=params
+        )
+        assert contacts["object"] == "list"
+        assert contacts["has_more"] is True
+        assert len(contacts["data"]) == 2
+        assert contacts["data"][0]["id"] == "contact-1"
+        assert contacts["data"][1]["id"] == "contact-2"
+
+    def test_contacts_list_with_before_param(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "contact-3",
+                        "email": "contact3@example.com",
+                        "first_name": "Contact",
+                        "last_name": "Three",
+                        "created_at": "2023-10-05T23:47:56.678Z",
+                        "unsubscribed": False,
+                    }
+                ],
+            }
+        )
+
+        params: resend.Contacts.ListParams = {"limit": 5, "before": "later-contact-id"}
+        contacts: resend.Contacts.ListResponse = resend.Contacts.list(
+            audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8", params=params
+        )
+        assert contacts["object"] == "list"
+        assert contacts["has_more"] is False
+        assert len(contacts["data"]) == 1
+        assert contacts["data"][0]["id"] == "contact-3"

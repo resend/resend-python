@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, cast
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 
@@ -14,6 +14,25 @@ class SendEmailResponse(TypedDict):
     """
 
 
+class BatchValidationError(TypedDict):
+    """
+    BatchValidationError represents a validation error for a specific email in the batch.
+
+    Attributes:
+        index (int): The index of the email in the batch that caused the error
+        message (str): The validation error message
+    """
+
+    index: int
+    """
+    The index of the email in the batch that caused the error.
+    """
+    message: str
+    """
+    The validation error message.
+    """
+
+
 class Batch:
 
     class SendOptions(TypedDict):
@@ -24,6 +43,8 @@ class Batch:
             idempotency_key (NotRequired[str]): Unique key that ensures the same operation is not processed multiple times.
             Allows for safe retries without duplicating operations.
             If provided, will be sent as the `Idempotency-Key` header.
+            batch_validation (NotRequired[Literal["strict", "permissive"]]): Batch validation mode.
+            Defaults to "strict" when not provided.
         """
 
         idempotency_key: NotRequired[str]
@@ -33,10 +54,20 @@ class Batch:
         If provided, will be sent as the `Idempotency-Key` header.
         """
 
+        batch_validation: NotRequired[Literal["strict", "permissive"]]
+        """
+        Batch validation mode.
+        Defaults to "strict" when not provided.
+        """
+
     class SendResponse(TypedDict):
         data: List[SendEmailResponse]
         """
         A list of email objects
+        """
+        errors: NotRequired[List[BatchValidationError]]
+        """
+        A list of validation errors (only present in permissive mode)
         """
 
     @classmethod
@@ -49,10 +80,10 @@ class Batch:
 
         Args:
             params (List[Emails.SendParams]): The list of emails to send
-            options (Optional[SendOptions]): Batch options, ie: idempotency_key
+            options (Optional[SendOptions]): Batch options, including batch_validation mode
 
         Returns:
-            SendResponse: A list of email objects
+            SendResponse: A list of email objects, and optionally validation errors in permissive mode
         """
         path = "/emails/batch"
 
