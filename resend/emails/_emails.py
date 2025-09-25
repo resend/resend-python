@@ -6,6 +6,7 @@ from resend import request
 from resend.emails._attachment import Attachment, RemoteAttachment
 from resend.emails._email import Email
 from resend.emails._tag import Tag
+from resend.pagination_helper import PaginationHelper
 
 
 class _UpdateParams(TypedDict):
@@ -320,20 +321,12 @@ class Emails:
         Returns:
             ListResponse: A paginated list of email objects
         """
-        path = "/emails"
-        query_params: Dict[str, Union[int, str]] = {}
-
-        if params:
-            if "limit" in params:
-                query_params["limit"] = params["limit"]
-            if "after" in params:
-                query_params["after"] = params["after"]
-            if "before" in params:
-                query_params["before"] = params["before"]
-
+        base_path = "/emails"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[Emails.ListResponse](
             path=path,
-            params=query_params,
+            params={},
             verb="get",
         ).perform_with_content()
         return resp
