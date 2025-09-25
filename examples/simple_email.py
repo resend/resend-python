@@ -51,7 +51,10 @@ print(f"Total emails in this batch: {len(all_emails['data'])}")
 print(f"Has more emails: {all_emails['has_more']}")
 
 # List with pagination
-paginated_emails = resend.Emails.list(params={"limit": 5})
+list_params: resend.Emails.ListParams = {
+    "limit": 5,
+}
+paginated_emails = resend.Emails.list(params=list_params)
 print(f"Retrieved {len(paginated_emails['data'])} emails (limited to 5)")
 
 # Example with cursor-based pagination
