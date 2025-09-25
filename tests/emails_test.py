@@ -156,3 +156,101 @@ class TestResendEmail(ResendBaseTest):
         }
         email: resend.Emails.SendResponse = resend.Emails.send(params)
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
+    def test_email_list(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "data": [
+                    {
+                        "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+                        "to": ["james@bond.com"],
+                        "from": "onboarding@resend.dev",
+                        "created_at": "2023-04-03T22:13:42.674981+00:00",
+                        "subject": "Hello World",
+                        "html": "Congrats on sending your <strong>first email</strong>!",
+                        "text": None,
+                        "bcc": [None],
+                        "cc": [None],
+                        "reply_to": [None],
+                        "last_event": "delivered",
+                    },
+                    {
+                        "id": "5ef9a417-02e9-4d39-ad75-9611e0fcc33d",
+                        "to": ["test@example.com"],
+                        "from": "hello@resend.dev",
+                        "created_at": "2023-04-04T10:15:42.674981+00:00",
+                        "subject": "Test Email",
+                        "html": "This is a test email",
+                        "text": "This is a test email",
+                        "bcc": [None],
+                        "cc": [None],
+                        "reply_to": [None],
+                        "last_event": "sent",
+                    },
+                ],
+                "has_more": True,
+            }
+        )
+
+        emails: resend.Emails.ListResponse = resend.Emails.list()
+        assert emails["object"] == "list"
+        assert len(emails["data"]) == 2
+        assert emails["has_more"] == True
+        assert emails["data"][0]["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+        assert emails["data"][1]["id"] == "5ef9a417-02e9-4d39-ad75-9611e0fcc33d"
+
+    def test_email_list_with_params(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "data": [
+                    {
+                        "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+                        "to": ["james@bond.com"],
+                        "from": "onboarding@resend.dev",
+                        "created_at": "2023-04-03T22:13:42.674981+00:00",
+                        "subject": "Hello World",
+                        "html": "Congrats on sending your <strong>first email</strong>!",
+                        "text": None,
+                        "bcc": [None],
+                        "cc": [None],
+                        "reply_to": [None],
+                        "last_event": "delivered",
+                    },
+                ],
+                "has_more": False,
+            }
+        )
+
+        list_params: resend.Emails.ListParams = {
+            "limit": 10,
+            "after": "cursor123",
+        }
+        emails: resend.Emails.ListResponse = resend.Emails.list(params=list_params)
+        assert emails["object"] == "list"
+        assert len(emails["data"]) == 1
+        assert emails["has_more"] == False
+
+    def test_email_list_with_before_param(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "data": [],
+                "has_more": False,
+            }
+        )
+
+        list_params: resend.Emails.ListParams = {
+            "limit": 5,
+            "before": "cursor456",
+        }
+        emails: resend.Emails.ListResponse = resend.Emails.list(params=list_params)
+        assert emails["object"] == "list"
+        assert len(emails["data"]) == 0
+        assert emails["has_more"] == False
+
+    def test_should_list_email_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Emails.list()
