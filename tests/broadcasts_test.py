@@ -45,6 +45,8 @@ class TestResendBroadcasts(ResendBaseTest):
                 "created_at": "2024-12-01T19:32:22.980Z",
                 "scheduled_at": None,
                 "sent_at": None,
+                "html": "<p>Hello World</p>",
+                "text": "Hello World",
             }
         )
 
@@ -60,6 +62,8 @@ class TestResendBroadcasts(ResendBaseTest):
         assert broadcast["created_at"] == "2024-12-01T19:32:22.980Z"
         assert broadcast["scheduled_at"] is None
         assert broadcast["sent_at"] is None
+        assert broadcast["html"] == "<p>Hello World</p>"
+        assert broadcast["text"] == "Hello World"
 
     def test_broadcasts_send(self) -> None:
         self.set_mock_json({"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e791"})
