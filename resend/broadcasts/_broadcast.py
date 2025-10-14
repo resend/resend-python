@@ -56,3 +56,11 @@ class Broadcast(_FromParam):
     """
     The date and time the broadcast was sent.
     """
+    html: Union[str, None]
+    """
+    The HTML content of the broadcast.
+    """
+    text: Union[str, None]
+    """
+    The plain text content of the broadcast.
+    """
