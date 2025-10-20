@@ -5,6 +5,7 @@ from typing_extensions import NotRequired, TypedDict
 from resend import request
 from resend.emails._attachment import Attachment, RemoteAttachment
 from resend.emails._email import Email
+from resend.emails._receiving import Receiving
 from resend.emails._tag import Tag
 from resend.pagination_helper import PaginationHelper
 
@@ -103,6 +104,7 @@ class _SendParamsDefault(_SendParamsFrom):
 
 
 class Emails:
+    Receiving = Receiving
 
     class CancelScheduledEmailResponse(_CancelScheduledEmailResponse):
         """
