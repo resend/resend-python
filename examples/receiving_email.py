@@ -1,7 +1,8 @@
 import os
 
 import resend
-# Import types for type hints
+
+# Type imports
 from resend import AttachmentsReceiving, EmailsReceiving
 
 if not os.environ["RESEND_API_KEY"]:
@@ -103,10 +104,6 @@ if paginated_emails["data"] and paginated_emails["has_more"]:
     )
     print(f"Next page has {len(next_page['data'])} emails")
     print(f"Next page has more: {next_page['has_more']}")
-
-print("\n" + "=" * 60)
-print("ATTACHMENTS EXAMPLES")
-print("=" * 60)
 
 # List all attachments for a received email
 print("\n--- Listing All Attachments ---")
