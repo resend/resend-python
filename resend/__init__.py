@@ -14,6 +14,8 @@ from .emails._attachment import Attachment, RemoteAttachment
 from .emails._batch import Batch, BatchValidationError
 from .emails._email import Email
 from .emails._emails import Emails
+from .emails._received_email import ReceivedEmail, ReceivedEmailAttachment
+from .emails._receiving import Receiving
 from .emails._tag import Tag
 from .http_client import HTTPClient
 from .http_client_requests import RequestsClient
@@ -52,6 +54,9 @@ __all__ = [
     "Tag",
     "Broadcast",
     "BatchValidationError",
+    "Receiving",
+    "ReceivedEmail",
+    "ReceivedEmailAttachment",
     # Default HTTP Client
     "RequestsClient",
 ]
