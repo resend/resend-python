@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock
 
 import resend
+from resend import EmailsReceiving
 from resend.exceptions import NoContentError, ResendError
 from tests.conftest import ResendBaseTest
 
@@ -381,7 +382,7 @@ class TestResendEmail(ResendBaseTest):
             }
         )
 
-        emails: resend.Emails.Receiving.ListResponse = resend.Emails.Receiving.list()
+        emails: EmailsReceiving.ListResponse = resend.Emails.Receiving.list()
         assert emails["object"] == "list"
         assert emails["has_more"] == True
         assert len(emails["data"]) == 2
@@ -413,11 +414,11 @@ class TestResendEmail(ResendBaseTest):
             }
         )
 
-        list_params: resend.Emails.Receiving.ListParams = {
+        list_params: EmailsReceiving.ListParams = {
             "limit": 10,
             "after": "cursor123",
         }
-        emails: resend.Emails.Receiving.ListResponse = resend.Emails.Receiving.list(
+        emails: EmailsReceiving.ListResponse = resend.Emails.Receiving.list(
             params=list_params
         )
         assert emails["object"] == "list"
@@ -433,7 +434,7 @@ class TestResendEmail(ResendBaseTest):
             }
         )
 
-        emails: resend.Emails.Receiving.ListResponse = resend.Emails.Receiving.list()
+        emails: EmailsReceiving.ListResponse = resend.Emails.Receiving.list()
         assert emails["object"] == "list"
         assert len(emails["data"]) == 0
         assert emails["has_more"] == False

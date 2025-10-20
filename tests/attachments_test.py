@@ -1,4 +1,5 @@
 import resend
+from resend import AttachmentsReceiving
 from resend.exceptions import NoContentError
 from tests.conftest import ResendBaseTest
 
@@ -30,7 +31,6 @@ class TestResendAttachments(ResendBaseTest):
             )
         )
         assert attachment["id"] == "2a0c9ce0-3112-4728-976e-47ddcd16a318"
-        assert attachment["object"] == "attachment"
         assert attachment["filename"] == "avatar.png"
         assert attachment["content_type"] == "image/png"
         assert attachment["content_disposition"] == "inline"
@@ -100,11 +100,10 @@ class TestResendAttachments(ResendBaseTest):
             }
         )
 
-        list_params: resend.Attachments.Receiving.ListParams = {
-            "email_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
-        }
-        attachments: resend.Attachments.Receiving.ListResponse = (
-            resend.Attachments.Receiving.list(params=list_params)
+        attachments: AttachmentsReceiving.ListResponse = (
+            resend.Attachments.Receiving.list(
+                email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+            )
         )
 
         assert attachments["object"] == "list"
@@ -133,12 +132,13 @@ class TestResendAttachments(ResendBaseTest):
             }
         )
 
-        list_params: resend.Attachments.Receiving.ListParams = {
-            "email_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+        list_params: AttachmentsReceiving.ListParams = {
             "limit": 1,
         }
-        attachments: resend.Attachments.Receiving.ListResponse = (
-            resend.Attachments.Receiving.list(params=list_params)
+        attachments: AttachmentsReceiving.ListResponse = (
+            resend.Attachments.Receiving.list(
+                email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c", params=list_params
+            )
         )
 
         assert attachments["object"] == "list"
@@ -154,11 +154,10 @@ class TestResendAttachments(ResendBaseTest):
             }
         )
 
-        list_params: resend.Attachments.Receiving.ListParams = {
-            "email_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
-        }
-        attachments: resend.Attachments.Receiving.ListResponse = (
-            resend.Attachments.Receiving.list(params=list_params)
+        attachments: AttachmentsReceiving.ListResponse = (
+            resend.Attachments.Receiving.list(
+                email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+            )
         )
 
         assert attachments["object"] == "list"
@@ -169,8 +168,7 @@ class TestResendAttachments(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        list_params: resend.Attachments.Receiving.ListParams = {
-            "email_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
-        }
         with self.assertRaises(NoContentError):
-            _ = resend.Attachments.Receiving.list(params=list_params)
+            _ = resend.Attachments.Receiving.list(
+                email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+            )

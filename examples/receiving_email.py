@@ -1,6 +1,8 @@
 import os
 
 import resend
+# Import types for type hints
+from resend import AttachmentsReceiving, EmailsReceiving
 
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
@@ -19,13 +21,15 @@ print(f"Created at: {received_email['created_at']}")
 print(f"Object type: {received_email['object']}")
 
 print("\n--- Email Content ---")
-if received_email.get("html"):
-    print(f"HTML: {received_email['html'][:100]}...")  # Show first 100 chars
+html_content = received_email.get("html")
+if html_content:
+    print(f"HTML: {html_content[:100]}...")  # Show first 100 chars
 else:
     print("HTML: None")
 
-if received_email.get("text"):
-    print(f"Text: {received_email['text'][:100]}...")  # Show first 100 chars
+text_content = received_email.get("text")
+if text_content:
+    print(f"Text: {text_content[:100]}...")  # Show first 100 chars
 else:
     print("Text: None")
 
@@ -59,7 +63,7 @@ else:
 
 # List all received emails
 print("\n--- Listing All Received Emails ---")
-all_emails: resend.Emails.Receiving.ListResponse = resend.Emails.Receiving.list()
+all_emails: EmailsReceiving.ListResponse = resend.Emails.Receiving.list()
 
 print(f"Total emails in this batch: {len(all_emails['data'])}")
 print(f"Has more emails: {all_emails['has_more']}")
@@ -76,10 +80,10 @@ if all_emails["data"]:
 
 # List with pagination
 print("\n--- Listing Received Emails with Pagination ---")
-list_params: resend.Emails.Receiving.ListParams = {
+list_params: EmailsReceiving.ListParams = {
     "limit": 5,
 }
-paginated_emails: resend.Emails.Receiving.ListResponse = resend.Emails.Receiving.list(
+paginated_emails: EmailsReceiving.ListResponse = resend.Emails.Receiving.list(
     params=list_params
 )
 
@@ -90,11 +94,11 @@ print(f"Has more: {paginated_emails['has_more']}")
 if paginated_emails["data"] and paginated_emails["has_more"]:
     last_email_id = paginated_emails["data"][-1]["id"]
     print(f"\n--- Getting Next Page (after {last_email_id}) ---")
-    next_page_params: resend.Emails.Receiving.ListParams = {
+    next_page_params: EmailsReceiving.ListParams = {
         "limit": 5,
         "after": last_email_id,
     }
-    next_page: resend.Emails.Receiving.ListResponse = resend.Emails.Receiving.list(
+    next_page: EmailsReceiving.ListResponse = resend.Emails.Receiving.list(
         params=next_page_params
     )
     print(f"Next page has {len(next_page['data'])} emails")
@@ -106,11 +110,8 @@ print("=" * 60)
 
 # List all attachments for a received email
 print("\n--- Listing All Attachments ---")
-list_attachments_params: resend.Attachments.Receiving.ListParams = {
-    "email_id": email_id,
-}
-all_attachments: resend.Attachments.Receiving.ListResponse = (
-    resend.Attachments.Receiving.list(params=list_attachments_params)
+all_attachments: AttachmentsReceiving.ListResponse = resend.Attachments.Receiving.list(
+    email_id=email_id
 )
 
 print(f"Total attachments: {len(all_attachments['data'])}")

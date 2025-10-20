@@ -3,8 +3,7 @@ import os
 from .api_keys._api_key import ApiKey
 from .api_keys._api_keys import ApiKeys
 from .attachments._attachments import Attachments
-from .attachments._received_email_attachment_details import \
-    ReceivedEmailAttachmentDetails
+from .attachments._receiving import Receiving as AttachmentsReceiving
 from .audiences._audience import Audience
 from .audiences._audiences import Audiences
 from .broadcasts._broadcast import Broadcast
@@ -18,8 +17,9 @@ from .emails._batch import Batch, BatchValidationError
 from .emails._email import Email
 from .emails._emails import Emails
 from .emails._received_email import (ListReceivedEmail, ReceivedEmail,
-                                     ReceivedEmailAttachment)
-from .emails._receiving import Receiving
+                                     ReceivedEmailAttachment,
+                                     ReceivedEmailAttachmentDetails)
+from .emails._receiving import Receiving as EmailsReceiving
 from .emails._tag import Tag
 from .http_client import HTTPClient
 from .http_client_requests import RequestsClient
@@ -59,11 +59,13 @@ __all__ = [
     "Tag",
     "Broadcast",
     "BatchValidationError",
-    "Receiving",
     "ReceivedEmail",
     "ReceivedEmailAttachment",
     "ReceivedEmailAttachmentDetails",
     "ListReceivedEmail",
+    # Receiving types (for type hints)
+    "EmailsReceiving",
+    "AttachmentsReceiving",
     # Default HTTP Client
     "RequestsClient",
 ]
