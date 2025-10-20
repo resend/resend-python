@@ -2,6 +2,9 @@ import os
 
 from .api_keys._api_key import ApiKey
 from .api_keys._api_keys import ApiKeys
+from .attachments._attachments import Attachments
+from .attachments._received_email_attachment_details import \
+    ReceivedEmailAttachmentDetails
 from .audiences._audience import Audience
 from .audiences._audiences import Audiences
 from .broadcasts._broadcast import Broadcast
@@ -14,7 +17,8 @@ from .emails._attachment import Attachment, RemoteAttachment
 from .emails._batch import Batch, BatchValidationError
 from .emails._email import Email
 from .emails._emails import Emails
-from .emails._received_email import ReceivedEmail, ReceivedEmailAttachment
+from .emails._received_email import (ListReceivedEmail, ReceivedEmail,
+                                     ReceivedEmailAttachment)
 from .emails._receiving import Receiving
 from .emails._tag import Tag
 from .http_client import HTTPClient
@@ -43,6 +47,7 @@ __all__ = [
     "Audiences",
     "Contacts",
     "Broadcasts",
+    "Attachments",
     # Types
     "Audience",
     "Contact",
@@ -57,6 +62,8 @@ __all__ = [
     "Receiving",
     "ReceivedEmail",
     "ReceivedEmailAttachment",
+    "ReceivedEmailAttachmentDetails",
+    "ListReceivedEmail",
     # Default HTTP Client
     "RequestsClient",
 ]

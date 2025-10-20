@@ -337,3 +337,108 @@ class TestResendEmail(ResendBaseTest):
             _ = resend.Emails.Receiving.get(
                 email_id="67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
             )
+
+    def test_receiving_list(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": True,
+                "data": [
+                    {
+                        "id": "a39999a6-88e3-48b1-888b-beaabcde1b33",
+                        "to": ["recipient@example.com"],
+                        "from": "sender@example.com",
+                        "created_at": "2025-10-09 14:37:40.951732+00",
+                        "subject": "Hello World",
+                        "bcc": [],
+                        "cc": [],
+                        "reply_to": [],
+                        "message_id": "<111-222-333@email.provider.example.com>",
+                        "attachments": [
+                            {
+                                "filename": "example.txt",
+                                "content_type": "text/plain",
+                                "content_id": None,
+                                "content_disposition": "attachment",
+                                "id": "47e999c7-c89c-4999-bf32-aaaaa1c3ff21",
+                                "size": 13,
+                            }
+                        ],
+                    },
+                    {
+                        "id": "b49999a6-99e3-59b1-999b-ceaabcde2c44",
+                        "to": ["another@example.com"],
+                        "from": "sender2@example.com",
+                        "created_at": "2025-10-10 10:20:30.123456+00",
+                        "subject": "Test Email",
+                        "bcc": None,
+                        "cc": ["cc@example.com"],
+                        "reply_to": None,
+                        "message_id": "<222-333-444@email.provider.example.com>",
+                        "attachments": [],
+                    },
+                ],
+            }
+        )
+
+        emails: resend.Emails.Receiving.ListResponse = resend.Emails.Receiving.list()
+        assert emails["object"] == "list"
+        assert emails["has_more"] == True
+        assert len(emails["data"]) == 2
+        assert emails["data"][0]["id"] == "a39999a6-88e3-48b1-888b-beaabcde1b33"
+        assert emails["data"][0]["subject"] == "Hello World"
+        assert len(emails["data"][0]["attachments"]) == 1
+        assert emails["data"][0]["attachments"][0]["size"] == 13
+        assert emails["data"][1]["id"] == "b49999a6-99e3-59b1-999b-ceaabcde2c44"
+
+    def test_receiving_list_with_params(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "a39999a6-88e3-48b1-888b-beaabcde1b33",
+                        "to": ["recipient@example.com"],
+                        "from": "sender@example.com",
+                        "created_at": "2025-10-09 14:37:40.951732+00",
+                        "subject": "Hello World",
+                        "bcc": None,
+                        "cc": None,
+                        "reply_to": None,
+                        "message_id": "<111-222-333@email.provider.example.com>",
+                        "attachments": [],
+                    }
+                ],
+            }
+        )
+
+        list_params: resend.Emails.Receiving.ListParams = {
+            "limit": 10,
+            "after": "cursor123",
+        }
+        emails: resend.Emails.Receiving.ListResponse = resend.Emails.Receiving.list(
+            params=list_params
+        )
+        assert emails["object"] == "list"
+        assert len(emails["data"]) == 1
+        assert emails["has_more"] == False
+
+    def test_receiving_list_empty(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [],
+            }
+        )
+
+        emails: resend.Emails.Receiving.ListResponse = resend.Emails.Receiving.list()
+        assert emails["object"] == "list"
+        assert len(emails["data"]) == 0
+        assert emails["has_more"] == False
+
+    def test_should_receiving_list_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Emails.Receiving.list()
