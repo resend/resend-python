@@ -43,6 +43,7 @@ class Template(_FromParam):
         object (str): The object type (always "template").
         name (str): The name of the template.
         alias (str): The alias of the template.
+        status (str): The status of the template ("draft" or "published").
         from (str): Sender email address.
         subject (str): Email subject.
         reply_to (Union[List[str], str]): Reply-to email address(es).
@@ -65,6 +66,9 @@ class Template(_FromParam):
 
     alias: NotRequired[str]
     """The alias of the template."""
+
+    status: NotRequired[Literal["draft", "published"]]
+    """The status of the template."""
 
     subject: NotRequired[str]
     """Email subject."""

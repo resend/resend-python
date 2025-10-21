@@ -32,6 +32,12 @@ print(f"Created template: {template['id']}")
 published: resend.Templates.PublishResponse = resend.Templates.publish(template["id"])
 print(f"Published template: {published['id']}")
 
+# Duplicate a template
+duplicated: resend.Templates.DuplicateResponse = resend.Templates.duplicate(
+    template["id"]
+)
+print(f"Duplicated template: {duplicated['id']}")
+
 # Get a template by ID
 retrieved_template: resend.Template = resend.Templates.get(template["id"])
 print(f"Retrieved template: {retrieved_template['name']}")
@@ -53,6 +59,11 @@ print(f"Total templates: {len(templates['data'])}")
 for t in templates["data"]:
     print(f"  - {t['name']} ({t['id']})")
 
-# Delete a template
+# Delete templates (cleanup)
 removed: resend.Templates.RemoveResponse = resend.Templates.remove(template["id"])
 print(f"Deleted template: {removed['id']}, deleted={removed['deleted']}")
+
+removed_dup: resend.Templates.RemoveResponse = resend.Templates.remove(duplicated["id"])
+print(
+    f"Deleted duplicated template: {removed_dup['id']}, deleted={removed_dup['deleted']}"
+)

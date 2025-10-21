@@ -134,6 +134,17 @@ class TestResendTemplates(ResendBaseTest):
         assert template["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
         assert template["object"] == "template"
 
+    def test_templates_duplicate(self) -> None:
+        self.set_mock_json(
+            {"id": "e169aa45-1ecf-4183-9955-b1499d5701d3", "object": "template"}
+        )
+
+        duplicated: resend.Templates.DuplicateResponse = resend.Templates.duplicate(
+            "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+        )
+        assert duplicated["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
+        assert duplicated["object"] == "template"
+
     def test_templates_remove(self) -> None:
         self.set_mock_json(
             {

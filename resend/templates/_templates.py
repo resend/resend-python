@@ -185,6 +185,20 @@ class Templates:
         object: str
         """The object type (always "template")."""
 
+    class DuplicateResponse(TypedDict):
+        """Response from duplicating a template.
+
+        Attributes:
+            id (str): The Template ID of the duplicated template.
+            object (str): The object type (always "template").
+        """
+
+        id: str
+        """The Template ID of the duplicated template."""
+
+        object: str
+        """The object type (always "template")."""
+
     class RemoveResponse(TypedDict):
         """Response from removing a template.
 
@@ -289,6 +303,24 @@ class Templates:
         """
         path = f"/templates/{template_id}/publish"
         resp = request.Request[Templates.PublishResponse](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    def duplicate(cls, template_id: str) -> DuplicateResponse:
+        """Duplicate a template.
+
+        Creates a copy of the specified template with all its properties and variables.
+
+        Args:
+            template_id: The Template ID to duplicate.
+
+        Returns:
+            DuplicateResponse: The duplicated template response with new ID and object type.
+        """
+        path = f"/templates/{template_id}/duplicate"
+        resp = request.Request[Templates.DuplicateResponse](
             path=path, params={}, verb="post"
         ).perform_with_content()
         return resp
