@@ -35,7 +35,7 @@ class TestResendTopics(ResendBaseTest):
         topic = resend.Topics.create(params)
         assert topic["id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
 
-    def test_should_create_topics_raise_exception_when_no_content(self) -> None:
+    def test_create_topics_raises_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
         params: resend.Topics.CreateParams = {
             "name": "Weekly Newsletter",
