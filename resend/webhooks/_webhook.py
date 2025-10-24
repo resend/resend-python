@@ -1,8 +1,8 @@
 from typing import List, Union
 
-from typing_extensions import TypedDict
+from typing_extensions import Literal, TypedDict
 
-from resend.webhooks._webhooks import WebhookStatus
+WebhookStatus = Literal["enabled", "disabled"]
 
 
 class Webhook(TypedDict):
