@@ -2,6 +2,8 @@ from typing import List, Union
 
 from typing_extensions import TypedDict
 
+from resend.webhooks._webhooks import WebhookStatus
+
 
 class Webhook(TypedDict):
     """
@@ -29,7 +31,7 @@ class Webhook(TypedDict):
     """
     When the webhook was created (ISO 8601 format)
     """
-    status: str
+    status: WebhookStatus
     """
     The webhook status, either "enabled" or "disabled"
     """
