@@ -18,6 +18,8 @@ from .emails._tag import Tag
 from .http_client import HTTPClient
 from .http_client_requests import RequestsClient
 from .request import Request
+from .topics._topic import Topic
+from .topics._topics import Topics
 from .version import __version__, get_version
 from .webhooks._webhook import Webhook
 from .webhooks._webhooks import Webhooks
@@ -44,6 +46,7 @@ __all__ = [
     "Contacts",
     "Broadcasts",
     "Webhooks",
+    "Topics",
     # Types
     "Audience",
     "Contact",
@@ -55,6 +58,7 @@ __all__ = [
     "Tag",
     "Broadcast",
     "Webhook",
+    "Topic",
     "BatchValidationError",
     # Default HTTP Client
     "RequestsClient",
