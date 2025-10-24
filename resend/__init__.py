@@ -19,6 +19,8 @@ from .http_client import HTTPClient
 from .http_client_requests import RequestsClient
 from .request import Request
 from .version import __version__, get_version
+from .webhooks._webhook import Webhook
+from .webhooks._webhooks import Webhooks
 
 # Config vars
 api_key = os.environ.get("RESEND_API_KEY")
@@ -41,6 +43,7 @@ __all__ = [
     "Audiences",
     "Contacts",
     "Broadcasts",
+    "Webhooks",
     # Types
     "Audience",
     "Contact",
@@ -51,6 +54,7 @@ __all__ = [
     "RemoteAttachment",
     "Tag",
     "Broadcast",
+    "Webhook",
     "BatchValidationError",
     # Default HTTP Client
     "RequestsClient",
