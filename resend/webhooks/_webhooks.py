@@ -1,10 +1,10 @@
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Dict, List, Optional, cast
 
 from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
-from resend.webhooks._webhook import Webhook
 from resend.pagination_helper import PaginationHelper
+from resend.webhooks._webhook import Webhook
 
 WebhookStatus = Literal["enabled", "disabled"]
 
