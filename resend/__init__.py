@@ -21,6 +21,8 @@ from .request import Request
 from .topics._topic import Topic
 from .topics._topics import Topics
 from .version import __version__, get_version
+from .webhooks._webhook import Webhook
+from .webhooks._webhooks import Webhooks
 
 # Config vars
 api_key = os.environ.get("RESEND_API_KEY")
@@ -43,6 +45,7 @@ __all__ = [
     "Audiences",
     "Contacts",
     "Broadcasts",
+    "Webhooks",
     "Topics",
     # Types
     "Audience",
@@ -54,6 +57,7 @@ __all__ = [
     "RemoteAttachment",
     "Tag",
     "Broadcast",
+    "Webhook",
     "Topic",
     "BatchValidationError",
     # Default HTTP Client

@@ -166,7 +166,9 @@ class TestResendTopics(ResendBaseTest):
         assert topics["has_more"] is False
         assert topics["data"][0]["id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
         assert topics["data"][0]["name"] == "Weekly Newsletter"
-        assert topics["data"][0]["description"] == "Weekly newsletter for our subscribers"
+        assert (
+            topics["data"][0]["description"] == "Weekly newsletter for our subscribers"
+        )
         assert topics["data"][0]["default_subscription"] == "opt_in"
 
     def test_should_list_topics_raise_exception_when_no_content(self) -> None:
