@@ -18,6 +18,8 @@ from .emails._tag import Tag
 from .http_client import HTTPClient
 from .http_client_requests import RequestsClient
 from .request import Request
+from .topics._topic import Topic
+from .topics._topics import Topics
 from .version import __version__, get_version
 
 # Config vars
@@ -41,6 +43,7 @@ __all__ = [
     "Audiences",
     "Contacts",
     "Broadcasts",
+    "Topics",
     # Types
     "Audience",
     "Contact",
@@ -51,6 +54,7 @@ __all__ = [
     "RemoteAttachment",
     "Tag",
     "Broadcast",
+    "Topic",
     "BatchValidationError",
     # Default HTTP Client
     "RequestsClient",
