@@ -24,6 +24,8 @@ from .emails._tag import Tag
 from .http_client import HTTPClient
 from .http_client_requests import RequestsClient
 from .request import Request
+from .topics._topic import Topic
+from .topics._topics import Topics
 from .version import __version__, get_version
 
 # Config vars
@@ -48,6 +50,7 @@ __all__ = [
     "Contacts",
     "Broadcasts",
     "Attachments",
+    "Topics",
     # Types
     "Audience",
     "Contact",
@@ -58,6 +61,7 @@ __all__ = [
     "RemoteAttachment",
     "Tag",
     "Broadcast",
+    "Topic",
     "BatchValidationError",
     "ReceivedEmail",
     "ReceivedEmailAttachment",
