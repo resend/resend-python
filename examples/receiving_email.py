@@ -24,13 +24,13 @@ print(f"Object type: {received_email['object']}")
 print("\n--- Email Content ---")
 html_content = received_email.get("html")
 if html_content:
-    print(f"HTML: {html_content[:100]}...")  # Show first 100 chars
+    print(f"HTML: {html_content[:100]}...")
 else:
     print("HTML: None")
 
 text_content = received_email.get("text")
 if text_content:
-    print(f"Text: {text_content[:100]}...")  # Show first 100 chars
+    print(f"Text: {text_content[:100]}...")
 else:
     print("Text: None")
 
@@ -62,7 +62,6 @@ if received_email["attachments"]:
 else:
     print("No attachments")
 
-# List all received emails
 print("\n--- Listing All Received Emails ---")
 all_emails: EmailsReceiving.ListResponse = resend.Emails.Receiving.list()
 
@@ -79,7 +78,6 @@ if all_emails["data"]:
         print(f"  Created: {email['created_at']}")
         print(f"  Attachments: {len(email['attachments'])}")
 
-# List with pagination
 print("\n--- Listing Received Emails with Pagination ---")
 list_params: EmailsReceiving.ListParams = {
     "limit": 5,
@@ -91,7 +89,6 @@ paginated_emails: EmailsReceiving.ListResponse = resend.Emails.Receiving.list(
 print(f"Retrieved {len(paginated_emails['data'])} emails (limited to 5)")
 print(f"Has more: {paginated_emails['has_more']}")
 
-# Example with cursor-based pagination
 if paginated_emails["data"] and paginated_emails["has_more"]:
     last_email_id = paginated_emails["data"][-1]["id"]
     print(f"\n--- Getting Next Page (after {last_email_id}) ---")
@@ -105,7 +102,6 @@ if paginated_emails["data"] and paginated_emails["has_more"]:
     print(f"Next page has {len(next_page['data'])} emails")
     print(f"Next page has more: {next_page['has_more']}")
 
-# List all attachments for a received email
 print("\n--- Listing All Attachments ---")
 all_attachments: AttachmentsReceiving.ListResponse = resend.Attachments.Receiving.list(
     email_id=email_id
@@ -122,7 +118,6 @@ if all_attachments["data"]:
         print(f"  Content Type: {att['content_type']}")
         print(f"  Size: {att.get('size', 'N/A')} bytes")
 
-# Retrieve a specific attachment from a received email
 if received_email["attachments"] and len(received_email["attachments"]) > 0:
     first_attachment = received_email["attachments"][0]
     attachment_id = first_attachment["id"]
