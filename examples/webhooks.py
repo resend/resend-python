@@ -2,12 +2,11 @@ import os
 from typing import List
 
 import resend
-from resend.webhooks import WebhookEvent
 
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
-events: List[WebhookEvent] = ["email.sent", "email.delivered", "email.bounced"]
+events: List[resend.WebhookEvent] = ["email.sent", "email.delivered", "email.bounced"]
 
 create_params: resend.Webhooks.CreateParams = {
     "endpoint": "https://webhook.example.com/handler",

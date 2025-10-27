@@ -27,7 +27,8 @@ from .request import Request
 from .topics._topic import Topic
 from .topics._topics import Topics
 from .version import __version__, get_version
-from .webhooks._webhook import Webhook
+from .webhooks._webhook import (VerifyWebhookOptions, Webhook, WebhookEvent,
+                                WebhookHeaders, WebhookStatus)
 from .webhooks._webhooks import Webhooks
 
 # Config vars
@@ -65,6 +66,10 @@ __all__ = [
     "Tag",
     "Broadcast",
     "Webhook",
+    "WebhookEvent",
+    "WebhookHeaders",
+    "WebhookStatus",
+    "VerifyWebhookOptions",
     "Topic",
     "BatchValidationError",
     "ReceivedEmail",

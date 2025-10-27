@@ -26,6 +26,54 @@ WebhookEvent = Literal[
 ]
 
 
+class WebhookHeaders(TypedDict):
+    """
+    WebhookHeaders contains the Svix headers required for webhook verification
+
+    Attributes:
+        id (str): The svix-id header value
+        timestamp (str): The svix-timestamp header value
+        signature (str): The svix-signature header value
+    """
+
+    id: str
+    """
+    The svix-id header value
+    """
+    timestamp: str
+    """
+    The svix-timestamp header value
+    """
+    signature: str
+    """
+    The svix-signature header value
+    """
+
+
+class VerifyWebhookOptions(TypedDict):
+    """
+    VerifyWebhookOptions contains the parameters needed to verify a webhook
+
+    Attributes:
+        payload (str): The raw request body as a string
+        headers (WebhookHeaders): The Svix headers from the request
+        webhook_secret (str): The webhook signing secret (starts with whsec_)
+    """
+
+    payload: str
+    """
+    The raw request body as a string
+    """
+    headers: WebhookHeaders
+    """
+    The Svix headers from the request
+    """
+    webhook_secret: str
+    """
+    The webhook signing secret (starts with whsec_)
+    """
+
+
 class Webhook(TypedDict):
     """
     Webhook represents a webhook configuration object

@@ -1,10 +1,22 @@
+import base64
+import hmac
+import time
+from hashlib import sha256
 from typing import Any, Dict, List, Optional, cast
 
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend.pagination_helper import PaginationHelper
-from resend.webhooks._webhook import Webhook, WebhookEvent, WebhookStatus
+from resend.webhooks._webhook import (
+    VerifyWebhookOptions,
+    Webhook,
+    WebhookEvent,
+    WebhookStatus,
+)
+
+# Default tolerance for timestamp validation (5 minutes)
+DEFAULT_WEBHOOK_TOLERANCE_SECONDS = 300
 
 
 class Webhooks:
@@ -246,3 +258,111 @@ class Webhooks:
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp
+
+    @classmethod
+    def verify(cls, options: VerifyWebhookOptions) -> None:
+        """
+        Verify validates a webhook payload using HMAC-SHA256 signature verification.
+        This implements manual verification without external dependencies.
+        see more: https://docs.svix.com/receiving/verifying-payloads/how-manual
+
+        Args:
+            options (VerifyWebhookOptions): The webhook verification parameters
+                - payload: The raw request body as a string
+                - headers: The Svix headers (svix-id, svix-timestamp, svix-signature)
+                - webhook_secret: The webhook signing secret (starts with whsec_)
+
+        Raises:
+            ValueError: If verification fails or required parameters are missing
+
+        Returns:
+            None: Returns None on successful verification, raises ValueError otherwise
+        """
+        # Validate required parameters
+        if not options:
+            raise ValueError("options cannot be None")
+
+        if not options.get("payload"):
+            raise ValueError("payload cannot be empty")
+
+        if not options.get("webhook_secret"):
+            raise ValueError("webhook_secret cannot be empty")
+
+        headers = options.get("headers")
+        if not headers:
+            raise ValueError("headers are required")
+
+        if not headers.get("id"):
+            raise ValueError("svix-id header is required")
+
+        if not headers.get("timestamp"):
+            raise ValueError("svix-timestamp header is required")
+
+        if not headers.get("signature"):
+            raise ValueError("svix-signature header is required")
+
+        # Step 1: Validate timestamp to prevent replay attacks
+        try:
+            timestamp = int(headers["timestamp"])
+        except (ValueError, TypeError) as e:
+            raise ValueError(f"invalid timestamp format: {e}")
+
+        now = int(time.time())
+        diff = now - timestamp
+        if (
+            diff > DEFAULT_WEBHOOK_TOLERANCE_SECONDS
+            or diff < -DEFAULT_WEBHOOK_TOLERANCE_SECONDS
+        ):
+            raise ValueError(
+                f"timestamp outside tolerance window: difference of {diff} seconds"
+            )
+
+        # Step 2: Construct signed content: {id}.{timestamp}.{payload}
+        signed_content = f"{headers['id']}.{headers['timestamp']}.{options['payload']}"
+
+        # Step 3: Decode the signing secret (strip whsec_ prefix and base64 decode)
+        secret = options["webhook_secret"]
+        if secret.startswith("whsec_"):
+            secret = secret[6:]  # Remove "whsec_" prefix
+
+        try:
+            decoded_secret = base64.b64decode(secret)
+        except Exception as e:
+            raise ValueError(f"failed to decode webhook secret: {e}")
+
+        # Step 4: Calculate expected signature using HMAC-SHA256
+        expected_signature = cls._generate_signature(
+            decoded_secret, signed_content.encode("utf-8")
+        )
+
+        # Step 5: Compare signatures using constant-time comparison
+        # The signature header contains space-separated signatures with version prefixes
+        # (e.g., "v1,sig1 v1,sig2")
+        signatures = headers["signature"].split(" ")
+        for sig in signatures:
+            # Strip version prefix (e.g., "v1,")
+            parts = sig.split(",", 1)
+            if len(parts) != 2:
+                continue
+
+            received_signature = parts[1]
+            if hmac.compare_digest(expected_signature, received_signature):
+                return  # Signature matches
+
+        raise ValueError("no matching signature found")
+
+    @staticmethod
+    def _generate_signature(secret: bytes, content: bytes) -> str:
+        """
+        Generate an HMAC-SHA256 signature and return it as base64.
+
+        Args:
+            secret (bytes): The decoded webhook secret
+            content (bytes): The content to sign
+
+        Returns:
+            str: The base64-encoded signature
+        """
+        h = hmac.new(secret, content, sha256)
+        signature = h.digest()
+        return base64.b64encode(signature).decode("utf-8")
