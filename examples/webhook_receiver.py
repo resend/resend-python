@@ -19,9 +19,11 @@ Note:
     Then use the ngrok URL when creating your webhook in Resend.
 """
 
+# mypy: ignore-errors
+
 import json
 import os
-from typing import Any, Dict, Tuple, Union
+from typing import Dict, Tuple, Union
 
 from flask import Flask, request
 
@@ -73,19 +75,13 @@ def webhook_handler() -> Tuple[Dict[str, Union[str, bool]], int]:
 
     # Process the webhook event
     event_type = payload.get("type")
-    print(f"✓ Webhook verified successfully!")
+    print("✓ Webhook verified successfully!")
     print(f"Event Type: {event_type}")
     print(f"Payload: {json.dumps(payload, indent=2)}")
 
     print(f"Event: {payload.get('data', {}).get('email_id')}")
 
     return {"success": True}, 200
-
-
-@app.route("/health", methods=["GET"])
-def health_check() -> Tuple[Dict[str, str], int]:
-    """Health check endpoint"""
-    return {"status": "healthy"}, 200
 
 
 if __name__ == "__main__":

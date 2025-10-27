@@ -8,12 +8,8 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend.pagination_helper import PaginationHelper
-from resend.webhooks._webhook import (
-    VerifyWebhookOptions,
-    Webhook,
-    WebhookEvent,
-    WebhookStatus,
-)
+from resend.webhooks._webhook import (VerifyWebhookOptions, Webhook,
+                                      WebhookEvent, WebhookStatus)
 
 # Default tolerance for timestamp validation (5 minutes)
 DEFAULT_WEBHOOK_TOLERANCE_SECONDS = 300
