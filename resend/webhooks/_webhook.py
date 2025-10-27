@@ -4,6 +4,27 @@ from typing_extensions import Literal, TypedDict
 
 WebhookStatus = Literal["enabled", "disabled"]
 
+WebhookEvent = Literal[
+    # Email events
+    "email.sent",
+    "email.delivered",
+    "email.delivery_delayed",
+    "email.complained",
+    "email.bounced",
+    "email.opened",
+    "email.clicked",
+    "email.received",
+    "email.failed",
+    # Contact events
+    "contact.created",
+    "contact.updated",
+    "contact.deleted",
+    # Domain events
+    "domain.created",
+    "domain.updated",
+    "domain.deleted",
+]
+
 
 class Webhook(TypedDict):
     """
@@ -39,7 +60,7 @@ class Webhook(TypedDict):
     """
     The URL where webhook events will be sent
     """
-    events: List[str]
+    events: List[WebhookEvent]
     """
     Array of event types to subscribe to
     """

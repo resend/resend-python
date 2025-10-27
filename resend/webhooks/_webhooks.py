@@ -4,7 +4,7 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend.pagination_helper import PaginationHelper
-from resend.webhooks._webhook import Webhook, WebhookStatus
+from resend.webhooks._webhook import Webhook, WebhookEvent, WebhookStatus
 
 
 class Webhooks:
@@ -78,7 +78,7 @@ class Webhooks:
         """
         The URL where webhook events will be sent.
         """
-        events: List[str]
+        events: List[WebhookEvent]
         """
         Array of event types to subscribe to.
         See https://resend.com/docs/dashboard/webhooks/event-types for available options.
@@ -93,7 +93,7 @@ class Webhooks:
         """
         The URL where webhook events will be sent.
         """
-        events: NotRequired[List[str]]
+        events: NotRequired[List[WebhookEvent]]
         """
         Array of event types to subscribe to.
         """
@@ -200,11 +200,8 @@ class Webhooks:
         webhook_id = params["webhook_id"]
         path = f"/webhooks/{webhook_id}"
 
-        # Remove webhook_id from params before sending to API
-        update_payload = {k: v for k, v in params.items() if k != "webhook_id"}
-
         resp = request.Request[Webhooks.UpdateWebhookResponse](
-            path=path, params=cast(Dict[Any, Any], update_payload), verb="patch"
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
 
