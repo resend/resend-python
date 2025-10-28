@@ -103,7 +103,7 @@ class Receiving:
         def get(cls, email_id: str, attachment_id: str) -> EmailAttachmentDetails:
             """
             Retrieve a single attachment from a received email.
-            see more: https://resend.com/docs/api-reference/attachments/retrieve-attachment
+            see more: https://resend.com/docs/api-reference/attachments/retrieve-received-email-attachment
 
             Args:
                 email_id (str): The ID of the received email
@@ -128,7 +128,7 @@ class Receiving:
         ) -> "Receiving.Attachments.ListResponse":
             """
             Retrieve a list of attachments from a received email.
-            see more: https://resend.com/docs/api-reference/attachments/list-attachments
+            see more: https://resend.com/docs/api-reference/attachments/list-received-email-attachments
 
             Args:
                 email_id (str): The ID of the received email

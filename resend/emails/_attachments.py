@@ -67,7 +67,7 @@ class Attachments:
     def get(cls, email_id: str, attachment_id: str) -> EmailAttachmentDetails:
         """
         Retrieve a single attachment from a sent email.
-        see more: https://resend.com/docs/api-reference/attachments/retrieve-attachment
+        see more: https://resend.com/docs/api-reference/attachments/retrieve-sent-email-attachment
 
         Args:
             email_id (str): The ID of the sent email
@@ -88,7 +88,7 @@ class Attachments:
     def list(cls, email_id: str, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve a list of attachments from a sent email.
-        see more: https://resend.com/docs/api-reference/attachments/list-attachments
+        see more: https://resend.com/docs/api-reference/attachments/list-sent-email-attachments
 
         Args:
             email_id (str): The ID of the sent email
