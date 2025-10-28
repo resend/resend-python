@@ -15,7 +15,7 @@ from .domains._domains import Domains
 from .emails._attachment import Attachment, RemoteAttachment
 from .emails._batch import Batch, BatchValidationError
 from .emails._email import Email
-from .emails._emails import Emails
+from .emails._emails import Emails, EmailTemplate
 from .emails._received_email import (ListReceivedEmail, ReceivedEmail,
                                      ReceivedEmailAttachment,
                                      ReceivedEmailAttachmentDetails)
@@ -66,6 +66,7 @@ __all__ = [
     "Email",
     "Attachment",
     "RemoteAttachment",
+    "EmailTemplate",
     "Tag",
     "Broadcast",
     "Template",
