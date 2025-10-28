@@ -27,6 +27,9 @@ from .request import Request
 from .topics._topic import Topic
 from .topics._topics import Topics
 from .version import __version__, get_version
+from .webhooks._webhook import (VerifyWebhookOptions, Webhook, WebhookEvent,
+                                WebhookHeaders, WebhookStatus)
+from .webhooks._webhooks import Webhooks
 
 # Config vars
 api_key = os.environ.get("RESEND_API_KEY")
@@ -49,6 +52,7 @@ __all__ = [
     "Audiences",
     "Contacts",
     "Broadcasts",
+    "Webhooks",
     "Attachments",
     "Topics",
     # Types
@@ -61,6 +65,11 @@ __all__ = [
     "RemoteAttachment",
     "Tag",
     "Broadcast",
+    "Webhook",
+    "WebhookEvent",
+    "WebhookHeaders",
+    "WebhookStatus",
+    "VerifyWebhookOptions",
     "Topic",
     "BatchValidationError",
     "ReceivedEmail",

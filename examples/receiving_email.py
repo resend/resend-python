@@ -1,7 +1,6 @@
 import os
 
 import resend
-
 # Type imports
 from resend import AttachmentsReceiving, EmailsReceiving
 
