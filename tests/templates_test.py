@@ -266,7 +266,7 @@ class TestResendTemplates(ResendBaseTest):
 
         params: resend.Templates.CreateParams = {
             "name": "complex-template",
-            "html": "<div>{{{STRING}}} {{{NUMBER}}} {{{BOOLEAN}}} {{{OBJECT}}} {{{LIST}}}</div>",
+            "html": "<div>{{{STRING}}} {{{NUMBER}}} {{{AGE}}} {{{SCORE}}}</div>",
             "variables": [
                 {
                     "key": "STRING",
@@ -279,19 +279,14 @@ class TestResendTemplates(ResendBaseTest):
                     "fallback_value": 42,
                 },
                 {
-                    "key": "BOOLEAN",
-                    "type": "boolean",
-                    "fallback_value": True,
+                    "key": "AGE",
+                    "type": "number",
+                    "fallback_value": 25,
                 },
                 {
-                    "key": "OBJECT",
-                    "type": "object",
-                    "fallback_value": {"key": "value"},
-                },
-                {
-                    "key": "LIST",
-                    "type": "list",
-                    "fallback_value": ["item1", "item2"],
+                    "key": "SCORE",
+                    "type": "number",
+                    "fallback_value": 100,
                 },
             ],
         }

@@ -7,7 +7,7 @@ from typing_extensions import NotRequired, TypedDict
 from resend import request
 from resend.pagination_helper import PaginationHelper
 
-from ._template import Template, Variable
+from ._template import Template, TemplateListItem, Variable
 
 # Use functional TypedDict syntax to support reserved keyword "from"
 _CreateParamsFrom = TypedDict(
@@ -158,15 +158,15 @@ class Templates:
 
         Attributes:
             object (str): The object type (always "list").
-            data (List[Template]): Array of template objects.
+            data (List[TemplateListItem]): Array of template list items with a subset of template properties.
             has_more (bool): Whether there are more results available.
         """
 
         object: str
         """The object type (always "list")."""
 
-        data: List[Template]
-        """Array of template objects."""
+        data: List[TemplateListItem]
+        """Array of template list items with a subset of template properties."""
 
         has_more: bool
         """Whether there are more results available."""

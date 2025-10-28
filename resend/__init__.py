@@ -24,7 +24,7 @@ from .emails._tag import Tag
 from .http_client import HTTPClient
 from .http_client_requests import RequestsClient
 from .request import Request
-from .templates._template import Template, Variable
+from .templates._template import Template, TemplateListItem, Variable
 from .templates._templates import Templates
 from .topics._topic import Topic
 from .topics._topics import Topics
@@ -70,6 +70,7 @@ __all__ = [
     "Tag",
     "Broadcast",
     "Template",
+    "TemplateListItem",
     "Variable",
     "Webhook",
     "WebhookEvent",

@@ -16,14 +16,14 @@ class EmailTemplate(TypedDict):
 
     Attributes:
         id (str): The template ID.
-        variables (NotRequired[Dict[str, Union[str, int, bool]]]): Optional variables to be used in the template.
+        variables (NotRequired[Dict[str, Union[str, int]]]): Optional variables to be used in the template.
     """
 
     id: str
     """
     The template ID.
     """
-    variables: NotRequired[Dict[str, Union[str, int, bool]]]
+    variables: NotRequired[Dict[str, Union[str, int]]]
     """
     Optional variables to be used in the template.
     """

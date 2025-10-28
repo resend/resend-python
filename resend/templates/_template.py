@@ -10,16 +10,16 @@ class Variable(TypedDict):
 
     Attributes:
         key (str): The key of the variable. We recommend capitalizing the key (e.g. FIRST_NAME).
-        type (Literal["string", "number", "boolean", "object", "list"]): The type of the variable.
+        type (Literal["string", "number"]): The type of the variable.
         fallback_value (Any): The fallback value of the variable. Must match the type of the variable.
             If no fallback value is provided, you must provide a value for the variable when sending
-            an email using the template. If object type is provided, you must include a fallback.
+            an email using the template.
     """
 
     key: str
     """The key of the variable. We recommend capitalizing the key (e.g. FIRST_NAME)."""
 
-    type: Literal["string", "number", "boolean", "object", "list"]
+    type: Literal["string", "number"]
     """The type of the variable."""
 
     fallback_value: NotRequired[Any]
@@ -93,3 +93,33 @@ class Template(_FromParam):
 
     published_at: NotRequired[str]
     """The timestamp when the template was published."""
+
+
+class TemplateListItem(TypedDict):
+    """Template list item type returned in list responses.
+
+    This is a subset of the full Template object, containing only the fields
+    that are included in list responses.
+
+    Attributes:
+        id (str): The Template ID.
+        object (str): The object type (always "template").
+        name (str): The name of the template.
+        html (str): The HTML version of the template.
+        created_at (str): The timestamp when the template was created.
+    """
+
+    id: str
+    """The Template ID."""
+
+    object: str
+    """The object type (always "template")."""
+
+    name: str
+    """The name of the template."""
+
+    html: str
+    """The HTML version of the template."""
+
+    created_at: str
+    """The timestamp when the template was created."""

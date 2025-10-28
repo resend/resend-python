@@ -475,7 +475,6 @@ class TestResendEmail(ResendBaseTest):
             "variables": {
                 "name": "John Doe",
                 "age": 30,
-                "verified": True,
             },
         }
 
