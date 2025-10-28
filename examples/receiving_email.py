@@ -2,7 +2,7 @@ import os
 
 import resend
 # Type imports
-from resend import AttachmentsReceiving, EmailsReceiving
+from resend import EmailsReceiving
 
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
@@ -102,7 +102,7 @@ if paginated_emails["data"] and paginated_emails["has_more"]:
     print(f"Next page has more: {next_page['has_more']}")
 
 print("\n--- Listing All Attachments ---")
-all_attachments: AttachmentsReceiving.ListResponse = resend.Attachments.Receiving.list(
+all_attachments: EmailsReceiving.Attachments.ListResponse = resend.Emails.Receiving.Attachments.list(
     email_id=email_id
 )
 
@@ -124,7 +124,7 @@ if received_email["attachments"] and len(received_email["attachments"]) > 0:
     print(f"\n--- Retrieving Attachment Details: {first_attachment['filename']} ---")
 
     attachment_details: resend.ReceivedEmailAttachmentDetails = (
-        resend.Attachments.Receiving.get(
+        resend.Emails.Receiving.Attachments.get(
             email_id=email_id,
             attachment_id=attachment_id,
         )

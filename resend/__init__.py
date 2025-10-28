@@ -2,8 +2,6 @@ import os
 
 from .api_keys._api_key import ApiKey
 from .api_keys._api_keys import ApiKeys
-from .attachments._attachments import Attachments
-from .attachments._receiving import Receiving as AttachmentsReceiving
 from .audiences._audience import Audience
 from .audiences._audiences import Audiences
 from .broadcasts._broadcast import Broadcast
@@ -13,6 +11,7 @@ from .contacts._contacts import Contacts
 from .domains._domain import Domain
 from .domains._domains import Domains
 from .emails._attachment import Attachment, RemoteAttachment
+from .emails._attachments import Attachments as EmailAttachments
 from .emails._batch import Batch, BatchValidationError
 from .emails._email import Email
 from .emails._emails import Emails
@@ -53,7 +52,6 @@ __all__ = [
     "Contacts",
     "Broadcasts",
     "Webhooks",
-    "Attachments",
     "Topics",
     # Types
     "Audience",
@@ -78,7 +76,7 @@ __all__ = [
     "ListReceivedEmail",
     # Receiving types (for type hints)
     "EmailsReceiving",
-    "AttachmentsReceiving",
+    "EmailAttachments",
     # Default HTTP Client
     "RequestsClient",
 ]

@@ -1,5 +1,5 @@
 import resend
-from resend import AttachmentsReceiving
+from resend import EmailsReceiving
 from resend.exceptions import NoContentError
 from tests.conftest import ResendBaseTest
 
@@ -11,26 +11,25 @@ class TestResendAttachments(ResendBaseTest):
     def test_receiving_get_attachment(self) -> None:
         self.set_mock_json(
             {
+                "id": "2a0c9ce0-3112-4728-976e-47ddcd16a318",
                 "object": "attachment",
-                "data": {
-                    "id": "2a0c9ce0-3112-4728-976e-47ddcd16a318",
-                    "filename": "avatar.png",
-                    "content_type": "image/png",
-                    "content_disposition": "inline",
-                    "content_id": "img001",
-                    "download_url": "https://inbound-cdn.resend.com/4ef9a417-02e9-4d39-ad75-9611e0fcc33c/attachments/2a0c9ce0-3112-4728-976e-47ddcd16a318?some-params=example&signature=sig-123",
-                    "expires_at": "2025-10-17T14:29:41.521Z",
-                },
+                "filename": "avatar.png",
+                "content_type": "image/png",
+                "content_disposition": "inline",
+                "content_id": "img001",
+                "download_url": "https://inbound-cdn.resend.com/4ef9a417-02e9-4d39-ad75-9611e0fcc33c/attachments/2a0c9ce0-3112-4728-976e-47ddcd16a318?some-params=example&signature=sig-123",
+                "expires_at": "2025-10-17T14:29:41.521Z",
             }
         )
 
         attachment: resend.ReceivedEmailAttachmentDetails = (
-            resend.Attachments.Receiving.get(
+            resend.Emails.Receiving.Attachments.get(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
                 attachment_id="2a0c9ce0-3112-4728-976e-47ddcd16a318",
             )
         )
         assert attachment["id"] == "2a0c9ce0-3112-4728-976e-47ddcd16a318"
+        assert attachment["object"] == "attachment"
         assert attachment["filename"] == "avatar.png"
         assert attachment["content_type"] == "image/png"
         assert attachment["content_disposition"] == "inline"
@@ -41,25 +40,24 @@ class TestResendAttachments(ResendBaseTest):
     def test_receiving_get_attachment_without_content_id(self) -> None:
         self.set_mock_json(
             {
+                "id": "3b1c9ce0-4223-5839-a87f-58eecd27b429",
                 "object": "attachment",
-                "data": {
-                    "id": "3b1c9ce0-4223-5839-a87f-58eecd27b429",
-                    "filename": "document.pdf",
-                    "content_type": "application/pdf",
-                    "content_disposition": "attachment",
-                    "download_url": "https://inbound-cdn.resend.com/test-email/attachments/test-attachment",
-                    "expires_at": "2025-10-18T10:00:00.000Z",
-                },
+                "filename": "document.pdf",
+                "content_type": "application/pdf",
+                "content_disposition": "attachment",
+                "download_url": "https://inbound-cdn.resend.com/test-email/attachments/test-attachment",
+                "expires_at": "2025-10-18T10:00:00.000Z",
             }
         )
 
         attachment: resend.ReceivedEmailAttachmentDetails = (
-            resend.Attachments.Receiving.get(
+            resend.Emails.Receiving.Attachments.get(
                 email_id="test-email-id",
                 attachment_id="3b1c9ce0-4223-5839-a87f-58eecd27b429",
             )
         )
         assert attachment["id"] == "3b1c9ce0-4223-5839-a87f-58eecd27b429"
+        assert attachment["object"] == "attachment"
         assert attachment["filename"] == "document.pdf"
         assert attachment["content_type"] == "application/pdf"
         assert attachment["content_disposition"] == "attachment"
@@ -70,7 +68,7 @@ class TestResendAttachments(ResendBaseTest):
     ) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
-            _ = resend.Attachments.Receiving.get(
+            _ = resend.Emails.Receiving.Attachments.get(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
                 attachment_id="2a0c9ce0-3112-4728-976e-47ddcd16a318",
             )
@@ -100,8 +98,8 @@ class TestResendAttachments(ResendBaseTest):
             }
         )
 
-        attachments: AttachmentsReceiving.ListResponse = (
-            resend.Attachments.Receiving.list(
+        attachments: EmailsReceiving.Attachments.ListResponse = (
+            resend.Emails.Receiving.Attachments.list(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
             )
         )
@@ -132,11 +130,11 @@ class TestResendAttachments(ResendBaseTest):
             }
         )
 
-        list_params: AttachmentsReceiving.ListParams = {
+        list_params: EmailsReceiving.Attachments.ListParams = {
             "limit": 1,
         }
-        attachments: AttachmentsReceiving.ListResponse = (
-            resend.Attachments.Receiving.list(
+        attachments: EmailsReceiving.Attachments.ListResponse = (
+            resend.Emails.Receiving.Attachments.list(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c", params=list_params
             )
         )
@@ -154,8 +152,8 @@ class TestResendAttachments(ResendBaseTest):
             }
         )
 
-        attachments: AttachmentsReceiving.ListResponse = (
-            resend.Attachments.Receiving.list(
+        attachments: EmailsReceiving.Attachments.ListResponse = (
+            resend.Emails.Receiving.Attachments.list(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
             )
         )
@@ -169,6 +167,6 @@ class TestResendAttachments(ResendBaseTest):
     ) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
-            _ = resend.Attachments.Receiving.list(
+            _ = resend.Emails.Receiving.Attachments.list(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
             )
