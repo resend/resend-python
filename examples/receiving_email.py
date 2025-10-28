@@ -123,7 +123,7 @@ if received_email["attachments"] and len(received_email["attachments"]) > 0:
 
     print(f"\n--- Retrieving Attachment Details: {first_attachment['filename']} ---")
 
-    attachment_details: resend.ReceivedEmailAttachmentDetails = (
+    attachment_details: resend.EmailAttachmentDetails = (
         resend.Emails.Receiving.Attachments.get(
             email_id=email_id,
             attachment_id=attachment_id,

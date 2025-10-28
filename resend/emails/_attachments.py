@@ -3,8 +3,8 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
-from resend.emails._received_email import (ReceivedEmailAttachment,
-                                           ReceivedEmailAttachmentDetails)
+from resend.emails._received_email import (EmailAttachment,
+                                           EmailAttachmentDetails)
 from resend.pagination_helper import PaginationHelper
 
 
@@ -28,7 +28,7 @@ class _ListResponse(TypedDict):
     """
     The object type: "list"
     """
-    data: List[ReceivedEmailAttachment]
+    data: List[EmailAttachment]
     """
     The list of attachment objects.
     """
@@ -59,12 +59,12 @@ class Attachments:
 
         Attributes:
             object (str): The object type: "list"
-            data (List[ReceivedEmailAttachment]): The list of attachment objects.
+            data (List[EmailAttachment]): The list of attachment objects.
             has_more (bool): Whether there are more attachments available for pagination.
         """
 
     @classmethod
-    def get(cls, email_id: str, attachment_id: str) -> ReceivedEmailAttachmentDetails:
+    def get(cls, email_id: str, attachment_id: str) -> EmailAttachmentDetails:
         """
         Retrieve a single attachment from a sent email.
         see more: https://resend.com/docs/api-reference/attachments/retrieve-attachment
@@ -74,10 +74,10 @@ class Attachments:
             attachment_id (str): The ID of the attachment to retrieve
 
         Returns:
-            ReceivedEmailAttachmentDetails: The attachment details including download URL
+            EmailAttachmentDetails: The attachment details including download URL
         """
         path = f"/emails/{email_id}/attachments/{attachment_id}"
-        resp = request.Request[ReceivedEmailAttachmentDetails](
+        resp = request.Request[EmailAttachmentDetails](
             path=path,
             params={},
             verb="get",

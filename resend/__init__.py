@@ -15,9 +15,8 @@ from .emails._attachments import Attachments as EmailAttachments
 from .emails._batch import Batch, BatchValidationError
 from .emails._email import Email
 from .emails._emails import Emails
-from .emails._received_email import (ListReceivedEmail, ReceivedEmail,
-                                     ReceivedEmailAttachment,
-                                     ReceivedEmailAttachmentDetails)
+from .emails._received_email import (EmailAttachment, EmailAttachmentDetails,
+                                     ListReceivedEmail, ReceivedEmail)
 from .emails._receiving import Receiving as EmailsReceiving
 from .emails._tag import Tag
 from .http_client import HTTPClient
@@ -71,8 +70,8 @@ __all__ = [
     "Topic",
     "BatchValidationError",
     "ReceivedEmail",
-    "ReceivedEmailAttachment",
-    "ReceivedEmailAttachmentDetails",
+    "EmailAttachment",
+    "EmailAttachmentDetails",
     "ListReceivedEmail",
     # Receiving types (for type hints)
     "EmailsReceiving",

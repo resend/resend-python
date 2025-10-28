@@ -22,7 +22,7 @@ class TestResendAttachments(ResendBaseTest):
             }
         )
 
-        attachment: resend.ReceivedEmailAttachmentDetails = (
+        attachment: resend.EmailAttachmentDetails = (
             resend.Emails.Receiving.Attachments.get(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
                 attachment_id="2a0c9ce0-3112-4728-976e-47ddcd16a318",
@@ -50,7 +50,7 @@ class TestResendAttachments(ResendBaseTest):
             }
         )
 
-        attachment: resend.ReceivedEmailAttachmentDetails = (
+        attachment: resend.EmailAttachmentDetails = (
             resend.Emails.Receiving.Attachments.get(
                 email_id="test-email-id",
                 attachment_id="3b1c9ce0-4223-5839-a87f-58eecd27b429",
