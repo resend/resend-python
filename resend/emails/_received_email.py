@@ -47,6 +47,7 @@ class ReceivedEmailAttachmentDetails(TypedDict):
     ReceivedEmailAttachmentDetails type that wraps a received email attachment with download details.
 
     Attributes:
+        object (str): The object type.
         id (str): The attachment ID.
         filename (str): The filename of the attachment.
         content_type (str): The content type of the attachment.
@@ -56,6 +57,10 @@ class ReceivedEmailAttachmentDetails(TypedDict):
         expires_at (str): When the download URL expires.
     """
 
+    object: str
+    """
+    The object type.
+    """
     id: str
     """
     The attachment ID.
