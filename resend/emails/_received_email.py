@@ -3,9 +3,9 @@ from typing import Dict, List, Optional
 from typing_extensions import NotRequired, TypedDict
 
 
-class ReceivedEmailAttachment(TypedDict):
+class EmailAttachment(TypedDict):
     """
-    ReceivedEmailAttachment type that wraps an attachment object from a received email.
+    EmailAttachment type that wraps an attachment object from an email.
 
     Attributes:
         id (str): The attachment ID.
@@ -42,11 +42,12 @@ class ReceivedEmailAttachment(TypedDict):
     """
 
 
-class ReceivedEmailAttachmentDetails(TypedDict):
+class EmailAttachmentDetails(TypedDict):
     """
-    ReceivedEmailAttachmentDetails type that wraps a received email attachment with download details.
+    EmailAttachmentDetails type that wraps an email attachment with download details.
 
     Attributes:
+        object (str): The object type.
         id (str): The attachment ID.
         filename (str): The filename of the attachment.
         content_type (str): The content type of the attachment.
@@ -56,6 +57,10 @@ class ReceivedEmailAttachmentDetails(TypedDict):
         expires_at (str): When the download URL expires.
     """
 
+    object: str
+    """
+    The object type.
+    """
     id: str
     """
     The attachment ID.
@@ -153,7 +158,7 @@ class _ReceivedEmailDefaultAttrs(_ReceivedEmailFromParam):
     """
     Email headers.
     """
-    attachments: List[ReceivedEmailAttachment]
+    attachments: List[EmailAttachment]
     """
     List of attachments.
     """
@@ -177,7 +182,7 @@ class ReceivedEmail(_ReceivedEmailDefaultAttrs):
         reply_to (Optional[List[str]]): Reply-to addresses.
         message_id (str): The message ID of the email.
         headers (NotRequired[Dict[str, str]]): Email headers.
-        attachments (List[ReceivedEmailAttachment]): List of attachments.
+        attachments (List[EmailAttachment]): List of attachments.
     """
 
 
@@ -214,7 +219,7 @@ class _ListReceivedEmailDefaultAttrs(_ListReceivedEmailFromParam):
     """
     The message ID of the email.
     """
-    attachments: List[ReceivedEmailAttachment]
+    attachments: List[EmailAttachment]
     """
     List of attachments.
     """
@@ -235,5 +240,5 @@ class ListReceivedEmail(_ListReceivedEmailDefaultAttrs):
         cc (Optional[List[str]]): Cc recipients.
         reply_to (Optional[List[str]]): Reply-to addresses.
         message_id (str): The message ID of the email.
-        attachments (List[ReceivedEmailAttachment]): List of attachments.
+        attachments (List[EmailAttachment]): List of attachments.
     """
