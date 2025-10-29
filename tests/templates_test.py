@@ -169,17 +169,21 @@ class TestResendTemplates(ResendBaseTest):
                 "data": [
                     {
                         "id": "template-1",
-                        "object": "template",
                         "name": "welcome-email",
-                        "html": "<strong>Welcome!</strong>",
+                        "status": "published",
+                        "published_at": "2024-01-15T11:00:00.000Z",
                         "created_at": "2024-01-15T10:30:00.000Z",
+                        "updated_at": "2024-01-15T10:30:00.000Z",
+                        "alias": "welcome",
                     },
                     {
                         "id": "template-2",
-                        "object": "template",
                         "name": "goodbye-email",
-                        "html": "<strong>Goodbye!</strong>",
+                        "status": "draft",
+                        "published_at": None,
                         "created_at": "2024-01-16T10:30:00.000Z",
+                        "updated_at": "2024-01-16T10:30:00.000Z",
+                        "alias": "goodbye",
                     },
                 ],
             }
@@ -192,17 +196,21 @@ class TestResendTemplates(ResendBaseTest):
 
         template = templates["data"][0]
         assert template["id"] == "template-1"
-        assert template["object"] == "template"
         assert template["name"] == "welcome-email"
-        assert template["html"] == "<strong>Welcome!</strong>"
+        assert template["status"] == "published"
+        assert template["published_at"] == "2024-01-15T11:00:00.000Z"
         assert template["created_at"] == "2024-01-15T10:30:00.000Z"
+        assert template["updated_at"] == "2024-01-15T10:30:00.000Z"
+        assert template["alias"] == "welcome"
 
         template = templates["data"][1]
         assert template["id"] == "template-2"
-        assert template["object"] == "template"
         assert template["name"] == "goodbye-email"
-        assert template["html"] == "<strong>Goodbye!</strong>"
+        assert template["status"] == "draft"
+        assert template["published_at"] is None
         assert template["created_at"] == "2024-01-16T10:30:00.000Z"
+        assert template["updated_at"] == "2024-01-16T10:30:00.000Z"
+        assert template["alias"] == "goodbye"
 
     def test_templates_list_with_pagination_params(self) -> None:
         self.set_mock_json(
@@ -212,10 +220,12 @@ class TestResendTemplates(ResendBaseTest):
                 "data": [
                     {
                         "id": "template-1",
-                        "object": "template",
                         "name": "welcome-email",
-                        "html": "<strong>Welcome!</strong>",
+                        "status": "published",
+                        "published_at": "2024-01-15T11:00:00.000Z",
                         "created_at": "2024-01-15T10:30:00.000Z",
+                        "updated_at": "2024-01-15T10:30:00.000Z",
+                        "alias": "welcome",
                     }
                 ],
             }
@@ -239,10 +249,12 @@ class TestResendTemplates(ResendBaseTest):
                 "data": [
                     {
                         "id": "template-3",
-                        "object": "template",
                         "name": "password-reset",
-                        "html": "<strong>Reset your password</strong>",
+                        "status": "draft",
+                        "published_at": None,
                         "created_at": "2024-01-14T10:30:00.000Z",
+                        "updated_at": "2024-01-14T10:30:00.000Z",
+                        "alias": "password-reset",
                     }
                 ],
             }

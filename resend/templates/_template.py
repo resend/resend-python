@@ -103,23 +103,31 @@ class TemplateListItem(TypedDict):
 
     Attributes:
         id (str): The Template ID.
-        object (str): The object type (always "template").
         name (str): The name of the template.
-        html (str): The HTML version of the template.
+        status (Literal["draft", "published"]): The status of the template.
+        published_at (str | None): The timestamp when the template was published, or None if not published.
         created_at (str): The timestamp when the template was created.
+        updated_at (str): The timestamp when the template was last updated.
+        alias (str): The alias of the template.
     """
 
     id: str
     """The Template ID."""
 
-    object: str
-    """The object type (always "template")."""
-
     name: str
     """The name of the template."""
 
-    html: str
-    """The HTML version of the template."""
+    status: Literal["draft", "published"]
+    """The status of the template."""
+
+    published_at: Union[str, None]
+    """The timestamp when the template was published, or None if not published."""
 
     created_at: str
     """The timestamp when the template was created."""
+
+    updated_at: str
+    """The timestamp when the template was last updated."""
+
+    alias: str
+    """The alias of the template."""
