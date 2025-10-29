@@ -102,8 +102,8 @@ if paginated_emails["data"] and paginated_emails["has_more"]:
     print(f"Next page has more: {next_page['has_more']}")
 
 print("\n--- Listing All Attachments ---")
-all_attachments: EmailsReceiving.Attachments.ListResponse = resend.Emails.Receiving.Attachments.list(
-    email_id=email_id
+all_attachments: EmailsReceiving.Attachments.ListResponse = (
+    resend.Emails.Receiving.Attachments.list(email_id=email_id)
 )
 
 print(f"Total attachments: {len(all_attachments['data'])}")
