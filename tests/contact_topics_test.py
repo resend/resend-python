@@ -1,4 +1,5 @@
 import resend
+from resend import ContactsTopics
 from resend.exceptions import NoContentError
 from tests.conftest import ResendBaseTest
 
@@ -22,7 +23,7 @@ class TestResendContactTopics(ResendBaseTest):
             }
         )
 
-        response: resend.Contacts.Topics.ListResponse = resend.Contacts.Topics.list(
+        response: ContactsTopics.ListResponse = resend.Contacts.Topics.list(
             contact_id="cont_456"
         )
         assert response["object"] == "list"
@@ -47,7 +48,7 @@ class TestResendContactTopics(ResendBaseTest):
             }
         )
 
-        response: resend.Contacts.Topics.ListResponse = resend.Contacts.Topics.list(
+        response: ContactsTopics.ListResponse = resend.Contacts.Topics.list(
             email="user@example.com"
         )
         assert response["object"] == "list"
@@ -76,11 +77,11 @@ class TestResendContactTopics(ResendBaseTest):
             }
         )
 
-        params: resend.Contacts.Topics.ListParams = {
+        params: ContactsTopics.ListParams = {
             "limit": 10,
             "after": "topic_0",
         }
-        response: resend.Contacts.Topics.ListResponse = resend.Contacts.Topics.list(
+        response: ContactsTopics.ListResponse = resend.Contacts.Topics.list(
             contact_id="cont_456", params=params
         )
         assert response["object"] == "list"
@@ -110,16 +111,14 @@ class TestResendContactTopics(ResendBaseTest):
             }
         )
 
-        params: resend.Contacts.Topics.UpdateParams = {
+        params: ContactsTopics.UpdateParams = {
             "id": "cont_456",
             "topics": [
                 {"id": "topic_1", "subscription": "opt_in"},
                 {"id": "topic_2", "subscription": "opt_out"},
             ],
         }
-        response: resend.Contacts.Topics.UpdateResponse = (
-            resend.Contacts.Topics.update(params)
-        )
+        response: ContactsTopics.UpdateResponse = resend.Contacts.Topics.update(params)
         assert response["id"] == "cont_456"
         assert response["object"] == "contact"
 
@@ -131,22 +130,20 @@ class TestResendContactTopics(ResendBaseTest):
             }
         )
 
-        params: resend.Contacts.Topics.UpdateParams = {
+        params: ContactsTopics.UpdateParams = {
             "email": "user@example.com",
             "topics": [
                 {"id": "topic_1", "subscription": "opt_in"},
             ],
         }
-        response: resend.Contacts.Topics.UpdateResponse = (
-            resend.Contacts.Topics.update(params)
-        )
+        response: ContactsTopics.UpdateResponse = resend.Contacts.Topics.update(params)
         assert response["id"] == "cont_456"
         assert response["object"] == "contact"
 
     def test_contact_topics_update_raises_when_no_contact_identifier(self) -> None:
         resend.api_key = "re_123"
 
-        params: resend.Contacts.Topics.UpdateParams = {
+        params: ContactsTopics.UpdateParams = {
             "topics": [
                 {"id": "topic_1", "subscription": "opt_in"},
             ],
@@ -159,7 +156,7 @@ class TestResendContactTopics(ResendBaseTest):
 
     def test_should_update_contact_topics_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
-        params: resend.Contacts.Topics.UpdateParams = {
+        params: ContactsTopics.UpdateParams = {
             "id": "cont_456",
             "topics": [
                 {"id": "topic_1", "subscription": "opt_in"},

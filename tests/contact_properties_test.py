@@ -102,8 +102,8 @@ class TestResendContactProperties(ResendBaseTest):
             "limit": 10,
             "after": "prop_0",
         }
-        response: resend.ContactProperties.ListResponse = (
-            resend.ContactProperties.list(params)
+        response: resend.ContactProperties.ListResponse = resend.ContactProperties.list(
+            params
         )
         assert response["object"] == "list"
         assert response["has_more"] is True

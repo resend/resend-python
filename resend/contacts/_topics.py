@@ -167,7 +167,9 @@ class Topics:
         if params.get("id") is None and params.get("email") is None:
             raise ValueError("id or email must be provided")
 
-        contact = params.get("id") if params.get("id") is not None else params.get("email")
+        contact = (
+            params.get("id") if params.get("id") is not None else params.get("email")
+        )
         path = f"/contacts/{contact}/topics"
 
         # Send the topics array directly as the request body (not wrapped in an object)

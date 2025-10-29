@@ -1,5 +1,6 @@
-import resend
 import os
+
+import resend
 
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")

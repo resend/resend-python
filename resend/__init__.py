@@ -6,8 +6,8 @@ from .audiences._audience import Audience
 from .audiences._audiences import Audiences
 from .broadcasts._broadcast import Broadcast
 from .broadcasts._broadcasts import Broadcasts
-from .contact_properties._contact_property import ContactProperty
 from .contact_properties._contact_properties import ContactProperties
+from .contact_properties._contact_property import ContactProperty
 from .contacts._contact import Contact
 from .contacts._contact_topic import ContactTopic, TopicSubscriptionUpdate
 from .contacts._contacts import Contacts
