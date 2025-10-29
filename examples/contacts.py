@@ -65,6 +65,81 @@ if contacts["data"]:
 else:
     print("No contacts available for pagination example")
 
+print("\n--- Contact Topics Examples ---")
+
+print("\nCreating a topic...")
+topic_create_params: resend.Topics.CreateParams = {
+    "name": "Product Updates",
+    "default_subscription": "opt_in",
+    "description": "Latest product updates and features",
+}
+created_topic: resend.Topics.CreateTopicResponse = resend.Topics.create(topic_create_params)
+print(f"Created topic with ID: {created_topic['id']}")
+
+topic_create_params_2: resend.Topics.CreateParams = {
+    "name": "Newsletter",
+    "default_subscription": "opt_out",
+    "description": "Weekly newsletter",
+}
+created_topic_2: resend.Topics.CreateTopicResponse = resend.Topics.create(topic_create_params_2)
+print(f"Created topic with ID: {created_topic_2['id']}")
+
+print("\nListing topics for contact by ID...")
+topics_response: resend.Contacts.Topics.ListResponse = resend.Contacts.Topics.list(
+    contact_id=contact["id"]
+)
+print(f"Found {len(topics_response['data'])} topics for contact")
+for topic in topics_response["data"]:
+    print(f"  - {topic['name']}: {topic['subscription']}")
+
+print("\nListing topics for contact by email...")
+topics_by_email: resend.Contacts.Topics.ListResponse = resend.Contacts.Topics.list(
+    email="sw@exmple.com"
+)
+print(f"Found {len(topics_by_email['data'])} topics for contact")
+
+# Update topic subscriptions for a contact by ID
+print("\nUpdating topic subscriptions by contact ID...")
+update_topics_params: resend.Contacts.Topics.UpdateParams = {
+    "id": contact["id"],
+    "topics": [
+        {"id": created_topic["id"], "subscription": "opt_in"},
+        {"id": created_topic_2["id"], "subscription": "opt_out"},
+    ],
+}
+update_topics_response: resend.Contacts.Topics.UpdateResponse = (
+    resend.Contacts.Topics.update(update_topics_params)
+)
+print(f"Updated topics for contact: {update_topics_response['id']}")
+
+# Update topic subscriptions for a contact by email
+print("\nUpdating topic subscriptions by contact email...")
+update_topics_by_email: resend.Contacts.Topics.UpdateParams = {
+    "email": "sw@exmple.com",
+    "topics": [
+        {"id": created_topic["id"], "subscription": "opt_in"},
+        {"id": created_topic_2["id"], "subscription": "opt_in"},
+    ],
+}
+update_by_email_response: resend.Contacts.Topics.UpdateResponse = (
+    resend.Contacts.Topics.update(update_topics_by_email)
+)
+print(f"Updated topics for contact by email: {update_by_email_response['id']}")
+
+# List topics again to see the updates
+print("\nListing topics after updates...")
+updated_topics: resend.Contacts.Topics.ListResponse = resend.Contacts.Topics.list(
+    contact_id=contact["id"]
+)
+for topic in updated_topics["data"]:
+    print(f"  - {topic['name']}: {topic['subscription']}")
+
+# Clean up: remove the topics we created
+print("\nCleaning up topics...")
+resend.Topics.remove(created_topic["id"])
+resend.Topics.remove(created_topic_2["id"])
+print("Topics removed")
+
 # remove by email
 rmed: resend.Contacts.RemoveContactResponse = resend.Contacts.remove(
     audience_id=audience_id, email=cont_by_email["email"]

@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 from typing_extensions import NotRequired, TypedDict
 
 
@@ -25,4 +27,8 @@ class Contact(TypedDict):
     unsubscribed: bool
     """
     The unsubscribed status of the contact.
+    """
+    properties: NotRequired[Dict[str, Any]]
+    """
+    Custom properties associated with the contact.
     """

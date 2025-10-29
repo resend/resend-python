@@ -6,9 +6,11 @@ from resend import request
 from resend.pagination_helper import PaginationHelper
 
 from ._contact import Contact
+from ._topics import Topics
 
 
 class Contacts:
+    Topics = Topics
 
     class RemoveContactResponse(TypedDict):
         """
@@ -131,6 +133,10 @@ class Contacts:
         """
         The unsubscribed status of the contact.
         """
+        properties: NotRequired[Dict[str, Any]]
+        """
+        Custom properties associated with the contact.
+        """
 
     class UpdateParams(TypedDict):
         audience_id: str
@@ -156,6 +162,10 @@ class Contacts:
         unsubscribed: NotRequired[bool]
         """
         The unsubscribed status of the contact.
+        """
+        properties: NotRequired[Dict[str, Any]]
+        """
+        Custom properties associated with the contact.
         """
 
     @classmethod
