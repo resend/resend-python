@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -126,7 +126,7 @@ class ContactProperties:
         Attributes:
             key (str): The key name of the property
             type (str): The data type of the property (e.g., "string", "number", "boolean")
-            fallback_value (Any): The default value used when a contact doesn't have this property set
+            fallback_value (NotRequired[Any]): The default value used when a contact doesn't have this property set
         """
 
         key: str
@@ -137,9 +137,10 @@ class ContactProperties:
         """
         The data type of the property (e.g., "string", "number", "boolean").
         """
-        fallback_value: Any
+        fallback_value: NotRequired[Union[str, int, float, None]]
         """
         The default value used when a contact doesn't have this property set.
+        Must match the type specified in the type field (string or number).
         """
 
     class UpdateParams(TypedDict):
@@ -148,16 +149,17 @@ class ContactProperties:
 
         Attributes:
             id (str): The contact property ID
-            fallback_value (Any): The default value used when a contact doesn't have this property set
+            fallback_value (Union[str, int, float, None]): The default value used when a contact doesn't have this property set
         """
 
         id: str
         """
         The contact property ID.
         """
-        fallback_value: Any
+        fallback_value: Union[str, int, float, None]
         """
         The default value used when a contact doesn't have this property set.
+        Must match the type of the property (string or number).
         """
 
     @classmethod
@@ -233,8 +235,11 @@ class ContactProperties:
             UpdateResponse: The updated contact property response
         """
         path = f"/contact-properties/{params['id']}"
+        # Build the payload without id (it's only used in the URL path)
+        payload: Dict[str, Any] = {"fallback_value": params["fallback_value"]}
+
         resp = request.Request[ContactProperties.UpdateResponse](
-            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+            path=path, params=payload, verb="patch"
         ).perform_with_content()
         return resp
 

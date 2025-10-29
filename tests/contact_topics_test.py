@@ -107,7 +107,6 @@ class TestResendContactTopics(ResendBaseTest):
         self.set_mock_json(
             {
                 "id": "cont_456",
-                "object": "contact",
             }
         )
 
@@ -120,13 +119,11 @@ class TestResendContactTopics(ResendBaseTest):
         }
         response: ContactsTopics.UpdateResponse = resend.Contacts.Topics.update(params)
         assert response["id"] == "cont_456"
-        assert response["object"] == "contact"
 
     def test_contact_topics_update_by_email(self) -> None:
         self.set_mock_json(
             {
                 "id": "cont_456",
-                "object": "contact",
             }
         )
 
@@ -138,7 +135,6 @@ class TestResendContactTopics(ResendBaseTest):
         }
         response: ContactsTopics.UpdateResponse = resend.Contacts.Topics.update(params)
         assert response["id"] == "cont_456"
-        assert response["object"] == "contact"
 
     def test_contact_topics_update_raises_when_no_contact_identifier(self) -> None:
         resend.api_key = "re_123"

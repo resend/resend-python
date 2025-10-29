@@ -58,10 +58,6 @@ class _UpdateResponse(TypedDict):
     """
     The contact ID.
     """
-    object: str
-    """
-    The object type: "contact"
-    """
 
 
 class Topics:
@@ -105,7 +101,6 @@ class Topics:
 
         Attributes:
             id (str): The contact ID
-            object (str): The object type: "contact"
         """
 
     @classmethod
