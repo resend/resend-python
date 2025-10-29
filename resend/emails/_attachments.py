@@ -3,15 +3,9 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
-from resend.emails._received_email import (ReceivedEmailAttachment,
-                                           ReceivedEmailAttachmentDetails)
+from resend.emails._received_email import (EmailAttachment,
+                                           EmailAttachmentDetails)
 from resend.pagination_helper import PaginationHelper
-
-
-# Internal wrapper type for get attachment API response
-class _GetAttachmentResponse(TypedDict):
-    object: str
-    data: ReceivedEmailAttachmentDetails
 
 
 class _ListParams(TypedDict):
@@ -34,7 +28,7 @@ class _ListResponse(TypedDict):
     """
     The object type: "list"
     """
-    data: List[ReceivedEmailAttachment]
+    data: List[EmailAttachment]
     """
     The list of attachment objects.
     """
@@ -44,9 +38,9 @@ class _ListResponse(TypedDict):
     """
 
 
-class Receiving:
+class Attachments:
     """
-    Receiving class that provides methods for retrieving attachments from received emails.
+    Attachments class that provides methods for retrieving attachments from sent emails.
     """
 
     class ListParams(_ListParams):
@@ -65,49 +59,48 @@ class Receiving:
 
         Attributes:
             object (str): The object type: "list"
-            data (List[ReceivedEmailAttachment]): The list of attachment objects.
+            data (List[EmailAttachment]): The list of attachment objects.
             has_more (bool): Whether there are more attachments available for pagination.
         """
 
     @classmethod
-    def get(cls, email_id: str, attachment_id: str) -> ReceivedEmailAttachmentDetails:
+    def get(cls, email_id: str, attachment_id: str) -> EmailAttachmentDetails:
         """
-        Retrieve a single attachment from a received email.
-        see more: https://resend.com/docs/api-reference/attachments/retrieve-attachment
+        Retrieve a single attachment from a sent email.
+        see more: https://resend.com/docs/api-reference/attachments/retrieve-sent-email-attachment
 
         Args:
-            email_id (str): The ID of the received email
+            email_id (str): The ID of the sent email
             attachment_id (str): The ID of the attachment to retrieve
 
         Returns:
-            ReceivedEmailAttachmentDetails: The attachment details including download URL
+            EmailAttachmentDetails: The attachment details including download URL
         """
-        path = f"/emails/receiving/{email_id}/attachments/{attachment_id}"
-        resp = request.Request[_GetAttachmentResponse](
+        path = f"/emails/{email_id}/attachments/{attachment_id}"
+        resp = request.Request[EmailAttachmentDetails](
             path=path,
             params={},
             verb="get",
         ).perform_with_content()
-        # Extract the data field from the wrapped response
-        return resp["data"]
+        return resp
 
     @classmethod
     def list(cls, email_id: str, params: Optional[ListParams] = None) -> ListResponse:
         """
-        Retrieve a list of attachments from a received email.
-        see more: https://resend.com/docs/api-reference/attachments/list-attachments
+        Retrieve a list of attachments from a sent email.
+        see more: https://resend.com/docs/api-reference/attachments/list-sent-email-attachments
 
         Args:
-            email_id (str): The ID of the received email
+            email_id (str): The ID of the sent email
             params (Optional[ListParams]): The list parameters for pagination
 
         Returns:
             ListResponse: A paginated list of attachment objects
         """
-        base_path = f"/emails/receiving/{email_id}/attachments"
+        base_path = f"/emails/{email_id}/attachments"
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
-        resp = request.Request[Receiving.ListResponse](
+        resp = request.Request[Attachments.ListResponse](
             path=path,
             params={},
             verb="get",
