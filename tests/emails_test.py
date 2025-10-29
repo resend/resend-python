@@ -443,3 +443,45 @@ class TestResendEmail(ResendBaseTest):
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
             _ = resend.Emails.Receiving.list()
+
+    def test_email_send_with_template(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            }
+        )
+
+        template: resend.EmailTemplate = {
+            "id": "template_12345",
+        }
+
+        params: resend.Emails.SendParams = {
+            "to": "to@email.com",
+            "from": "from@email.com",
+            "template": template,
+        }
+        email: resend.Emails.SendResponse = resend.Emails.send(params)
+        assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
+    def test_email_send_with_template_and_variables(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            }
+        )
+
+        template: resend.EmailTemplate = {
+            "id": "template_12345",
+            "variables": {
+                "name": "John Doe",
+                "age": 30,
+            },
+        }
+
+        params: resend.Emails.SendParams = {
+            "to": "to@email.com",
+            "from": "from@email.com",
+            "template": template,
+        }
+        email: resend.Emails.SendResponse = resend.Emails.send(params)
+        assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"

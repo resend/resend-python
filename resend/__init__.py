@@ -14,7 +14,7 @@ from .emails._attachment import Attachment, RemoteAttachment
 from .emails._attachments import Attachments as EmailAttachments
 from .emails._batch import Batch, BatchValidationError
 from .emails._email import Email
-from .emails._emails import Emails
+from .emails._emails import Emails, EmailTemplate
 from .emails._received_email import (EmailAttachment, EmailAttachmentDetails,
                                      ListReceivedEmail, ReceivedEmail)
 from .emails._receiving import Receiving as EmailsReceiving
@@ -22,6 +22,8 @@ from .emails._tag import Tag
 from .http_client import HTTPClient
 from .http_client_requests import RequestsClient
 from .request import Request
+from .templates._template import Template, TemplateListItem, Variable
+from .templates._templates import Templates
 from .topics._topic import Topic
 from .topics._topics import Topics
 from .version import __version__, get_version
@@ -36,9 +38,6 @@ api_url = os.environ.get("RESEND_API_URL", "https://api.resend.com")
 # HTTP Client
 default_http_client: HTTPClient = RequestsClient()
 
-# API resources
-from .emails._emails import Emails  # noqa
-
 __all__ = [
     "__version__",
     "get_version",
@@ -50,6 +49,7 @@ __all__ = [
     "Audiences",
     "Contacts",
     "Broadcasts",
+    "Templates",
     "Webhooks",
     "Topics",
     # Types
@@ -60,8 +60,12 @@ __all__ = [
     "Email",
     "Attachment",
     "RemoteAttachment",
+    "EmailTemplate",
     "Tag",
     "Broadcast",
+    "Template",
+    "TemplateListItem",
+    "Variable",
     "Webhook",
     "WebhookEvent",
     "WebhookHeaders",
