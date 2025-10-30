@@ -6,9 +6,12 @@ from resend import request
 from resend.pagination_helper import PaginationHelper
 
 from ._contact import Contact
+from .segments._contact_segments import ContactSegments
 
 
 class Contacts:
+    # Sub-API for managing contact-segment associations
+    Segments = ContactSegments
 
     class RemoveContactResponse(TypedDict):
         """

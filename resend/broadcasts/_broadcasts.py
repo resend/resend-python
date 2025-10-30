@@ -32,7 +32,8 @@ class Broadcasts:
 
         Attributes:
             from (str): The sender email address
-            audience_id (str): The ID of the audience you want to send to.
+            segment_id (NotRequired[str]): The ID of the segment you want to send to.
+            audience_id (NotRequired[str]): The ID of the audience you want to send to. (deprecated: use segment_id)
             subject (str): Email subject.
             reply_to (NotRequired[Union[List[str], str]]): Reply-to email address(es).
             html (NotRequired[str]): The HTML version of the message.
@@ -40,9 +41,16 @@ class Broadcasts:
             name (NotRequired[str]): The friendly name of the broadcast. Only used for internal reference.
         """
 
-        audience_id: str
+        segment_id: NotRequired[str]
+        """
+        The ID of the segment you want to send to.
+        """
+        audience_id: NotRequired[str]
         """
         The ID of the audience you want to send to.
+
+        .. deprecated::
+            Use segment_id instead.
         """
         subject: str
         """
@@ -70,8 +78,9 @@ class Broadcasts:
 
         Attributes:
             broadcast_id (str): The ID of the broadcast you want to update.
-            audience_id (str): The ID of the audience you want to send to.
-            from (str): The sender email address
+            segment_id (NotRequired[str]): The ID of the segment you want to send to.
+            audience_id (NotRequired[str]): The ID of the audience you want to send to. (deprecated: use segment_id)
+            from (NotRequired[str]): The sender email address
             subject (NotRequired[str]): Email subject.
             reply_to (NotRequired[Union[List[str], str]]): Reply-to email address(es).
             html (NotRequired[str]): The HTML version of the message.
@@ -83,9 +92,16 @@ class Broadcasts:
         """
         The ID of the broadcast you want to update.
         """
+        segment_id: NotRequired[str]
+        """
+        The ID of the segment you want to send to.
+        """
         audience_id: NotRequired[str]
         """
         The ID of the audience you want to send to.
+
+        .. deprecated::
+            Use segment_id instead.
         """
         subject: NotRequired[str]
         """
