@@ -6,9 +6,11 @@ from resend import request
 from resend.pagination_helper import PaginationHelper
 
 from ._contact import Contact
+from ._topics import Topics
 
 
 class Contacts:
+    Topics = Topics
 
     class RemoveContactResponse(TypedDict):
         """
