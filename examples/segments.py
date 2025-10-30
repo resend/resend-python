@@ -6,18 +6,6 @@ import resend
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
-print("=" * 60)
-print("SEGMENTS API DEMO")
-print("=" * 60)
-print()
-print("This example demonstrates TWO separate APIs:")
-print("1. resend.Segments.*         → Manage segments themselves")
-print("2. resend.Contacts.Segments.* → Manage contact ↔ segment links")
-print()
-print("Pattern follows resend.Emails.Receiving (capitalized)")
-print("=" * 60)
-print()
-
 # Create a new segment
 create_params: resend.Segments.CreateParams = {
     "name": "VIP Newsletter Subscribers",
