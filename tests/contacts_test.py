@@ -300,3 +300,105 @@ class TestResendContacts(ResendBaseTest):
         assert contacts["has_more"] is False
         assert len(contacts["data"]) == 1
         assert contacts["data"][0]["id"] == "contact-3"
+
+    # Global contacts tests (without audience_id)
+    def test_contacts_create_global(self) -> None:
+        self.set_mock_json({"object": "contact", "id": "global-contact-123"})
+
+        params: resend.Contacts.CreateParams = {
+            "email": "global@example.com",
+            "first_name": "Global",
+            "last_name": "Contact",
+            "properties": {"tier": "premium", "role": "admin"},
+        }
+        contact: resend.Contacts.CreateContactResponse = resend.Contacts.create(params)
+        assert contact["id"] == "global-contact-123"
+
+    def test_contacts_update_global(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "contact",
+                "id": "global-contact-123",
+            }
+        )
+
+        params: resend.Contacts.UpdateParams = {
+            "id": "global-contact-123",
+            "first_name": "Updated Global",
+            "properties": {"tier": "enterprise"},
+        }
+        contact = resend.Contacts.update(params)
+        assert contact["id"] == "global-contact-123"
+
+    def test_contacts_get_global(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "contact",
+                "id": "global-contact-123",
+                "email": "global@example.com",
+                "first_name": "Global",
+                "last_name": "Contact",
+                "created_at": "2023-10-06T23:47:56.678Z",
+                "unsubscribed": False,
+                "properties": {"tier": "premium"},
+            }
+        )
+
+        contact: resend.Contact = resend.Contacts.get(id="global-contact-123")
+        assert contact["id"] == "global-contact-123"
+        assert contact["email"] == "global@example.com"
+        assert contact.get("properties") == {"tier": "premium"}
+
+    # Note: Global contacts only accept UUID identifiers, not emails
+    # The API returns "The `id` must be a valid UUID" for email identifiers
+
+    def test_contacts_list_global(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "global-1",
+                        "email": "global1@example.com",
+                        "first_name": "Global",
+                        "last_name": "One",
+                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "unsubscribed": False,
+                        "properties": {"tier": "free"},
+                    },
+                    {
+                        "id": "global-2",
+                        "email": "global2@example.com",
+                        "first_name": "Global",
+                        "last_name": "Two",
+                        "created_at": "2023-10-07T23:47:56.678Z",
+                        "unsubscribed": False,
+                        "properties": {"tier": "premium"},
+                    },
+                ],
+            }
+        )
+
+        contacts: resend.Contacts.ListResponse = resend.Contacts.list()
+        assert contacts["object"] == "list"
+        assert contacts["has_more"] is False
+        assert len(contacts["data"]) == 2
+        assert contacts["data"][0]["id"] == "global-1"
+        assert contacts["data"][1]["id"] == "global-2"
+
+    def test_contacts_remove_global_by_id(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "contact",
+                "contact": "global-contact-789",
+                "deleted": True,
+            }
+        )
+
+        rmed = resend.Contacts.remove(id="global-contact-789")
+        assert rmed["contact"] == "global-contact-789"
+        assert rmed["deleted"] is True
+
+    # Note: Global contacts only accept UUID identifiers for remove operations
+    # Email-based removal would fail with "The `id` must be a valid UUID" error

@@ -6,8 +6,12 @@ from .audiences._audience import Audience
 from .audiences._audiences import Audiences
 from .broadcasts._broadcast import Broadcast
 from .broadcasts._broadcasts import Broadcasts
+from .contact_properties._contact_properties import ContactProperties
+from .contact_properties._contact_property import ContactProperty
 from .contacts._contact import Contact
+from .contacts._contact_topic import ContactTopic, TopicSubscriptionUpdate
 from .contacts._contacts import Contacts
+from .contacts._topics import Topics as ContactsTopics
 from .contacts.segments._contact_segment import ContactSegment
 from .contacts.segments._contact_segments import ContactSegments
 from .domains._domain import Domain
@@ -52,6 +56,7 @@ __all__ = [
     "Batch",
     "Audiences",
     "Contacts",
+    "ContactProperties",
     "Broadcasts",
     "Segments",
     "Templates",
@@ -62,6 +67,9 @@ __all__ = [
     "Contact",
     "ContactSegment",
     "ContactSegments",
+    "ContactProperty",
+    "ContactTopic",
+    "TopicSubscriptionUpdate",
     "Domain",
     "ApiKey",
     "Email",
@@ -88,6 +96,7 @@ __all__ = [
     # Receiving types (for type hints)
     "EmailsReceiving",
     "EmailAttachments",
+    "ContactsTopics",
     # Default HTTP Client
     "RequestsClient",
 ]
