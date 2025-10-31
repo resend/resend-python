@@ -12,6 +12,8 @@ from .contacts._contact import Contact
 from .contacts._contact_topic import ContactTopic, TopicSubscriptionUpdate
 from .contacts._contacts import Contacts
 from .contacts._topics import Topics as ContactsTopics
+from .contacts.segments._contact_segment import ContactSegment
+from .contacts.segments._contact_segments import ContactSegments
 from .domains._domain import Domain
 from .domains._domains import Domains
 from .emails._attachment import Attachment, RemoteAttachment
@@ -26,6 +28,8 @@ from .emails._tag import Tag
 from .http_client import HTTPClient
 from .http_client_requests import RequestsClient
 from .request import Request
+from .segments._segment import Segment
+from .segments._segments import Segments
 from .templates._template import Template, TemplateListItem, Variable
 from .templates._templates import Templates
 from .topics._topic import Topic
@@ -54,12 +58,15 @@ __all__ = [
     "Contacts",
     "ContactProperties",
     "Broadcasts",
+    "Segments",
     "Templates",
     "Webhooks",
     "Topics",
     # Types
     "Audience",
     "Contact",
+    "ContactSegment",
+    "ContactSegments",
     "ContactProperty",
     "ContactTopic",
     "TopicSubscriptionUpdate",
@@ -71,6 +78,7 @@ __all__ = [
     "EmailTemplate",
     "Tag",
     "Broadcast",
+    "Segment",
     "Template",
     "TemplateListItem",
     "Variable",

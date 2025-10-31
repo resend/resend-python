@@ -1,9 +1,9 @@
-from typing import Any, Dict, List, Optional, cast
+import warnings
+from typing import List, Optional
 
 from typing_extensions import NotRequired, TypedDict
 
-from resend import request
-from resend.pagination_helper import PaginationHelper
+from resend.segments._segments import Segments
 
 from ._audience import Audience
 
@@ -114,13 +114,16 @@ class Audiences:
 
         Returns:
             CreateAudienceResponse: The created audience response
-        """
 
-        path = "/audiences"
-        resp = request.Request[Audiences.CreateAudienceResponse](
-            path=path, params=cast(Dict[Any, Any], params), verb="post"
-        ).perform_with_content()
-        return resp
+        .. deprecated::
+            Use Segments.create() instead. Audiences is now an alias for Segments.
+        """
+        warnings.warn(
+            "Audiences is deprecated. Use Segments instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return Segments.create(params)
 
     @classmethod
     def list(cls, params: Optional[ListParams] = None) -> ListResponse:
@@ -137,14 +140,16 @@ class Audiences:
 
         Returns:
             ListResponse: A list of audience objects
+
+        .. deprecated::
+            Use Segments.list() instead. Audiences is now an alias for Segments.
         """
-        base_path = "/audiences"
-        query_params = cast(Dict[Any, Any], params) if params else None
-        path = PaginationHelper.build_paginated_path(base_path, query_params)
-        resp = request.Request[Audiences.ListResponse](
-            path=path, params={}, verb="get"
-        ).perform_with_content()
-        return resp
+        warnings.warn(
+            "Audiences is deprecated. Use Segments instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return Segments.list(params)
 
     @classmethod
     def get(cls, id: str) -> Audience:
@@ -157,12 +162,16 @@ class Audiences:
 
         Returns:
             Audience: The audience object
+
+        .. deprecated::
+            Use Segments.get() instead. Audiences is now an alias for Segments.
         """
-        path = f"/audiences/{id}"
-        resp = request.Request[Audience](
-            path=path, params={}, verb="get"
-        ).perform_with_content()
-        return resp
+        warnings.warn(
+            "Audiences is deprecated. Use Segments instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return Segments.get(id)
 
     @classmethod
     def remove(cls, id: str) -> RemoveAudienceResponse:
@@ -175,9 +184,13 @@ class Audiences:
 
         Returns:
             RemoveAudienceResponse: The removed audience response
+
+        .. deprecated::
+            Use Segments.remove() instead. Audiences is now an alias for Segments.
         """
-        path = f"/audiences/{id}"
-        resp = request.Request[Audiences.RemoveAudienceResponse](
-            path=path, params={}, verb="delete"
-        ).perform_with_content()
-        return resp
+        warnings.warn(
+            "Audiences is deprecated. Use Segments instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return Segments.remove(id)
