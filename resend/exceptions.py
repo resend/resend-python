@@ -169,7 +169,8 @@ class RateLimitError(ResendError):
         error_type: str,
         code: Union[str, int],
     ):
-        suggested_action = """Reduce your request rate or wait before retrying. Check the response headers for rate limit information."""
+        suggested_action = """Reduce your request rate or wait before retrying. """
+        suggested_action += """Check the response headers for rate limit information."""
 
         ResendError.__init__(
             self,
