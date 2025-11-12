@@ -160,6 +160,26 @@ class ApplicationError(ResendError):
         )
 
 
+class RateLimitError(ResendError):
+    """see https://resend.com/docs/api-reference/errors"""
+
+    def __init__(
+        self,
+        message: str,
+        error_type: str,
+        code: Union[str, int],
+    ):
+        suggested_action = """Reduce your request rate or wait before retrying. Check the response headers for rate limit information."""
+
+        ResendError.__init__(
+            self,
+            code=code or "429",
+            message=message,
+            suggested_action=suggested_action,
+            error_type=error_type,
+        )
+
+
 # Dict with error code -> error type mapping
 ERRORS: Dict[str, Dict[str, Any]] = {
     "400": {"validation_error": ValidationError},
@@ -169,6 +189,11 @@ ERRORS: Dict[str, Dict[str, Any]] = {
     },
     "401": {"missing_api_key": MissingApiKeyError},
     "403": {"invalid_api_key": InvalidApiKeyError},
+    "429": {
+        "rate_limit_exceeded": RateLimitError,
+        "daily_quota_exceeded": RateLimitError,
+        "monthly_quota_exceeded": RateLimitError,
+    },
     "500": {"application_error": ApplicationError},
 }
 
@@ -193,6 +218,8 @@ def raise_for_code_and_type(
         MissingApiKeyError: If the error type is missing_api_key
             or
         InvalidApiKeyError: If the error type is invalid_api_key
+            or
+        RateLimitError: If the error type is rate_limit_exceeded, daily_quota_exceeded, or monthly_quota_exceeded
             or
         ApplicationError: If the error type is application_error
             or
