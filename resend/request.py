@@ -6,6 +6,7 @@ from typing_extensions import Literal, TypeVar
 import resend
 from resend.exceptions import (NoContentError, ResendError,
                                raise_for_code_and_type)
+from resend.response import ResponseDict
 from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
@@ -27,6 +28,7 @@ class Request(Generic[T]):
         self.params = params
         self.verb = verb
         self.options = options
+        self._response_headers: Dict[str, str] = {}
 
     def perform(self) -> Union[T, None]:
         data = self.make_request(url=f"{resend.api_url}{self.path}")
@@ -90,6 +92,9 @@ class Request(Generic[T]):
                 suggested_action="Request failed, please try again.",
             )
 
+        # Store response headers for later access
+        self._response_headers = dict(resp_headers)
+
         content_type = {k.lower(): v for k, v in resp_headers.items()}.get(
             "content-type", ""
         )
@@ -102,7 +107,12 @@ class Request(Generic[T]):
             )
 
         try:
-            return cast(Union[Dict[str, Any], List[Any]], json.loads(content))
+            parsed_data = cast(Union[Dict[str, Any], List[Any]], json.loads(content))
+            # Wrap dict responses with ResponseDict to include headers
+            if isinstance(parsed_data, dict):
+                return ResponseDict(parsed_data, headers=self._response_headers)
+            # For list responses, return as-is (lists can't have attributes)
+            return parsed_data
         except json.JSONDecodeError:
             raise_for_code_and_type(
                 code=500,
