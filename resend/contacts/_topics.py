@@ -112,7 +112,7 @@ class Topics:
     ) -> "Topics.ListResponse":
         """
         List all topics for a contact.
-        see more: https://resend.com/docs/api-reference/contacts/list-contact-topics
+        see more: https://resend.com/docs/api-reference/contacts/get-contact-topics
 
         Args:
             contact_id (Optional[str]): The contact ID (either contact_id or email must be provided)
