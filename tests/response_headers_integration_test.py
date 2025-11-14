@@ -2,7 +2,6 @@ import unittest
 from unittest.mock import Mock
 
 import resend
-from resend.response import ResponseDict
 
 
 class TestResponseHeadersIntegration(unittest.TestCase):
@@ -41,27 +40,26 @@ class TestResponseHeadersIntegration(unittest.TestCase):
                 }
             )
 
-            # Verify response is a ResponseDict
-            assert isinstance(response, ResponseDict)
+            # Verify response is a dict
             assert isinstance(response, dict)
 
             # Verify backward compatibility - dict access still works
             assert response["id"] == "email_123"
             assert response.get("from") == "test@example.com"
 
-            # Verify new feature - headers are accessible
-            assert hasattr(response, "headers")
-            assert response.headers["x-request-id"] == "req_abc123"
-            assert response.headers["x-ratelimit-limit"] == "100"
-            assert response.headers["x-ratelimit-remaining"] == "95"
-            assert response.headers["x-ratelimit-reset"] == "1699564800"
+            # Verify new feature - headers are accessible via dict key
+            assert "headers" in response
+            assert response["headers"]["x-request-id"] == "req_abc123"
+            assert response["headers"]["x-ratelimit-limit"] == "100"
+            assert response["headers"]["x-ratelimit-remaining"] == "95"
+            assert response["headers"]["x-ratelimit-reset"] == "1699564800"
 
         finally:
             # Restore original HTTP client
             resend.default_http_client = original_client
 
     def test_list_response_headers(self) -> None:
-        """Test that list responses work (without ResponseDict wrapping)."""
+        """Test that list responses include headers."""
         # Mock the HTTP client to return a list
         mock_client = Mock()
         mock_client.request.return_value = (
@@ -80,10 +78,12 @@ class TestResponseHeadersIntegration(unittest.TestCase):
             # Get API keys list
             response = resend.ApiKeys.list()
 
-            # List responses are ResponseDict with data field
-            assert isinstance(response, ResponseDict)
+            # List responses are dicts with data field
+            assert isinstance(response, dict)
             assert "data" in response
-            assert response.headers["x-request-id"] == "req_xyz"
+            # Headers are injected into the dict
+            assert "headers" in response
+            assert response["headers"]["x-request-id"] == "req_xyz"
 
         finally:
             resend.default_http_client = original_client

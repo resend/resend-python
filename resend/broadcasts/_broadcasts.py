@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Union, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
 from ._broadcast import Broadcast
@@ -143,7 +144,7 @@ class Broadcasts:
         The date should be in natural language (e.g.: in 1 min) or ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
         """
 
-    class CreateResponse(TypedDict):
+    class CreateResponse(BaseResponse):
         """
         CreateResponse is the class that wraps the response of the create method.
 
@@ -156,7 +157,7 @@ class Broadcasts:
         id of the created broadcast
         """
 
-    class UpdateResponse(TypedDict):
+    class UpdateResponse(BaseResponse):
         """
         UpdateResponse is the class that wraps the response of the update method.
 
@@ -195,7 +196,7 @@ class Broadcasts:
         Cannot be used with the after parameter.
         """
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """
         ListResponse is the class that wraps the response of the list method with pagination metadata.
 
@@ -218,7 +219,7 @@ class Broadcasts:
         Whether there are more results available for pagination
         """
 
-    class RemoveResponse(TypedDict):
+    class RemoveResponse(BaseResponse):
         """
         RemoveResponse is the class that wraps the response of the remove method.
 

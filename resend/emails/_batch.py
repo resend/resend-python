@@ -3,11 +3,12 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 
 from ._emails import Emails
 
 
-class SendEmailResponse(TypedDict):
+class SendEmailResponse(BaseResponse):
     id: str
     """
     The sent Email ID.
@@ -60,7 +61,7 @@ class Batch:
         Defaults to "strict" when not provided.
         """
 
-    class SendResponse(TypedDict):
+    class SendResponse(BaseResponse):
         data: List[SendEmailResponse]
         """
         A list of email objects

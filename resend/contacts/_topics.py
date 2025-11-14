@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Union, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
 from ._contact_topic import ContactTopic, TopicSubscriptionUpdate
@@ -23,7 +24,7 @@ class _ListParams(TypedDict):
     """
 
 
-class _ListResponse(TypedDict):
+class _ListResponse(BaseResponse):
     object: str
     """
     The object type: "list"
@@ -53,7 +54,7 @@ class _UpdateParams(TypedDict):
     """
 
 
-class _UpdateResponse(TypedDict):
+class _UpdateResponse(BaseResponse):
     id: str
     """
     The contact ID.

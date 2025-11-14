@@ -3,13 +3,14 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.api_keys._api_key import ApiKey
 from resend.pagination_helper import PaginationHelper
 
 
 class ApiKeys:
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """
         ListResponse type that wraps a list of API key objects with pagination metadata
 
@@ -32,7 +33,7 @@ class ApiKeys:
         Whether there are more results available for pagination
         """
 
-    class CreateApiKeyResponse(TypedDict):
+    class CreateApiKeyResponse(BaseResponse):
         """
         CreateApiKeyResponse is the type that wraps the response of the API key that was created
 

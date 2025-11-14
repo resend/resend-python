@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 from resend.webhooks._webhook import (VerifyWebhookOptions, Webhook,
                                       WebhookEvent, WebhookStatus)
@@ -35,7 +36,7 @@ class Webhooks:
         Cannot be used with the after parameter.
         """
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """
         ListResponse type that wraps a list of webhook objects with pagination metadata
 
@@ -58,7 +59,7 @@ class Webhooks:
         Whether there are more results available for pagination
         """
 
-    class CreateWebhookResponse(TypedDict):
+    class CreateWebhookResponse(BaseResponse):
         """
         CreateWebhookResponse is the type that wraps the response of the webhook that was created
 
@@ -110,7 +111,7 @@ class Webhooks:
         The webhook status. Can be either "enabled" or "disabled".
         """
 
-    class UpdateWebhookResponse(TypedDict):
+    class UpdateWebhookResponse(BaseResponse):
         """
         UpdateWebhookResponse is the type that wraps the response of the webhook that was updated
 
@@ -128,7 +129,7 @@ class Webhooks:
         The ID of the updated webhook
         """
 
-    class DeleteWebhookResponse(TypedDict):
+    class DeleteWebhookResponse(BaseResponse):
         """
         DeleteWebhookResponse is the type that wraps the response of the webhook that was deleted
 

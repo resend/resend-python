@@ -6,7 +6,6 @@ from typing_extensions import Literal, TypeVar
 import resend
 from resend.exceptions import (NoContentError, ResendError,
                                raise_for_code_and_type)
-from resend.response import ResponseDict
 from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
@@ -108,10 +107,10 @@ class Request(Generic[T]):
 
         try:
             parsed_data = cast(Union[Dict[str, Any], List[Any]], json.loads(content))
-            # Wrap dict responses with ResponseDict to include headers
+            # Inject headers into dict responses
             if isinstance(parsed_data, dict):
-                return ResponseDict(parsed_data, headers=self._response_headers)
-            # For list responses, return as-is (lists can't have attributes)
+                parsed_data["headers"] = dict(self._response_headers)
+            # For list responses, return as-is (lists can't have headers key)
             return parsed_data
         except json.JSONDecodeError:
             raise_for_code_and_type(
