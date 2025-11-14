@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
 from ._contact_segment import ContactSegment
@@ -14,7 +15,7 @@ class ContactSegments:
     This is separate from the main Contacts API which uses audience_id.
     """
 
-    class AddContactSegmentResponse(TypedDict):
+    class AddContactSegmentResponse(BaseResponse):
         """
         AddContactSegmentResponse is the type that wraps the response when adding a contact to a segment.
 
@@ -27,7 +28,7 @@ class ContactSegments:
         The ID of the contact segment association.
         """
 
-    class RemoveContactSegmentResponse(TypedDict):
+    class RemoveContactSegmentResponse(BaseResponse):
         """
         RemoveContactSegmentResponse is the type that wraps the response when removing a contact from a segment.
 
@@ -72,7 +73,7 @@ class ContactSegments:
         Cannot be used with the after parameter.
         """
 
-    class ListContactSegmentsResponse(TypedDict):
+    class ListContactSegmentsResponse(BaseResponse):
         """
         ListContactSegmentsResponse type that wraps a list of segment objects with pagination metadata.
 

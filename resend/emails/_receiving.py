@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.emails._received_email import (EmailAttachment,
                                            EmailAttachmentDetails,
                                            ListReceivedEmail, ReceivedEmail)
@@ -24,7 +25,7 @@ class _ListParams(TypedDict):
     """
 
 
-class _ListResponse(TypedDict):
+class _ListResponse(BaseResponse):
     object: str
     """
     The object type: "list"
@@ -54,7 +55,7 @@ class _AttachmentListParams(TypedDict):
     """
 
 
-class _AttachmentListResponse(TypedDict):
+class _AttachmentListResponse(BaseResponse):
     object: str
     """
     The object type: "list"

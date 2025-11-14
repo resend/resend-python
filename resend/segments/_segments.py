@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
 from ._segment import Segment
@@ -10,7 +11,7 @@ from ._segment import Segment
 
 class Segments:
 
-    class RemoveSegmentResponse(TypedDict):
+    class RemoveSegmentResponse(BaseResponse):
         """
         RemoveSegmentResponse is the type that wraps the response of the segment that was removed
 
@@ -51,7 +52,7 @@ class Segments:
         Cannot be used with the after parameter.
         """
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """
         ListResponse type that wraps a list of segment objects with pagination metadata
 
@@ -74,7 +75,7 @@ class Segments:
         Whether there are more results available for pagination
         """
 
-    class CreateSegmentResponse(TypedDict):
+    class CreateSegmentResponse(BaseResponse):
         """
         CreateSegmentResponse is the type that wraps the response of the segment that was created
 
