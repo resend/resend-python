@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Union, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
 from ._template import Template, TemplateListItem, Variable
@@ -68,7 +69,7 @@ class Templates:
         variables: NotRequired[List[Variable]]
         """The array of variables used in the template."""
 
-    class CreateResponse(TypedDict):
+    class CreateResponse(BaseResponse):
         """Response from creating a template.
 
         Attributes:
@@ -121,7 +122,7 @@ class Templates:
         variables: NotRequired[List[Variable]]
         """The array of variables used in the template."""
 
-    class UpdateResponse(TypedDict):
+    class UpdateResponse(BaseResponse):
         """Response from updating a template.
 
         Attributes:
@@ -153,7 +154,7 @@ class Templates:
         before: NotRequired[str]
         """Return templates before this cursor."""
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """Response from listing templates.
 
         Attributes:
@@ -171,7 +172,7 @@ class Templates:
         has_more: bool
         """Whether there are more results available."""
 
-    class PublishResponse(TypedDict):
+    class PublishResponse(BaseResponse):
         """Response from publishing a template.
 
         Attributes:
@@ -185,7 +186,7 @@ class Templates:
         object: str
         """The object type (always "template")."""
 
-    class DuplicateResponse(TypedDict):
+    class DuplicateResponse(BaseResponse):
         """Response from duplicating a template.
 
         Attributes:
@@ -199,7 +200,7 @@ class Templates:
         object: str
         """The object type (always "template")."""
 
-    class RemoveResponse(TypedDict):
+    class RemoveResponse(BaseResponse):
         """Response from removing a template.
 
         Attributes:

@@ -49,7 +49,9 @@ class TestResendError(unittest.TestCase):
 
     def test_monthly_quota_exceeded_error(self) -> None:
         with pytest.raises(RateLimitError) as e:
-            raise_for_code_and_type(429, "monthly_quota_exceeded", "Monthly quota exceeded")
+            raise_for_code_and_type(
+                429, "monthly_quota_exceeded", "Monthly quota exceeded"
+            )
         assert e.type is RateLimitError
         assert e.value.code == 429
         assert e.value.error_type == "monthly_quota_exceeded"
