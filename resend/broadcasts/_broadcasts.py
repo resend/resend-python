@@ -39,6 +39,8 @@ class Broadcasts:
             html (NotRequired[str]): The HTML version of the message.
             text (NotRequired[str]): The text version of the message.
             name (NotRequired[str]): The friendly name of the broadcast. Only used for internal reference.
+            send (NotRequired[bool]): When true, the broadcast will be sent immediately after creation.
+            scheduled_at (NotRequired[str]): Schedule the broadcast to be sent later. Only valid when send is true.
         """
 
         segment_id: NotRequired[str]
@@ -71,6 +73,17 @@ class Broadcasts:
         name: NotRequired[str]
         """
         The friendly name of the broadcast. Only used for internal reference.
+        """
+        send: NotRequired[bool]
+        """
+        When set to true, the broadcast will be sent immediately after creation.
+        If false or not provided, the broadcast will be created as a draft.
+        """
+        scheduled_at: NotRequired[str]
+        """
+        Schedule the broadcast to be sent later.
+        Only valid when send is set to true.
+        The date should be in natural language (e.g.: in 1 min) or ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
         """
 
     class UpdateParams(_UpdateParamsFrom):
