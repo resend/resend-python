@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Union, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.emails._attachment import Attachment, RemoteAttachment
 from resend.emails._attachments import Attachments
 from resend.emails._email import Email
@@ -42,7 +43,7 @@ class _UpdateParams(TypedDict):
     """
 
 
-class _UpdateEmailResponse(TypedDict):
+class _UpdateEmailResponse(BaseResponse):
     object: str
     """
     The object type: email
@@ -53,7 +54,7 @@ class _UpdateEmailResponse(TypedDict):
     """
 
 
-class _CancelScheduledEmailResponse(TypedDict):
+class _CancelScheduledEmailResponse(BaseResponse):
     object: str
     """
     The object type: email
@@ -194,12 +195,13 @@ class Emails:
         If provided, will be sent as the `Idempotency-Key` header.
         """
 
-    class SendResponse(TypedDict):
+    class SendResponse(BaseResponse):
         """
         SendResponse is the type that wraps the response of the email that was sent.
 
         Attributes:
             id (str): The ID of the sent email
+            headers (NotRequired[Dict[str, str]]): HTTP response headers (inherited from BaseResponse)
         """
 
         id: str
@@ -230,7 +232,7 @@ class Emails:
         Return emails before this cursor for pagination.
         """
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """
         ListResponse is the type that wraps the response for listing emails.
 
@@ -238,6 +240,7 @@ class Emails:
             object (str): The object type: "list"
             data (List[Email]): The list of email objects.
             has_more (bool): Whether there are more emails available for pagination.
+            headers (NotRequired[Dict[str, str]]): HTTP response headers (inherited from BaseResponse)
         """
 
         object: str
@@ -269,7 +272,7 @@ class Emails:
             id: The ID of the sent email
         """
         path = "/emails"
-        resp = request.Request[Email](
+        resp = request.Request[Emails.SendResponse](
             path=path,
             params=cast(Dict[Any, Any], params),
             verb="post",

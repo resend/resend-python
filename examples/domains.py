@@ -37,8 +37,8 @@ print(f"Found {len(domains['data'])} domains")
 print(f"Has more domains: {domains['has_more']}")
 if not domains["data"]:
     print("No domains found")
-for domain in domains["data"]:
-    print(domain)
+for listed_domain in domains["data"]:
+    print(listed_domain)
 
 print("\n--- Using pagination parameters ---")
 if domains["data"]:

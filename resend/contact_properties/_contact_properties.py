@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Union, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
 from ._contact_property import ContactProperty
@@ -10,7 +11,7 @@ from ._contact_property import ContactProperty
 
 class ContactProperties:
 
-    class CreateResponse(TypedDict):
+    class CreateResponse(BaseResponse):
         """
         CreateResponse is the type that wraps the response of the contact property that was created.
 
@@ -28,7 +29,7 @@ class ContactProperties:
         The object type, always "contact_property".
         """
 
-    class UpdateResponse(TypedDict):
+    class UpdateResponse(BaseResponse):
         """
         UpdateResponse is the type that wraps the response of the contact property that was updated.
 
@@ -46,7 +47,7 @@ class ContactProperties:
         The object type, always "contact_property".
         """
 
-    class RemoveResponse(TypedDict):
+    class RemoveResponse(BaseResponse):
         """
         RemoveResponse is the type that wraps the response of the contact property that was removed.
 
@@ -96,7 +97,7 @@ class ContactProperties:
         Cannot be used with the after parameter.
         """
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """
         ListResponse type that wraps a list of contact property objects with pagination metadata.
 
