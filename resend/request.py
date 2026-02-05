@@ -6,6 +6,7 @@ from typing_extensions import Literal, TypeVar
 import resend
 from resend.exceptions import (NoContentError, ResendError,
                                raise_for_code_and_type)
+from resend.response import ResponseDict
 from resend.version import get_version
 
 RequestVerb = Literal["get", "post", "put", "patch", "delete"]
@@ -38,6 +39,8 @@ class Request(Generic[T]):
                 error_type=data.get("name", "InternalServerError"),
             )
 
+        if isinstance(data, dict):
+            data = ResponseDict(data)
         return cast(T, data)
 
     def perform_with_content(self) -> T:
