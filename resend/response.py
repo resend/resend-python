@@ -1,4 +1,7 @@
-class ResponseDict(dict):
+from typing import Any
+
+
+class ResponseDict(dict[str, Any]):
     """Dict subclass that supports attribute-style access.
 
     This allows SDK responses to be accessed using either dict syntax
@@ -6,7 +9,7 @@ class ResponseDict(dict):
     consistency with other Resend SDKs (e.g., Node.js).
     """
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         try:
             return self[name]
         except KeyError:
