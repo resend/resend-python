@@ -1,7 +1,7 @@
-from typing import Any
+from typing import Any, Dict
 
 
-class ResponseDict(dict[str, Any]):
+class ResponseDict(Dict[str, Any]):
     """Dict subclass that supports attribute-style access.
 
     This allows SDK responses to be accessed using either dict syntax
