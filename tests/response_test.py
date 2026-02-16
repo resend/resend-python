@@ -23,9 +23,7 @@ class TestResponseDict(ResendBaseTest):
             }
         )
 
-        attachments = resend.Emails.Receiving.Attachments.list(
-            email_id="test-email-id"
-        )
+        attachments = resend.Emails.Receiving.Attachments.list(email_id="test-email-id")
         assert attachments["object"] == "list"
         assert attachments["has_more"] is False
         assert len(attachments["data"]) == 1
@@ -48,9 +46,7 @@ class TestResponseDict(ResendBaseTest):
             }
         )
 
-        attachments = resend.Emails.Receiving.Attachments.list(
-            email_id="test-email-id"
-        )
+        attachments = resend.Emails.Receiving.Attachments.list(email_id="test-email-id")
         assert attachments.object == "list"  # type: ignore[attr-defined]
         assert attachments.has_more is False  # type: ignore[attr-defined]
         assert len(attachments.data) == 1  # type: ignore[attr-defined]
@@ -65,9 +61,7 @@ class TestResponseDict(ResendBaseTest):
             }
         )
 
-        attachments = resend.Emails.Receiving.Attachments.list(
-            email_id="test-email-id"
-        )
+        attachments = resend.Emails.Receiving.Attachments.list(email_id="test-email-id")
         with self.assertRaises(AttributeError):
             _ = attachments.nonexistent  # type: ignore[attr-defined]
 

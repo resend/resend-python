@@ -249,7 +249,10 @@ def raise_for_code_and_type(
     # Handle the case where the error might be unknown
     if error is None:
         raise ResendError(
-            code=code, message=message, error_type=error_type, suggested_action="",
+            code=code,
+            message=message,
+            error_type=error_type,
+            suggested_action="",
             headers=headers,
         )
 
@@ -265,7 +268,10 @@ def raise_for_code_and_type(
         )
     # defaults to ResendError if finally can't find error type
     raise ResendError(
-        code=code, message=message, error_type=error_type, suggested_action="",
+        code=code,
+        message=message,
+        error_type=error_type,
+        suggested_action="",
         headers=headers,
     )
 

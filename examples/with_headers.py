@@ -18,35 +18,17 @@ params: resend.Emails.SendParams = {
     "html": "<strong>Hello, world!</strong>",
 }
 
-print("=" * 60)
-print("Example 1: Without type annotations")
-print("=" * 60)
+resp: resend.Emails.SendResponse = resend.Emails.send(params)
+print(f"Email sent! ID: {resp['id']}")
 
-response = resend.Emails.send(params)
-print(f"Email sent! ID: {response['id']}")
-print(f"Request ID: {response['headers'].get('x-request-id')}")
-print(f"Rate limit: {response['headers'].get('x-ratelimit-limit')}")
-print(f"Rate limit remaining: {response['headers'].get('x-ratelimit-remaining')}")
-print(f"Rate limit reset: {response['headers'].get('x-ratelimit-reset')}")
+if "headers" in resp:
+    print(f"Request ID: {resp['headers'].get('x-request-id')}")
+    print(f"Rate limit: {resp['headers'].get('x-ratelimit-limit')}")
+    print(f"Rate limit remaining: {resp['headers'].get('x-ratelimit-remaining')}")
+    print(f"Rate limit reset: {resp['headers'].get('x-ratelimit-reset')}")
 
-print("\n" + "=" * 60)
-print("Example 2: With type annotations")
-print("=" * 60)
-
-typed_response: resend.Emails.SendResponse = resend.Emails.send(params)
-print(f"Email sent! ID: {typed_response['id']}")
-
-if "headers" in typed_response:
-    print(f"Request ID: {typed_response['headers'].get('x-request-id')}")
-    print(f"Rate limit: {typed_response['headers'].get('x-ratelimit-limit')}")
-    print(
-        f"Rate limit remaining: {typed_response['headers'].get('x-ratelimit-remaining')}"
-    )
-    print(f"Rate limit reset: {typed_response['headers'].get('x-ratelimit-reset')}")
-
-print("\n" + "=" * 60)
+print("\n")
 print("Example 3: Rate limit tracking")
-print("=" * 60)
 
 
 def send_with_rate_limit_check(params: resend.Emails.SendParams) -> str:
@@ -61,7 +43,7 @@ def send_with_rate_limit_check(params: resend.Emails.SendParams) -> str:
     if remaining and limit:
         print(f"Rate limit usage: {int(limit) - int(remaining)}/{limit}")
         if int(remaining) < 10:
-            print("⚠️  Warning: Approaching rate limit!")
+            print("Warning: Approaching rate limit!")
 
     return response["id"]
 

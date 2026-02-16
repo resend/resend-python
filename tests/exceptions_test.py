@@ -70,7 +70,9 @@ class TestResendError(unittest.TestCase):
         }
         with pytest.raises(RateLimitError) as e:
             raise_for_code_and_type(
-                429, "rate_limit_exceeded", "Rate limit exceeded",
+                429,
+                "rate_limit_exceeded",
+                "Rate limit exceeded",
                 headers=headers,
             )
         assert e.value.headers == headers
@@ -93,7 +95,10 @@ class TestResendError(unittest.TestCase):
         headers = {"x-request-id": "req_789"}
         with pytest.raises(ValidationError) as e:
             raise_for_code_and_type(
-                400, "validation_error", "err", headers=headers,
+                400,
+                "validation_error",
+                "err",
+                headers=headers,
             )
         assert e.value.headers == headers
 
@@ -101,6 +106,9 @@ class TestResendError(unittest.TestCase):
         headers = {"x-request-id": "req_abc"}
         with pytest.raises(ApplicationError) as e:
             raise_for_code_and_type(
-                500, "application_error", "err", headers=headers,
+                500,
+                "application_error",
+                "err",
+                headers=headers,
             )
         assert e.value.headers == headers
