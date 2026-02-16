@@ -74,6 +74,33 @@ class TestResendBroadcasts(ResendBaseTest):
         broadcast = resend.Broadcasts.send(params)
         assert broadcast["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e791"
 
+    def test_broadcasts_create_and_send(self) -> None:
+        self.set_mock_json({"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"})
+
+        params: resend.Broadcasts.CreateParams = {
+            "audience_id": "78b8d3bc-a55a-45a3-aee6-6ec0a5e13d7e",
+            "from": "hi@example.com",
+            "subject": "Hello, world!",
+            "name": "Python SDK Broadcast",
+            "send": True,
+        }
+        broadcast: resend.Broadcasts.CreateResponse = resend.Broadcasts.create(params)
+        assert broadcast["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
+    def test_broadcasts_create_and_schedule(self) -> None:
+        self.set_mock_json({"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"})
+
+        params: resend.Broadcasts.CreateParams = {
+            "audience_id": "78b8d3bc-a55a-45a3-aee6-6ec0a5e13d7e",
+            "from": "hi@example.com",
+            "subject": "Hello, world!",
+            "name": "Python SDK Broadcast",
+            "send": True,
+            "scheduled_at": "2024-12-21T19:32:22.980Z",
+        }
+        broadcast: resend.Broadcasts.CreateResponse = resend.Broadcasts.create(params)
+        assert broadcast["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
     def test_broadcasts_remove(self) -> None:
         self.set_mock_json(
             {
