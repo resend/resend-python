@@ -38,6 +38,7 @@ class Request(Generic[T]):
                 code=data.get("statusCode") or 500,
                 message=data.get("message", "Unknown error"),
                 error_type=data.get("name", "InternalServerError"),
+                headers=self._response_headers,
             )
 
         if isinstance(data, dict):
@@ -106,6 +107,7 @@ class Request(Generic[T]):
                 code=500,
                 message=f"Expected JSON response but got: {content_type}",
                 error_type="InternalServerError",
+                headers=self._response_headers,
             )
 
         try:
@@ -120,4 +122,5 @@ class Request(Generic[T]):
                 code=500,
                 message="Failed to decode JSON response",
                 error_type="InternalServerError",
+                headers=self._response_headers,
             )
