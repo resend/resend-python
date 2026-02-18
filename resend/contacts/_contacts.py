@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
 from ._contact import Contact
@@ -15,7 +16,7 @@ class Contacts:
     Segments = ContactSegments
     Topics = Topics
 
-    class RemoveContactResponse(TypedDict):
+    class RemoveContactResponse(BaseResponse):
         """
         RemoveContactResponse is the type that wraps the response of the contact that was removed
 
@@ -56,7 +57,7 @@ class Contacts:
         Cannot be used with the after parameter.
         """
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """
         ListResponse type that wraps a list of contact objects with pagination metadata
 
@@ -79,7 +80,7 @@ class Contacts:
         Whether there are more results available for pagination
         """
 
-    class CreateContactResponse(TypedDict):
+    class CreateContactResponse(BaseResponse):
         """
         CreateContactResponse is the type that wraps the response of the contact that was created
 
@@ -97,7 +98,7 @@ class Contacts:
         The ID of the scheduled email that was canceled.
         """
 
-    class UpdateContactResponse(TypedDict):
+    class UpdateContactResponse(BaseResponse):
         """
         UpdateContactResponse is the type that wraps the response of the contact that was updated
 

@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Union, cast
 from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.domains._domain import Domain
 from resend.domains._record import Record
 from resend.pagination_helper import PaginationHelper
@@ -30,7 +31,7 @@ class Domains:
         Cannot be used with the after parameter.
         """
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """
         ListResponse type that wraps a list of domain objects with pagination metadata
 
@@ -53,7 +54,7 @@ class Domains:
         Whether there are more results available for pagination
         """
 
-    class CreateDomainResponse(TypedDict):
+    class CreateDomainResponse(BaseResponse):
         """
         CreateDomainResponse is the type that wraps the response of the domain that was created
 

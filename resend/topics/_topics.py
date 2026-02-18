@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
 from ._topic import Topic
@@ -10,7 +11,7 @@ from ._topic import Topic
 
 class Topics:
 
-    class CreateTopicResponse(TypedDict):
+    class CreateTopicResponse(BaseResponse):
         """
         CreateTopicResponse is the type that wraps the response of the topic that was created
 
@@ -38,7 +39,7 @@ class Topics:
         The topic description. Max length is 200 characters.
         """
 
-    class UpdateTopicResponse(TypedDict):
+    class UpdateTopicResponse(BaseResponse):
         """
         UpdateTopicResponse is the type that wraps the response of the topic that was updated
 
@@ -61,7 +62,7 @@ class Topics:
         The topic description. Max length is 200 characters.
         """
 
-    class RemoveTopicResponse(TypedDict):
+    class RemoveTopicResponse(BaseResponse):
         """
         RemoveTopicResponse is the type that wraps the response of the topic that was removed
 
@@ -102,7 +103,7 @@ class Topics:
         Cannot be used with the after parameter.
         """
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """
         ListResponse type that wraps a list of topic objects with pagination metadata
 

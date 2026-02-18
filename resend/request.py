@@ -28,6 +28,7 @@ class Request(Generic[T]):
         self.params = params
         self.verb = verb
         self.options = options
+        self._response_headers: Dict[str, str] = {}
 
     def perform(self) -> Union[T, None]:
         data = self.make_request(url=f"{resend.api_url}{self.path}")
@@ -37,6 +38,7 @@ class Request(Generic[T]):
                 code=data.get("statusCode") or 500,
                 message=data.get("message", "Unknown error"),
                 error_type=data.get("name", "InternalServerError"),
+                headers=self._response_headers,
             )
 
         if isinstance(data, dict):
@@ -93,6 +95,9 @@ class Request(Generic[T]):
                 suggested_action="Request failed, please try again.",
             )
 
+        # Store response headers for later access
+        self._response_headers = dict(resp_headers)
+
         content_type = {k.lower(): v for k, v in resp_headers.items()}.get(
             "content-type", ""
         )
@@ -102,13 +107,20 @@ class Request(Generic[T]):
                 code=500,
                 message=f"Expected JSON response but got: {content_type}",
                 error_type="InternalServerError",
+                headers=self._response_headers,
             )
 
         try:
-            return cast(Union[Dict[str, Any], List[Any]], json.loads(content))
+            parsed_data = cast(Union[Dict[str, Any], List[Any]], json.loads(content))
+            # Inject headers into dict responses
+            if isinstance(parsed_data, dict):
+                parsed_data["headers"] = dict(self._response_headers)
+            # For list responses, return as-is (lists can't have headers key)
+            return parsed_data
         except json.JSONDecodeError:
             raise_for_code_and_type(
                 code=500,
                 message="Failed to decode JSON response",
                 error_type="InternalServerError",
+                headers=self._response_headers,
             )

@@ -4,7 +4,7 @@ This module defines the base types for platform-wide error
 codes as outlined in https://resend.com/docs/api-reference/errors.
 """
 
-from typing import Any, Dict, NoReturn, Union
+from typing import Any, Dict, NoReturn, Optional, Union
 
 
 class ResendError(Exception):
@@ -29,12 +29,14 @@ class ResendError(Exception):
         error_type: str,
         message: str,
         suggested_action: str,
+        headers: Optional[Dict[str, str]] = None,
     ):
         Exception.__init__(self, message)
         self.code = code
         self.message = message
         self.suggested_action = suggested_action
         self.error_type = error_type
+        self.headers = headers or {}
 
 
 class MissingApiKeyError(ResendError):
@@ -45,6 +47,7 @@ class MissingApiKeyError(ResendError):
         message: str,
         error_type: str,
         code: Union[str, int],
+        headers: Optional[Dict[str, str]] = None,
     ):
         suggested_action = """Include the following header
         Authorization: Bearer YOUR_API_KEY in the request."""
@@ -57,6 +60,7 @@ class MissingApiKeyError(ResendError):
             suggested_action=suggested_action,
             code=code,
             error_type=error_type,
+            headers=headers,
         )
 
 
@@ -68,6 +72,7 @@ class InvalidApiKeyError(ResendError):
         message: str,
         error_type: str,
         code: Union[str, int],
+        headers: Optional[Dict[str, str]] = None,
     ):
         suggested_action = """Generate a new API key in the dashboard."""
 
@@ -77,6 +82,7 @@ class InvalidApiKeyError(ResendError):
             suggested_action=suggested_action,
             code=code,
             error_type=error_type,
+            headers=headers,
         )
 
 
@@ -88,6 +94,7 @@ class ValidationError(ResendError):
         message: str,
         error_type: str,
         code: Union[str, int],
+        headers: Optional[Dict[str, str]] = None,
     ):
         default_message = """
         The request body is missing one or more required fields."""
@@ -104,6 +111,7 @@ class ValidationError(ResendError):
             message=message,
             suggested_action=suggested_action,
             error_type=error_type,
+            headers=headers,
         )
 
 
@@ -115,6 +123,7 @@ class MissingRequiredFieldsError(ResendError):
         message: str,
         error_type: str,
         code: Union[str, int],
+        headers: Optional[Dict[str, str]] = None,
     ):
         default_message = """
         The request body is missing one or more required fields."""
@@ -131,6 +140,7 @@ class MissingRequiredFieldsError(ResendError):
             message=message,
             suggested_action=suggested_action,
             error_type=error_type,
+            headers=headers,
         )
 
 
@@ -142,6 +152,7 @@ class ApplicationError(ResendError):
         message: str,
         error_type: str,
         code: Union[str, int],
+        headers: Optional[Dict[str, str]] = None,
     ):
         default_message = """
         Something went wrong."""
@@ -157,6 +168,7 @@ class ApplicationError(ResendError):
             message=message,
             suggested_action=suggested_action,
             error_type=error_type,
+            headers=headers,
         )
 
 
@@ -168,6 +180,7 @@ class RateLimitError(ResendError):
         message: str,
         error_type: str,
         code: Union[str, int],
+        headers: Optional[Dict[str, str]] = None,
     ):
         suggested_action = """Reduce your request rate or wait before retrying. """
         suggested_action += """Check the response headers for rate limit information."""
@@ -178,6 +191,7 @@ class RateLimitError(ResendError):
             message=message,
             suggested_action=suggested_action,
             error_type=error_type,
+            headers=headers,
         )
 
 
@@ -200,7 +214,10 @@ ERRORS: Dict[str, Dict[str, Any]] = {
 
 
 def raise_for_code_and_type(
-    code: Union[str, int], error_type: str, message: str
+    code: Union[str, int],
+    error_type: str,
+    message: str,
+    headers: Optional[Dict[str, str]] = None,
 ) -> NoReturn:
     """Raise the appropriate error based on the code and type.
 
@@ -208,6 +225,7 @@ def raise_for_code_and_type(
         code (str): The error code
         error_type (str): The error type
         message (str): The error message
+        headers (Optional[Dict[str, str]]): The HTTP response headers
 
     Raises:
         ResendError: If it is a Resend err
@@ -231,7 +249,11 @@ def raise_for_code_and_type(
     # Handle the case where the error might be unknown
     if error is None:
         raise ResendError(
-            code=code, message=message, error_type=error_type, suggested_action=""
+            code=code,
+            message=message,
+            error_type=error_type,
+            suggested_action="",
+            headers=headers,
         )
 
     # Raise error from errors list
@@ -242,10 +264,15 @@ def raise_for_code_and_type(
             code=code,
             message=message,
             error_type=error_type,
+            headers=headers,
         )
     # defaults to ResendError if finally can't find error type
     raise ResendError(
-        code=code, message=message, error_type=error_type, suggested_action=""
+        code=code,
+        message=message,
+        error_type=error_type,
+        suggested_action="",
+        headers=headers,
     )
 
 

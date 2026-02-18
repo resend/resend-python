@@ -55,3 +55,60 @@ class TestResendError(unittest.TestCase):
         assert e.type is RateLimitError
         assert e.value.code == 429
         assert e.value.error_type == "monthly_quota_exceeded"
+
+    def test_headers_default_to_empty_dict(self) -> None:
+        with pytest.raises(ResendError) as e:
+            raise_for_code_and_type(999, "error_type", "msg")
+        assert e.value.headers == {}
+
+    def test_headers_passed_to_known_error(self) -> None:
+        headers = {
+            "retry-after": "5",
+            "x-ratelimit-limit": "100",
+            "x-ratelimit-remaining": "0",
+            "x-ratelimit-reset": "1699564800",
+        }
+        with pytest.raises(RateLimitError) as e:
+            raise_for_code_and_type(
+                429,
+                "rate_limit_exceeded",
+                "Rate limit exceeded",
+                headers=headers,
+            )
+        assert e.value.headers == headers
+        assert e.value.headers["retry-after"] == "5"
+        assert e.value.headers["x-ratelimit-remaining"] == "0"
+
+    def test_headers_passed_to_unknown_error(self) -> None:
+        headers = {"x-request-id": "req_123"}
+        with pytest.raises(ResendError) as e:
+            raise_for_code_and_type(999, "unknown", "msg", headers=headers)
+        assert e.value.headers == headers
+
+    def test_headers_passed_to_unknown_error_type(self) -> None:
+        headers = {"x-request-id": "req_456"}
+        with pytest.raises(ResendError) as e:
+            raise_for_code_and_type(500, "unknown_type", "msg", headers=headers)
+        assert e.value.headers == headers
+
+    def test_headers_on_validation_error(self) -> None:
+        headers = {"x-request-id": "req_789"}
+        with pytest.raises(ValidationError) as e:
+            raise_for_code_and_type(
+                400,
+                "validation_error",
+                "err",
+                headers=headers,
+            )
+        assert e.value.headers == headers
+
+    def test_headers_on_application_error(self) -> None:
+        headers = {"x-request-id": "req_abc"}
+        with pytest.raises(ApplicationError) as e:
+            raise_for_code_and_type(
+                500,
+                "application_error",
+                "err",
+                headers=headers,
+            )
+        assert e.value.headers == headers

@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from typing_extensions import NotRequired, TypedDict
 
+from resend._base_response import BaseResponse
 from resend.segments._segments import Segments
 
 from ._audience import Audience
@@ -10,7 +11,7 @@ from ._audience import Audience
 
 class Audiences:
 
-    class RemoveAudienceResponse(TypedDict):
+    class RemoveAudienceResponse(BaseResponse):
         """
         RemoveAudienceResponse is the type that wraps the response of the audience that was removed
 
@@ -51,7 +52,7 @@ class Audiences:
         Cannot be used with the after parameter.
         """
 
-    class ListResponse(TypedDict):
+    class ListResponse(BaseResponse):
         """
         ListResponse type that wraps a list of audience objects with pagination metadata
 
@@ -74,7 +75,7 @@ class Audiences:
         Whether there are more results available for pagination
         """
 
-    class CreateAudienceResponse(TypedDict):
+    class CreateAudienceResponse(BaseResponse):
         """
         CreateAudienceResponse is the type that wraps the response of the audience that was created
 
