@@ -1,12 +1,16 @@
+import pytest
+
 import resend
 from resend import ContactsTopics
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendContactTopicsAsync(ResendBaseTest):
+
+class TestResendContactTopicsAsync(AsyncResendBaseTest):
     async def test_contact_topics_list_async_by_id(self) -> None:
         self.set_mock_json(
             {
@@ -60,16 +64,16 @@ class TestResendContactTopicsAsync(ResendBaseTest):
     ) -> None:
         resend.api_key = "re_123"
 
-        with self.assertRaises(ValueError) as context:
+        with pytest.raises(ValueError) as exc_info:
             await resend.Contacts.Topics.list_async()
 
-        self.assertEqual("contact_id or email must be provided", str(context.exception))
+        assert "contact_id or email must be provided" == str(exc_info.value)
 
     async def test_should_list_contact_topics_async_raise_exception_when_no_content(
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.Topics.list_async(contact_id="cont_456")
 
     async def test_contact_topics_update_async_by_id(self) -> None:
@@ -120,10 +124,10 @@ class TestResendContactTopicsAsync(ResendBaseTest):
             ],
         }
 
-        with self.assertRaises(ValueError) as context:
+        with pytest.raises(ValueError) as exc_info:
             await resend.Contacts.Topics.update_async(params)
 
-        self.assertEqual("id or email must be provided", str(context.exception))
+        assert "id or email must be provided" == str(exc_info.value)
 
     async def test_should_update_contact_topics_async_raise_exception_when_no_content(
         self,
@@ -135,5 +139,5 @@ class TestResendContactTopicsAsync(ResendBaseTest):
                 {"id": "topic_1", "subscription": "opt_in"},
             ],
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.Topics.update_async(params)

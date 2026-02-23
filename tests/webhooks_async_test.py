@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendWebhooksAsync(ResendBaseTest):
+
+class TestResendWebhooksAsync(AsyncResendBaseTest):
     async def test_webhooks_create_async(self) -> None:
         self.set_mock_json(
             {
@@ -31,7 +35,7 @@ class TestResendWebhooksAsync(ResendBaseTest):
             "endpoint": "https://example.com/webhook",
             "events": ["email.sent"],
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Webhooks.create_async(params)
 
     async def test_webhooks_get_async(self) -> None:
@@ -56,7 +60,7 @@ class TestResendWebhooksAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Webhooks.get_async("wh_123")
 
     async def test_webhooks_update_async(self) -> None:
@@ -78,7 +82,7 @@ class TestResendWebhooksAsync(ResendBaseTest):
             "webhook_id": "wh_123",
             "endpoint": "https://new-endpoint.com/webhook",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Webhooks.update_async(params)
 
     async def test_webhooks_list_async(self) -> None:
@@ -109,7 +113,7 @@ class TestResendWebhooksAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Webhooks.list_async()
 
     async def test_webhooks_remove_async(self) -> None:
@@ -123,5 +127,5 @@ class TestResendWebhooksAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Webhooks.remove_async("wh_123")

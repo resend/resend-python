@@ -1,13 +1,17 @@
 from typing import List
 
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendBatchSendAsync(ResendBaseTest):
+
+class TestResendBatchSendAsync(AsyncResendBaseTest):
     async def test_batch_email_send_async(self) -> None:
         self.set_mock_json(
             {
@@ -92,5 +96,5 @@ class TestResendBatchSendAsync(ResendBaseTest):
                 "html": "<strong>hello, world!</strong>",
             },
         ]
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Batch.send_async(params)

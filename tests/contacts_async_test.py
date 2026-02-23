@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendContactsAsync(ResendBaseTest):
+
+class TestResendContactsAsync(AsyncResendBaseTest):
     async def test_contacts_create_async(self) -> None:
         self.set_mock_json(
             {"object": "contact", "id": "479e3145-dd38-476b-932c-529ceb705947"}
@@ -34,7 +38,7 @@ class TestResendContactsAsync(ResendBaseTest):
             "last_name": "Wozniak",
             "unsubscribed": True,
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.create_async(params)
 
     async def test_contacts_update_async(self) -> None:
@@ -76,7 +80,7 @@ class TestResendContactsAsync(ResendBaseTest):
             "first_name": "Updated",
             "unsubscribed": True,
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.update_async(params)
 
     async def test_contacts_get_async(self) -> None:
@@ -130,18 +134,18 @@ class TestResendContactsAsync(ResendBaseTest):
     async def test_contacts_get_async_raises(self) -> None:
         resend.api_key = "re_123"
 
-        with self.assertRaises(ValueError) as context:
+        with pytest.raises(ValueError) as exc_info:
             await resend.Contacts.get_async(
                 audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
             )
 
-        self.assertEqual("id or email must be provided", str(context.exception))
+        assert "id or email must be provided" == str(exc_info.value)
 
     async def test_should_get_contacts_async_raise_exception_when_no_content(
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.get_async(
                 id="e169aa45-1ecf-4183-9955-b1499d5701d3",
                 audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
@@ -167,7 +171,7 @@ class TestResendContactsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.remove_async(
                 audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
                 id="78261eea-8f8b-4381-83c6-79fa7120f1cf",
@@ -193,7 +197,7 @@ class TestResendContactsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.remove_async(
                 audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
                 email="someemail@email.com",
@@ -202,12 +206,12 @@ class TestResendContactsAsync(ResendBaseTest):
     async def test_contacts_remove_async_raises(self) -> None:
         resend.api_key = "re_123"
 
-        with self.assertRaises(ValueError) as context:
+        with pytest.raises(ValueError) as exc_info:
             await resend.Contacts.remove_async(
                 audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
             )
 
-        self.assertEqual("id or email must be provided", str(context.exception))
+        assert "id or email must be provided" == str(exc_info.value)
 
     async def test_contacts_list_async(self) -> None:
         self.set_mock_json(
@@ -240,7 +244,7 @@ class TestResendContactsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.list_async(
                 audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8"
             )

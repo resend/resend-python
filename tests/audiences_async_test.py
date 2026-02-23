@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendSegmentsAsync(ResendBaseTest):
+
+class TestResendSegmentsAsync(AsyncResendBaseTest):
     async def test_segments_create_async(self) -> None:
         self.set_mock_json(
             {
@@ -29,7 +33,7 @@ class TestResendSegmentsAsync(ResendBaseTest):
         params: resend.Segments.CreateParams = {
             "name": "Python SDK Segment",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Segments.create_async(params)
 
     async def test_segments_get_async(self) -> None:
@@ -53,7 +57,7 @@ class TestResendSegmentsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Segments.get_async(
                 id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
             )
@@ -77,7 +81,7 @@ class TestResendSegmentsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Segments.remove_async(
                 id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
             )
@@ -104,5 +108,5 @@ class TestResendSegmentsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Segments.list_async()

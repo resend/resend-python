@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendContactPropertiesAsync(ResendBaseTest):
+
+class TestResendContactPropertiesAsync(AsyncResendBaseTest):
     async def test_contact_properties_create_async(self) -> None:
         self.set_mock_json(
             {
@@ -34,7 +38,7 @@ class TestResendContactPropertiesAsync(ResendBaseTest):
             "type": "number",
             "fallback_value": 0,
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.ContactProperties.create_async(params)
 
     async def test_contact_properties_get_async(self) -> None:
@@ -61,7 +65,7 @@ class TestResendContactPropertiesAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.ContactProperties.get_async("prop_123456")
 
     async def test_contact_properties_list_async(self) -> None:
@@ -93,7 +97,7 @@ class TestResendContactPropertiesAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.ContactProperties.list_async()
 
     async def test_contact_properties_update_async(self) -> None:
@@ -122,7 +126,7 @@ class TestResendContactPropertiesAsync(ResendBaseTest):
             "id": "prop_123456",
             "fallback_value": 18,
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.ContactProperties.update_async(params)
 
     async def test_contact_properties_remove_async(self) -> None:
@@ -145,5 +149,5 @@ class TestResendContactPropertiesAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.ContactProperties.remove_async("prop_123456")

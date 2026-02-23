@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendDomainsAsync(ResendBaseTest):
+
+class TestResendDomainsAsync(AsyncResendBaseTest):
     async def test_domains_create_async(self) -> None:
         self.set_mock_json(
             {
@@ -79,7 +83,7 @@ class TestResendDomainsAsync(ResendBaseTest):
         create_params: resend.Domains.CreateParams = {
             "name": "example.com",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Domains.create_async(params=create_params)
 
     async def test_domains_get_async(self) -> None:
@@ -107,7 +111,7 @@ class TestResendDomainsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Domains.get_async(
                 domain_id="d91cd9bd-1176-453e-8fc1-35364d380206"
             )
@@ -139,7 +143,7 @@ class TestResendDomainsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Domains.list_async()
 
     async def test_domains_update_async(self) -> None:
@@ -175,7 +179,7 @@ class TestResendDomainsAsync(ResendBaseTest):
             "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
             "click_tracking": True,
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Domains.update_async(params=update_params)
 
     async def test_domains_remove_async(self) -> None:
@@ -203,7 +207,7 @@ class TestResendDomainsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Domains.remove_async(
                 domain_id="d91cd9bd-1176-453e-8fc1-35364d380206"
             )
@@ -233,7 +237,7 @@ class TestResendDomainsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Domains.verify_async(
                 domain_id="d91cd9bd-1176-453e-8fc1-35364d380206"
             )

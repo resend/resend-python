@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendAttachmentsAsync(ResendBaseTest):
+
+class TestResendAttachmentsAsync(AsyncResendBaseTest):
     async def test_sent_email_attachments_get_async(self) -> None:
         self.set_mock_json(
             {
@@ -34,7 +38,7 @@ class TestResendAttachmentsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Emails.Attachments.get_async(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
                 attachment_id="2a0c9ce0-3112-4728-976e-47ddcd16a318",
@@ -69,7 +73,7 @@ class TestResendAttachmentsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Emails.Attachments.list_async(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
             )

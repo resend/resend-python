@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendTopicsAsync(ResendBaseTest):
+
+class TestResendTopicsAsync(AsyncResendBaseTest):
     async def test_topics_create_async(self) -> None:
         self.set_mock_json(
             {
@@ -28,7 +32,7 @@ class TestResendTopicsAsync(ResendBaseTest):
             "name": "Weekly Newsletter",
             "default_subscription": "opt_in",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Topics.create_async(params)
 
     async def test_topics_get_async(self) -> None:
@@ -50,7 +54,7 @@ class TestResendTopicsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Topics.get_async(id="b6d24b8e-af0b-4c3c-be0c-359bbd97381e")
 
     async def test_topics_update_async(self) -> None:
@@ -76,7 +80,7 @@ class TestResendTopicsAsync(ResendBaseTest):
         params: resend.Topics.UpdateParams = {
             "name": "Monthly Newsletter",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Topics.update_async(
                 id="b6d24b8e-af0b-4c3c-be0c-359bbd97381e", params=params
             )
@@ -101,7 +105,7 @@ class TestResendTopicsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Topics.remove_async(
                 id="b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
             )
@@ -132,5 +136,5 @@ class TestResendTopicsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Topics.list_async()

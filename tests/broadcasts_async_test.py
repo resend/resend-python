@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendBroadcastsAsync(ResendBaseTest):
+
+class TestResendBroadcastsAsync(AsyncResendBaseTest):
     async def test_broadcasts_create_async(self) -> None:
         self.set_mock_json({"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"})
 
@@ -30,7 +34,7 @@ class TestResendBroadcastsAsync(ResendBaseTest):
             "subject": "Hello, world!",
             "name": "Python SDK Broadcast",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Broadcasts.create_async(params)
 
     async def test_broadcasts_update_async(self) -> None:
@@ -57,7 +61,7 @@ class TestResendBroadcastsAsync(ResendBaseTest):
             "subject": "Hello, world! Updated!",
             "name": "Python SDK Broadcast",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Broadcasts.update_async(params)
 
     async def test_broadcasts_get_async(self) -> None:
@@ -97,7 +101,7 @@ class TestResendBroadcastsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Broadcasts.get_async(
                 id="559ac32e-9ef5-46fb-82a1-b76b840c0f7b"
             )
@@ -118,7 +122,7 @@ class TestResendBroadcastsAsync(ResendBaseTest):
         params: resend.Broadcasts.SendParams = {
             "broadcast_id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Broadcasts.send_async(params)
 
     async def test_broadcasts_remove_async(self) -> None:
@@ -140,7 +144,7 @@ class TestResendBroadcastsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Broadcasts.remove_async(
                 id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
             )
@@ -196,5 +200,5 @@ class TestResendBroadcastsAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Broadcasts.list_async()

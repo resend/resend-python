@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendTemplatesAsync(ResendBaseTest):
+
+class TestResendTemplatesAsync(AsyncResendBaseTest):
     async def test_templates_create_async(self) -> None:
         self.set_mock_json(
             {"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794", "object": "template"}
@@ -41,7 +45,7 @@ class TestResendTemplatesAsync(ResendBaseTest):
             "name": "welcome-email",
             "html": "<strong>Hello</strong>",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Templates.create_async(params)
 
     async def test_templates_get_async(self) -> None:
@@ -85,7 +89,7 @@ class TestResendTemplatesAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Templates.get_async("49a3999c-0ce1-4ea6-ab68-afcd6dc2e794")
 
     async def test_templates_update_async(self) -> None:
@@ -112,7 +116,7 @@ class TestResendTemplatesAsync(ResendBaseTest):
             "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
             "name": "updated-welcome-email",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Templates.update_async(params)
 
     async def test_templates_publish_async(self) -> None:
@@ -130,7 +134,7 @@ class TestResendTemplatesAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Templates.publish_async(
                 "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
             )
@@ -152,7 +156,7 @@ class TestResendTemplatesAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Templates.duplicate_async(
                 "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
             )
@@ -177,7 +181,7 @@ class TestResendTemplatesAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Templates.remove_async(
                 "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
             )
@@ -211,5 +215,5 @@ class TestResendTemplatesAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Templates.list_async()

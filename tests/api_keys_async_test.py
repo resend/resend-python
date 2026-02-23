@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendApiKeysAsync(ResendBaseTest):
+
+class TestResendApiKeysAsync(AsyncResendBaseTest):
     async def test_api_keys_create_async(self) -> None:
         self.set_mock_json(
             {
@@ -27,7 +31,7 @@ class TestResendApiKeysAsync(ResendBaseTest):
         params: resend.ApiKeys.CreateParams = {
             "name": "prod",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.ApiKeys.create_async(params)
 
     async def test_api_keys_list_async(self) -> None:
@@ -53,7 +57,7 @@ class TestResendApiKeysAsync(ResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.ApiKeys.list_async()
 
     async def test_api_keys_remove_async(self) -> None:

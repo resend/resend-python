@@ -1,11 +1,15 @@
+import pytest
+
 import resend
 from resend.exceptions import NoContentError
-from tests.conftest import ResendBaseTest
+from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
 
+pytestmark = pytest.mark.asyncio
 
-class TestResendContactSegmentsAsync(ResendBaseTest):
+
+class TestResendContactSegmentsAsync(AsyncResendBaseTest):
     async def test_contact_segments_add_async(self) -> None:
         self.set_mock_json({"id": "contact-segment-id-123"})
 
@@ -30,9 +34,9 @@ class TestResendContactSegmentsAsync(ResendBaseTest):
         params: resend.ContactSegments.AddParams = {
             "segment_id": "segment-123",
         }
-        with self.assertRaises(ValueError) as context:
+        with pytest.raises(ValueError) as exc_info:
             await resend.Contacts.Segments.add_async(params)
-        assert "Either contact_id or email must be provided" in str(context.exception)
+        assert "Either contact_id or email must be provided" in str(exc_info.value)
 
     async def test_should_add_contact_segments_async_raise_exception_when_no_content(
         self,
@@ -42,7 +46,7 @@ class TestResendContactSegmentsAsync(ResendBaseTest):
             "segment_id": "segment-123",
             "contact_id": "contact-456",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.Segments.add_async(params)
 
     async def test_contact_segments_remove_async(self) -> None:
@@ -62,9 +66,9 @@ class TestResendContactSegmentsAsync(ResendBaseTest):
         params: resend.ContactSegments.RemoveParams = {
             "segment_id": "segment-123",
         }
-        with self.assertRaises(ValueError) as context:
+        with pytest.raises(ValueError) as exc_info:
             await resend.Contacts.Segments.remove_async(params)
-        assert "Either contact_id or email must be provided" in str(context.exception)
+        assert "Either contact_id or email must be provided" in str(exc_info.value)
 
     async def test_should_remove_contact_segments_async_raise_exception_when_no_content(
         self,
@@ -74,7 +78,7 @@ class TestResendContactSegmentsAsync(ResendBaseTest):
             "segment_id": "segment-123",
             "contact_id": "contact-456",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.Segments.remove_async(params)
 
     async def test_contact_segments_list_async(self) -> None:
@@ -111,9 +115,9 @@ class TestResendContactSegmentsAsync(ResendBaseTest):
 
     async def test_contact_segments_list_async_raises_without_identifier(self) -> None:
         params: resend.ContactSegments.ListParams = {}
-        with self.assertRaises(ValueError) as context:
+        with pytest.raises(ValueError) as exc_info:
             await resend.Contacts.Segments.list_async(params)
-        assert "Either contact_id or email must be provided" in str(context.exception)
+        assert "Either contact_id or email must be provided" in str(exc_info.value)
 
     async def test_should_list_contact_segments_async_raise_exception_when_no_content(
         self,
@@ -122,5 +126,5 @@ class TestResendContactSegmentsAsync(ResendBaseTest):
         params: resend.ContactSegments.ListParams = {
             "contact_id": "contact-123",
         }
-        with self.assertRaises(NoContentError):
+        with pytest.raises(NoContentError):
             _ = await resend.Contacts.Segments.list_async(params)
