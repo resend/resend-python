@@ -18,7 +18,9 @@ class TestResendContactsAsync(ResendBaseTest):
             "last_name": "Wozniak",
             "unsubscribed": True,
         }
-        contact: resend.Contact = await resend.Contacts.create_async(params)
+        contact: resend.Contacts.CreateContactResponse = (
+            await resend.Contacts.create_async(params)
+        )
         assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
 
     async def test_should_create_contacts_async_raise_exception_when_no_content(

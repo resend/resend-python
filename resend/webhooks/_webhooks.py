@@ -9,6 +9,12 @@ from typing_extensions import NotRequired, TypedDict
 from resend import request
 from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
+
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
 from resend.webhooks._webhook import (VerifyWebhookOptions, Webhook,
                                       WebhookEvent, WebhookStatus)
 
@@ -347,6 +353,99 @@ class Webhooks:
                 return  # Signature matches
 
         raise ValueError("no matching signature found")
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> CreateWebhookResponse:
+        """
+        Create a webhook (async).
+        see more: https://resend.com/docs/api-reference/webhooks/create-webhook
+
+        Args:
+            params (CreateParams): The webhook creation parameters
+
+        Returns:
+            CreateWebhookResponse: The created webhook response with id and signing_secret
+        """
+        path = "/webhooks"
+        resp = await AsyncRequest[Webhooks.CreateWebhookResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, webhook_id: str) -> Webhook:
+        """
+        Retrieve a single webhook (async).
+        see more: https://resend.com/docs/api-reference/webhooks/get-webhook
+
+        Args:
+            webhook_id (str): The webhook ID
+
+        Returns:
+            Webhook: The webhook object
+        """
+        path = f"/webhooks/{webhook_id}"
+        resp = await AsyncRequest[Webhook](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> UpdateWebhookResponse:
+        """
+        Update an existing webhook configuration (async).
+        see more: https://resend.com/docs/api-reference/webhooks/update-webhook
+
+        Args:
+            params (UpdateParams): The webhook update parameters
+
+        Returns:
+            UpdateWebhookResponse: The updated webhook response with id
+        """
+        webhook_id = params["webhook_id"]
+        path = f"/webhooks/{webhook_id}"
+        resp = await AsyncRequest[Webhooks.UpdateWebhookResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of webhooks (async).
+        see more: https://resend.com/docs/api-reference/webhooks/list-webhooks
+
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
+        Returns:
+            ListResponse: A list of webhook objects
+        """
+        base_path = "/webhooks"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Webhooks.ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(cls, webhook_id: str) -> DeleteWebhookResponse:
+        """
+        Remove an existing webhook (async).
+        see more: https://resend.com/docs/api-reference/webhooks/delete-webhook
+
+        Args:
+            webhook_id (str): The webhook ID
+
+        Returns:
+            DeleteWebhookResponse: The deleted webhook response
+        """
+        path = f"/webhooks/{webhook_id}"
+        resp = await AsyncRequest[Webhooks.DeleteWebhookResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
 
     @staticmethod
     def _generate_signature(secret: bytes, content: bytes) -> str:

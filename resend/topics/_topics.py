@@ -6,6 +6,12 @@ from resend import request
 from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 from ._topic import Topic
 
 
@@ -225,6 +231,99 @@ class Topics:
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[Topics.ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> CreateTopicResponse:
+        """
+        Create a topic (async).
+        see more: https://resend.com/docs/api-reference/topics/create-topic
+
+        Args:
+            params (CreateParams): The topic creation parameters
+
+        Returns:
+            CreateTopicResponse: The created topic response with the topic ID
+        """
+        path = "/topics"
+        resp = await AsyncRequest[Topics.CreateTopicResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, id: str) -> Topic:
+        """
+        Retrieve a single topic by its ID (async).
+        see more: https://resend.com/docs/api-reference/topics/get-topic
+
+        Args:
+            id (str): The topic ID
+
+        Returns:
+            Topic: The topic object
+        """
+        path = f"/topics/{id}"
+        resp = await AsyncRequest[Topic](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, id: str, params: UpdateParams) -> UpdateTopicResponse:
+        """
+        Update an existing topic (async).
+        see more: https://resend.com/docs/api-reference/topics/update-topic
+
+        Args:
+            id (str): The topic ID
+            params (UpdateParams): The topic update parameters
+
+        Returns:
+            UpdateTopicResponse: The updated topic response with the topic ID
+        """
+        path = f"/topics/{id}"
+        resp = await AsyncRequest[Topics.UpdateTopicResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(cls, id: str) -> RemoveTopicResponse:
+        """
+        Delete a single topic (async).
+        see more: https://resend.com/docs/api-reference/topics/delete-topic
+
+        Args:
+            id (str): The topic ID
+
+        Returns:
+            RemoveTopicResponse: The removed topic response
+        """
+        path = f"/topics/{id}"
+        resp = await AsyncRequest[Topics.RemoveTopicResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of topics (async).
+        see more: https://resend.com/docs/api-reference/topics/list-topics
+
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
+        Returns:
+            ListResponse: A list of topic objects
+        """
+        base_path = "/topics"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Topics.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp

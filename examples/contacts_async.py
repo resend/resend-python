@@ -1,6 +1,5 @@
 import asyncio
 import os
-from typing import List
 
 import resend
 
@@ -23,7 +22,9 @@ async def main() -> None:
         "unsubscribed": False,
     }
 
-    contact: resend.Contact = await resend.Contacts.create_async(create_params)
+    contact: resend.Contacts.CreateContactResponse = await resend.Contacts.create_async(
+        create_params
+    )
     print("Created contact !")
     print(contact)
 
@@ -34,7 +35,9 @@ async def main() -> None:
         "first_name": "Steve (Async)",
     }
 
-    updated: resend.Contact = await resend.Contacts.update_async(update_params)
+    updated: resend.Contacts.UpdateContactResponse = await resend.Contacts.update_async(
+        update_params
+    )
     print("updated contact !")
     print(updated)
 
@@ -54,12 +57,12 @@ async def main() -> None:
         audience_id=audience_id
     )
     print("List of contacts")
-    for contact in contacts["data"]:
-        print(contact)
+    for c in contacts["data"]:
+        print(c)
 
     # remove by email
     rmed = await resend.Contacts.remove_async(
-        audience_id=audience_id, email=contact["email"]
+        audience_id=audience_id, email=cont_by_email["email"]
     )
 
     # remove by id

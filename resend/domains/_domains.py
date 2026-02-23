@@ -255,7 +255,7 @@ class Domains:
         return resp
 
     @classmethod
-    async def create_async(cls, params: CreateParams) -> Domain:
+    async def create_async(cls, params: CreateParams) -> CreateDomainResponse:
         """
         Create a domain through the Resend Email API (async).
         see more: https://resend.com/docs/api-reference/domains/create-domain
@@ -264,10 +264,10 @@ class Domains:
             params (CreateParams): The domain creation parameters
 
         Returns:
-            Domain: The new domain object
+            CreateDomainResponse: The created domain response
         """
         path = "/domains"
-        resp = await AsyncRequest[Domain](
+        resp = await AsyncRequest[Domains.CreateDomainResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp

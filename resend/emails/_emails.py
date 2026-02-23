@@ -371,7 +371,7 @@ class Emails:
     @classmethod
     async def send_async(
         cls, params: SendParams, options: Optional[SendOptions] = None
-    ) -> Email:
+    ) -> SendResponse:
         """
         Send an email through the Resend Email API (async version).
         see more: https://resend.com/docs/api-reference/emails/send-email
@@ -381,10 +381,10 @@ class Emails:
             options (SendOptions): The email options
 
         Returns:
-            Email: The email object that was sent
+            SendResponse: The send response with the email ID
         """
         path = "/emails"
-        resp = await AsyncRequest[Email](
+        resp = await AsyncRequest[Emails.SendResponse](
             path=path,
             params=cast(Dict[Any, Any], params),
             verb="post",

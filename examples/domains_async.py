@@ -16,7 +16,9 @@ async def main() -> None:
         "region": "us-east-1",
         "custom_return_path": "outbound",
     }
-    domain: resend.Domain = await resend.Domains.create_async(params=create_params)
+    domain: resend.Domains.CreateDomainResponse = await resend.Domains.create_async(
+        params=create_params
+    )
     print(domain)
 
     retrieved: resend.Domain = await resend.Domains.get_async(domain_id=domain["id"])
@@ -37,13 +39,13 @@ async def main() -> None:
     domains: resend.Domains.ListResponse = await resend.Domains.list_async()
     if not domains:
         print("No domains found")
-    for domain in domains["data"]:
-        print(domain)
+    for d in domains["data"]:
+        print(d)
 
     verified_domain: resend.Domain = await resend.Domains.verify_async(
         domain_id=domain["id"]
     )
-    print(f"Verified")
+    print("Verified")
     print(verified_domain)
 
     rm_domain: resend.Domain = await resend.Domains.remove_async(domain_id=domain["id"])

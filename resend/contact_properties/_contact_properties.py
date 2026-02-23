@@ -6,6 +6,12 @@ from resend import request
 from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 from ._contact_property import ContactProperty
 
 
@@ -258,6 +264,99 @@ class ContactProperties:
         """
         path = f"/contact-properties/{id}"
         resp = request.Request[ContactProperties.RemoveResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> CreateResponse:
+        """
+        Create a new contact property (async).
+        see more: https://resend.com/docs/api-reference/contact-properties/create-contact-property
+
+        Args:
+            params (CreateParams): The contact property creation parameters
+
+        Returns:
+            CreateResponse: The created contact property response
+        """
+        path = "/contact-properties"
+        resp = await AsyncRequest[ContactProperties.CreateResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, id: str) -> ContactProperty:
+        """
+        Get a contact property by ID (async).
+        see more: https://resend.com/docs/api-reference/contact-properties/get-contact-property
+
+        Args:
+            id (str): The contact property ID
+
+        Returns:
+            ContactProperty: The contact property object
+        """
+        path = f"/contact-properties/{id}"
+        resp = await AsyncRequest[ContactProperty](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        List all contact properties (async).
+        see more: https://resend.com/docs/api-reference/contact-properties/list-contact-properties
+
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
+        Returns:
+            ListResponse: A list of contact property objects
+        """
+        base_path = "/contact-properties"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[ContactProperties.ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> UpdateResponse:
+        """
+        Update an existing contact property (async).
+        see more: https://resend.com/docs/api-reference/contact-properties/update-contact-property
+
+        Args:
+            params (UpdateParams): The contact property update parameters
+
+        Returns:
+            UpdateResponse: The updated contact property response
+        """
+        path = f"/contact-properties/{params['id']}"
+        payload: Dict[str, Any] = {"fallback_value": params["fallback_value"]}
+        resp = await AsyncRequest[ContactProperties.UpdateResponse](
+            path=path, params=payload, verb="patch"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(cls, id: str) -> RemoveResponse:
+        """
+        Remove a contact property by ID (async).
+        see more: https://resend.com/docs/api-reference/contact-properties/delete-contact-property
+
+        Args:
+            id (str): The contact property ID
+
+        Returns:
+            RemoveResponse: The removed contact property response object
+        """
+        path = f"/contact-properties/{id}"
+        resp = await AsyncRequest[ContactProperties.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp

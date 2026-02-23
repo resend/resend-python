@@ -8,6 +8,12 @@ from resend.emails._received_email import (EmailAttachment,
                                            EmailAttachmentDetails)
 from resend.pagination_helper import PaginationHelper
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 
 class _ListParams(TypedDict):
     limit: NotRequired[int]
@@ -102,6 +108,54 @@ class Attachments:
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[Attachments.ListResponse](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(
+        cls, email_id: str, attachment_id: str
+    ) -> EmailAttachmentDetails:
+        """
+        Retrieve a single attachment from a sent email (async).
+        see more: https://resend.com/docs/api-reference/attachments/retrieve-sent-email-attachment
+
+        Args:
+            email_id (str): The ID of the sent email
+            attachment_id (str): The ID of the attachment to retrieve
+
+        Returns:
+            EmailAttachmentDetails: The attachment details including download URL
+        """
+        path = f"/emails/{email_id}/attachments/{attachment_id}"
+        resp = await AsyncRequest[EmailAttachmentDetails](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(
+        cls, email_id: str, params: Optional[ListParams] = None
+    ) -> ListResponse:
+        """
+        Retrieve a list of attachments from a sent email (async).
+        see more: https://resend.com/docs/api-reference/attachments/list-sent-email-attachments
+
+        Args:
+            email_id (str): The ID of the sent email
+            params (Optional[ListParams]): The list parameters for pagination
+
+        Returns:
+            ListResponse: A paginated list of attachment objects
+        """
+        base_path = f"/emails/{email_id}/attachments"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Attachments.ListResponse](
             path=path,
             params={},
             verb="get",

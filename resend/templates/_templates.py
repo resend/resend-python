@@ -8,6 +8,12 @@ from resend import request
 from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 from ._template import Template, TemplateListItem, Variable
 
 # Use functional TypedDict syntax to support reserved keyword "from"
@@ -338,6 +344,122 @@ class Templates:
         """
         path = f"/templates/{template_id}"
         resp = request.Request[Templates.RemoveResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> CreateResponse:
+        """Create a new template (async).
+
+        Args:
+            params: The template creation parameters.
+
+        Returns:
+            CreateResponse: The created template response with ID and object type.
+        """
+        path = "/templates"
+        resp = await AsyncRequest[Templates.CreateResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, template_id: str) -> Template:
+        """Retrieve a template by ID (async).
+
+        Args:
+            template_id: The Template ID.
+
+        Returns:
+            Template: The template object.
+        """
+        path = f"/templates/{template_id}"
+        resp = await AsyncRequest[Template](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """List all templates with pagination support (async).
+
+        Args:
+            params: Optional pagination parameters (limit, after, before).
+
+        Returns:
+            ListResponse: The paginated list of templates.
+        """
+        base_path = "/templates"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Templates.ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> UpdateResponse:
+        """Update an existing template (async).
+
+        Args:
+            params: The template update parameters (must include id).
+
+        Returns:
+            UpdateResponse: The updated template response with ID and object type.
+        """
+        template_id = params["id"]
+        path = f"/templates/{template_id}"
+        update_params = {k: v for k, v in params.items() if k != "id"}
+        resp = await AsyncRequest[Templates.UpdateResponse](
+            path=path, params=cast(Dict[Any, Any], update_params), verb="patch"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def publish_async(cls, template_id: str) -> PublishResponse:
+        """Publish a template to make it available for use (async).
+
+        Args:
+            template_id: The Template ID.
+
+        Returns:
+            PublishResponse: The published template response with ID and object type.
+        """
+        path = f"/templates/{template_id}/publish"
+        resp = await AsyncRequest[Templates.PublishResponse](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def duplicate_async(cls, template_id: str) -> DuplicateResponse:
+        """Duplicate a template (async).
+
+        Args:
+            template_id: The Template ID to duplicate.
+
+        Returns:
+            DuplicateResponse: The duplicated template response with new ID and object type.
+        """
+        path = f"/templates/{template_id}/duplicate"
+        resp = await AsyncRequest[Templates.DuplicateResponse](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(cls, template_id: str) -> RemoveResponse:
+        """Delete a template (async).
+
+        Args:
+            template_id: The Template ID.
+
+        Returns:
+            RemoveResponse: The deletion response with ID, object type, and deleted status.
+        """
+        path = f"/templates/{template_id}"
+        resp = await AsyncRequest[Templates.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp

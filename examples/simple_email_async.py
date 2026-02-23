@@ -26,14 +26,18 @@ params: resend.Emails.SendParams = {
 
 async def main() -> None:
     # Without Idempotency Key
-    email_non_idempotent: resend.Email = await resend.Emails.send_async(params)
+    email_non_idempotent: resend.Emails.SendResponse = await resend.Emails.send_async(
+        params
+    )
     print(f"Sent email without idempotency key: {email_non_idempotent['id']}")
 
     # With Idempotency Key
     options: resend.Emails.SendOptions = {
         "idempotency_key": "44",
     }
-    email_idempotent: resend.Email = await resend.Emails.send_async(params, options)
+    email_idempotent: resend.Emails.SendResponse = await resend.Emails.send_async(
+        params, options
+    )
     print(f"Sent email with idempotency key: {email_idempotent['id']}")
 
     email_resp: resend.Email = await resend.Emails.get_async(
