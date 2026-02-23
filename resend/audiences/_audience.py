@@ -14,7 +14,3 @@ class Audience(TypedDict):
     """
     The date and time the audience was created.
     """
-    deleted: bool
-    """
-    Wether the audience was deleted. Only returned on the "remove" call
-    """

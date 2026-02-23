@@ -16,15 +16,15 @@ async def main() -> None:
         "name": "example.com",
     }
 
-    key: resend.ApiKey = await resend.ApiKeys.create_async(params=create_params)
+    key = await resend.ApiKeys.create_async(params=create_params)
     print("Created new api key")
     print(f"Key id: {key['id']} and token: {key['token']}")
 
     keys: resend.ApiKeys.ListResponse = await resend.ApiKeys.list_async()
-    for key in keys["data"]:
-        print(key["id"])
-        print(key["name"])
-        print(key["created_at"])
+    for k in keys["data"]:
+        print(k["id"])
+        print(k["name"])
+        print(k["created_at"])
 
     if len(keys["data"]) > 0:
         await resend.ApiKeys.remove_async(api_key_id=keys["data"][0]["id"])

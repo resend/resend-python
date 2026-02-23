@@ -180,7 +180,7 @@ class TestResendContactsAsync(ResendBaseTest):
             }
         )
 
-        rmed: resend.Contact = await resend.Contacts.remove_async(
+        rmed = await resend.Contacts.remove_async(
             audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
             email="someemail@email.com",
         )

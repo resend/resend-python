@@ -1,4 +1,6 @@
-from typing_extensions import TypedDict
+from typing import Any, Dict
+
+from typing_extensions import NotRequired, TypedDict
 
 
 class Contact(TypedDict):
@@ -10,11 +12,11 @@ class Contact(TypedDict):
     """
     The email of the contact.
     """
-    first_name: str
+    first_name: NotRequired[str]
     """
     The first name of the contact.
     """
-    last_name: str
+    last_name: NotRequired[str]
     """
     The last name of the contact.
     """
@@ -26,7 +28,7 @@ class Contact(TypedDict):
     """
     The unsubscribed status of the contact.
     """
-    deleted: bool
+    properties: NotRequired[Dict[str, Any]]
     """
-    Wether the contact is deleted or not.
+    Custom properties for the contact. Only available for global contacts.
     """

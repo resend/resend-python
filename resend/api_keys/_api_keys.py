@@ -1,9 +1,11 @@
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Optional, cast
 
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.api_keys._api_key import ApiKey
+from resend.pagination_helper import PaginationHelper
 
 # Async imports (optional - only available with pip install resend[async])
 try:
@@ -12,21 +14,65 @@ except ImportError:
     pass
 
 
-class _ListResponse(TypedDict):
-    data: List[ApiKey]
-    """
-    A list of API key objects
-    """
-
-
 class ApiKeys:
 
-    class ListResponse(_ListResponse):
+    class ListResponse(BaseResponse):
         """
-        ListResponse type that wraps a list of API key objects
+        ListResponse type that wraps a list of API key objects with pagination metadata
 
         Attributes:
-            data (List[Dict[str, Any]]): A list of API key objects
+            object (str): The object type, always "list"
+            data (List[ApiKey]): A list of API key objects
+            has_more (bool): Whether there are more results available
+        """
+
+        object: str
+        """
+        The object type, always "list"
+        """
+        data: List[ApiKey]
+        """
+        A list of API key objects
+        """
+        has_more: bool
+        """
+        Whether there are more results available for pagination
+        """
+
+    class CreateApiKeyResponse(BaseResponse):
+        """
+        CreateApiKeyResponse is the type that wraps the response of the API key that was created
+
+        Attributes:
+            id (str): The ID of the created API key
+            token (str): The token of the created API key
+        """
+
+        id: str
+        """
+        The ID of the created API key
+        """
+        token: str
+        """
+        The token of the created API key
+        """
+
+    class ListParams(TypedDict):
+        limit: NotRequired[int]
+        """
+        Number of API keys to retrieve. Maximum is 100, and minimum is 1.
+        """
+        after: NotRequired[str]
+        """
+        The ID after which we'll retrieve more API keys (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the before parameter.
+        """
+        before: NotRequired[str]
+        """
+        The ID before which we'll retrieve more API keys (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the after parameter.
         """
 
     class CreateParams(TypedDict):
@@ -47,7 +93,7 @@ class ApiKeys:
         """
 
     @classmethod
-    def create(cls, params: CreateParams) -> ApiKey:
+    def create(cls, params: CreateParams) -> CreateApiKeyResponse:
         """
         Add a new API key to authenticate communications with Resend.
         see more: https://resend.com/docs/api-reference/api-keys/create-api-key
@@ -56,25 +102,33 @@ class ApiKeys:
             params (CreateParams): The API key creation parameters
 
         Returns:
-            ApiKey: The new API key object
+            CreateApiKeyResponse: The created API key response with id and token
         """
         path = "/api-keys"
-        resp = request.Request[ApiKey](
+        resp = request.Request[ApiKeys.CreateApiKeyResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
 
     @classmethod
-    def list(cls) -> ListResponse:
+    def list(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve a list of API keys for the authenticated user.
         see more: https://resend.com/docs/api-reference/api-keys/list-api-keys
 
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+                - limit: Number of API keys to retrieve (max 100, min 1)
+                - after: ID after which to retrieve more API keys
+                - before: ID before which to retrieve more API keys
+
         Returns:
             ListResponse: A list of API key objects
         """
-        path = "/api-keys"
-        resp = request.Request[_ListResponse](
+        base_path = "/api-keys"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = request.Request[ApiKeys.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
@@ -98,7 +152,7 @@ class ApiKeys:
         return None
 
     @classmethod
-    async def create_async(cls, params: CreateParams) -> ApiKey:
+    async def create_async(cls, params: CreateParams) -> CreateApiKeyResponse:
         """
         Add a new API key to authenticate communications with Resend (async).
         see more: https://resend.com/docs/api-reference/api-keys/create-api-key
@@ -107,25 +161,30 @@ class ApiKeys:
             params (CreateParams): The API key creation parameters
 
         Returns:
-            ApiKey: The new API key object
+            CreateApiKeyResponse: The created API key response with id and token
         """
         path = "/api-keys"
-        resp = await AsyncRequest[ApiKey](
+        resp = await AsyncRequest[ApiKeys.CreateApiKeyResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
 
     @classmethod
-    async def list_async(cls) -> ListResponse:
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve a list of API keys for the authenticated user (async).
         see more: https://resend.com/docs/api-reference/api-keys/list-api-keys
 
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
         Returns:
             ListResponse: A list of API key objects
         """
-        path = "/api-keys"
-        resp = await AsyncRequest[_ListResponse](
+        base_path = "/api-keys"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[ApiKeys.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp

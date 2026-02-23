@@ -1,8 +1,6 @@
 import os
-from typing import List
 
 import resend
-import resend.broadcasts
 
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
@@ -21,7 +19,7 @@ create_params: resend.Broadcasts.CreateParams = {
 }
 
 broadcast: resend.Broadcasts.CreateResponse = resend.Broadcasts.create(create_params)
-print("Created broadcast !")
+print("Created broadcast with ID: {}".format(broadcast["id"]))
 print(broadcast)
 
 update_params: resend.Broadcasts.UpdateParams = {
@@ -60,4 +58,19 @@ else:
 
 list_response: resend.Broadcasts.ListResponse = resend.Broadcasts.list()
 print("List of broadcasts !\n")
-print(list_response)
+print(f"Found {len(list_response['data'])} broadcasts")
+print(f"Has more broadcasts: {list_response['has_more']}")
+
+print("\n--- Using pagination parameters ---")
+if list_response["data"]:
+    paginated_params: resend.Broadcasts.ListParams = {
+        "limit": 3,
+        "after": list_response["data"][0]["id"],
+    }
+    paginated_broadcasts: resend.Broadcasts.ListResponse = resend.Broadcasts.list(
+        params=paginated_params
+    )
+    print(f"Retrieved {len(paginated_broadcasts['data'])} broadcasts with pagination")
+    print(f"Has more broadcasts: {paginated_broadcasts['has_more']}")
+else:
+    print("No broadcasts available for pagination example")

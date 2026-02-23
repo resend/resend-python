@@ -21,14 +21,14 @@ params: resend.Emails.SendParams = {
 
 
 # Without Idempotency Key
-email_non_idempotent: resend.Email = resend.Emails.send(params)
+email_non_idempotent: resend.Emails.SendResponse = resend.Emails.send(params)
 print(f"Sent email without idempotency key: {email_non_idempotent['id']}")
 
 # With Idempotency Key
 options: resend.Emails.SendOptions = {
     "idempotency_key": "44",
 }
-email_idempotent: resend.Email = resend.Emails.send(params, options)
+email_idempotent: resend.Emails.SendResponse = resend.Emails.send(params, options)
 print(f"Sent email with idempotency key: {email_idempotent['id']}")
 
 email_resp: resend.Email = resend.Emails.get(email_id=email_non_idempotent["id"])
@@ -42,3 +42,23 @@ print("Email created_at: ", email_resp["created_at"])
 print("Email reply_to: ", email_resp["reply_to"])
 print("Email bcc: ", email_resp["bcc"])
 print("Email cc: ", email_resp["cc"])
+
+print("\n--- Listing Emails ---")
+
+# List all emails
+all_emails = resend.Emails.list()
+print(f"Total emails in this batch: {len(all_emails['data'])}")
+print(f"Has more emails: {all_emails['has_more']}")
+
+# List with pagination
+list_params: resend.Emails.ListParams = {
+    "limit": 5,
+}
+paginated_emails = resend.Emails.list(params=list_params)
+print(f"Retrieved {len(paginated_emails['data'])} emails (limited to 5)")
+
+# Example with cursor-based pagination
+if paginated_emails["data"]:
+    last_email_id = paginated_emails["data"][-1]["id"]
+    next_page = resend.Emails.list(params={"limit": 5, "after": last_email_id})
+    print(f"Next page has {len(next_page['data'])} emails")

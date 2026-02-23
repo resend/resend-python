@@ -1,8 +1,10 @@
-from typing import Any, Dict, List, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
+from resend.pagination_helper import PaginationHelper
 
 from ._broadcast import Broadcast
 
@@ -30,142 +32,75 @@ _UpdateParamsFrom = TypedDict(
 )
 
 
-class _CreateResponse(TypedDict):
-    id: str
-    """
-    id of the created broadcast
-    """
-
-
-class _UpdateResponse(TypedDict):
-    id: str
-    """
-    id of the updated broadcast
-    """
-
-
-class _SendResponse(_CreateResponse):
-    pass
-
-
-class _RemoveResponse(TypedDict):
-    object: str
-    """
-    object type: "broadcast"
-    """
-    id: str
-    """
-    id of the removed broadcast
-    """
-    deleted: bool
-    """
-    True if the broadcast was deleted
-    """
-
-
-class _ListResponse(TypedDict):
-    object: str
-    """
-    object type: "list"
-    """
-    data: List[Broadcast]
-    """
-    A list of broadcast objects
-    """
-
-
-class _CreateParamsDefault(_CreateParamsFrom):
-    audience_id: str
-    """
-    The ID of the audience you want to send to.
-    """
-    subject: str
-    """
-    Email subject.
-    """
-    reply_to: NotRequired[Union[List[str], str]]
-    """
-    Reply-to email address. For multiple addresses, send as an array of strings.
-    """
-    html: NotRequired[str]
-    """
-    The HTML version of the message.
-    """
-    text: NotRequired[str]
-    """
-    The text version of the message.
-    """
-    name: NotRequired[str]
-    """
-    The friendly name of the broadcast. Only used for internal reference.
-    """
-
-
-class _UpdateParamsDefault(_UpdateParamsFrom):
-    broadcast_id: str
-    """
-    The ID of the broadcast you want to update.
-    """
-    audience_id: NotRequired[str]
-    """
-    The ID of the audience you want to send to.
-    """
-    subject: NotRequired[str]
-    """
-    Email subject.
-    """
-    reply_to: NotRequired[Union[List[str], str]]
-    """
-    Reply-to email address. For multiple addresses, send as an array of strings.
-    """
-    html: NotRequired[str]
-    """
-    The HTML version of the message.
-    """
-    text: NotRequired[str]
-    """
-    The text version of the message.
-    """
-    name: NotRequired[str]
-    """
-    The friendly name of the broadcast. Only used for internal reference.
-    """
-
-
-class _SendBroadcastParams(TypedDict):
-    broadcast_id: str
-    """
-    The ID of the broadcast to send.
-    """
-    scheduled_at: NotRequired[str]
-    """
-    Schedule email to be sent later.
-    The date should be in natural language (e.g.: in 1 min) or ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
-    """
-
-
 class Broadcasts:
 
-    class CreateParams(_CreateParamsDefault):
+    class CreateParams(_CreateParamsFrom):
         """CreateParams is the class that wraps the parameters for the create method.
 
         Attributes:
             from (str): The sender email address
-            audience_id (str): The ID of the audience you want to send to.
+            segment_id (NotRequired[str]): The ID of the segment you want to send to.
+            audience_id (NotRequired[str]): The ID of the audience you want to send to. (deprecated: use segment_id)
             subject (str): Email subject.
             reply_to (NotRequired[Union[List[str], str]]): Reply-to email address(es).
             html (NotRequired[str]): The HTML version of the message.
             text (NotRequired[str]): The text version of the message.
             name (NotRequired[str]): The friendly name of the broadcast. Only used for internal reference.
+            send (NotRequired[bool]): When true, the broadcast will be sent immediately after creation.
+            scheduled_at (NotRequired[str]): Schedule the broadcast to be sent later. Only valid when send is true.
         """
 
-    class UpdateParams(_UpdateParamsDefault):
+        segment_id: NotRequired[str]
+        """
+        The ID of the segment you want to send to.
+        """
+        audience_id: NotRequired[str]
+        """
+        The ID of the audience you want to send to.
+
+        .. deprecated::
+            Use segment_id instead.
+        """
+        subject: str
+        """
+        Email subject.
+        """
+        reply_to: NotRequired[Union[List[str], str]]
+        """
+        Reply-to email address. For multiple addresses, send as an array of strings.
+        """
+        html: NotRequired[str]
+        """
+        The HTML version of the message.
+        """
+        text: NotRequired[str]
+        """
+        The text version of the message.
+        """
+        name: NotRequired[str]
+        """
+        The friendly name of the broadcast. Only used for internal reference.
+        """
+        send: NotRequired[bool]
+        """
+        When set to true, the broadcast will be sent immediately after creation.
+        If false or not provided, the broadcast will be created as a draft.
+        """
+        scheduled_at: NotRequired[str]
+        """
+        Schedule the broadcast to be sent later.
+        Only valid when send is set to true.
+        The date should be in natural language (e.g.: in 1 min) or ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
+        """
+
+    class UpdateParams(_UpdateParamsFrom):
         """UpdateParams is the class that wraps the parameters for the update method.
 
         Attributes:
             broadcast_id (str): The ID of the broadcast you want to update.
-            audience_id (str): The ID of the audience you want to send to.
-            from (str): The sender email address
+            segment_id (NotRequired[str]): The ID of the segment you want to send to.
+            audience_id (NotRequired[str]): The ID of the audience you want to send to. (deprecated: use segment_id)
+            from (NotRequired[str]): The sender email address
             subject (NotRequired[str]): Email subject.
             reply_to (NotRequired[Union[List[str], str]]): Reply-to email address(es).
             html (NotRequired[str]): The HTML version of the message.
@@ -173,7 +108,43 @@ class Broadcasts:
             name (NotRequired[str]): The friendly name of the broadcast. Only used for internal reference.
         """
 
-    class SendParams(_SendBroadcastParams):
+        broadcast_id: str
+        """
+        The ID of the broadcast you want to update.
+        """
+        segment_id: NotRequired[str]
+        """
+        The ID of the segment you want to send to.
+        """
+        audience_id: NotRequired[str]
+        """
+        The ID of the audience you want to send to.
+
+        .. deprecated::
+            Use segment_id instead.
+        """
+        subject: NotRequired[str]
+        """
+        Email subject.
+        """
+        reply_to: NotRequired[Union[List[str], str]]
+        """
+        Reply-to email address. For multiple addresses, send as an array of strings.
+        """
+        html: NotRequired[str]
+        """
+        The HTML version of the message.
+        """
+        text: NotRequired[str]
+        """
+        The text version of the message.
+        """
+        name: NotRequired[str]
+        """
+        The friendly name of the broadcast. Only used for internal reference.
+        """
+
+    class SendParams(TypedDict):
         """SendParams is the class that wraps the parameters for the send method.
 
         Attributes:
@@ -182,7 +153,17 @@ class Broadcasts:
             The date should be in natural language (e.g.: in 1 min) or ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
         """
 
-    class CreateResponse(_CreateResponse):
+        broadcast_id: str
+        """
+        The ID of the broadcast to send.
+        """
+        scheduled_at: NotRequired[str]
+        """
+        Schedule email to be sent later.
+        The date should be in natural language (e.g.: in 1 min) or ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
+        """
+
+    class CreateResponse(BaseResponse):
         """
         CreateResponse is the class that wraps the response of the create method.
 
@@ -190,7 +171,12 @@ class Broadcasts:
             id (str): id of the created broadcast
         """
 
-    class UpdateResponse(_UpdateResponse):
+        id: str
+        """
+        id of the created broadcast
+        """
+
+    class UpdateResponse(BaseResponse):
         """
         UpdateResponse is the class that wraps the response of the update method.
 
@@ -198,7 +184,12 @@ class Broadcasts:
             id (str): id of the updated broadcast
         """
 
-    class SendResponse(_SendResponse):
+        id: str
+        """
+        id of the updated broadcast
+        """
+
+    class SendResponse(CreateResponse):
         """
         SendResponse is the class that wraps the response of the send method.
 
@@ -206,16 +197,48 @@ class Broadcasts:
             id (str): id of the created broadcast
         """
 
-    class ListResponse(_ListResponse):
+    class ListParams(TypedDict):
+        limit: NotRequired[int]
         """
-        ListResponse is the class that wraps the response of the list method.
+        Number of broadcasts to retrieve. Maximum is 100, and minimum is 1.
+        """
+        after: NotRequired[str]
+        """
+        The ID after which we'll retrieve more broadcasts (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the before parameter.
+        """
+        before: NotRequired[str]
+        """
+        The ID before which we'll retrieve more broadcasts (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the after parameter.
+        """
+
+    class ListResponse(BaseResponse):
+        """
+        ListResponse is the class that wraps the response of the list method with pagination metadata.
 
         Attributes:
-            object (str): object type: "list"
+            object (str): object type, always "list"
             data (List[Broadcast]): A list of broadcast objects
+            has_more (bool): Whether there are more results available
         """
 
-    class RemoveResponse(_RemoveResponse):
+        object: str
+        """
+        object type, always "list"
+        """
+        data: List[Broadcast]
+        """
+        A list of broadcast objects
+        """
+        has_more: bool
+        """
+        Whether there are more results available for pagination
+        """
+
+    class RemoveResponse(BaseResponse):
         """
         RemoveResponse is the class that wraps the response of the remove method.
 
@@ -223,6 +246,19 @@ class Broadcasts:
             object (str): object type: "broadcast"
             id (str): id of the removed broadcast
             deleted (bool): True if the broadcast was deleted
+        """
+
+        object: str
+        """
+        object type: "broadcast"
+        """
+        id: str
+        """
+        id of the removed broadcast
+        """
+        deleted: bool
+        """
+        True if the broadcast was deleted
         """
 
     @classmethod
@@ -237,8 +273,9 @@ class Broadcasts:
         Returns:
             CreateResponse: The new broadcast object response
         """
+
         path = "/broadcasts"
-        resp = request.Request[_CreateResponse](
+        resp = request.Request[Broadcasts.CreateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
@@ -255,8 +292,9 @@ class Broadcasts:
         Returns:
             UpdateResponse: The updated broadcast object response
         """
+
         path = f"/broadcasts/{params['broadcast_id']}"
-        resp = request.Request[_UpdateResponse](
+        resp = request.Request[Broadcasts.UpdateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
@@ -273,23 +311,33 @@ class Broadcasts:
         Returns:
             SendResponse: The new broadcast object response
         """
+
         path = f"/broadcasts/{params['broadcast_id']}/send"
-        resp = request.Request[_SendResponse](
+        resp = request.Request[Broadcasts.SendResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
 
     @classmethod
-    def list(cls) -> ListResponse:
+    def list(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve a list of broadcasts.
         see more: https://resend.com/docs/api-reference/broadcasts/list-broadcasts
 
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+                - limit: Number of broadcasts to retrieve (max 100, min 1).
+                  If not provided, all broadcasts will be returned without pagination.
+                - after: ID after which to retrieve more broadcasts
+                - before: ID before which to retrieve more broadcasts
+
         Returns:
             ListResponse: A list of broadcast objects
         """
-        path = "/broadcasts/"
-        resp = request.Request[_ListResponse](
+        base_path = "/broadcasts"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = request.Request[Broadcasts.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
@@ -325,7 +373,7 @@ class Broadcasts:
             RemoveResponse: The remove response object
         """
         path = f"/broadcasts/{id}"
-        resp = request.Request[_RemoveResponse](
+        resp = request.Request[Broadcasts.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp
@@ -343,7 +391,7 @@ class Broadcasts:
             CreateResponse: The new broadcast object response
         """
         path = "/broadcasts"
-        resp = await AsyncRequest[_CreateResponse](
+        resp = await AsyncRequest[Broadcasts.CreateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
@@ -361,7 +409,7 @@ class Broadcasts:
             UpdateResponse: The updated broadcast object response
         """
         path = f"/broadcasts/{params['broadcast_id']}"
-        resp = await AsyncRequest[_UpdateResponse](
+        resp = await AsyncRequest[Broadcasts.UpdateResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
@@ -379,22 +427,27 @@ class Broadcasts:
             SendResponse: The new broadcast object response
         """
         path = f"/broadcasts/{params['broadcast_id']}/send"
-        resp = await AsyncRequest[_SendResponse](
+        resp = await AsyncRequest[Broadcasts.SendResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
 
     @classmethod
-    async def list_async(cls) -> ListResponse:
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve a list of broadcasts (async).
         see more: https://resend.com/docs/api-reference/broadcasts/list-broadcasts
 
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
         Returns:
             ListResponse: A list of broadcast objects
         """
-        path = "/broadcasts/"
-        resp = await AsyncRequest[_ListResponse](
+        base_path = "/broadcasts"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Broadcasts.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
@@ -430,7 +483,7 @@ class Broadcasts:
             RemoveResponse: The remove response object
         """
         path = f"/broadcasts/{id}"
-        resp = await AsyncRequest[_RemoveResponse](
+        resp = await AsyncRequest[Broadcasts.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp

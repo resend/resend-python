@@ -1,9 +1,12 @@
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
+from resend._base_response import BaseResponse
 from resend.domains._domain import Domain
+from resend.domains._record import Record
+from resend.pagination_helper import PaginationHelper
 
 # Async imports (optional - only available with pip install resend[async])
 try:
@@ -14,21 +17,85 @@ except ImportError:
 TlsOptions = Literal["enforced", "opportunistic"]
 
 
-class _ListResponse(TypedDict):
-    data: List[Domain]
-    """
-    A list of domain objects
-    """
-
-
 class Domains:
 
-    class ListResponse(_ListResponse):
+    class ListParams(TypedDict):
+        limit: NotRequired[int]
         """
-        ListResponse type that wraps a list of domain objects
+        Number of domains to retrieve. Maximum is 100, and minimum is 1.
+        """
+        after: NotRequired[str]
+        """
+        The ID after which we'll retrieve more domains (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the before parameter.
+        """
+        before: NotRequired[str]
+        """
+        The ID before which we'll retrieve more domains (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the after parameter.
+        """
+
+    class ListResponse(BaseResponse):
+        """
+        ListResponse type that wraps a list of domain objects with pagination metadata
 
         Attributes:
+            object (str): The object type, always "list"
             data (List[Domain]): A list of domain objects
+            has_more (bool): Whether there are more results available
+        """
+
+        object: str
+        """
+        The object type, always "list"
+        """
+        data: List[Domain]
+        """
+        A list of domain objects
+        """
+        has_more: bool
+        """
+        Whether there are more results available for pagination
+        """
+
+    class CreateDomainResponse(BaseResponse):
+        """
+        CreateDomainResponse is the type that wraps the response of the domain that was created
+
+        Attributes:
+            id (str): The ID of the created domain
+            name (str): The name of the created domain
+            created_at (str): When the domain was created
+            status (str): Status of the domain
+            region (str): The region where emails will be sent from
+            records (Union[List[Record], None]): The list of domain records
+        """
+
+        id: str
+        """
+        The ID of the created domain
+        """
+        name: str
+        """
+        The name of the created domain
+        """
+        created_at: str
+        """
+        When the domain was created
+        """
+        status: str
+        """
+        Status of the domain
+        """
+        region: str
+        """
+        The region where emails will be sent from
+        """
+        records: Union[List[Record], None]
+        """
+        The list of domain records
         """
 
     class UpdateParams(TypedDict):
@@ -74,7 +141,7 @@ class Domains:
         """
 
     @classmethod
-    def create(cls, params: CreateParams) -> Domain:
+    def create(cls, params: CreateParams) -> CreateDomainResponse:
         """
         Create a domain through the Resend Email API.
         see more: https://resend.com/docs/api-reference/domains/create-domain
@@ -83,10 +150,10 @@ class Domains:
             params (CreateParams): The domain creation parameters
 
         Returns:
-            Domain: The new domain object
+            CreateDomainResponse: The created domain response
         """
         path = "/domains"
-        resp = request.Request[Domain](
+        resp = request.Request[Domains.CreateDomainResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
         return resp
@@ -128,16 +195,25 @@ class Domains:
         return resp
 
     @classmethod
-    def list(cls) -> ListResponse:
+    def list(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve a list of domains for the authenticated user.
         see more: https://resend.com/docs/api-reference/domains/list-domains
 
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+                - limit: Number of domains to retrieve (max 100, min 1).
+                  If not provided, all domains will be returned without pagination.
+                - after: ID after which to retrieve more domains
+                - before: ID before which to retrieve more domains
+
         Returns:
             ListResponse: A list of domain objects
         """
-        path = "/domains"
-        resp = request.Request[_ListResponse](
+        base_path = "/domains"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = request.Request[Domains.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
@@ -233,16 +309,21 @@ class Domains:
         return resp
 
     @classmethod
-    async def list_async(cls) -> ListResponse:
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve a list of domains for the authenticated user (async).
         see more: https://resend.com/docs/api-reference/domains/list-domains
 
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
         Returns:
             ListResponse: A list of domain objects
         """
-        path = "/domains"
-        resp = await AsyncRequest[_ListResponse](
+        base_path = "/domains"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Domains.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp

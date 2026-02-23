@@ -5,8 +5,8 @@ from tests.conftest import ResendBaseTest
 # flake8: noqa
 
 
-class TestResendAudiencesAsync(ResendBaseTest):
-    async def test_audiences_create_async(self) -> None:
+class TestResendSegmentsAsync(ResendBaseTest):
+    async def test_segments_create_async(self) -> None:
         self.set_mock_json(
             {
                 "object": "audience",
@@ -15,24 +15,24 @@ class TestResendAudiencesAsync(ResendBaseTest):
             }
         )
 
-        params: resend.Audiences.CreateParams = {
-            "name": "Python SDK Audience",
+        params: resend.Segments.CreateParams = {
+            "name": "Python SDK Segment",
         }
-        audience = await resend.Audiences.create_async(params)
-        assert audience["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
-        assert audience["name"] == "Registered Users"
+        segment = await resend.Segments.create_async(params)
+        assert segment["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert segment["name"] == "Registered Users"
 
-    async def test_should_create_audiences_async_raise_exception_when_no_content(
+    async def test_should_create_segments_async_raise_exception_when_no_content(
         self,
     ) -> None:
         self.set_mock_json(None)
-        params: resend.Audiences.CreateParams = {
-            "name": "Python SDK Audience",
+        params: resend.Segments.CreateParams = {
+            "name": "Python SDK Segment",
         }
         with self.assertRaises(NoContentError):
-            _ = await resend.Audiences.create_async(params)
+            _ = await resend.Segments.create_async(params)
 
-    async def test_audiences_get_async(self) -> None:
+    async def test_segments_get_async(self) -> None:
         self.set_mock_json(
             {
                 "object": "audience",
@@ -42,23 +42,23 @@ class TestResendAudiencesAsync(ResendBaseTest):
             }
         )
 
-        audience = await resend.Audiences.get_async(
+        segment = await resend.Segments.get_async(
             id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
         )
-        assert audience["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
-        assert audience["name"] == "Registered Users"
-        assert audience["created_at"] == "2023-10-06T22:59:55.977Z"
+        assert segment["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert segment["name"] == "Registered Users"
+        assert segment["created_at"] == "2023-10-06T22:59:55.977Z"
 
-    async def test_should_get_audiences_async_raise_exception_when_no_content(
+    async def test_should_get_segments_async_raise_exception_when_no_content(
         self,
     ) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
-            _ = await resend.Audiences.get_async(
+            _ = await resend.Segments.get_async(
                 id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
             )
 
-    async def test_audiences_remove_async(self) -> None:
+    async def test_segments_remove_async(self) -> None:
         self.set_mock_json(
             {
                 "object": "audience",
@@ -67,22 +67,22 @@ class TestResendAudiencesAsync(ResendBaseTest):
             }
         )
 
-        rmed = await resend.Audiences.remove_async(
+        rmed = await resend.Segments.remove_async(
             "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         )
         assert rmed["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert rmed["deleted"] is True
 
-    async def test_should_remove_audiences_async_raise_exception_when_no_content(
+    async def test_should_remove_segments_async_raise_exception_when_no_content(
         self,
     ) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
-            _ = await resend.Audiences.remove_async(
+            _ = await resend.Segments.remove_async(
                 id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
             )
 
-    async def test_audiences_list_async(self) -> None:
+    async def test_segments_list_async(self) -> None:
         self.set_mock_json(
             {
                 "object": "list",
@@ -96,13 +96,13 @@ class TestResendAudiencesAsync(ResendBaseTest):
             }
         )
 
-        audiences: resend.Audiences.ListResponse = await resend.Audiences.list_async()
-        assert audiences["data"][0]["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
-        assert audiences["data"][0]["name"] == "Registered Users"
+        segments: resend.Segments.ListResponse = await resend.Segments.list_async()
+        assert segments["data"][0]["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert segments["data"][0]["name"] == "Registered Users"
 
-    async def test_should_list_audiences_async_raise_exception_when_no_content(
+    async def test_should_list_segments_async_raise_exception_when_no_content(
         self,
     ) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
-            _ = await resend.Audiences.list_async()
+            _ = await resend.Segments.list_async()

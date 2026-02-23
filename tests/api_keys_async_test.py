@@ -17,7 +17,7 @@ class TestResendApiKeysAsync(ResendBaseTest):
         params: resend.ApiKeys.CreateParams = {
             "name": "prod",
         }
-        key: resend.ApiKey = await resend.ApiKeys.create_async(params)
+        key = await resend.ApiKeys.create_async(params)
         assert key["id"] == "dacf4072-4119-4d88-932f-6202748ac7c8"
 
     async def test_should_create_api_key_async_raise_exception_when_no_content(

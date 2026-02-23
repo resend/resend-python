@@ -65,7 +65,9 @@ class TestResendDomains(ResendBaseTest):
             "region": "us-east-1",
             "custom_return_path": "send",
         }
-        domain = resend.Domains.create(params=create_params)
+        domain: resend.Domains.CreateDomainResponse = resend.Domains.create(
+            params=create_params
+        )
         assert domain["id"] == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
         assert domain["name"] == "example.com"
         assert domain["status"] == "not_started"
@@ -111,6 +113,8 @@ class TestResendDomains(ResendBaseTest):
     def test_domains_list(self) -> None:
         self.set_mock_json(
             {
+                "object": "list",
+                "has_more": False,
                 "data": [
                     {
                         "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
@@ -119,11 +123,13 @@ class TestResendDomains(ResendBaseTest):
                         "created_at": "2023-04-26T20:21:26.347412+00:00",
                         "region": "us-east-1",
                     }
-                ]
+                ],
             }
         )
 
         domains = resend.Domains.list()
+        assert domains["object"] == "list"
+        assert domains["has_more"] is False
         assert domains["data"][0]["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
         assert domains["data"][0]["name"] == "example.com"
         assert domains["data"][0]["status"] == "not_started"
@@ -200,3 +206,59 @@ class TestResendDomains(ResendBaseTest):
         }
         with self.assertRaises(NoContentError):
             _ = resend.Domains.update(params)
+
+    def test_domains_list_with_pagination_params(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": True,
+                "data": [
+                    {
+                        "id": "domain-1",
+                        "name": "example1.com",
+                        "status": "verified",
+                        "created_at": "2023-04-26T20:21:26.347412+00:00",
+                        "region": "us-east-1",
+                    },
+                    {
+                        "id": "domain-2",
+                        "name": "example2.com",
+                        "status": "not_started",
+                        "created_at": "2023-04-27T20:21:26.347412+00:00",
+                        "region": "us-west-2",
+                    },
+                ],
+            }
+        )
+
+        params: resend.Domains.ListParams = {"limit": 10, "after": "previous-domain-id"}
+        domains: resend.Domains.ListResponse = resend.Domains.list(params=params)
+        assert domains["object"] == "list"
+        assert domains["has_more"] is True
+        assert len(domains["data"]) == 2
+        assert domains["data"][0]["id"] == "domain-1"
+        assert domains["data"][1]["id"] == "domain-2"
+
+    def test_domains_list_with_before_param(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "domain-3",
+                        "name": "example3.com",
+                        "status": "verified",
+                        "created_at": "2023-04-25T20:21:26.347412+00:00",
+                        "region": "eu-west-1",
+                    }
+                ],
+            }
+        )
+
+        params: resend.Domains.ListParams = {"limit": 5, "before": "later-domain-id"}
+        domains: resend.Domains.ListResponse = resend.Domains.list(params=params)
+        assert domains["object"] == "list"
+        assert domains["has_more"] is False
+        assert len(domains["data"]) == 1
+        assert domains["data"][0]["id"] == "domain-3"

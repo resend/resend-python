@@ -20,9 +20,16 @@ class Broadcast(_FromParam):
     """
     The unique identifier of the broadcast.
     """
-    audience_id: str
+    segment_id: Union[str, None]
+    """
+    The unique identifier of the segment.
+    """
+    audience_id: Union[str, None]
     """
     The unique identifier of the audience.
+
+    .. deprecated::
+        Use segment_id instead.
     """
     name: str
     """
@@ -55,4 +62,12 @@ class Broadcast(_FromParam):
     sent_at: str
     """
     The date and time the broadcast was sent.
+    """
+    html: Union[str, None]
+    """
+    The HTML content of the broadcast.
+    """
+    text: Union[str, None]
+    """
+    The plain text content of the broadcast.
     """

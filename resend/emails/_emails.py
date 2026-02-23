@@ -3,9 +3,13 @@ from typing import Any, Dict, List, Optional, Union, cast
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
-from resend.emails._attachment import Attachment
+from resend._base_response import BaseResponse
+from resend.emails._attachment import Attachment, RemoteAttachment
+from resend.emails._attachments import Attachments
 from resend.emails._email import Email
+from resend.emails._receiving import Receiving
 from resend.emails._tag import Tag
+from resend.pagination_helper import PaginationHelper
 
 # Async imports (optional - only available with pip install resend[async])
 try:
@@ -14,12 +18,22 @@ except ImportError:
     pass
 
 
-class _SendOptions(TypedDict):
-    idempotency_key: NotRequired[str]
+class EmailTemplate(TypedDict):
     """
-    Unique key that ensures the same operation is not processed multiple times.
-    Allows for safe retries without duplicating operations.
-    If provided, will be sent as the `Idempotency-Key` header.
+    EmailTemplate is the class that wraps template configuration for email sending.
+
+    Attributes:
+        id (str): The template ID.
+        variables (NotRequired[Dict[str, Union[str, int]]]): Optional variables to be used in the template.
+    """
+
+    id: str
+    """
+    The template ID.
+    """
+    variables: NotRequired[Dict[str, Union[str, int]]]
+    """
+    Optional variables to be used in the template.
     """
 
 
@@ -35,7 +49,7 @@ class _UpdateParams(TypedDict):
     """
 
 
-class _UpdateEmailResponse(TypedDict):
+class _UpdateEmailResponse(BaseResponse):
     object: str
     """
     The object type: email
@@ -46,7 +60,7 @@ class _UpdateEmailResponse(TypedDict):
     """
 
 
-class _CancelScheduledEmailResponse(TypedDict):
+class _CancelScheduledEmailResponse(BaseResponse):
     object: str
     """
     The object type: email
@@ -63,7 +77,7 @@ class _CancelScheduledEmailResponse(TypedDict):
 _SendParamsFrom = TypedDict(
     "_SendParamsFrom",
     {
-        "from": str,
+        "from": NotRequired[str],
     },
 )
 
@@ -73,7 +87,7 @@ class _SendParamsDefault(_SendParamsFrom):
     """
     List of email addresses to send the email to.
     """
-    subject: str
+    subject: NotRequired[str]
     """
     The subject of the email.
     """
@@ -101,7 +115,7 @@ class _SendParamsDefault(_SendParamsFrom):
     """
     Custom headers to be added to the email.
     """
-    attachments: NotRequired[List[Attachment]]
+    attachments: NotRequired[List[Union[Attachment, RemoteAttachment]]]
     """
     List of attachments to be added to the email.
     """
@@ -114,9 +128,15 @@ class _SendParamsDefault(_SendParamsFrom):
     Schedule email to be sent later.
     The date should be in ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
     """
+    template: NotRequired[EmailTemplate]
+    """
+    Template configuration for sending emails using predefined templates.
+    """
 
 
 class Emails:
+    Attachments = Attachments
+    Receiving = Receiving
 
     class CancelScheduledEmailResponse(_CancelScheduledEmailResponse):
         """
@@ -150,20 +170,21 @@ class Emails:
         """SendParams is the class that wraps the parameters for the send method.
 
         Attributes:
-            from (str): The email address to send the email from.
+            from (NotRequired[str]): The email address to send the email from.
             to (Union[str, List[str]]): List of email addresses to send the email to.
-            subject (str): The subject of the email.
+            subject (NotRequired[str]): The subject of the email.
             bcc (NotRequired[Union[List[str], str]]): Bcc
             cc (NotRequired[Union[List[str], str]]): Cc
             reply_to (NotRequired[Union[List[str], str]]): Reply to
             html (NotRequired[str]): The HTML content of the email.
             text (NotRequired[str]): The text content of the email.
             headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
-            attachments (NotRequired[List[Attachment]]): List of attachments to be added to the email.
+            attachments (NotRequired[List[Union[Attachment, RemoteAttachment]]]): List of attachments to be added to the email.
             tags (NotRequired[List[Tag]]): List of tags to be added to the email.
+            template (NotRequired[EmailTemplate]): Template configuration for sending emails using predefined templates.
         """
 
-    class SendOptions(_SendOptions):
+    class SendOptions(TypedDict):
         """
         SendOptions is the class that wraps the options for the send method.
 
@@ -173,8 +194,78 @@ class Emails:
             If provided, will be sent as the `Idempotency-Key` header.
         """
 
+        idempotency_key: NotRequired[str]
+        """
+        Unique key that ensures the same operation is not processed multiple times.
+        Allows for safe retries without duplicating operations.
+        If provided, will be sent as the `Idempotency-Key` header.
+        """
+
+    class SendResponse(BaseResponse):
+        """
+        SendResponse is the type that wraps the response of the email that was sent.
+
+        Attributes:
+            id (str): The ID of the sent email
+            headers (NotRequired[Dict[str, str]]): HTTP response headers (inherited from BaseResponse)
+        """
+
+        id: str
+        """
+        The sent Email ID.
+        """
+
+    class ListParams(TypedDict):
+        """
+        ListParams is the class that wraps the parameters for the list method.
+
+        Attributes:
+            limit (NotRequired[int]): The maximum number of emails to return. Defaults to 10, maximum 100.
+            after (NotRequired[str]): Return emails after this cursor for pagination.
+            before (NotRequired[str]): Return emails before this cursor for pagination.
+        """
+
+        limit: NotRequired[int]
+        """
+        The maximum number of emails to return. Defaults to 10, maximum 100.
+        """
+        after: NotRequired[str]
+        """
+        Return emails after this cursor for pagination.
+        """
+        before: NotRequired[str]
+        """
+        Return emails before this cursor for pagination.
+        """
+
+    class ListResponse(BaseResponse):
+        """
+        ListResponse is the type that wraps the response for listing emails.
+
+        Attributes:
+            object (str): The object type: "list"
+            data (List[Email]): The list of email objects.
+            has_more (bool): Whether there are more emails available for pagination.
+            headers (NotRequired[Dict[str, str]]): HTTP response headers (inherited from BaseResponse)
+        """
+
+        object: str
+        """
+        The object type: "list"
+        """
+        data: List[Email]
+        """
+        The list of email objects.
+        """
+        has_more: bool
+        """
+        Whether there are more emails available for pagination.
+        """
+
     @classmethod
-    def send(cls, params: SendParams, options: Optional[SendOptions] = None) -> Email:
+    def send(
+        cls, params: SendParams, options: Optional[SendOptions] = None
+    ) -> SendResponse:
         """
         Send an email through the Resend Email API.
         see more: https://resend.com/docs/api-reference/emails/send-email
@@ -184,10 +275,10 @@ class Emails:
             options (SendOptions): The email options
 
         Returns:
-            Email: The email object that was sent
+            id: The ID of the sent email
         """
         path = "/emails"
-        resp = request.Request[Email](
+        resp = request.Request[Emails.SendResponse](
             path=path,
             params=cast(Dict[Any, Any], params),
             verb="post",
@@ -256,6 +347,28 @@ class Emails:
         return resp
 
     @classmethod
+    def list(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of emails.
+        see more: https://resend.com/docs/api-reference/emails/list-emails
+
+        Args:
+            params (Optional[ListParams]): The list parameters for pagination
+
+        Returns:
+            ListResponse: A paginated list of email objects
+        """
+        base_path = "/emails"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = request.Request[Emails.ListResponse](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
     async def send_async(
         cls, params: SendParams, options: Optional[SendOptions] = None
     ) -> Email:
@@ -293,6 +406,28 @@ class Emails:
         """
         path = f"/emails/{email_id}"
         resp = await AsyncRequest[Email](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of emails (async version).
+        see more: https://resend.com/docs/api-reference/emails/list-emails
+
+        Args:
+            params (Optional[ListParams]): The list parameters for pagination
+
+        Returns:
+            ListResponse: A paginated list of email objects
+        """
+        base_path = "/emails"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Emails.ListResponse](
             path=path,
             params={},
             verb="get",

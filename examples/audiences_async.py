@@ -1,6 +1,5 @@
 import asyncio
 import os
-from typing import List
 
 import resend
 
@@ -12,21 +11,25 @@ resend.default_http_client = resend.HTTPXClient()
 
 
 async def main() -> None:
-    create_params: resend.Audiences.CreateParams = {
-        "name": "New Audience from Python SDK (Async)",
+    create_params: resend.Segments.CreateParams = {
+        "name": "New Segment from Python SDK (Async)",
     }
-    audience: resend.Audience = await resend.Audiences.create_async(create_params)
-    print(f"Created audience: {audience['id']}")
-    print(audience)
+    segment: resend.Segments.CreateSegmentResponse = await resend.Segments.create_async(
+        create_params
+    )
+    print(f"Created segment: {segment['id']}")
+    print(segment)
 
-    aud: resend.Audience = await resend.Audiences.get_async(audience["id"])
-    print("Retrieved audience: ", aud)
+    seg: resend.Segment = await resend.Segments.get_async(segment["id"])
+    print("Retrieved segment: ", seg)
 
-    audiences: resend.Audiences.ListResponse = await resend.Audiences.list_async()
-    print("List of audiences:", [a["id"] for a in audiences["data"]])
+    segments: resend.Segments.ListResponse = await resend.Segments.list_async()
+    print("List of segments:", [s["id"] for s in segments["data"]])
 
-    rmed: resend.Audience = await resend.Audiences.remove_async(id=audience["id"])
-    print(f"Deleted audience")
+    rmed: resend.Segments.RemoveSegmentResponse = await resend.Segments.remove_async(
+        id=segment["id"]
+    )
+    print("Deleted segment")
     print(rmed)
 
 

@@ -14,6 +14,6 @@ params: resend.Emails.SendParams = {
 }
 
 try:
-    email: resend.Email = resend.Emails.send(params)
+    email: resend.Emails.SendResponse = resend.Emails.send(params)
 except resend.exceptions.ResendError as e:
     print(f"Error sending email: {e}")

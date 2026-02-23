@@ -28,6 +28,6 @@ params: resend.Emails.SendParams = {
 }
 
 # Send email
-email: resend.Email = resend.Emails.send(params)
+email: resend.Emails.SendResponse = resend.Emails.send(params)
 print("Email sent with base64 string attachment")
 print(email)
