@@ -90,7 +90,7 @@ async def main():
         ],
     }
 
-    email: resend.Email = await resend.Emails.send_async(params)
+    email: resend.Emails.SendResponse = await resend.Emails.send_async(params)
     print(email)
 
 if __name__ == "__main__":
