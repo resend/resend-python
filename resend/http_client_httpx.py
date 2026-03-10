@@ -2,12 +2,7 @@ from typing import Dict, List, Mapping, Optional, Tuple, Union
 
 from resend.http_client_async import AsyncHTTPClient
 
-try:
-    import httpx
-except ImportError:
-    raise ImportError(
-        "httpx is required for async support. Install it with: pip install resend[async]"
-    )
+import httpx
 
 
 class HTTPXClient(AsyncHTTPClient):

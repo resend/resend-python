@@ -58,22 +58,19 @@ print(email)
 
 ## Async Support
 
-The SDK supports async operations for improved performance in async applications. To use async features, you need to install the async dependencies:
+The SDK supports async operations via `httpx`. Install the async extra:
 
 ```bash
 pip install resend[async]
 ```
 
-### Async Example
+Once installed, async methods (suffixed with `_async`) work automatically — no extra setup needed:
 
 ```py
 import asyncio
-import os
 import resend
 
 resend.api_key = "re_yourkey"
-# Set up async HTTP client
-resend.default_http_client = resend.HTTPXClient()
 
 async def main():
     params: resend.Emails.SendParams = {
@@ -81,13 +78,6 @@ async def main():
         "to": ["delivered@resend.dev"],
         "subject": "hi",
         "html": "<strong>hello, world!</strong>",
-        "reply_to": "to@gmail.com",
-        "bcc": "bcc@resend.dev",
-        "cc": ["cc@resend.dev"],
-        "tags": [
-            {"name": "tag1", "value": "tagvalue1"},
-            {"name": "tag2", "value": "tagvalue2"},
-        ],
     }
 
     email: resend.Emails.SendResponse = await resend.Emails.send_async(params)
@@ -95,4 +85,15 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+```
+
+### Custom async client
+
+To use a custom async HTTP client or configure options like timeouts, set `resend.default_async_http_client`:
+
+```py
+import resend
+
+resend.api_key = "re_yourkey"
+resend.default_async_http_client = resend.HTTPXClient(timeout=60)
 ```

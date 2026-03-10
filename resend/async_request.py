@@ -72,8 +72,21 @@ class AsyncRequest(Generic[T]):
             json_params = None
 
         try:
-            # Cast to AsyncHTTPClient for type checking - user must set HTTPXClient
-            async_client = cast(AsyncHTTPClient, resend.default_http_client)
+            # Priority 1: dedicated async client (auto-detected or explicitly set)
+            async_client = resend.default_async_http_client
+
+            # Priority 2: user set an AsyncHTTPClient on default_http_client (legacy, still supported)
+            if async_client is None and isinstance(resend.default_http_client, AsyncHTTPClient):
+                async_client = resend.default_http_client
+
+            if async_client is None:
+                raise ResendError(
+                    code=500,
+                    message="No async HTTP client configured. Install httpx with: pip install resend[async]",
+                    error_type="AsyncClientNotConfigured",
+                    suggested_action="Run: pip install resend[async]",
+                )
+
             content, _status_code, resp_headers = await async_client.request(
                 method=self.verb,
                 url=url,
@@ -82,6 +95,8 @@ class AsyncRequest(Generic[T]):
             )
 
         # Safety net around the HTTP Client
+        except ResendError:
+            raise
         except Exception as e:
             raise ResendError(
                 code=500,

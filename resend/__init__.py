@@ -31,6 +31,7 @@ from .http_client_async import \
     AsyncHTTPClient  # Okay to import AsyncHTTPClient since it is just an interface.
 from .http_client_requests import RequestsClient
 from .request import Request
+from typing import Optional
 from .segments._segment import Segment
 from .segments._segments import Segments
 from .templates._template import Template, TemplateListItem, Variable
@@ -45,10 +46,12 @@ from .webhooks._webhooks import Webhooks
 # Type for clients that support both sync and async
 ResendHTTPClient = Union[HTTPClient, AsyncHTTPClient]
 
-# This is the client that is set by default HTTP Client
-# But this can be overridden by the user and set to an async client.
+# Sync HTTP client — always set, can be overridden with a custom HTTPClient.
 default_http_client: ResendHTTPClient = RequestsClient()
 
+# Async HTTP client — auto-detected if httpx is installed, can be overridden
+# with any AsyncHTTPClient subclass. Set to None if no async library is available.
+default_async_http_client: Optional[AsyncHTTPClient] = None
 
 # Config vars
 api_key = os.environ.get("RESEND_API_KEY")
@@ -112,11 +115,12 @@ __all__ = [
     "RequestsClient",
 ]
 
-# Add async exports if available
+# Add async exports and auto-detect async client if httpx is available
 try:
     from .async_request import AsyncRequest  # noqa: F401
     from .http_client_httpx import HTTPXClient  # noqa: F401
 
+    default_async_http_client = HTTPXClient()
     __all__.extend(["AsyncHTTPClient", "HTTPXClient", "AsyncRequest"])
 except ImportError:
     pass
