@@ -38,6 +38,7 @@ class TestResendApiKeys(ResendBaseTest):
                         "id": "91f3200a-df72-4654-b0cd-f202395f5354",
                         "name": "Production",
                         "created_at": "2023-04-08T00:11:13.110779+00:00",
+                        "last_used_at": "2023-04-08T12:00:00.000000+00:00",
                     }
                 ],
             }
@@ -50,6 +51,26 @@ class TestResendApiKeys(ResendBaseTest):
             assert key["id"] == "91f3200a-df72-4654-b0cd-f202395f5354"
             assert key["name"] == "Production"
             assert key["created_at"] == "2023-04-08T00:11:13.110779+00:00"
+            assert key["last_used_at"] == "2023-04-08T12:00:00.000000+00:00"
+
+    def test_api_keys_list_last_used_at_none(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "91f3200a-df72-4654-b0cd-f202395f5354",
+                        "name": "Production",
+                        "created_at": "2023-04-08T00:11:13.110779+00:00",
+                        "last_used_at": None,
+                    }
+                ],
+            }
+        )
+
+        keys: resend.ApiKeys.ListResponse = resend.ApiKeys.list()
+        assert keys["data"][0]["last_used_at"] is None
 
     def test_should_list_api_key_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)

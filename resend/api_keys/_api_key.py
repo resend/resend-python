@@ -1,3 +1,5 @@
+from typing import Optional
+
 from typing_extensions import TypedDict
 
 
@@ -13,4 +15,8 @@ class ApiKey(TypedDict):
     created_at: str
     """
     The API key creation date
+    """
+    last_used_at: Optional[str]
+    """
+    The date and time the API key was last used, or None if never used
     """
