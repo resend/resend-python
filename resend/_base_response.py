@@ -9,8 +9,8 @@ class BaseResponse(TypedDict):
     """Base response type that all API responses inherit from.
 
     Attributes:
-        headers: HTTP response headers including rate limit info, request IDs, etc.
-                 Optional field that may not be present in all responses.
+        http_headers: HTTP response headers including rate limit info, request IDs, etc.
+                      Optional field that may not be present in all responses.
     """
 
-    headers: NotRequired[Dict[str, str]]
+    http_headers: NotRequired[Dict[str, str]]

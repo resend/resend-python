@@ -38,12 +38,23 @@ print(f"CC: {received_email.get('cc', [])}")
 print(f"BCC: {received_email.get('bcc', [])}")
 print(f"Reply-To: {received_email.get('reply_to', [])}")
 
-print("\n--- Headers ---")
+print("\n--- Email MIME Headers ---")
+# received_email["headers"] contains the MIME headers of the inbound email
+# (e.g. X-Mailer, DKIM-Signature). These come from the API response body
+# and are part of the email itself, not the HTTP response.
 if received_email.get("headers"):
     for header_name, header_value in received_email["headers"].items():
         print(f"{header_name}: {header_value}")
 else:
-    print("No custom headers")
+    print("No email headers")
+
+print("\n--- HTTP Response Headers ---")
+# received_email["http_headers"] contains HTTP-level metadata from the Resend API
+# (e.g. x-request-id, x-ratelimit-remaining). Injected by the SDK, never part
+# of the email content.
+if received_email.get("http_headers"):
+    print(f"Rate limit: {received_email['http_headers'].get('ratelimit-limit')}")
+    print(f"Rate limit remaining: {received_email['http_headers'].get('ratelimit-remaining')}")
 
 print("\n--- Attachments ---")
 if received_email["attachments"]:
