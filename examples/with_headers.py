@@ -59,7 +59,9 @@ if received_email_id:
 
     # http_headers are also available on received email responses
     if received.get("http_headers"):
-        print(f"Rate limit remaining: {received['http_headers'].get('ratelimit-remaining')}")
+        print(
+            f"Rate limit remaining: {received['http_headers'].get('ratelimit-remaining')}"
+        )
 else:
     print("Set RECEIVED_EMAIL_ID env var to run the inbound email headers example.")
 

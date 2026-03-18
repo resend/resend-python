@@ -2,6 +2,8 @@ from typing import Dict, List, Optional
 
 from typing_extensions import NotRequired, TypedDict
 
+from resend._base_response import BaseResponse
+
 
 class EmailAttachment(TypedDict):
     """
@@ -109,7 +111,7 @@ _ListReceivedEmailFromParam = TypedDict(
 )
 
 
-class _ReceivedEmailDefaultAttrs(_ReceivedEmailFromParam):
+class _ReceivedEmailDefaultAttrs(_ReceivedEmailFromParam, BaseResponse):
     object: str
     """
     The object type.

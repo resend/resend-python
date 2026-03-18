@@ -54,7 +54,9 @@ print("\n--- HTTP Response Headers ---")
 # of the email content.
 if received_email.get("http_headers"):
     print(f"Rate limit: {received_email['http_headers'].get('ratelimit-limit')}")
-    print(f"Rate limit remaining: {received_email['http_headers'].get('ratelimit-remaining')}")
+    print(
+        f"Rate limit remaining: {received_email['http_headers'].get('ratelimit-remaining')}"
+    )
 
 print("\n--- Attachments ---")
 if received_email["attachments"]:
