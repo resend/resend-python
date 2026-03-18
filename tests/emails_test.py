@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, Mock
 
 import resend
 from resend import EmailsReceiving
@@ -485,3 +485,65 @@ class TestResendEmail(ResendBaseTest):
         }
         email: resend.Emails.SendResponse = resend.Emails.send(params)
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
+    def test_email_send_with_custom_headers(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            }
+        )
+        params: resend.Emails.SendParams = {
+            "to": "to@email.com",
+            "from": "from@email.com",
+            "subject": "subject",
+            "html": "html",
+            "headers": {
+                "X-Entity-Ref-ID": "123456",
+            },
+        }
+        email: resend.Emails.SendResponse = resend.Emails.send(params)
+        assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
+
+import unittest as _unittest
+
+
+class TestEmailHeadersRegression(_unittest.TestCase):
+    """
+    Tests that mock at the HTTP client level to exercise request.py's injection
+    code. ResendBaseTest mocks make_request directly, which bypasses that code
+    and would not have caught the v2.23.0 regression.
+    """
+
+    def setUp(self) -> None:
+        resend.api_key = "re_123"
+
+    def test_receiving_get_email_headers_not_overwritten_by_http_headers(self) -> None:
+        mock_client = Mock()
+        mock_client.request.return_value = (
+            b'{"object":"inbound","id":"67d9bcdb-5a02-42d7-8da9-0d6feea18cff",'
+            b'"to":["received@example.com"],"from":"sender@example.com",'
+            b'"created_at":"2023-04-07T23:13:52.669661+00:00","subject":"Test",'
+            b'"html":null,"text":"hello","bcc":null,"cc":null,"reply_to":null,'
+            b'"message_id":"<msg123>","headers":{"X-Custom":"email-value"},'
+            b'"attachments":[]}',
+            200,
+            {
+                "content-type": "application/json",
+                "x-request-id": "req_abc123",
+            },
+        )
+
+        original_client = resend.default_http_client
+        resend.default_http_client = mock_client
+
+        try:
+            email: resend.ReceivedEmail = resend.Emails.Receiving.get(
+                email_id="67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+            )
+            # Email MIME headers must survive the HTTP headers injection
+            assert email["headers"] == {"X-Custom": "email-value"}
+            # HTTP response headers are available separately
+            assert email["http_headers"]["x-request-id"] == "req_abc123"
+        finally:
+            resend.default_http_client = original_client

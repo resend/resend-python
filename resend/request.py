@@ -114,7 +114,7 @@ class Request(Generic[T]):
             parsed_data = cast(Union[Dict[str, Any], List[Any]], json.loads(content))
             # Inject headers into dict responses
             if isinstance(parsed_data, dict):
-                parsed_data["headers"] = dict(self._response_headers)
+                parsed_data["http_headers"] = dict(self._response_headers)
             # For list responses, return as-is (lists can't have headers key)
             return parsed_data
         except json.JSONDecodeError:
