@@ -48,11 +48,11 @@ class TestResponseHeadersIntegration(unittest.TestCase):
             assert response.get("from") == "test@example.com"
 
             # Verify new feature - headers are accessible via dict key
-            assert "headers" in response
-            assert response["headers"]["x-request-id"] == "req_abc123"
-            assert response["headers"]["x-ratelimit-limit"] == "100"
-            assert response["headers"]["x-ratelimit-remaining"] == "95"
-            assert response["headers"]["x-ratelimit-reset"] == "1699564800"
+            assert "http_headers" in response
+            assert response["http_headers"]["x-request-id"] == "req_abc123"
+            assert response["http_headers"]["x-ratelimit-limit"] == "100"
+            assert response["http_headers"]["x-ratelimit-remaining"] == "95"
+            assert response["http_headers"]["x-ratelimit-reset"] == "1699564800"
 
         finally:
             # Restore original HTTP client
@@ -82,8 +82,8 @@ class TestResponseHeadersIntegration(unittest.TestCase):
             assert isinstance(response, dict)
             assert "data" in response
             # Headers are injected into the dict
-            assert "headers" in response
-            assert response["headers"]["x-request-id"] == "req_xyz"
+            assert "http_headers" in response
+            assert response["http_headers"]["x-request-id"] == "req_xyz"
 
         finally:
             resend.default_http_client = original_client

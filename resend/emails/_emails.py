@@ -207,7 +207,7 @@ class Emails:
 
         Attributes:
             id (str): The ID of the sent email
-            headers (NotRequired[Dict[str, str]]): HTTP response headers (inherited from BaseResponse)
+            http_headers (NotRequired[Dict[str, str]]): HTTP response headers (inherited from BaseResponse)
         """
 
         id: str
@@ -246,7 +246,7 @@ class Emails:
             object (str): The object type: "list"
             data (List[Email]): The list of email objects.
             has_more (bool): Whether there are more emails available for pagination.
-            headers (NotRequired[Dict[str, str]]): HTTP response headers (inherited from BaseResponse)
+            http_headers (NotRequired[Dict[str, str]]): HTTP response headers (inherited from BaseResponse)
         """
 
         object: str
