@@ -7,7 +7,6 @@ if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
 # Set up async HTTP client
-resend.default_http_client = resend.HTTPXClient()
 
 # replace with some audience id
 audience_id: str = "ca4e37c5-a82a-4199-a3b8-bf912a6472aa"

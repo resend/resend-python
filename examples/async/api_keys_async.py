@@ -8,7 +8,6 @@ if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
 # Set up async HTTP client
-resend.default_http_client = resend.HTTPXClient()
 
 
 async def main() -> None:
