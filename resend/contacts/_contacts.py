@@ -10,6 +10,12 @@ from ._contact import Contact
 from ._topics import Topics
 from .segments._contact_segments import ContactSegments
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 
 class Contacts:
     # Sub-API for managing contact-segment associations
@@ -22,6 +28,7 @@ class Contacts:
 
         Attributes:
             object (str): 'contact'
+            id (str): The ID of the removed contact
             contact (str): The ID of the removed contact
             deleted (bool): Whether the contact was deleted
         """
@@ -29,6 +36,10 @@ class Contacts:
         object: str
         """
         The object type: contact
+        """
+        id: str
+        """
+        The ID of the removed contact.
         """
         contact: str
         """
@@ -341,6 +352,164 @@ class Contacts:
             path = f"/contacts/{contact_identifier}"
 
         resp = request.Request[Contacts.RemoveContactResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> CreateContactResponse:
+        """
+        Create a new contact (async).
+        Can create either a global contact or an audience-specific contact.
+        see more: https://resend.com/docs/api-reference/contacts/create-contact
+
+        Args:
+            params (CreateParams): The contact creation parameters
+                - If audience_id is provided: creates audience-specific contact
+                - If audience_id is omitted: creates global contact with optional properties field
+
+        Returns:
+            CreateContactResponse: The created contact response
+        """
+        audience_id = params.get("audience_id")
+
+        if audience_id:
+            path = f"/audiences/{audience_id}/contacts"
+        else:
+            path = "/contacts"
+
+        resp = await AsyncRequest[Contacts.CreateContactResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> UpdateContactResponse:
+        """
+        Update an existing contact (async).
+        Can update either a global contact or an audience-specific contact.
+        see more: https://resend.com/docs/api-reference/contacts/update-contact
+
+        Args:
+            params (UpdateParams): The contact update parameters
+                - If audience_id is provided: updates audience-specific contact
+                - If audience_id is omitted: updates global contact with optional properties field
+
+        Returns:
+            UpdateContactResponse: The updated contact response.
+        """
+        if params.get("id") is None and params.get("email") is None:
+            raise ValueError("id or email must be provided")
+
+        # Email takes precedence over id (matching Node.js behavior)
+        contact_identifier = (
+            params.get("email") if params.get("email") is not None else params.get("id")
+        )
+        audience_id = params.get("audience_id")
+
+        if audience_id:
+            path = f"/audiences/{audience_id}/contacts/{contact_identifier}"
+        else:
+            path = f"/contacts/{contact_identifier}"
+
+        resp = await AsyncRequest[Contacts.UpdateContactResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(
+        cls, audience_id: Optional[str] = None, params: Optional[ListParams] = None
+    ) -> ListResponse:
+        """
+        List all contacts (async).
+        Can list either global contacts or audience-specific contacts.
+        see more: https://resend.com/docs/api-reference/contacts/list-contacts
+
+        Args:
+            audience_id (Optional[str]): The audience ID. If not provided, lists all global contacts.
+            params (Optional[ListParams]): Optional pagination parameters
+
+        Returns:
+            ListResponse: A list of contact objects
+        """
+        if audience_id:
+            base_path = f"/audiences/{audience_id}/contacts"
+        else:
+            base_path = "/contacts"
+
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Contacts.ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(
+        cls,
+        audience_id: Optional[str] = None,
+        id: Optional[str] = None,
+        email: Optional[str] = None,
+    ) -> Contact:
+        """
+        Get a contact (async).
+        Can retrieve either a global contact or an audience-specific contact.
+        see more: https://resend.com/docs/api-reference/contacts/get-contact
+
+        Args:
+            audience_id (Optional[str]): The audience ID. If not provided, retrieves global contact.
+            id (Optional[str]): The contact ID. Either id or email must be provided.
+            email (Optional[str]): The contact email. Either id or email must be provided.
+
+        Returns:
+            Contact: The contact object
+        """
+        # Email takes precedence over id (matching Node.js behavior)
+        contact_identifier = email if email is not None else id
+        if contact_identifier is None:
+            raise ValueError("id or email must be provided")
+
+        if audience_id:
+            path = f"/audiences/{audience_id}/contacts/{contact_identifier}"
+        else:
+            path = f"/contacts/{contact_identifier}"
+
+        resp = await AsyncRequest[Contact](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(
+        cls,
+        audience_id: Optional[str] = None,
+        id: Optional[str] = None,
+        email: Optional[str] = None,
+    ) -> RemoveContactResponse:
+        """
+        Remove a contact by ID or by Email (async).
+        Can remove either a global contact or an audience-specific contact.
+        see more: https://resend.com/docs/api-reference/contacts/delete-contact
+
+        Args:
+            audience_id (Optional[str]): The audience ID. If not provided, removes global contact.
+            id (Optional[str]): The contact ID
+            email (Optional[str]): The contact email
+
+        Returns:
+            RemoveContactResponse: The removed contact response object
+        """
+        contact_identifier = email if email is not None else id
+        if contact_identifier is None:
+            raise ValueError("id or email must be provided")
+
+        if audience_id:
+            path = f"/audiences/{audience_id}/contacts/{contact_identifier}"
+        else:
+            path = f"/contacts/{contact_identifier}"
+
+        resp = await AsyncRequest[Contacts.RemoveContactResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp

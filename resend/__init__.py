@@ -1,4 +1,5 @@
 import os
+from typing import Union
 
 from .api_keys._api_key import ApiKey
 from .api_keys._api_keys import ApiKeys
@@ -26,8 +27,11 @@ from .emails._received_email import (EmailAttachment, EmailAttachmentDetails,
 from .emails._receiving import Receiving as EmailsReceiving
 from .emails._tag import Tag
 from .http_client import HTTPClient
+from .http_client_async import \
+    AsyncHTTPClient  # Okay to import AsyncHTTPClient since it is just an interface.
 from .http_client_requests import RequestsClient
 from .request import Request
+from typing import Optional
 from .segments._segment import Segment
 from .segments._segments import Segments
 from .templates._template import Template, TemplateListItem, Variable
@@ -39,12 +43,20 @@ from .webhooks._webhook import (VerifyWebhookOptions, Webhook, WebhookEvent,
                                 WebhookHeaders, WebhookStatus)
 from .webhooks._webhooks import Webhooks
 
+# Type for clients that support both sync and async
+ResendHTTPClient = Union[HTTPClient, AsyncHTTPClient]
+
+# Sync HTTP client — always set, can be overridden with a custom HTTPClient.
+default_http_client: ResendHTTPClient = RequestsClient()
+
+# Async HTTP client — auto-detected if httpx is installed, can be overridden
+# with any AsyncHTTPClient subclass. Set to None if no async library is available.
+default_async_http_client: Optional[AsyncHTTPClient] = None
+
 # Config vars
 api_key = os.environ.get("RESEND_API_KEY")
 api_url = os.environ.get("RESEND_API_URL", "https://api.resend.com")
 
-# HTTP Client
-default_http_client: HTTPClient = RequestsClient()
 
 __all__ = [
     "__version__",
@@ -97,6 +109,18 @@ __all__ = [
     "EmailsReceiving",
     "EmailAttachments",
     "ContactsTopics",
+    # HTTP Clients
+    "HTTPClient",
     # Default HTTP Client
     "RequestsClient",
 ]
+
+# Add async exports and auto-detect async client if httpx is available
+try:
+    from .async_request import AsyncRequest  # noqa: F401
+    from .http_client_httpx import HTTPXClient  # noqa: F401
+
+    default_async_http_client = HTTPXClient()
+    __all__.extend(["AsyncHTTPClient", "HTTPXClient", "AsyncRequest"])
+except ImportError:
+    pass

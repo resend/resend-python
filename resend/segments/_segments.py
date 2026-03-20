@@ -8,6 +8,12 @@ from resend.pagination_helper import PaginationHelper
 
 from ._segment import Segment
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 
 class Segments:
 
@@ -179,6 +185,80 @@ class Segments:
         """
         path = f"/segments/{id}"
         resp = request.Request[Segments.RemoveSegmentResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> CreateSegmentResponse:
+        """
+        Create a segment (async).
+        see more: https://resend.com/docs/api-reference/segments/create-segment
+
+        Args:
+            params (CreateParams): The segment creation parameters
+
+        Returns:
+            CreateSegmentResponse: The created segment response
+        """
+        path = "/segments"
+        resp = await AsyncRequest[Segments.CreateSegmentResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of segments (async).
+        see more: https://resend.com/docs/api-reference/segments/list-segments
+
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
+        Returns:
+            ListResponse: A list of segment objects
+        """
+        base_path = "/segments"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Segments.ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, id: str) -> Segment:
+        """
+        Retrieve a single segment (async).
+        see more: https://resend.com/docs/api-reference/segments/get-segment
+
+        Args:
+            id (str): The segment ID
+
+        Returns:
+            Segment: The segment object
+        """
+        path = f"/segments/{id}"
+        resp = await AsyncRequest[Segment](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(cls, id: str) -> RemoveSegmentResponse:
+        """
+        Delete a single segment (async).
+        see more: https://resend.com/docs/api-reference/segments/delete-segment
+
+        Args:
+            id (str): The segment ID
+
+        Returns:
+            RemoveSegmentResponse: The removed segment response
+        """
+        path = f"/segments/{id}"
+        resp = await AsyncRequest[Segments.RemoveSegmentResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp

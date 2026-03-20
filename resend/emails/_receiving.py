@@ -9,6 +9,12 @@ from resend.emails._received_email import (EmailAttachment,
                                            ListReceivedEmail, ReceivedEmail)
 from resend.pagination_helper import PaginationHelper
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 
 class _ListParams(TypedDict):
     limit: NotRequired[int]
@@ -148,6 +154,56 @@ class Receiving:
             ).perform_with_content()
             return resp
 
+        @classmethod
+        async def get_async(
+            cls, email_id: str, attachment_id: str
+        ) -> EmailAttachmentDetails:
+            """
+            Retrieve a single attachment from a received email (async).
+            see more: https://resend.com/docs/api-reference/attachments/retrieve-received-email-attachment
+
+            Args:
+                email_id (str): The ID of the received email
+                attachment_id (str): The ID of the attachment to retrieve
+
+            Returns:
+                EmailAttachmentDetails: The attachment details including download URL
+            """
+            path = f"/emails/receiving/{email_id}/attachments/{attachment_id}"
+            resp = await AsyncRequest[EmailAttachmentDetails](
+                path=path,
+                params={},
+                verb="get",
+            ).perform_with_content()
+            return resp
+
+        @classmethod
+        async def list_async(
+            cls,
+            email_id: str,
+            params: Optional["Receiving.Attachments.ListParams"] = None,
+        ) -> "Receiving.Attachments.ListResponse":
+            """
+            Retrieve a list of attachments from a received email (async).
+            see more: https://resend.com/docs/api-reference/attachments/list-received-email-attachments
+
+            Args:
+                email_id (str): The ID of the received email
+                params (Optional[ListParams]): The list parameters for pagination
+
+            Returns:
+                ListResponse: A paginated list of attachment objects
+            """
+            base_path = f"/emails/receiving/{email_id}/attachments"
+            query_params = cast(Dict[Any, Any], params) if params else None
+            path = PaginationHelper.build_paginated_path(base_path, query_params)
+            resp = await AsyncRequest[_AttachmentListResponse](
+                path=path,
+                params={},
+                verb="get",
+            ).perform_with_content()
+            return resp
+
     class ListParams(_ListParams):
         """
         ListParams is the class that wraps the parameters for the list method.
@@ -204,6 +260,48 @@ class Receiving:
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[Receiving.ListResponse](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, email_id: str) -> ReceivedEmail:
+        """
+        Retrieve a single received email (async).
+        see more: https://resend.com/docs/api-reference/emails/retrieve-received-email
+
+        Args:
+            email_id (str): The ID of the received email to retrieve
+
+        Returns:
+            ReceivedEmail: The received email object
+        """
+        path = f"/emails/receiving/{email_id}"
+        resp = await AsyncRequest[ReceivedEmail](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of received emails (async).
+        see more: https://resend.com/docs/api-reference/emails/list-received-emails
+
+        Args:
+            params (Optional[ListParams]): The list parameters for pagination
+
+        Returns:
+            ListResponse: A paginated list of received email objects
+        """
+        base_path = "/emails/receiving"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Receiving.ListResponse](
             path=path,
             params={},
             verb="get",

@@ -8,6 +8,12 @@ from resend.domains._domain import Domain
 from resend.domains._record import Record
 from resend.pagination_helper import PaginationHelper
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 TlsOptions = Literal["enforced", "opportunistic"]
 
 
@@ -244,6 +250,116 @@ class Domains:
         """
         path = f"/domains/{domain_id}/verify"
         resp = request.Request[Domain](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> CreateDomainResponse:
+        """
+        Create a domain through the Resend Email API (async).
+        see more: https://resend.com/docs/api-reference/domains/create-domain
+
+        Args:
+            params (CreateParams): The domain creation parameters
+
+        Returns:
+            CreateDomainResponse: The created domain response
+        """
+        path = "/domains"
+        resp = await AsyncRequest[Domains.CreateDomainResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> Domain:
+        """
+        Update an existing domain (async).
+        see more: https://resend.com/docs/api-reference/domains/update-domain
+
+        Args:
+            params (UpdateParams): The domain update parameters
+
+        Returns:
+            Domain: The updated domain object
+        """
+        path = f"/domains/{params['id']}"
+        resp = await AsyncRequest[Domain](
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, domain_id: str) -> Domain:
+        """
+        Retrieve a single domain for the authenticated user (async).
+        see more: https://resend.com/docs/api-reference/domains/get-domain
+
+        Args:
+            domain_id (str): The domain ID
+
+        Returns:
+            Domain: The domain object
+        """
+        path = f"/domains/{domain_id}"
+        resp = await AsyncRequest[Domain](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of domains for the authenticated user (async).
+        see more: https://resend.com/docs/api-reference/domains/list-domains
+
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
+        Returns:
+            ListResponse: A list of domain objects
+        """
+        base_path = "/domains"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Domains.ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(cls, domain_id: str) -> Domain:
+        """
+        Remove an existing domain (async).
+        see more: https://resend.com/docs/api-reference/domains/delete-domain
+
+        Args:
+            domain_id (str): The domain ID
+
+        Returns:
+            Domain: The removed domain object
+        """
+        path = f"/domains/{domain_id}"
+        resp = await AsyncRequest[Domain](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def verify_async(cls, domain_id: str) -> Domain:
+        """
+        Verify an existing domain (async).
+        see more: https://resend.com/docs/api-reference/domains/verify-domain
+
+        Args:
+            domain_id (str): The domain ID
+
+        Returns:
+            Domain: The verified domain object
+        """
+        path = f"/domains/{domain_id}/verify"
+        resp = await AsyncRequest[Domain](
             path=path, params={}, verb="post"
         ).perform_with_content()
         return resp

@@ -8,6 +8,12 @@ from resend.pagination_helper import PaginationHelper
 
 from ._broadcast import Broadcast
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 # _CreateParamsFrom is declared with functional TypedDict syntax here because
 # "from" is a reserved keyword in Python, and this is the best way to
 # support type-checking for it.
@@ -368,6 +374,116 @@ class Broadcasts:
         """
         path = f"/broadcasts/{id}"
         resp = request.Request[Broadcasts.RemoveResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> CreateResponse:
+        """
+        Create a broadcast (async).
+        see more: https://resend.com/docs/api-reference/broadcasts/create-broadcast
+
+        Args:
+            params (CreateParams): The broadcast creation parameters
+
+        Returns:
+            CreateResponse: The new broadcast object response
+        """
+        path = "/broadcasts"
+        resp = await AsyncRequest[Broadcasts.CreateResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> UpdateResponse:
+        """
+        Update a broadcast (async).
+        see more: https://resend.com/docs/api-reference/broadcasts/update-broadcast
+
+        Args:
+            params (UpdateParams): The broadcast update parameters
+
+        Returns:
+            UpdateResponse: The updated broadcast object response
+        """
+        path = f"/broadcasts/{params['broadcast_id']}"
+        resp = await AsyncRequest[Broadcasts.UpdateResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def send_async(cls, params: SendParams) -> SendResponse:
+        """
+        Sends a broadcast (async).
+        see more: https://resend.com/docs/api-reference/broadcasts/send-broadcast
+
+        Args:
+            params (SendParams): The broadcast send parameters
+
+        Returns:
+            SendResponse: The new broadcast object response
+        """
+        path = f"/broadcasts/{params['broadcast_id']}/send"
+        resp = await AsyncRequest[Broadcasts.SendResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of broadcasts (async).
+        see more: https://resend.com/docs/api-reference/broadcasts/list-broadcasts
+
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
+        Returns:
+            ListResponse: A list of broadcast objects
+        """
+        base_path = "/broadcasts"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Broadcasts.ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, id: str) -> Broadcast:
+        """
+        Retrieve a single broadcast (async).
+        see more: https://resend.com/docs/api-reference/broadcasts/get-broadcast
+
+        Args:
+            id (str): The broadcast ID
+
+        Returns:
+            Broadcast: The broadcast object
+        """
+        path = f"/broadcasts/{id}"
+        resp = await AsyncRequest[Broadcast](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(cls, id: str) -> RemoveResponse:
+        """
+        Delete a single broadcast (async).
+        see more: https://resend.com/docs/api-reference/broadcasts/delete-broadcasts
+
+        Args:
+            id (str): The broadcast ID
+
+        Returns:
+            RemoveResponse: The remove response object
+        """
+        path = f"/broadcasts/{id}"
+        resp = await AsyncRequest[Broadcasts.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp

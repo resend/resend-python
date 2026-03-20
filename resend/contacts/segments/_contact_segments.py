@@ -6,6 +6,12 @@ from resend import request
 from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 from ._contact_segment import ContactSegment
 
 
@@ -235,6 +241,85 @@ class ContactSegments:
         query_params = cast(Dict[Any, Any], pagination) if pagination else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[ContactSegments.ListContactSegmentsResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def add_async(cls, params: AddParams) -> AddContactSegmentResponse:
+        """
+        Add a contact to a segment (async).
+
+        Args:
+            params (AddParams): Parameters including segment_id and either contact_id or email
+
+        Returns:
+            AddContactSegmentResponse: The response containing the association ID
+
+        Raises:
+            ValueError: If neither contact_id nor email is provided
+        """
+        contact_identifier = params.get("email") or params.get("contact_id")
+        if not contact_identifier:
+            raise ValueError("Either contact_id or email must be provided")
+
+        segment_id = params["segment_id"]
+        path = f"/contacts/{contact_identifier}/segments/{segment_id}"
+        resp = await AsyncRequest[ContactSegments.AddContactSegmentResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(cls, params: RemoveParams) -> RemoveContactSegmentResponse:
+        """
+        Remove a contact from a segment (async).
+
+        Args:
+            params (RemoveParams): Parameters including segment_id and either contact_id or email
+
+        Returns:
+            RemoveContactSegmentResponse: The response containing the deleted status
+
+        Raises:
+            ValueError: If neither contact_id nor email is provided
+        """
+        contact_identifier = params.get("email") or params.get("contact_id")
+        if not contact_identifier:
+            raise ValueError("Either contact_id or email must be provided")
+
+        segment_id = params["segment_id"]
+        path = f"/contacts/{contact_identifier}/segments/{segment_id}"
+        resp = await AsyncRequest[ContactSegments.RemoveContactSegmentResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(
+        cls, params: ListParams, pagination: Optional[ListContactSegmentsParams] = None
+    ) -> ListContactSegmentsResponse:
+        """
+        List all segments for a contact (async).
+
+        Args:
+            params (ListParams): Parameters containing either contact_id or email
+            pagination (Optional[ListContactSegmentsParams]): Optional pagination parameters
+
+        Returns:
+            ListContactSegmentsResponse: A list of segment objects
+
+        Raises:
+            ValueError: If neither contact_id nor email is provided
+        """
+        contact_identifier = params.get("email") or params.get("contact_id")
+        if not contact_identifier:
+            raise ValueError("Either contact_id or email must be provided")
+
+        base_path = f"/contacts/{contact_identifier}/segments"
+        query_params = cast(Dict[Any, Any], pagination) if pagination else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[ContactSegments.ListContactSegmentsResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp

@@ -6,6 +6,12 @@ from resend import request
 from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 from ._contact_topic import ContactTopic, TopicSubscriptionUpdate
 
 
@@ -175,6 +181,72 @@ class Topics:
         )
 
         resp = request.Request[_UpdateResponse](
+            path=path, params=request_body, verb="patch"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(
+        cls,
+        contact_id: Optional[str] = None,
+        email: Optional[str] = None,
+        params: Optional["Topics.ListParams"] = None,
+    ) -> "Topics.ListResponse":
+        """
+        List all topics for a contact (async).
+        see more: https://resend.com/docs/api-reference/contacts/get-contact-topics
+
+        Args:
+            contact_id (Optional[str]): The contact ID
+            email (Optional[str]): The contact email
+            params (Optional[ListParams]): Optional pagination parameters
+
+        Returns:
+            ListResponse: A list of contact topic objects
+
+        Raises:
+            ValueError: If neither contact_id nor email is provided
+        """
+        contact = email if contact_id is None else contact_id
+        if contact is None:
+            raise ValueError("contact_id or email must be provided")
+
+        base_path = f"/contacts/{contact}/topics"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[_ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> UpdateResponse:
+        """
+        Update topic subscriptions for a contact (async).
+        see more: https://resend.com/docs/api-reference/contacts/update-contact-topics
+
+        Args:
+            params (UpdateParams): The topic update parameters
+
+        Returns:
+            UpdateResponse: The updated contact response
+
+        Raises:
+            ValueError: If neither id nor email is provided in params
+        """
+        if params.get("id") is None and params.get("email") is None:
+            raise ValueError("id or email must be provided")
+
+        contact = (
+            params.get("id") if params.get("id") is not None else params.get("email")
+        )
+        path = f"/contacts/{contact}/topics"
+
+        request_body: Union[Dict[str, Any], List[Dict[str, Any]]] = cast(
+            List[Dict[str, Any]], params["topics"]
+        )
+
+        resp = await AsyncRequest[_UpdateResponse](
             path=path, params=request_body, verb="patch"
         ).perform_with_content()
         return resp

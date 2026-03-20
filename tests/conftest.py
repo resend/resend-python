@@ -1,6 +1,6 @@
 from typing import Any
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import resend
 
@@ -28,3 +28,24 @@ class ResendBaseTest(TestCase):
     def set_magic_mock_obj(self, magic_mock_obj: MagicMock) -> None:
         """Auxiliary function to set the mock object"""
         self.mock.return_value = magic_mock_obj
+
+
+class AsyncResendBaseTest:
+    def setup_method(self) -> None:
+        resend.api_key = "re_123"
+        self.patcher = patch(
+            "resend.async_request.AsyncRequest.make_request",
+            new_callable=AsyncMock,
+        )
+        self.mock = self.patcher.start()
+
+    def teardown_method(self) -> None:
+        self.patcher.stop()
+
+    def set_mock_json(self, mock_json: Any) -> None:
+        """Auxiliary function to set the mock json return value"""
+        self.mock.return_value = mock_json
+
+    def set_mock_text(self, mock_text: str) -> None:
+        """Auxiliary function to set the mock text return value"""
+        self.mock.text = mock_text

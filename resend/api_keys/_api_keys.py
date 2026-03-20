@@ -7,6 +7,12 @@ from resend._base_response import BaseResponse
 from resend.api_keys._api_key import ApiKey
 from resend.pagination_helper import PaginationHelper
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 
 class ApiKeys:
 
@@ -143,4 +149,60 @@ class ApiKeys:
 
         # This would raise if failed
         request.Request[None](path=path, params={}, verb="delete").perform()
+        return None
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> CreateApiKeyResponse:
+        """
+        Add a new API key to authenticate communications with Resend (async).
+        see more: https://resend.com/docs/api-reference/api-keys/create-api-key
+
+        Args:
+            params (CreateParams): The API key creation parameters
+
+        Returns:
+            CreateApiKeyResponse: The created API key response with id and token
+        """
+        path = "/api-keys"
+        resp = await AsyncRequest[ApiKeys.CreateApiKeyResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of API keys for the authenticated user (async).
+        see more: https://resend.com/docs/api-reference/api-keys/list-api-keys
+
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
+        Returns:
+            ListResponse: A list of API key objects
+        """
+        base_path = "/api-keys"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[ApiKeys.ListResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def remove_async(cls, api_key_id: str) -> None:
+        """
+        Remove an existing API key (async).
+        see more: https://resend.com/docs/api-reference/api-keys/delete-api-key
+
+        Args:
+            api_key_id (str): The ID of the API key to remove
+
+        Returns:
+            None
+        """
+        path = f"/api-keys/{api_key_id}"
+
+        # This would raise if failed
+        await AsyncRequest[None](path=path, params={}, verb="delete").perform()
         return None

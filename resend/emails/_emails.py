@@ -11,6 +11,12 @@ from resend.emails._receiving import Receiving
 from resend.emails._tag import Tag
 from resend.pagination_helper import PaginationHelper
 
+# Async imports (optional - only available with pip install resend[async])
+try:
+    from resend.async_request import AsyncRequest
+except ImportError:
+    pass
+
 
 class EmailTemplate(TypedDict):
     """
@@ -359,5 +365,111 @@ class Emails:
             path=path,
             params={},
             verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def send_async(
+        cls, params: SendParams, options: Optional[SendOptions] = None
+    ) -> SendResponse:
+        """
+        Send an email through the Resend Email API (async version).
+        see more: https://resend.com/docs/api-reference/emails/send-email
+
+        Args:
+            params (SendParams): The email parameters
+            options (SendOptions): The email options
+
+        Returns:
+            SendResponse: The send response with the email ID
+        """
+        path = "/emails"
+        resp = await AsyncRequest[Emails.SendResponse](
+            path=path,
+            params=cast(Dict[Any, Any], params),
+            verb="post",
+            options=cast(Dict[Any, Any], options),
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def get_async(cls, email_id: str) -> Email:
+        """
+        Retrieve a single email (async version).
+        see more: https://resend.com/docs/api-reference/emails/retrieve-email
+
+        Args:
+            email_id (str): The ID of the email to retrieve
+
+        Returns:
+            Email: The email object that was retrieved
+        """
+        path = f"/emails/{email_id}"
+        resp = await AsyncRequest[Email](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of emails (async version).
+        see more: https://resend.com/docs/api-reference/emails/list-emails
+
+        Args:
+            params (Optional[ListParams]): The list parameters for pagination
+
+        Returns:
+            ListResponse: A paginated list of email objects
+        """
+        base_path = "/emails"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Emails.ListResponse](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def cancel_async(cls, email_id: str) -> CancelScheduledEmailResponse:
+        """
+        Cancel a scheduled email (async version).
+        see more: https://resend.com/docs/api-reference/emails/cancel-email
+
+        Args:
+            email_id (str): The ID of the scheduled email to cancel
+
+        Returns:
+            CancelScheduledEmailResponse: The response object that contains the ID of the scheduled email that was canceled
+        """
+        path = f"/emails/{email_id}/cancel"
+        resp = await AsyncRequest[_CancelScheduledEmailResponse](
+            path=path,
+            params={},
+            verb="post",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> UpdateEmailResponse:
+        """
+        Update an email (async version).
+        see more: https://resend.com/docs/api-reference/emails/update-email
+
+        Args:
+            params (UpdateParams): The email parameters to update
+
+        Returns:
+            Email: The email object that was updated
+        """
+        path = f"/emails/{params['id']}"
+        resp = await AsyncRequest[_UpdateEmailResponse](
+            path=path,
+            params=cast(Dict[Any, Any], params),
+            verb="patch",
         ).perform_with_content()
         return resp
