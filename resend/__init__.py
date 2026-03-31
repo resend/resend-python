@@ -17,6 +17,8 @@ from .contacts.segments._contact_segment import ContactSegment
 from .contacts.segments._contact_segments import ContactSegments
 from .domains._domain import Domain
 from .domains._domains import Domains
+from .logs._log import Log
+from .logs._logs import Logs
 from .emails._attachment import Attachment, RemoteAttachment
 from .emails._attachments import Attachments as EmailAttachments
 from .emails._batch import Batch, BatchValidationError
@@ -74,6 +76,7 @@ __all__ = [
     "Templates",
     "Webhooks",
     "Topics",
+    "Logs",
     # Types
     "Audience",
     "Contact",
@@ -84,6 +87,7 @@ __all__ = [
     "TopicSubscriptionUpdate",
     "Domain",
     "ApiKey",
+    "Log",
     "Email",
     "Attachment",
     "RemoteAttachment",

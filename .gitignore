@@ -901,3 +901,6 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/macos,linux,windows,python,jupyternotebooks,jetbrains,pycharm,vim,emacs,visualstudiocode,visualstudio
 
 scratch/
+
+# Allow resend/logs module (overrides [Ll]ogs/ rule above)
+!resend/logs/
