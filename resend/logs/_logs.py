@@ -11,7 +11,7 @@ from resend.pagination_helper import PaginationHelper
 try:
     from resend.async_request import AsyncRequest
 except ImportError:
-    pass
+    AsyncRequest = None  # type: ignore[assignment]
 
 
 class Logs:
@@ -163,6 +163,11 @@ class Logs:
         Returns:
             GetResponse: The log object
         """
+        if AsyncRequest is None:
+            raise ImportError(
+                "Async support requires additional dependencies. "
+                "Install them with: pip install resend[async]"
+            )
         path = f"/logs/{log_id}"
         resp = await AsyncRequest[Logs.GetResponse](
             path=path, params={}, verb="get"
@@ -184,6 +189,11 @@ class Logs:
         Returns:
             ListResponse: A list of log objects
         """
+        if AsyncRequest is None:
+            raise ImportError(
+                "Async support requires additional dependencies. "
+                "Install them with: pip install resend[async]"
+            )
         base_path = "/logs"
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
