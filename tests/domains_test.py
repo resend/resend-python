@@ -225,7 +225,7 @@ class TestResendDomains(ResendBaseTest):
         assert domain["click_tracking"] is True
         assert domain["tracking_subdomain"] == "links"
         tracking_record = next(
-            (r for r in domain["records"] if r["record"] == "Tracking"), None
+            (r for r in (domain["records"] or []) if r["record"] == "Tracking"), None
         )
         assert tracking_record is not None
         assert tracking_record["name"] == "links.example.com"
