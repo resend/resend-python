@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from typing_extensions import TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 from resend.domains._record import Record
 
@@ -33,4 +33,16 @@ class Domain(TypedDict):
     deleted: bool
     """
     Wether the domain is deleted or not
+    """
+    open_tracking: NotRequired[bool]
+    """
+    Track the open rate of each email.
+    """
+    click_tracking: NotRequired[bool]
+    """
+    Track clicks within the body of each HTML email.
+    """
+    tracking_subdomain: NotRequired[str]
+    """
+    The custom subdomain used for click and open tracking links (e.g., "links").
     """

@@ -1,10 +1,10 @@
-from typing_extensions import TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 
 class Record(TypedDict):
     record: str
     """
-    The domain record type, ie: SPF.
+    The domain record type, ie: SPF, DKIM, Tracking.
     """
     name: str
     """
@@ -26,7 +26,7 @@ class Record(TypedDict):
     """
     The domain record value.
     """
-    priority: int
+    priority: NotRequired[int]
     """
     The domain record priority.
     """
