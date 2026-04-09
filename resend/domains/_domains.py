@@ -102,7 +102,7 @@ class Domains:
         """
         open_tracking: NotRequired[bool]
         """
-        Track the open rate of each email.
+        Track email opens
         """
         click_tracking: NotRequired[bool]
         """
