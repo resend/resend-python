@@ -180,6 +180,91 @@ class TestResendDomains(ResendBaseTest):
                 domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
             )
 
+    def test_domains_create_with_tracking_subdomain(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "4dd369bc-aa82-4ff3-97de-514ae3000ee0",
+                "name": "example.com",
+                "created_at": "2023-03-28T17:12:02.059593+00:00",
+                "status": "not_started",
+                "open_tracking": True,
+                "click_tracking": True,
+                "tracking_subdomain": "links",
+                "records": [
+                    {
+                        "record": "DKIM",
+                        "name": "nhapbbryle57yxg3fbjytyodgbt2kyyg._domainkey",
+                        "value": "nhapbbryle57yxg3fbjytyodgbt2kyyg.dkim.amazonses.com.",
+                        "type": "CNAME",
+                        "status": "not_started",
+                        "ttl": "Auto",
+                    },
+                    {
+                        "record": "Tracking",
+                        "name": "links.example.com",
+                        "value": "links1.resend-dns.com",
+                        "type": "CNAME",
+                        "ttl": "Auto",
+                        "status": "not_started",
+                    },
+                ],
+                "region": "us-east-1",
+            }
+        )
+
+        create_params: resend.Domains.CreateParams = {
+            "name": "example.com",
+            "region": "us-east-1",
+            "tracking_subdomain": "links",
+        }
+        domain: resend.Domains.CreateDomainResponse = resend.Domains.create(
+            params=create_params
+        )
+        assert domain["id"] == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
+        assert domain["open_tracking"] is True
+        assert domain["click_tracking"] is True
+        assert domain["tracking_subdomain"] == "links"
+        tracking_record = next(
+            (r for r in (domain["records"] or []) if r["record"] == "Tracking"), None
+        )
+        assert tracking_record is not None
+        assert tracking_record["name"] == "links.example.com"
+        assert tracking_record["value"] == "links1.resend-dns.com"
+        assert tracking_record["type"] == "CNAME"
+
+    def test_domains_get_with_tracking_fields(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "domain",
+                "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
+                "name": "example.com",
+                "status": "not_started",
+                "created_at": "2023-04-26T20:21:26.347412+00:00",
+                "region": "us-east-1",
+                "open_tracking": True,
+                "click_tracking": True,
+                "tracking_subdomain": "links",
+                "records": [
+                    {
+                        "record": "Tracking",
+                        "name": "links.example.com",
+                        "value": "links1.resend-dns.com",
+                        "type": "CNAME",
+                        "ttl": "Auto",
+                        "status": "verified",
+                    }
+                ],
+            }
+        )
+
+        domain = resend.Domains.get(
+            domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
+        )
+        assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
+        assert domain["open_tracking"] is True
+        assert domain["click_tracking"] is True
+        assert domain["tracking_subdomain"] == "links"
+
     def test_domains_update(self) -> None:
         self.set_mock_json(
             {
@@ -193,6 +278,21 @@ class TestResendDomains(ResendBaseTest):
             "open_tracking": True,
             "click_tracking": True,
             "tls": "opportunistic",
+        }
+        domain = resend.Domains.update(params)
+        assert domain["id"] == "479e3145-dd38-476b-932c-529ceb705947"
+
+    def test_domains_update_with_tracking_subdomain(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "domain",
+                "id": "479e3145-dd38-476b-932c-529ceb705947",
+            }
+        )
+
+        params: resend.Domains.UpdateParams = {
+            "id": "479e3145-dd38-476b-932c-529ceb705947",
+            "tracking_subdomain": "links",
         }
         domain = resend.Domains.update(params)
         assert domain["id"] == "479e3145-dd38-476b-932c-529ceb705947"

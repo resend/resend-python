@@ -71,6 +71,9 @@ class Domains:
             status (str): Status of the domain
             region (str): The region where emails will be sent from
             records (Union[List[Record], None]): The list of domain records
+            open_tracking (bool): Whether open tracking is enabled
+            click_tracking (bool): Whether click tracking is enabled
+            tracking_subdomain (str): The custom subdomain for tracking links
         """
 
         id: str
@@ -97,6 +100,18 @@ class Domains:
         """
         The list of domain records
         """
+        open_tracking: NotRequired[bool]
+        """
+        Track email opens
+        """
+        click_tracking: NotRequired[bool]
+        """
+        Track clicks within the body of HTML emails
+        """
+        tracking_subdomain: NotRequired[str]
+        """
+        The custom subdomain used for click and open tracking links (e.g., "links")
+        """
 
     class UpdateParams(TypedDict):
         id: str
@@ -122,6 +137,10 @@ class Domains:
         communication must use TLS no matter what.
         If the receiving server does not support TLS, the email will not be sent.
         """
+        tracking_subdomain: NotRequired[str]
+        """
+        The custom subdomain used for click and open tracking links (e.g., "links").
+        """
 
     class CreateParams(TypedDict):
         name: str
@@ -138,6 +157,10 @@ class Domains:
         By default, Resend will use the `send` subdomain for the Return-Path address.
         You can change this by setting the optional `custom_return_path` parameter
         when creating a domain via the API or under Advanced options in the dashboard.
+        """
+        tracking_subdomain: NotRequired[str]
+        """
+        The custom subdomain used for click and open tracking links (e.g., "links").
         """
 
     @classmethod
