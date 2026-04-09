@@ -110,7 +110,7 @@ class Domains:
         """
         tracking_subdomain: NotRequired[str]
         """
-        The custom subdomain used for click and open tracking links (e.g., "links").
+        The custom subdomain used for click and open tracking links (e.g., "links")
         """
 
     class UpdateParams(TypedDict):
