@@ -106,7 +106,7 @@ class Domains:
         """
         click_tracking: NotRequired[bool]
         """
-        Track clicks within the body of each HTML email.
+        Track clicks within the body of HTML emails
         """
         tracking_subdomain: NotRequired[str]
         """
