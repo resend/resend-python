@@ -260,7 +260,7 @@ class TestResendAutomations(ResendBaseTest):
             }
         )
 
-        runs = resend.Automations.list_runs("b6d24b8e-af0b-4c3c-be0c-359bbd97381e")
+        runs = resend.Automations.Runs.list("b6d24b8e-af0b-4c3c-be0c-359bbd97381e")
         assert runs["object"] == "list"
         assert runs["has_more"] is False
         assert len(runs["data"]) == 2
@@ -293,8 +293,8 @@ class TestResendAutomations(ResendBaseTest):
             }
         )
 
-        params: resend.Automations.ListRunsParams = {"status": "completed"}
-        runs = resend.Automations.list_runs(
+        params: resend.Automations.Runs.ListParams = {"status": "completed"}
+        runs = resend.Automations.Runs.list(
             "b6d24b8e-af0b-4c3c-be0c-359bbd97381e", params=params
         )
         assert len(runs["data"]) == 1
@@ -334,7 +334,7 @@ class TestResendAutomations(ResendBaseTest):
             }
         )
 
-        run = resend.Automations.get_run(
+        run = resend.Automations.Runs.get(
             "b6d24b8e-af0b-4c3c-be0c-359bbd97381e", "run_123"
         )
         assert run["object"] == "automation_run"

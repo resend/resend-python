@@ -116,36 +116,6 @@ class Automations:
         Cannot be used with the after parameter.
         """
 
-    class ListRunsParams(TypedDict):
-        """
-        ListRunsParams is the class that wraps the parameters for the list_runs method.
-
-        Attributes:
-            status (NotRequired[str]): Comma-separated filter values: "running", "completed", "failed", "cancelled"
-            limit (NotRequired[int]): Number of runs to retrieve (max 100, min 1)
-            after (NotRequired[str]): Return items after this cursor
-            before (NotRequired[str]): Return items before this cursor
-        """
-
-        status: NotRequired[str]
-        """
-        Comma-separated filter values. Valid values: "running", "completed", "failed", "cancelled".
-        """
-        limit: NotRequired[int]
-        """
-        Number of runs to retrieve. Maximum is 100, and minimum is 1.
-        """
-        after: NotRequired[str]
-        """
-        Return items after this cursor (for pagination).
-        Cannot be used with the before parameter.
-        """
-        before: NotRequired[str]
-        """
-        Return items before this cursor (for pagination).
-        Cannot be used with the after parameter.
-        """
-
     class CreateResponse(BaseResponse):
         """
         CreateResponse is the class that wraps the response of the create method.
@@ -251,28 +221,160 @@ class Automations:
         Whether there are more results available for pagination.
         """
 
-    class ListRunsResponse(BaseResponse):
+    class Runs:
         """
-        ListRunsResponse is the class that wraps the response of the list_runs method.
-
-        Attributes:
-            object (str): The object type, always "list"
-            data (List[AutomationRunListItem]): A list of automation run objects
-            has_more (bool): Whether there are more results available
+        Sub-namespace for automation run methods.
+        Accessible as resend.Automations.Runs.
         """
 
-        object: str
-        """
-        The object type, always "list".
-        """
-        data: List[AutomationRunListItem]
-        """
-        A list of automation run objects.
-        """
-        has_more: bool
-        """
-        Whether there are more results available for pagination.
-        """
+        class ListParams(TypedDict):
+            """
+            ListParams is the class that wraps the parameters for the list method.
+
+            Attributes:
+                status (NotRequired[str]): Comma-separated filter values: "running", "completed", "failed", "cancelled"
+                limit (NotRequired[int]): Number of runs to retrieve (max 100, min 1)
+                after (NotRequired[str]): Return items after this cursor
+                before (NotRequired[str]): Return items before this cursor
+            """
+
+            status: NotRequired[str]
+            """
+            Comma-separated filter values. Valid values: "running", "completed", "failed", "cancelled".
+            """
+            limit: NotRequired[int]
+            """
+            Number of runs to retrieve. Maximum is 100, and minimum is 1.
+            """
+            after: NotRequired[str]
+            """
+            Return items after this cursor (for pagination).
+            Cannot be used with the before parameter.
+            """
+            before: NotRequired[str]
+            """
+            Return items before this cursor (for pagination).
+            Cannot be used with the after parameter.
+            """
+
+        class ListResponse(BaseResponse):
+            """
+            ListResponse is the class that wraps the response of the list method.
+
+            Attributes:
+                object (str): The object type, always "list"
+                data (List[AutomationRunListItem]): A list of automation run objects
+                has_more (bool): Whether there are more results available
+            """
+
+            object: str
+            """
+            The object type, always "list".
+            """
+            data: List[AutomationRunListItem]
+            """
+            A list of automation run objects.
+            """
+            has_more: bool
+            """
+            Whether there are more results available for pagination.
+            """
+
+        @classmethod
+        def list(
+            cls,
+            automation_id: str,
+            params: Optional["Automations.Runs.ListParams"] = None,
+        ) -> "Automations.Runs.ListResponse":
+            """
+            Retrieve a list of runs for an automation.
+            see more: https://resend.com/docs/api-reference/automations/list-automation-runs
+
+            Args:
+                automation_id (str): The automation ID
+                params (Optional[ListParams]): Optional filter and pagination parameters
+                    - status: Comma-separated filter values: "running", "completed", "failed", "cancelled"
+                    - limit: Number of runs to retrieve (max 100, min 1)
+                    - after: Return items after this cursor
+                    - before: Return items before this cursor
+
+            Returns:
+                ListResponse: A list of automation run objects
+            """
+            base_path = f"/automations/{automation_id}/runs"
+            query_params = cast(Dict[Any, Any], params) if params else None
+            path = PaginationHelper.build_paginated_path(base_path, query_params)
+            resp = request.Request[Automations.Runs.ListResponse](
+                path=path, params={}, verb="get"
+            ).perform_with_content()
+            return resp
+
+        @classmethod
+        def get(cls, automation_id: str, run_id: str) -> AutomationRun:
+            """
+            Retrieve a single automation run.
+            see more: https://resend.com/docs/api-reference/automations/get-automation-run
+
+            Args:
+                automation_id (str): The automation ID
+                run_id (str): The run ID
+
+            Returns:
+                AutomationRun: The automation run object
+            """
+            path = f"/automations/{automation_id}/runs/{run_id}"
+            resp = request.Request[AutomationRun](
+                path=path, params={}, verb="get"
+            ).perform_with_content()
+            return resp
+
+        @classmethod
+        async def list_async(
+            cls,
+            automation_id: str,
+            params: Optional["Automations.Runs.ListParams"] = None,
+        ) -> "Automations.Runs.ListResponse":
+            """
+            Retrieve a list of runs for an automation (async).
+            see more: https://resend.com/docs/api-reference/automations/list-automation-runs
+
+            Args:
+                automation_id (str): The automation ID
+                params (Optional[ListParams]): Optional filter and pagination parameters
+                    - status: Comma-separated filter values: "running", "completed", "failed", "cancelled"
+                    - limit: Number of runs to retrieve (max 100, min 1)
+                    - after: Return items after this cursor
+                    - before: Return items before this cursor
+
+            Returns:
+                ListResponse: A list of automation run objects
+            """
+            base_path = f"/automations/{automation_id}/runs"
+            query_params = cast(Dict[Any, Any], params) if params else None
+            path = PaginationHelper.build_paginated_path(base_path, query_params)
+            resp = await AsyncRequest[Automations.Runs.ListResponse](
+                path=path, params={}, verb="get"
+            ).perform_with_content()
+            return resp
+
+        @classmethod
+        async def get_async(cls, automation_id: str, run_id: str) -> AutomationRun:
+            """
+            Retrieve a single automation run (async).
+            see more: https://resend.com/docs/api-reference/automations/get-automation-run
+
+            Args:
+                automation_id (str): The automation ID
+                run_id (str): The run ID
+
+            Returns:
+                AutomationRun: The automation run object
+            """
+            path = f"/automations/{automation_id}/runs/{run_id}"
+            resp = await AsyncRequest[AutomationRun](
+                path=path, params={}, verb="get"
+            ).perform_with_content()
+            return resp
 
     @classmethod
     def create(cls, params: "Automations.CreateParams") -> "Automations.CreateResponse":
@@ -390,54 +492,6 @@ class Automations:
         return resp
 
     @classmethod
-    def list_runs(
-        cls,
-        automation_id: str,
-        params: Optional["Automations.ListRunsParams"] = None,
-    ) -> "Automations.ListRunsResponse":
-        """
-        Retrieve a list of runs for an automation.
-        see more: https://resend.com/docs/api-reference/automations/list-automation-runs
-
-        Args:
-            automation_id (str): The automation ID
-            params (Optional[ListRunsParams]): Optional filter and pagination parameters
-                - status: Comma-separated filter values: "running", "completed", "failed", "cancelled"
-                - limit: Number of runs to retrieve (max 100, min 1)
-                - after: Return items after this cursor
-                - before: Return items before this cursor
-
-        Returns:
-            ListRunsResponse: A list of automation run objects
-        """
-        base_path = f"/automations/{automation_id}/runs"
-        query_params = cast(Dict[Any, Any], params) if params else None
-        path = PaginationHelper.build_paginated_path(base_path, query_params)
-        resp = request.Request[Automations.ListRunsResponse](
-            path=path, params={}, verb="get"
-        ).perform_with_content()
-        return resp
-
-    @classmethod
-    def get_run(cls, automation_id: str, run_id: str) -> AutomationRun:
-        """
-        Retrieve a single automation run.
-        see more: https://resend.com/docs/api-reference/automations/get-automation-run
-
-        Args:
-            automation_id (str): The automation ID
-            run_id (str): The run ID
-
-        Returns:
-            AutomationRun: The automation run object
-        """
-        path = f"/automations/{automation_id}/runs/{run_id}"
-        resp = request.Request[AutomationRun](
-            path=path, params={}, verb="get"
-        ).perform_with_content()
-        return resp
-
-    @classmethod
     async def create_async(cls, params: "Automations.CreateParams") -> "Automations.CreateResponse":
         """
         Create an automation (async).
@@ -548,54 +602,6 @@ class Automations:
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = await AsyncRequest[Automations.ListResponse](
-            path=path, params={}, verb="get"
-        ).perform_with_content()
-        return resp
-
-    @classmethod
-    async def list_runs_async(
-        cls,
-        automation_id: str,
-        params: Optional["Automations.ListRunsParams"] = None,
-    ) -> "Automations.ListRunsResponse":
-        """
-        Retrieve a list of runs for an automation (async).
-        see more: https://resend.com/docs/api-reference/automations/list-automation-runs
-
-        Args:
-            automation_id (str): The automation ID
-            params (Optional[ListRunsParams]): Optional filter and pagination parameters
-                - status: Comma-separated filter values: "running", "completed", "failed", "cancelled"
-                - limit: Number of runs to retrieve (max 100, min 1)
-                - after: Return items after this cursor
-                - before: Return items before this cursor
-
-        Returns:
-            ListRunsResponse: A list of automation run objects
-        """
-        base_path = f"/automations/{automation_id}/runs"
-        query_params = cast(Dict[Any, Any], params) if params else None
-        path = PaginationHelper.build_paginated_path(base_path, query_params)
-        resp = await AsyncRequest[Automations.ListRunsResponse](
-            path=path, params={}, verb="get"
-        ).perform_with_content()
-        return resp
-
-    @classmethod
-    async def get_run_async(cls, automation_id: str, run_id: str) -> AutomationRun:
-        """
-        Retrieve a single automation run (async).
-        see more: https://resend.com/docs/api-reference/automations/get-automation-run
-
-        Args:
-            automation_id (str): The automation ID
-            run_id (str): The run ID
-
-        Returns:
-            AutomationRun: The automation run object
-        """
-        path = f"/automations/{automation_id}/runs/{run_id}"
-        resp = await AsyncRequest[AutomationRun](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp

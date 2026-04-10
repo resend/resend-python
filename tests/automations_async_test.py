@@ -190,7 +190,7 @@ class TestResendAutomationsAsync(AsyncResendBaseTest):
             }
         )
 
-        runs = await resend.Automations.list_runs_async(
+        runs = await resend.Automations.Runs.list_async(
             "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
         )
         assert runs["object"] == "list"
@@ -201,7 +201,7 @@ class TestResendAutomationsAsync(AsyncResendBaseTest):
     async def test_automations_list_runs_async_raises_when_no_content(self) -> None:
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
-            _ = await resend.Automations.list_runs_async(
+            _ = await resend.Automations.Runs.list_async(
                 "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
             )
 
@@ -218,7 +218,7 @@ class TestResendAutomationsAsync(AsyncResendBaseTest):
             }
         )
 
-        run = await resend.Automations.get_run_async(
+        run = await resend.Automations.Runs.get_async(
             "b6d24b8e-af0b-4c3c-be0c-359bbd97381e", "run_123"
         )
         assert run["object"] == "automation_run"
@@ -228,6 +228,6 @@ class TestResendAutomationsAsync(AsyncResendBaseTest):
     async def test_automations_get_run_async_raises_when_no_content(self) -> None:
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
-            _ = await resend.Automations.get_run_async(
+            _ = await resend.Automations.Runs.get_async(
                 "b6d24b8e-af0b-4c3c-be0c-359bbd97381e", "run_123"
             )

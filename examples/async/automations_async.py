@@ -69,11 +69,11 @@ async def main() -> None:
 
     # --- List runs ---
     print("\n--- List runs ---")
-    runs: resend.Automations.ListRunsResponse = await resend.Automations.list_runs_async(automation_id)
+    runs: resend.Automations.Runs.ListResponse = await resend.Automations.Runs.list_async(automation_id)
     print(f"Total runs: {len(runs['data'])}")
     if runs["data"]:
         run_id = runs["data"][0]["id"]
-        run: resend.AutomationRun = await resend.Automations.get_run_async(automation_id, run_id)
+        run: resend.AutomationRun = await resend.Automations.Runs.get_async(automation_id, run_id)
         print(f"Run status: {run['status']}")
 
     # --- Multi-step automation: delay + wait_for_event ---

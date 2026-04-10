@@ -73,11 +73,11 @@ print(f"Stopped: {stopped['id']}, status: {stopped['status']}")
 
 # --- List runs ---
 print("\n--- List runs ---")
-runs: resend.Automations.ListRunsResponse = resend.Automations.list_runs(automation_id)
+runs: resend.Automations.Runs.ListResponse = resend.Automations.Runs.list(automation_id)
 print(f"Total runs: {len(runs['data'])}")
 if runs["data"]:
     run_id = runs["data"][0]["id"]
-    run: resend.AutomationRun = resend.Automations.get_run(automation_id, run_id)
+    run: resend.AutomationRun = resend.Automations.Runs.get(automation_id, run_id)
     print(f"Run status: {run['status']}, steps: {len(run['steps'])}")
     for step in run["steps"]:
         print(f"  Step key={step['key']} type={step['type']} status={step['status']}")
