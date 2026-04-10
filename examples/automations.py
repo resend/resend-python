@@ -79,8 +79,8 @@ if runs["data"]:
     run_id = runs["data"][0]["id"]
     run: resend.AutomationRun = resend.Automations.Runs.get(automation_id, run_id)
     print(f"Run status: {run['status']}, steps: {len(run['steps'])}")
-    for step in run["steps"]:
-        print(f"  Step key={step['key']} type={step['type']} status={step['status']}")
+    for run_step in run["steps"]:
+        print(f"  Step key={run_step['key']} type={run_step['type']} status={run_step['status']}")
 
 # --- Multi-step automation: delay + wait_for_event ---
 print("\n--- Create multi-step automation (delay + wait_for_event) ---")
