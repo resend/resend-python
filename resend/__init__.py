@@ -5,6 +5,21 @@ from .api_keys._api_key import ApiKey
 from .api_keys._api_keys import ApiKeys
 from .audiences._audience import Audience
 from .audiences._audiences import Audiences
+from .automations._automation import (
+    Automation,
+    AutomationConnection,
+    AutomationConnectionType,
+    AutomationListItem,
+    AutomationResponseStep,
+    AutomationRun,
+    AutomationRunListItem,
+    AutomationRunStatus,
+    AutomationRunStep,
+    AutomationStatus,
+    AutomationStep,
+    AutomationStepType,
+)
+from .automations._automations import Automations
 from .broadcasts._broadcast import Broadcast
 from .broadcasts._broadcasts import Broadcasts
 from .contact_properties._contact_properties import ContactProperties
@@ -17,6 +32,8 @@ from .contacts.segments._contact_segment import ContactSegment
 from .contacts.segments._contact_segments import ContactSegments
 from .domains._domain import Domain
 from .domains._domains import Domains
+from .events._event import Event, EventListItem, EventSchema, EventSchemaFieldType
+from .events._events import Events
 from .logs._log import Log
 from .logs._logs import Logs
 from .emails._attachment import Attachment, RemoteAttachment
@@ -69,9 +86,11 @@ __all__ = [
     "Domains",
     "Batch",
     "Audiences",
+    "Automations",
     "Contacts",
     "ContactProperties",
     "Broadcasts",
+    "Events",
     "Segments",
     "Templates",
     "Webhooks",
@@ -79,6 +98,22 @@ __all__ = [
     "Logs",
     # Types
     "Audience",
+    "Automation",
+    "AutomationConnection",
+    "AutomationConnectionType",
+    "AutomationListItem",
+    "AutomationResponseStep",
+    "AutomationRun",
+    "AutomationRunListItem",
+    "AutomationRunStatus",
+    "AutomationRunStep",
+    "AutomationStatus",
+    "AutomationStep",
+    "AutomationStepType",
+    "Event",
+    "EventListItem",
+    "EventSchema",
+    "EventSchemaFieldType",
     "Contact",
     "ContactSegment",
     "ContactSegments",
