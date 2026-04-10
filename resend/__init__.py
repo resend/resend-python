@@ -1,10 +1,19 @@
 import os
-from typing import Union
+from typing import Optional, Union
 
 from .api_keys._api_key import ApiKey
 from .api_keys._api_keys import ApiKeys
 from .audiences._audience import Audience
 from .audiences._audiences import Audiences
+from .automations._automation import (Automation, AutomationConnection,
+                                      AutomationConnectionType,
+                                      AutomationListItem,
+                                      AutomationResponseStep, AutomationRun,
+                                      AutomationRunListItem,
+                                      AutomationRunStatus, AutomationRunStep,
+                                      AutomationStatus, AutomationStep,
+                                      AutomationStepType)
+from .automations._automations import Automations
 from .broadcasts._broadcast import Broadcast
 from .broadcasts._broadcasts import Broadcasts
 from .contact_properties._contact_properties import ContactProperties
@@ -17,8 +26,6 @@ from .contacts.segments._contact_segment import ContactSegment
 from .contacts.segments._contact_segments import ContactSegments
 from .domains._domain import Domain
 from .domains._domains import Domains
-from .logs._log import Log
-from .logs._logs import Logs
 from .emails._attachment import Attachment, RemoteAttachment
 from .emails._attachments import Attachments as EmailAttachments
 from .emails._batch import Batch, BatchValidationError
@@ -28,12 +35,16 @@ from .emails._received_email import (EmailAttachment, EmailAttachmentDetails,
                                      ListReceivedEmail, ReceivedEmail)
 from .emails._receiving import Receiving as EmailsReceiving
 from .emails._tag import Tag
+from .events._event import (Event, EventListItem, EventSchema,
+                            EventSchemaFieldType)
+from .events._events import Events
 from .http_client import HTTPClient
 from .http_client_async import \
     AsyncHTTPClient  # Okay to import AsyncHTTPClient since it is just an interface.
 from .http_client_requests import RequestsClient
+from .logs._log import Log
+from .logs._logs import Logs
 from .request import Request
-from typing import Optional
 from .segments._segment import Segment
 from .segments._segments import Segments
 from .templates._template import Template, TemplateListItem, Variable
@@ -69,9 +80,11 @@ __all__ = [
     "Domains",
     "Batch",
     "Audiences",
+    "Automations",
     "Contacts",
     "ContactProperties",
     "Broadcasts",
+    "Events",
     "Segments",
     "Templates",
     "Webhooks",
@@ -79,6 +92,22 @@ __all__ = [
     "Logs",
     # Types
     "Audience",
+    "Automation",
+    "AutomationConnection",
+    "AutomationConnectionType",
+    "AutomationListItem",
+    "AutomationResponseStep",
+    "AutomationRun",
+    "AutomationRunListItem",
+    "AutomationRunStatus",
+    "AutomationRunStep",
+    "AutomationStatus",
+    "AutomationStep",
+    "AutomationStepType",
+    "Event",
+    "EventListItem",
+    "EventSchema",
+    "EventSchemaFieldType",
     "Contact",
     "ContactSegment",
     "ContactSegments",

@@ -19,9 +19,7 @@ if logs["data"]:
         "limit": 10,
         "after": logs["data"][0]["id"],
     }
-    paginated_logs: resend.Logs.ListResponse = resend.Logs.list(
-        params=paginated_params
-    )
+    paginated_logs: resend.Logs.ListResponse = resend.Logs.list(params=paginated_params)
     print(f"Retrieved {len(paginated_logs['data'])} logs with pagination")
     print(f"Has more logs: {paginated_logs['has_more']}")
 else:

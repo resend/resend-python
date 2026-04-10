@@ -84,7 +84,9 @@ class AsyncRequest(Generic[T]):
             async_client = resend.default_async_http_client
 
             # Priority 2: user set an AsyncHTTPClient on default_http_client (legacy, still supported)
-            if async_client is None and isinstance(resend.default_http_client, AsyncHTTPClient):
+            if async_client is None and isinstance(
+                resend.default_http_client, AsyncHTTPClient
+            ):
                 async_client = resend.default_http_client
 
             if async_client is None:
