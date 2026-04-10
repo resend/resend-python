@@ -1,8 +1,8 @@
 from typing import Dict, List, Mapping, Optional, Tuple, Union
 
-from resend.http_client_async import AsyncHTTPClient
-
 import httpx
+
+from resend.http_client_async import AsyncHTTPClient
 
 
 class HTTPXClient(AsyncHTTPClient):

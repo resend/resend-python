@@ -10,25 +10,29 @@ if not os.environ["RESEND_API_KEY"]:
 async def main() -> None:
     # Create a contact to use with event sends
     print("--- Create contact ---")
-    contact: resend.Contacts.CreateContactResponse = await resend.Contacts.create_async({
-        "email": "test-events-async@example.com",
-        "first_name": "Test",
-        "last_name": "User",
-    })
+    contact: resend.Contacts.CreateContactResponse = await resend.Contacts.create_async(
+        {
+            "email": "test-events-async@example.com",
+            "first_name": "Test",
+            "last_name": "User",
+        }
+    )
     contact_id = contact["id"]
     print(f"Contact: {contact_id}")
 
     # --- Create event ---
     print("\n--- Create event ---")
-    created: resend.Events.CreateResponse = await resend.Events.create_async({
-        "name": "user.signed_up",
-        "schema": {
-            "plan": "string",
-            "trial_days": "number",
-            "is_enterprise": "boolean",
-            "upgraded_at": "date",
-        },
-    })
+    created: resend.Events.CreateResponse = await resend.Events.create_async(
+        {
+            "name": "user.signed_up",
+            "schema": {
+                "plan": "string",
+                "trial_days": "number",
+                "is_enterprise": "boolean",
+                "upgraded_at": "date",
+            },
+        }
+    )
     event_id = created["id"]
     print(f"Created event: {event_id}")
 
@@ -44,27 +48,33 @@ async def main() -> None:
 
     # --- Update event schema ---
     print("\n--- Update event schema ---")
-    updated: resend.Events.UpdateResponse = await resend.Events.update_async({
-        "identifier": "user.signed_up",
-        "schema": {"plan": "string", "source": "string"},
-    })
+    updated: resend.Events.UpdateResponse = await resend.Events.update_async(
+        {
+            "identifier": "user.signed_up",
+            "schema": {"plan": "string", "source": "string"},
+        }
+    )
     print(f"Updated event: {updated['id']}")
 
     # --- Send event with contact_id ---
     print("\n--- Send event with contact_id ---")
-    sent: resend.Events.SendResponse = await resend.Events.send_async({
-        "event": "user.signed_up",
-        "contact_id": contact_id,
-        "payload": {"plan": "pro"},
-    })
+    sent: resend.Events.SendResponse = await resend.Events.send_async(
+        {
+            "event": "user.signed_up",
+            "contact_id": contact_id,
+            "payload": {"plan": "pro"},
+        }
+    )
     print(f"Sent event: {sent['event']}")
 
     # --- Send event with email ---
     print("\n--- Send event with email ---")
-    sent_email: resend.Events.SendResponse = await resend.Events.send_async({
-        "event": "user.signed_up",
-        "email": "test-events-async@example.com",
-    })
+    sent_email: resend.Events.SendResponse = await resend.Events.send_async(
+        {
+            "event": "user.signed_up",
+            "email": "test-events-async@example.com",
+        }
+    )
     print(f"Sent event: {sent_email['event']}")
 
     # --- List events ---

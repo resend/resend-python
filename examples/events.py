@@ -7,11 +7,13 @@ if not os.environ["RESEND_API_KEY"]:
 
 # Create a contact to use with event sends
 print("--- Create contact ---")
-contact: resend.Contacts.CreateContactResponse = resend.Contacts.create({
-    "email": "test-events@example.com",
-    "first_name": "Test",
-    "last_name": "User",
-})
+contact: resend.Contacts.CreateContactResponse = resend.Contacts.create(
+    {
+        "email": "test-events@example.com",
+        "first_name": "Test",
+        "last_name": "User",
+    }
+)
 contact_id = contact["id"]
 print(f"Contact: {contact_id}")
 
@@ -23,15 +25,17 @@ print(f"Created event: {event_id}")
 
 # --- Create event with schema ---
 print("\n--- Create event with schema ---")
-created_with_schema: resend.Events.CreateResponse = resend.Events.create({
-    "name": "user.upgraded",
-    "schema": {
-        "plan": "string",
-        "trial_days": "number",
-        "is_enterprise": "boolean",
-        "upgraded_at": "date",
-    },
-})
+created_with_schema: resend.Events.CreateResponse = resend.Events.create(
+    {
+        "name": "user.upgraded",
+        "schema": {
+            "plan": "string",
+            "trial_days": "number",
+            "is_enterprise": "boolean",
+            "upgraded_at": "date",
+        },
+    }
+)
 print(f"Created event with schema: {created_with_schema['id']}")
 
 # --- Get event by ID ---
@@ -48,27 +52,33 @@ print(f"Found by name: {event_by_name['name']}")
 
 # --- Update event schema ---
 print("\n--- Update event schema ---")
-updated: resend.Events.UpdateResponse = resend.Events.update({
-    "identifier": "user.signed_up",
-    "schema": {"plan": "string", "source": "string"},
-})
+updated: resend.Events.UpdateResponse = resend.Events.update(
+    {
+        "identifier": "user.signed_up",
+        "schema": {"plan": "string", "source": "string"},
+    }
+)
 print(f"Updated event: {updated['id']}")
 
 # --- Send event with contact_id ---
 print("\n--- Send event with contact_id ---")
-sent: resend.Events.SendResponse = resend.Events.send({
-    "event": "user.signed_up",
-    "contact_id": contact_id,
-    "payload": {"plan": "pro", "source": "web"},
-})
+sent: resend.Events.SendResponse = resend.Events.send(
+    {
+        "event": "user.signed_up",
+        "contact_id": contact_id,
+        "payload": {"plan": "pro", "source": "web"},
+    }
+)
 print(f"Sent event: {sent['event']}")
 
 # --- Send event with email ---
 print("\n--- Send event with email ---")
-sent_email: resend.Events.SendResponse = resend.Events.send({
-    "event": "user.signed_up",
-    "email": "test-events@example.com",
-})
+sent_email: resend.Events.SendResponse = resend.Events.send(
+    {
+        "event": "user.signed_up",
+        "email": "test-events@example.com",
+    }
+)
 print(f"Sent event: {sent_email['event']}")
 
 # --- List events ---

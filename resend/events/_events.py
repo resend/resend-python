@@ -305,7 +305,9 @@ class Events:
         return resp
 
     @classmethod
-    def list(cls, params: Optional["Events.ListParams"] = None) -> "Events.ListResponse":
+    def list(
+        cls, params: Optional["Events.ListParams"] = None
+    ) -> "Events.ListResponse":
         """
         Retrieve a list of event definitions.
         see more: https://resend.com/docs/api-reference/events/list-events
@@ -328,7 +330,9 @@ class Events:
         return resp
 
     @classmethod
-    async def create_async(cls, params: "Events.CreateParams") -> "Events.CreateResponse":
+    async def create_async(
+        cls, params: "Events.CreateParams"
+    ) -> "Events.CreateResponse":
         """
         Create an event definition (async).
         see more: https://resend.com/docs/api-reference/events/create-event
@@ -364,7 +368,9 @@ class Events:
         return resp
 
     @classmethod
-    async def update_async(cls, params: "Events.UpdateParams") -> "Events.UpdateResponse":
+    async def update_async(
+        cls, params: "Events.UpdateParams"
+    ) -> "Events.UpdateResponse":
         """
         Update an event definition (async).
         see more: https://resend.com/docs/api-reference/events/update-event
@@ -420,7 +426,9 @@ class Events:
         return resp
 
     @classmethod
-    async def list_async(cls, params: Optional["Events.ListParams"] = None) -> "Events.ListResponse":
+    async def list_async(
+        cls, params: Optional["Events.ListParams"] = None
+    ) -> "Events.ListResponse":
         """
         Retrieve a list of event definitions (async).
         see more: https://resend.com/docs/api-reference/events/list-events

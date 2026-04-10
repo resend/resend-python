@@ -79,7 +79,9 @@ async def main() -> None:
         print("No attachments")
 
     print("\n--- Listing All Received Emails ---")
-    all_emails: EmailsReceiving.ListResponse = await resend.Emails.Receiving.list_async()
+    all_emails: EmailsReceiving.ListResponse = (
+        await resend.Emails.Receiving.list_async()
+    )
 
     print(f"Total emails in this batch: {len(all_emails['data'])}")
     print(f"Has more emails: {all_emails['has_more']}")
@@ -138,7 +140,9 @@ async def main() -> None:
         first_attachment = received_email["attachments"][0]
         attachment_id = first_attachment["id"]
 
-        print(f"\n--- Retrieving Attachment Details: {first_attachment['filename']} ---")
+        print(
+            f"\n--- Retrieving Attachment Details: {first_attachment['filename']} ---"
+        )
 
         attachment_details: resend.EmailAttachmentDetails = (
             await resend.Emails.Receiving.Attachments.get_async(

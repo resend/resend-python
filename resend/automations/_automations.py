@@ -6,15 +6,9 @@ from resend import request
 from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
-from ._automation import (
-    Automation,
-    AutomationConnection,
-    AutomationListItem,
-    AutomationRun,
-    AutomationRunListItem,
-    AutomationStatus,
-    AutomationStep,
-)
+from ._automation import (Automation, AutomationConnection, AutomationListItem,
+                          AutomationRun, AutomationRunListItem,
+                          AutomationStatus, AutomationStep)
 
 # Async imports (optional - only available with pip install resend[async])
 try:
@@ -468,7 +462,9 @@ class Automations:
         return resp
 
     @classmethod
-    def list(cls, params: Optional["Automations.ListParams"] = None) -> "Automations.ListResponse":
+    def list(
+        cls, params: Optional["Automations.ListParams"] = None
+    ) -> "Automations.ListResponse":
         """
         Retrieve a list of automations.
         see more: https://resend.com/docs/api-reference/automations/list-automations
@@ -492,7 +488,9 @@ class Automations:
         return resp
 
     @classmethod
-    async def create_async(cls, params: "Automations.CreateParams") -> "Automations.CreateResponse":
+    async def create_async(
+        cls, params: "Automations.CreateParams"
+    ) -> "Automations.CreateResponse":
         """
         Create an automation (async).
         see more: https://resend.com/docs/api-reference/automations/create-automation
@@ -528,7 +526,9 @@ class Automations:
         return resp
 
     @classmethod
-    async def update_async(cls, params: "Automations.UpdateParams") -> "Automations.UpdateResponse":
+    async def update_async(
+        cls, params: "Automations.UpdateParams"
+    ) -> "Automations.UpdateResponse":
         """
         Update an automation (async).
         see more: https://resend.com/docs/api-reference/automations/update-automation
@@ -583,7 +583,9 @@ class Automations:
         return resp
 
     @classmethod
-    async def list_async(cls, params: Optional["Automations.ListParams"] = None) -> "Automations.ListResponse":
+    async def list_async(
+        cls, params: Optional["Automations.ListParams"] = None
+    ) -> "Automations.ListResponse":
         """
         Retrieve a list of automations (async).
         see more: https://resend.com/docs/api-reference/automations/list-automations

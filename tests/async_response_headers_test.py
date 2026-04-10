@@ -4,7 +4,6 @@ import pytest
 
 import resend
 
-
 pytestmark = pytest.mark.asyncio
 
 
@@ -104,16 +103,16 @@ class TestResponseHeadersIntegrationAsync:
         resend.default_async_http_client = mock_client
 
         try:
-            response = await resend.Emails.Receiving.get_async(
-                email_id="email_456"
-            )
+            response = await resend.Emails.Receiving.get_async(email_id="email_456")
 
             assert isinstance(response, dict)
             assert response["id"] == "email_456"
 
             # MIME email headers must be intact
             assert "headers" in response
-            assert response["headers"]["List-Unsubscribe"] == "<mailto:unsub@example.com>"
+            assert (
+                response["headers"]["List-Unsubscribe"] == "<mailto:unsub@example.com>"
+            )
             assert response["headers"]["X-Custom"] == "value"
 
             # HTTP response headers must be injected separately under http_headers
