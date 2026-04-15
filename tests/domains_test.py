@@ -207,6 +207,14 @@ class TestResendDomains(ResendBaseTest):
                         "ttl": "Auto",
                         "status": "not_started",
                     },
+                    {
+                        "record": "TrackingCAA",
+                        "name": "",
+                        "value": '0 issue "amazon.com"',
+                        "type": "CAA",
+                        "ttl": "Auto",
+                        "status": "not_started",
+                    },
                 ],
                 "region": "us-east-1",
             }
@@ -231,6 +239,13 @@ class TestResendDomains(ResendBaseTest):
         assert tracking_record["name"] == "links.example.com"
         assert tracking_record["value"] == "links1.resend-dns.com"
         assert tracking_record["type"] == "CNAME"
+        tracking_caa_record = next(
+            (r for r in (domain["records"] or []) if r["record"] == "TrackingCAA"),
+            None,
+        )
+        assert tracking_caa_record is not None
+        assert tracking_caa_record["type"] == "CAA"
+        assert tracking_caa_record["value"] == '0 issue "amazon.com"'
 
     def test_domains_get_with_tracking_fields(self) -> None:
         self.set_mock_json(
@@ -252,7 +267,15 @@ class TestResendDomains(ResendBaseTest):
                         "type": "CNAME",
                         "ttl": "Auto",
                         "status": "verified",
-                    }
+                    },
+                    {
+                        "record": "TrackingCAA",
+                        "name": "",
+                        "value": '0 issue "amazon.com"',
+                        "type": "CAA",
+                        "ttl": "Auto",
+                        "status": "verified",
+                    },
                 ],
             }
         )
@@ -264,6 +287,12 @@ class TestResendDomains(ResendBaseTest):
         assert domain["open_tracking"] is True
         assert domain["click_tracking"] is True
         assert domain["tracking_subdomain"] == "links"
+        tracking_caa_record = next(
+            (r for r in (domain["records"] or []) if r["record"] == "TrackingCAA"),
+            None,
+        )
+        assert tracking_caa_record is not None
+        assert tracking_caa_record["type"] == "CAA"
 
     def test_domains_update(self) -> None:
         self.set_mock_json(
