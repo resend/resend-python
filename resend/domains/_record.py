@@ -4,7 +4,7 @@ from typing_extensions import NotRequired, TypedDict
 class Record(TypedDict):
     record: str
     """
-    The domain record type, ie: SPF, DKIM, Inbound, Tracking.
+    The domain record type, ie: SPF, DKIM, Inbound, Tracking, TrackingCAA.
     """
     name: str
     """
