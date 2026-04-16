@@ -190,6 +190,8 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
             "name": "example.com",
             "region": "us-east-1",
             "tracking_subdomain": "links",
+            "click_tracking": True,
+            "open_tracking": True,
         }
         domain = await resend.Domains.create_async(params=create_params)
         assert domain["id"] == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
