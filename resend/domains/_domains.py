@@ -162,6 +162,14 @@ class Domains:
         """
         The custom subdomain used for click and open tracking links (e.g., "links").
         """
+        click_tracking: NotRequired[bool]
+        """
+        Track clicks within the body of each HTML email.
+        """
+        open_tracking: NotRequired[bool]
+        """
+        Track the open rate of each email.
+        """
 
     @classmethod
     def create(cls, params: CreateParams) -> CreateDomainResponse:

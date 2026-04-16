@@ -224,6 +224,8 @@ class TestResendDomains(ResendBaseTest):
             "name": "example.com",
             "region": "us-east-1",
             "tracking_subdomain": "links",
+            "click_tracking": True,
+            "open_tracking": True,
         }
         domain: resend.Domains.CreateDomainResponse = resend.Domains.create(
             params=create_params
