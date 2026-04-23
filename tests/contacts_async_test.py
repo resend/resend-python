@@ -248,3 +248,38 @@ class TestResendContactsAsync(AsyncResendBaseTest):
             _ = await resend.Contacts.list_async(
                 audience_id="48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8"
             )
+
+    async def test_contacts_list_async_by_segment_id(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
+                        "email": "steve.wozniak@gmail.com",
+                        "first_name": "Steve",
+                        "last_name": "Wozniak",
+                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "unsubscribed": False,
+                    }
+                ],
+            }
+        )
+
+        contacts: resend.Contacts.ListResponse = await resend.Contacts.list_async(
+            segment_id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        )
+        assert contacts["object"] == "list"
+        assert contacts["has_more"] is False
+        assert contacts["data"][0]["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
+        assert contacts["data"][0]["email"] == "steve.wozniak@gmail.com"
+
+    async def test_should_list_contacts_async_by_segment_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = await resend.Contacts.list_async(
+                segment_id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
+            )

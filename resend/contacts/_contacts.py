@@ -250,29 +250,34 @@ class Contacts:
 
     @classmethod
     def list(
-        cls, audience_id: Optional[str] = None, params: Optional[ListParams] = None
+        cls,
+        audience_id: Optional[str] = None,
+        params: Optional[ListParams] = None,
+        segment_id: Optional[str] = None,
     ) -> ListResponse:
         """
         List all contacts.
-        Can list either global contacts or audience-specific contacts.
+        Can list global contacts, audience-specific contacts, or segment contacts.
         see more: https://resend.com/docs/api-reference/contacts/list-contacts
 
         Args:
-            audience_id (Optional[str]): The audience ID. If not provided, lists all global contacts.
+            audience_id (Optional[str]): Deprecated. Use segment_id instead.
             params (Optional[ListParams]): Optional pagination parameters
                 - limit: Number of contacts to retrieve (max 100, min 1).
                   If not provided, all contacts will be returned without pagination.
                 - after: ID after which to retrieve more contacts
                 - before: ID before which to retrieve more contacts
+            segment_id (Optional[str]): The segment ID. When provided, lists contacts
+                in the segment via GET /segments/{segment_id}/contacts.
 
         Returns:
             ListResponse: A list of contact objects
         """
-        if audience_id:
-            # Audience-specific contacts
+        if segment_id:
+            base_path = f"/segments/{segment_id}/contacts"
+        elif audience_id:
             base_path = f"/audiences/{audience_id}/contacts"
         else:
-            # Global contacts
             base_path = "/contacts"
 
         query_params = cast(Dict[Any, Any], params) if params else None
@@ -419,21 +424,28 @@ class Contacts:
 
     @classmethod
     async def list_async(
-        cls, audience_id: Optional[str] = None, params: Optional[ListParams] = None
+        cls,
+        audience_id: Optional[str] = None,
+        params: Optional[ListParams] = None,
+        segment_id: Optional[str] = None,
     ) -> ListResponse:
         """
         List all contacts (async).
-        Can list either global contacts or audience-specific contacts.
+        Can list global contacts, audience-specific contacts, or segment contacts.
         see more: https://resend.com/docs/api-reference/contacts/list-contacts
 
         Args:
-            audience_id (Optional[str]): The audience ID. If not provided, lists all global contacts.
+            audience_id (Optional[str]): Deprecated. Use segment_id instead.
             params (Optional[ListParams]): Optional pagination parameters
+            segment_id (Optional[str]): The segment ID. When provided, lists contacts
+                in the segment via GET /segments/{segment_id}/contacts.
 
         Returns:
             ListResponse: A list of contact objects
         """
-        if audience_id:
+        if segment_id:
+            base_path = f"/segments/{segment_id}/contacts"
+        elif audience_id:
             base_path = f"/audiences/{audience_id}/contacts"
         else:
             base_path = "/contacts"
