@@ -387,6 +387,65 @@ class TestResendContacts(ResendBaseTest):
         assert contacts["data"][0]["id"] == "global-1"
         assert contacts["data"][1]["id"] == "global-2"
 
+    def test_contacts_list_by_segment_id(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
+                        "email": "steve.wozniak@gmail.com",
+                        "first_name": "Steve",
+                        "last_name": "Wozniak",
+                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "unsubscribed": False,
+                    }
+                ],
+            }
+        )
+
+        contacts: resend.Contacts.ListResponse = resend.Contacts.list(
+            segment_id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        )
+        assert contacts["object"] == "list"
+        assert contacts["has_more"] is False
+        assert contacts["data"][0]["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
+        assert contacts["data"][0]["email"] == "steve.wozniak@gmail.com"
+
+    def test_contacts_list_by_segment_id_with_pagination(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": True,
+                "data": [
+                    {
+                        "id": "contact-1",
+                        "email": "contact1@example.com",
+                        "first_name": "Contact",
+                        "last_name": "One",
+                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "unsubscribed": False,
+                    }
+                ],
+            }
+        )
+
+        params: resend.Contacts.ListParams = {"limit": 10, "after": "previous-id"}
+        contacts: resend.Contacts.ListResponse = resend.Contacts.list(
+            segment_id="78261eea-8f8b-4381-83c6-79fa7120f1cf", params=params
+        )
+        assert contacts["object"] == "list"
+        assert contacts["has_more"] is True
+        assert len(contacts["data"]) == 1
+
+    def test_should_list_contacts_by_segment_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Contacts.list(segment_id="78261eea-8f8b-4381-83c6-79fa7120f1cf")
+
     def test_contacts_remove_global_by_id(self) -> None:
         self.set_mock_json(
             {
