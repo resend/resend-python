@@ -11,9 +11,9 @@ class EmailAttachment(TypedDict):
 
     Attributes:
         id (str): The attachment ID.
-        filename (str): The filename of the attachment.
+        filename (Optional[str]): The filename of the attachment.
         content_type (str): The content type of the attachment.
-        content_disposition (str): The content disposition of the attachment.
+        content_disposition (Optional[str]): The content disposition of the attachment.
         content_id (NotRequired[str]): The content ID for inline attachments.
         size (NotRequired[int]): The size of the attachment in bytes.
     """
@@ -22,7 +22,7 @@ class EmailAttachment(TypedDict):
     """
     The attachment ID.
     """
-    filename: str
+    filename: Optional[str]
     """
     The filename of the attachment.
     """
@@ -30,7 +30,7 @@ class EmailAttachment(TypedDict):
     """
     The content type of the attachment.
     """
-    content_disposition: str
+    content_disposition: Optional[str]
     """
     The content disposition of the attachment.
     """
@@ -51,9 +51,9 @@ class EmailAttachmentDetails(TypedDict):
     Attributes:
         object (str): The object type.
         id (str): The attachment ID.
-        filename (str): The filename of the attachment.
+        filename (Optional[str]): The filename of the attachment.
         content_type (str): The content type of the attachment.
-        content_disposition (str): The content disposition of the attachment.
+        content_disposition (Optional[str]): The content disposition of the attachment.
         content_id (NotRequired[str]): The content ID for inline attachments.
         download_url (str): The URL to download the attachment.
         expires_at (str): When the download URL expires.
@@ -67,7 +67,7 @@ class EmailAttachmentDetails(TypedDict):
     """
     The attachment ID.
     """
-    filename: str
+    filename: Optional[str]
     """
     The filename of the attachment.
     """
@@ -75,7 +75,7 @@ class EmailAttachmentDetails(TypedDict):
     """
     The content type of the attachment.
     """
-    content_disposition: str
+    content_disposition: Optional[str]
     """
     The content disposition of the attachment.
     """
