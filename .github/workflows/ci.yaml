@@ -1,10 +1,14 @@
 name: tests
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   lint-mypy:
     name: Lint, Mypy
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
@@ -23,6 +27,7 @@ jobs:
   tests:
     name: Tests
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -38,7 +43,7 @@ jobs:
       - name: Test with pytest and generate coverage file
         run: tox -e py
       - name: Upload coverage report to codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6
         if: success()
         with:
           file: coverage.xml
