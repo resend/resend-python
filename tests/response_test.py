@@ -18,6 +18,8 @@ class TestResponseDict(ResendBaseTest):
                         "content_type": "image/png",
                         "content_disposition": "inline",
                         "size": 1024,
+                        "download_url": "https://cdn.resend.com/att-1",
+                        "expires_at": "2025-10-17T14:29:41.521Z",
                     },
                 ],
             }
@@ -28,6 +30,7 @@ class TestResponseDict(ResendBaseTest):
         assert attachments["has_more"] is False
         assert len(attachments["data"]) == 1
         assert attachments["data"][0]["id"] == "att-1"
+        assert attachments["data"][0]["download_url"] == "https://cdn.resend.com/att-1"
 
     def test_list_response_supports_attribute_access(self) -> None:
         self.set_mock_json(
@@ -41,6 +44,8 @@ class TestResponseDict(ResendBaseTest):
                         "content_type": "image/png",
                         "content_disposition": "inline",
                         "size": 1024,
+                        "download_url": "https://cdn.resend.com/att-1",
+                        "expires_at": "2025-10-17T14:29:41.521Z",
                     },
                 ],
             }

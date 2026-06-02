@@ -56,6 +56,8 @@ class TestResendAttachmentsAsync(AsyncResendBaseTest):
                         "content_type": "image/png",
                         "content_disposition": "inline",
                         "size": 1024,
+                        "download_url": "https://cdn.resend.com/emails/test/attachments/test-id",
+                        "expires_at": "2025-10-17T14:29:41.521Z",
                     }
                 ],
             }
