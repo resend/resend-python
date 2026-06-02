@@ -117,6 +117,8 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
                         "content_disposition": "inline",
                         "content_id": "img001",
                         "size": 1024,
+                        "download_url": "https://inbound-cdn.resend.com/test/attachments/2a0c9ce0?signature=sig-123",
+                        "expires_at": "2025-10-17T14:29:41.521Z",
                     },
                     {
                         "id": "3b1d0df1-4223-5839-a87f-58eecd27b429",
@@ -124,6 +126,8 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
                         "content_type": "application/pdf",
                         "content_disposition": "attachment",
                         "size": 2048,
+                        "download_url": "https://inbound-cdn.resend.com/test/attachments/3b1d0df1?signature=sig-456",
+                        "expires_at": "2025-10-17T14:29:41.521Z",
                     },
                 ],
             }

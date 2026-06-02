@@ -1,21 +1,26 @@
 from typing import Dict, List, Optional
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend._base_response import BaseResponse
 
 
 class EmailAttachment(TypedDict):
     """
-    EmailAttachment type that wraps an attachment object from an email.
+    Attachment metadata embedded in a received (inbound) email, as returned by
+    ``Emails.Receiving.get`` and ``Emails.Receiving.list``.
+
+    These are raw values from the inbound MIME parts, so ``filename``,
+    ``content_id``, and ``content_disposition`` can be null (e.g. S/MIME
+    signatures or calendar invites), and ``size`` is null in list responses.
 
     Attributes:
         id (str): The attachment ID.
         filename (Optional[str]): The filename of the attachment.
         content_type (str): The content type of the attachment.
+        content_id (Optional[str]): The content ID for inline attachments.
         content_disposition (Optional[str]): The content disposition of the attachment.
-        content_id (NotRequired[str]): The content ID for inline attachments.
-        size (NotRequired[int]): The size of the attachment in bytes.
+        size (Optional[int]): The size of the attachment in bytes.
     """
 
     id: str
@@ -30,44 +35,41 @@ class EmailAttachment(TypedDict):
     """
     The content type of the attachment.
     """
+    content_id: Optional[str]
+    """
+    The content ID for inline attachments.
+    """
     content_disposition: Optional[str]
     """
     The content disposition of the attachment.
     """
-    content_id: NotRequired[str]
-    """
-    The content ID for inline attachments.
-    """
-    size: NotRequired[int]
+    size: Optional[int]
     """
     The size of the attachment in bytes.
     """
 
 
-class EmailAttachmentDetails(TypedDict):
+class AttachmentWithSignedUrl(TypedDict):
     """
-    EmailAttachmentDetails type that wraps an email attachment with download details.
+    Attachment returned by the signed-URL endpoints that list or retrieve
+    attachments (for both sent and received emails).
 
     Attributes:
-        object (str): The object type.
         id (str): The attachment ID.
-        filename (Optional[str]): The filename of the attachment.
+        filename (NotRequired[str]): The filename of the attachment.
         content_type (str): The content type of the attachment.
-        content_disposition (Optional[str]): The content disposition of the attachment.
         content_id (NotRequired[str]): The content ID for inline attachments.
+        content_disposition (Literal["inline", "attachment"]): The content disposition of the attachment.
+        size (int): The size of the attachment in bytes.
         download_url (str): The URL to download the attachment.
         expires_at (str): When the download URL expires.
     """
 
-    object: str
-    """
-    The object type.
-    """
     id: str
     """
     The attachment ID.
     """
-    filename: Optional[str]
+    filename: NotRequired[str]
     """
     The filename of the attachment.
     """
@@ -75,13 +77,17 @@ class EmailAttachmentDetails(TypedDict):
     """
     The content type of the attachment.
     """
-    content_disposition: Optional[str]
-    """
-    The content disposition of the attachment.
-    """
     content_id: NotRequired[str]
     """
     The content ID for inline attachments.
+    """
+    content_disposition: Literal["inline", "attachment"]
+    """
+    The content disposition of the attachment.
+    """
+    size: int
+    """
+    The size of the attachment in bytes.
     """
     download_url: str
     """
@@ -90,6 +96,29 @@ class EmailAttachmentDetails(TypedDict):
     expires_at: str
     """
     When the download URL expires.
+    """
+
+
+class EmailAttachmentDetails(AttachmentWithSignedUrl):
+    """
+    A single attachment retrieved from a dedicated attachment endpoint. Same as
+    ``AttachmentWithSignedUrl`` with an added ``object`` field.
+
+    Attributes:
+        object (str): The object type.
+        id (str): The attachment ID.
+        filename (NotRequired[str]): The filename of the attachment.
+        content_type (str): The content type of the attachment.
+        content_id (NotRequired[str]): The content ID for inline attachments.
+        content_disposition (Literal["inline", "attachment"]): The content disposition of the attachment.
+        size (int): The size of the attachment in bytes.
+        download_url (str): The URL to download the attachment.
+        expires_at (str): When the download URL expires.
+    """
+
+    object: str
+    """
+    The object type.
     """
 
 

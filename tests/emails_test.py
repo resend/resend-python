@@ -280,6 +280,7 @@ class TestResendEmail(ResendBaseTest):
                         "content_type": "application/pdf",
                         "content_id": "cid_123",
                         "content_disposition": "attachment",
+                        "size": 4096,
                     }
                 ],
             }
@@ -331,6 +332,61 @@ class TestResendEmail(ResendBaseTest):
         assert email["cc"] is None
         assert email["reply_to"] is None
         assert len(email["attachments"]) == 0
+
+    def test_receiving_get_with_nullable_attachment_fields(self) -> None:
+        # Inbound MIME parts (S/MIME signatures, calendar invites) can return
+        # null for filename, content_id, and content_disposition.
+        # See: https://linear.app/resend/issue/DEV-934
+        self.set_mock_json(
+            {
+                "object": "inbound",
+                "id": "67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+                "to": ["received@example.com"],
+                "from": "sender@example.com",
+                "created_at": "2023-04-07T23:13:52.669661+00:00",
+                "subject": "Signed inbound email",
+                "html": None,
+                "text": "hello world",
+                "bcc": None,
+                "cc": None,
+                "reply_to": None,
+                "headers": {},
+                "message_id": "<msg@example.com>",
+                "attachments": [
+                    {
+                        "id": "f5e32216-3017-4118-97d5-5c84d991bf98",
+                        "filename": "smime.p7s",
+                        "content_type": "application/pkcs7-signature",
+                        "content_id": None,
+                        "content_disposition": "attachment",
+                        "size": 1361,
+                    },
+                    {
+                        "id": "68136802-3577-4911-a7d2-b303e61261ac",
+                        "filename": None,
+                        "content_type": "text/calendar",
+                        "content_id": None,
+                        "content_disposition": None,
+                        "size": 1152,
+                    },
+                ],
+            }
+        )
+
+        email: resend.ReceivedEmail = resend.Emails.Receiving.get(
+            email_id="67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+        )
+        assert len(email["attachments"]) == 2
+
+        smime = email["attachments"][0]
+        assert smime["filename"] == "smime.p7s"
+        assert smime["content_disposition"] == "attachment"
+        assert smime["content_id"] is None
+
+        calendar = email["attachments"][1]
+        assert calendar["filename"] is None
+        assert calendar["content_disposition"] is None
+        assert calendar["content_id"] is None
 
     def test_should_receiving_get_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
