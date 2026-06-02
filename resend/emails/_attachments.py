@@ -4,7 +4,7 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend._base_response import BaseResponse
-from resend.emails._received_email import (EmailAttachment,
+from resend.emails._received_email import (AttachmentWithSignedUrl,
                                            EmailAttachmentDetails)
 from resend.pagination_helper import PaginationHelper
 
@@ -35,7 +35,7 @@ class _ListResponse(BaseResponse):
     """
     The object type: "list"
     """
-    data: List[EmailAttachment]
+    data: List[AttachmentWithSignedUrl]
     """
     The list of attachment objects.
     """
@@ -66,7 +66,7 @@ class Attachments:
 
         Attributes:
             object (str): The object type: "list"
-            data (List[EmailAttachment]): The list of attachment objects.
+            data (List[AttachmentWithSignedUrl]): The list of attachment objects.
             has_more (bool): Whether there are more attachments available for pagination.
         """
 

@@ -31,8 +31,9 @@ from .emails._attachments import Attachments as EmailAttachments
 from .emails._batch import Batch, BatchValidationError
 from .emails._email import Email
 from .emails._emails import Emails, EmailTemplate
-from .emails._received_email import (EmailAttachment, EmailAttachmentDetails,
-                                     ListReceivedEmail, ReceivedEmail)
+from .emails._received_email import (AttachmentWithSignedUrl, EmailAttachment,
+                                     EmailAttachmentDetails, ListReceivedEmail,
+                                     ReceivedEmail)
 from .emails._receiving import Receiving as EmailsReceiving
 from .emails._tag import Tag
 from .events._event import (Event, EventListItem, EventSchema,
@@ -136,6 +137,7 @@ __all__ = [
     "BatchValidationError",
     "ReceivedEmail",
     "EmailAttachment",
+    "AttachmentWithSignedUrl",
     "EmailAttachmentDetails",
     "ListReceivedEmail",
     # Receiving types (for type hints)
