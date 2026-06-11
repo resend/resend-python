@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 
+import os
+import re
+
 from setuptools import find_packages, setup
 
-from resend.version import get_version
+# Read the version without importing the package (its deps may not be installed)
+with open("resend/version.py", encoding="utf8") as f:
+    version = re.search(r'__version__ = "([^"]+)"', f.read()).group(1)
 
-install_requires = open("requirements.txt").readlines()
+if os.path.exists("requirements.txt"):
+    install_requires = open("requirements.txt").readlines()
+else:
+    install_requires = ["requests>=2.31.0", "typing_extensions>=4.4.0"]
 
 setup(
     name="resend",
-    version=get_version(),
+    version=version,
     description="Resend Python SDK",
     long_description=open("README.md", encoding="utf8").read(),
     long_description_content_type="text/markdown",
