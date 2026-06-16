@@ -30,6 +30,7 @@ class _ListParams(TypedDict):
     Return emails before this cursor for pagination.
     """
 
+
 class _GetParams(TypedDict):
     html_format: NotRequired[Literal["data_uri", "cid"]]
     """
@@ -245,9 +246,7 @@ class Receiving:
         """
 
     @classmethod
-    def get(
-        cls, email_id: str, params: Optional[GetParams] = None
-    ) -> ReceivedEmail:
+    def get(cls, email_id: str, params: Optional[GetParams] = None) -> ReceivedEmail:
         """
         Retrieve a single received email.
         see more: https://resend.com/docs/api-reference/emails/retrieve-received-email
