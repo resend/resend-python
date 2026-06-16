@@ -1,4 +1,4 @@
-from typing import Dict, List, Mapping, Optional, Tuple, Union
+from typing import Any, Dict, List, Mapping, Optional, Tuple, Union
 
 import httpx
 
@@ -19,15 +19,26 @@ class HTTPXClient(AsyncHTTPClient):
         url: str,
         headers: Mapping[str, str],
         json: Optional[Union[Dict[str, object], List[object]]] = None,
+        files: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, str]] = None,
     ) -> Tuple[bytes, int, Mapping[str, str]]:
         try:
             async with httpx.AsyncClient(timeout=self._timeout) as client:
-                resp = await client.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
-                    json=json,
-                )
+                if files is not None:
+                    resp = await client.request(
+                        method=method,
+                        url=url,
+                        headers=headers,
+                        files=files,
+                        data=data,
+                    )
+                else:
+                    resp = await client.request(
+                        method=method,
+                        url=url,
+                        headers=headers,
+                        json=json,
+                    )
                 return resp.content, resp.status_code, resp.headers
         except httpx.RequestError as e:
             # This gets caught by the async request.perform() method

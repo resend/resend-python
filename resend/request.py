@@ -23,11 +23,15 @@ class Request(Generic[T]):
         params: ParamsType,
         verb: RequestVerb,
         options: Optional[Dict[str, Any]] = None,
+        files: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, str]] = None,
     ):
         self.path = path
         self.params = params
         self.verb = verb
         self.options = options
+        self.files = files
+        self.data = data
         self._response_headers: Dict[str, str] = {}
 
     def perform(self) -> Union[T, None]:
@@ -89,6 +93,8 @@ class Request(Generic[T]):
                 url=url,
                 headers=headers,
                 json=json_params,
+                files=self.files,
+                data=self.data,
             )
 
         # Safety net around the HTTP Client

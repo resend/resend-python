@@ -8,6 +8,7 @@ from resend.pagination_helper import PaginationHelper
 
 from ._contact import Contact
 from ._topics import Topics
+from .imports._contact_imports import ContactImports
 from .segments._contact_segments import ContactSegments
 
 # Async imports (optional - only available with pip install resend[async])
@@ -21,6 +22,7 @@ class Contacts:
     # Sub-API for managing contact-segment associations
     Segments = ContactSegments
     Topics = Topics
+    Imports = ContactImports
 
     class RemoveContactResponse(BaseResponse):
         """

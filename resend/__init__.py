@@ -22,6 +22,8 @@ from .contacts._contact import Contact
 from .contacts._contact_topic import ContactTopic, TopicSubscriptionUpdate
 from .contacts._contacts import Contacts
 from .contacts._topics import Topics as ContactsTopics
+from .contacts.imports._contact_import import ContactImport, ContactImportCounts
+from .contacts.imports._contact_imports import ContactImports
 from .contacts.segments._contact_segment import ContactSegment
 from .contacts.segments._contact_segments import ContactSegments
 from .domains._domain import Domain
@@ -83,6 +85,7 @@ __all__ = [
     "Audiences",
     "Automations",
     "Contacts",
+    "ContactImports",
     "ContactProperties",
     "Broadcasts",
     "Events",
@@ -110,6 +113,8 @@ __all__ = [
     "EventSchema",
     "EventSchemaFieldType",
     "Contact",
+    "ContactImport",
+    "ContactImportCounts",
     "ContactSegment",
     "ContactSegments",
     "ContactProperty",

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, Mapping, Optional, Tuple, Union
+from typing import Any, Dict, List, Mapping, Optional, Tuple, Union
 
 
 class AsyncHTTPClient(ABC):
@@ -16,5 +16,7 @@ class AsyncHTTPClient(ABC):
         url: str,
         headers: Mapping[str, str],
         json: Optional[Union[Dict[str, object], List[object]]] = None,
+        files: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, str]] = None,
     ) -> Tuple[bytes, int, Mapping[str, str]]:
         pass
