@@ -29,6 +29,50 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
         assert email["id"] == "67d9bcdb-5a02-42d7-8da9-0d6feea18cff"
         assert email["object"] == "received_email"
 
+    async def test_receiving_get_async_with_html_format_cid(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+                "object": "received_email",
+                "from": "sender@example.com",
+                "to": ["recipient@example.com"],
+                "subject": "Test subject",
+                "created_at": "2024-01-01T00:00:00Z",
+            }
+        )
+
+        params: EmailsReceiving.GetParams = {"html_format": "cid"}
+        email: resend.ReceivedEmail = await resend.Emails.Receiving.get_async(
+            email_id="67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+            params=params,
+        )
+        assert email["id"] == "67d9bcdb-5a02-42d7-8da9-0d6feea18cff"
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/receiving/67d9bcdb-5a02-42d7-8da9-0d6feea18cff?html_format=cid"
+        )
+
+    async def test_receiving_get_async_with_html_format_data_uri(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+                "object": "received_email",
+                "from": "sender@example.com",
+                "to": ["recipient@example.com"],
+                "subject": "Test subject",
+                "created_at": "2024-01-01T00:00:00Z",
+            }
+        )
+
+        params: EmailsReceiving.GetParams = {"html_format": "data_uri"}
+        email: resend.ReceivedEmail = await resend.Emails.Receiving.get_async(
+            email_id="67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+            params=params,
+        )
+        assert email["id"] == "67d9bcdb-5a02-42d7-8da9-0d6feea18cff"
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/receiving/67d9bcdb-5a02-42d7-8da9-0d6feea18cff?html_format=data_uri"
+        )
+
     async def test_should_get_receiving_async_raise_exception_when_no_content(
         self,
     ) -> None:
