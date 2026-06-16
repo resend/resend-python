@@ -7,6 +7,7 @@ WebhookStatus = Literal["enabled", "disabled"]
 WebhookEvent = Literal[
     # Email events
     "email.sent",
+    "email.scheduled",
     "email.delivered",
     "email.delivery_delayed",
     "email.complained",
@@ -15,6 +16,7 @@ WebhookEvent = Literal[
     "email.clicked",
     "email.received",
     "email.failed",
+    "email.suppressed",
     # Contact events
     "contact.created",
     "contact.updated",
