@@ -108,10 +108,10 @@ class ContactImports:
         if "column_map" in params:
             form_data["column_map"] = json_lib.dumps(params["column_map"])
         if "on_conflict" in params:
-            form_data["on_conflict"] = params["on_conflict"]  # type: ignore[assignment]
+            form_data["on_conflict"] = params["on_conflict"]
         if "segments" in params:
             form_data["segments"] = json_lib.dumps(
-                [{"id": sid} for sid in params["segments"]]  # type: ignore[union-attr]
+                [{"id": sid} for sid in params["segments"]]
             )
 
         resp = request.Request[ContactImports.CreateContactImportResponse](
@@ -194,10 +194,10 @@ class ContactImports:
         if "column_map" in params:
             form_data["column_map"] = json_lib.dumps(params["column_map"])
         if "on_conflict" in params:
-            form_data["on_conflict"] = params["on_conflict"]  # type: ignore[assignment]
+            form_data["on_conflict"] = params["on_conflict"]
         if "segments" in params:
             form_data["segments"] = json_lib.dumps(
-                [{"id": sid} for sid in params["segments"]]  # type: ignore[union-attr]
+                [{"id": sid} for sid in params["segments"]]
             )
 
         resp = await AsyncRequest[ContactImports.CreateContactImportResponse](

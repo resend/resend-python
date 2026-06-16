@@ -60,7 +60,9 @@ class TestContactImports(ResendBaseTest):
         )
         assert result["id"] == "479e3145-dd38-476b-932c-529ceb705947"
         assert result["status"] == "completed"
-        assert result["counts"]["total"] == 100
+        counts = result["counts"]
+        assert counts is not None
+        assert counts["total"] == 100
 
     def test_get_contact_import_missing_id(self) -> None:
         try:
