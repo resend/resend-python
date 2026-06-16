@@ -388,6 +388,62 @@ class TestResendEmail(ResendBaseTest):
         assert calendar["content_disposition"] is None
         assert calendar["content_id"] is None
 
+    def test_receiving_get_with_html_format_cid(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "inbound",
+                "id": "67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+                "to": ["received@example.com"],
+                "from": "sender@example.com",
+                "created_at": "2023-04-07T23:13:52.669661+00:00",
+                "subject": "Test inbound email",
+                "html": '<img src="cid:img001" />',
+                "text": "hello world",
+                "bcc": None,
+                "cc": None,
+                "reply_to": None,
+                "attachments": [],
+            }
+        )
+
+        params: EmailsReceiving.GetParams = {"html_format": "cid"}
+        email: resend.ReceivedEmail = resend.Emails.Receiving.get(
+            email_id="67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+            params=params,
+        )
+        assert email["id"] == "67d9bcdb-5a02-42d7-8da9-0d6feea18cff"
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/receiving/67d9bcdb-5a02-42d7-8da9-0d6feea18cff?html_format=cid"
+        )
+
+    def test_receiving_get_with_html_format_data_uri(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "inbound",
+                "id": "67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+                "to": ["received@example.com"],
+                "from": "sender@example.com",
+                "created_at": "2023-04-07T23:13:52.669661+00:00",
+                "subject": "Test inbound email",
+                "html": '<img src="data:image/png;base64,abc" />',
+                "text": "hello world",
+                "bcc": None,
+                "cc": None,
+                "reply_to": None,
+                "attachments": [],
+            }
+        )
+
+        params: EmailsReceiving.GetParams = {"html_format": "data_uri"}
+        email: resend.ReceivedEmail = resend.Emails.Receiving.get(
+            email_id="67d9bcdb-5a02-42d7-8da9-0d6feea18cff",
+            params=params,
+        )
+        assert email["id"] == "67d9bcdb-5a02-42d7-8da9-0d6feea18cff"
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/receiving/67d9bcdb-5a02-42d7-8da9-0d6feea18cff?html_format=data_uri"
+        )
+
     def test_should_receiving_get_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):

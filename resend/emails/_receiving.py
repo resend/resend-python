@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, cast
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 from resend._base_response import BaseResponse
@@ -28,6 +28,16 @@ class _ListParams(TypedDict):
     before: NotRequired[str]
     """
     Return emails before this cursor for pagination.
+    """
+
+
+class _GetParams(TypedDict):
+    html_format: NotRequired[Literal["data_uri", "cid"]]
+    """
+    Controls how inline images are returned inside ``html``. By default (or when
+    set to ``"data_uri"``), inline images appear in ``html`` as base64 ``data:``
+    URIs. Set to ``"cid"`` to keep the original ``<img src="cid:..." />``
+    references instead, each of which matches the ``content_id`` of an attachment.
     """
 
 
@@ -214,6 +224,17 @@ class Receiving:
             before (NotRequired[str]): Return emails before this cursor for pagination.
         """
 
+    class GetParams(_GetParams):
+        """
+        GetParams is the class that wraps the query parameters for the get method.
+
+        Attributes:
+            html_format (NotRequired[Literal["data_uri", "cid"]]): Controls how
+                inline images are returned inside ``html``. Defaults to
+                ``"data_uri"`` (base64 data URIs); use ``"cid"`` to keep the
+                original ``cid:`` references.
+        """
+
     class ListResponse(_ListResponse):
         """
         ListResponse is the type that wraps the response for listing received emails.
@@ -225,18 +246,21 @@ class Receiving:
         """
 
     @classmethod
-    def get(cls, email_id: str) -> ReceivedEmail:
+    def get(cls, email_id: str, params: Optional[GetParams] = None) -> ReceivedEmail:
         """
         Retrieve a single received email.
         see more: https://resend.com/docs/api-reference/emails/retrieve-received-email
 
         Args:
             email_id (str): The ID of the received email to retrieve
+            params (Optional[GetParams]): Optional query parameters (e.g. html_format)
 
         Returns:
             ReceivedEmail: The received email object
         """
-        path = f"/emails/receiving/{email_id}"
+        base_path = f"/emails/receiving/{email_id}"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[ReceivedEmail](
             path=path,
             params={},
@@ -267,18 +291,23 @@ class Receiving:
         return resp
 
     @classmethod
-    async def get_async(cls, email_id: str) -> ReceivedEmail:
+    async def get_async(
+        cls, email_id: str, params: Optional[GetParams] = None
+    ) -> ReceivedEmail:
         """
         Retrieve a single received email (async).
         see more: https://resend.com/docs/api-reference/emails/retrieve-received-email
 
         Args:
             email_id (str): The ID of the received email to retrieve
+            params (Optional[GetParams]): Optional query parameters (e.g. html_format)
 
         Returns:
             ReceivedEmail: The received email object
         """
-        path = f"/emails/receiving/{email_id}"
+        base_path = f"/emails/receiving/{email_id}"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = await AsyncRequest[ReceivedEmail](
             path=path,
             params={},
