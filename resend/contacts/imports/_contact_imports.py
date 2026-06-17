@@ -66,6 +66,11 @@ class ContactImports:
         List of segment IDs to add imported contacts to.
         Will be serialized as [{"id": "..."}] before sending.
         """
+        topics: NotRequired[List[Dict[str, str]]]
+        """
+        List of topic subscriptions for imported contacts.
+        Each entry must have 'id' and 'subscription' ('opt_in' or 'opt_out').
+        """
 
     class ListParams(TypedDict):
         status: NotRequired[Literal["queued", "in_progress", "completed", "failed"]]
@@ -113,6 +118,8 @@ class ContactImports:
             form_data["segments"] = json_lib.dumps(
                 [{"id": sid} for sid in params["segments"]]
             )
+        if "topics" in params:
+            form_data["topics"] = json_lib.dumps(params["topics"])
 
         resp = request.Request[ContactImports.CreateContactImportResponse](
             path="/contacts/imports",
@@ -199,6 +206,8 @@ class ContactImports:
             form_data["segments"] = json_lib.dumps(
                 [{"id": sid} for sid in params["segments"]]
             )
+        if "topics" in params:
+            form_data["topics"] = json_lib.dumps(params["topics"])
 
         resp = await AsyncRequest[ContactImports.CreateContactImportResponse](
             path="/contacts/imports",
