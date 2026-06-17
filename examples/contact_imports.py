@@ -40,7 +40,7 @@ import_response: resend.Contacts.Imports.CreateContactImportResponse = (
 print("Created contact import with ID: {}".format(import_response["id"]))
 print(import_response)
 
-contact_import: resend.ContactImport = resend.Contacts.Imports.get(import_response["id"])
+contact_import: resend.Contacts.Imports.ContactImport = resend.Contacts.Imports.get(import_response["id"])
 print("Retrieved contact import")
 print(contact_import)
 

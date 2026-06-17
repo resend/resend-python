@@ -16,6 +16,8 @@ except ImportError:
 
 
 class ContactImports:
+    ContactImport = ContactImport
+
     class CreateContactImportResponse(BaseResponse):
         """
         CreateContactImportResponse wraps the response from a successful import creation.

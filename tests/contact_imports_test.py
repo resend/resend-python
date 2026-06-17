@@ -54,7 +54,7 @@ class TestContactImports(ResendBaseTest):
             }
         )
 
-        result: resend.ContactImport = resend.Contacts.Imports.get(
+        result: resend.Contacts.Imports.ContactImport = resend.Contacts.Imports.get(
             "479e3145-dd38-476b-932c-529ceb705947"
         )
         assert result["id"] == "479e3145-dd38-476b-932c-529ceb705947"
