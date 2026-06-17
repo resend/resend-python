@@ -33,10 +33,9 @@ class TestContactImports(ResendBaseTest):
         assert resp["id"] == "479e3145-dd38-476b-932c-529ceb705947"
 
     def test_create_contact_import_missing_file(self) -> None:
-        try:
+        with self.assertRaises(ValueError) as ctx:
             resend.Contacts.Imports.create({"file": b""})
-        except ValueError as e:
-            assert str(e) == "file is required"
+        assert str(ctx.exception) == "file is required"
 
     def test_get_contact_import(self) -> None:
         self.set_mock_json(
@@ -65,10 +64,9 @@ class TestContactImports(ResendBaseTest):
         assert counts["total"] == 100
 
     def test_get_contact_import_missing_id(self) -> None:
-        try:
+        with self.assertRaises(ValueError) as ctx:
             resend.Contacts.Imports.get("")
-        except ValueError as e:
-            assert str(e) == "id is required"
+        assert str(ctx.exception) == "id is required"
 
     def test_list_contact_imports(self) -> None:
         self.set_mock_json(

@@ -38,6 +38,7 @@ class RequestsClient(HTTPClient):
                     url=url,
                     headers=headers,
                     json=json,
+                    data=data,
                     timeout=self._timeout,
                 )
             return resp.content, resp.status_code, resp.headers

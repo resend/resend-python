@@ -38,6 +38,7 @@ class HTTPXClient(AsyncHTTPClient):
                         url=url,
                         headers=headers,
                         json=json,
+                        data=data,
                     )
                 return resp.content, resp.status_code, resp.headers
         except httpx.RequestError as e:
