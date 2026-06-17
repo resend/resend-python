@@ -27,7 +27,7 @@ class TestContactImports(ResendBaseTest):
             "filename": "contacts.csv",
             "on_conflict": "upsert",
             "column_map": {"email": "email", "first_name": "first_name"},
-            "segments": ["seg-123"],
+            "segments": [{"id": "seg-123"}],
         }
         resp = resend.Contacts.Imports.create(params)
         assert resp["id"] == "479e3145-dd38-476b-932c-529ceb705947"
