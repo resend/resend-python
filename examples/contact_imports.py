@@ -26,7 +26,7 @@ create_params: resend.ContactImports.CreateParams = {
     "segments": ["60a2ac5e-0774-456e-817d-ebf40f6dba31"],
     "topics": [
         {
-            "id": "059ac693-2fc8-4c13-8b27-01350d638a17",
+            "id": "284edd7e-b042-46dd-b5ee-a8a88a9ec65f",
             "subscription": "opt_in",
         },
     ],
