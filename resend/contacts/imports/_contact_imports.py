@@ -61,10 +61,11 @@ class ContactImports:
         """
         Strategy when an imported contact already exists: 'upsert' or 'skip' (default 'skip').
         """
-        segments: NotRequired[List[str]]
+        segments: NotRequired[List[Dict[str, str]]]
         """
-        List of segment IDs to add imported contacts to.
-        Will be serialized as [{"id": "..."}] before sending.
+        List of segment objects to add imported contacts to.
+        Each entry must have an 'id' key with the segment UUID.
+        Example: [{"id": "60a2ac5e-0774-456e-817d-ebf40f6dba31"}]
         """
         topics: NotRequired[List[Dict[str, str]]]
         """
@@ -106,9 +107,7 @@ class ContactImports:
         if "on_conflict" in params:
             form_data["on_conflict"] = params["on_conflict"]
         if "segments" in params:
-            form_data["segments"] = json_lib.dumps(
-                [{"id": sid} for sid in params["segments"]]
-            )
+            form_data["segments"] = json_lib.dumps(params["segments"])
         if "topics" in params:
             form_data["topics"] = json_lib.dumps(params["topics"])
         return files, form_data

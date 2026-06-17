@@ -25,7 +25,7 @@ create_params: resend.ContactImports.CreateParams = {
         },
     },
     "on_conflict": "upsert",
-    "segments": ["60a2ac5e-0774-456e-817d-ebf40f6dba31"],
+    "segments": [{"id": "60a2ac5e-0774-456e-817d-ebf40f6dba31"}],
     "topics": [
         {
             "id": "6eb54030-9489-4e9c-8de6-cd337c5fef1e",
