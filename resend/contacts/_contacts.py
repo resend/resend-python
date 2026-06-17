@@ -22,7 +22,9 @@ class Contacts:
     # Sub-API for managing contact-segment associations
     Segments = ContactSegments
     Topics = Topics
-    Imports = ContactImports
+
+    class Imports(ContactImports):
+        pass
 
     class RemoveContactResponse(BaseResponse):
         """
