@@ -1,13 +1,15 @@
 import os
+import time
 
 import resend
 
 if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
+ts = int(time.time())
 csv_path = os.path.join(os.path.dirname(__file__), "contacts.csv")
 with open(csv_path, "rb") as f:
-    file_content = f.read()
+    file_content = f.read().replace(b"steve@example.com,Steve,Wozniak", f"steve+{ts}@example.com,Steve,Wozniak".encode())
 
 create_params: resend.ContactImports.CreateParams = {
     "file": file_content,
@@ -26,7 +28,7 @@ create_params: resend.ContactImports.CreateParams = {
     "segments": ["60a2ac5e-0774-456e-817d-ebf40f6dba31"],
     "topics": [
         {
-            "id": "284edd7e-b042-46dd-b5ee-a8a88a9ec65f",
+            "id": "6eb54030-9489-4e9c-8de6-cd337c5fef1e",
             "subscription": "opt_in",
         },
     ],
