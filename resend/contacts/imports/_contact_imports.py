@@ -1,5 +1,5 @@
 import json as json_lib
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 from typing_extensions import Literal, NotRequired, TypedDict
 
@@ -93,7 +93,7 @@ class ContactImports:
     @staticmethod
     def _build_multipart(
         params: "ContactImports.CreateParams",
-    ) -> tuple:
+    ) -> Tuple[Dict[str, Any], Dict[str, str]]:
         if not params.get("file"):
             raise ValueError("file is required")
         filename = params.get("filename", "import.csv")
