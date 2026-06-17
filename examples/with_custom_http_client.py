@@ -21,6 +21,8 @@ class CustomRequestsClient(HTTPClient):
         url: str,
         headers: Mapping[str, str],
         json: Optional[Union[Dict[str, Any], List[Any]]] = None,
+        files: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, str]] = None,
     ) -> Tuple[bytes, int, Dict[str, str]]:
         print(f"[HTTP] {method.upper()} {url} with timeout={self.timeout}")
         try:
@@ -28,7 +30,9 @@ class CustomRequestsClient(HTTPClient):
                 method=method,
                 url=url,
                 headers=headers,
-                json=json,
+                json=json if data is None and files is None else None,
+                files=files,
+                data=data,
                 timeout=self.timeout,
             )
             return (

@@ -1,4 +1,4 @@
-from typing import Dict, List, Mapping, Optional, Tuple, Union
+from typing import Any, Dict, List, Mapping, Optional, Tuple, Union
 
 import requests
 
@@ -19,15 +19,28 @@ class RequestsClient(HTTPClient):
         url: str,
         headers: Mapping[str, str],
         json: Optional[Union[Dict[str, object], List[object]]] = None,
+        files: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, str]] = None,
     ) -> Tuple[bytes, int, Mapping[str, str]]:
         try:
-            resp = requests.request(
-                method=method,
-                url=url,
-                headers=headers,
-                json=json,
-                timeout=self._timeout,
-            )
+            if files is not None:
+                resp = requests.request(
+                    method=method,
+                    url=url,
+                    headers=headers,
+                    files=files,
+                    data=data,
+                    timeout=self._timeout,
+                )
+            else:
+                resp = requests.request(
+                    method=method,
+                    url=url,
+                    headers=headers,
+                    json=json if data is None else None,
+                    data=data,
+                    timeout=self._timeout,
+                )
             return resp.content, resp.status_code, resp.headers
         except requests.RequestException as e:
             # This gets caught by the request.perform() method

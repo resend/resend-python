@@ -23,11 +23,15 @@ class Request(Generic[T]):
         params: ParamsType,
         verb: RequestVerb,
         options: Optional[Dict[str, Any]] = None,
+        files: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, str]] = None,
     ):
         self.path = path
         self.params = params
         self.verb = verb
         self.options = options
+        self.files = files
+        self.data = data
         self._response_headers: Dict[str, str] = {}
 
     def perform(self) -> Union[T, None]:
@@ -84,12 +88,18 @@ class Request(Generic[T]):
 
             sync_client = cast(HTTPClient, resend.default_http_client)
 
-            content, _status_code, resp_headers = sync_client.request(
-                method=self.verb,
-                url=url,
-                headers=headers,
-                json=json_params,
-            )
+            kwargs: Dict[str, Any] = {
+                "method": self.verb,
+                "url": url,
+                "headers": headers,
+                "json": json_params,
+            }
+            if self.files is not None:
+                kwargs["files"] = self.files
+            if self.data is not None:
+                kwargs["data"] = self.data
+
+            content, _status_code, resp_headers = sync_client.request(**kwargs)
 
         # Safety net around the HTTP Client
         except Exception as e:
