@@ -1,4 +1,4 @@
-from typing import Optional
+from typing_extensions import NotRequired
 
 from resend._base_response import BaseResponse
 
@@ -38,4 +38,4 @@ class ContactImport(BaseResponse):
     id: str
     status: str
     created_at: str
-    counts: Optional[ContactImportCounts]
+    counts: NotRequired[ContactImportCounts]

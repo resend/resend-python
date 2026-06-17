@@ -88,14 +88,18 @@ class Request(Generic[T]):
 
             sync_client = cast(HTTPClient, resend.default_http_client)
 
-            content, _status_code, resp_headers = sync_client.request(
-                method=self.verb,
-                url=url,
-                headers=headers,
-                json=json_params,
-                files=self.files,
-                data=self.data,
-            )
+            kwargs: Dict[str, Any] = {
+                "method": self.verb,
+                "url": url,
+                "headers": headers,
+                "json": json_params,
+            }
+            if self.files is not None:
+                kwargs["files"] = self.files
+            if self.data is not None:
+                kwargs["data"] = self.data
+
+            content, _status_code, resp_headers = sync_client.request(**kwargs)
 
         # Safety net around the HTTP Client
         except Exception as e:

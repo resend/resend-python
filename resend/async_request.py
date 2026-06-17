@@ -101,14 +101,18 @@ class AsyncRequest(Generic[T]):
                     suggested_action="Run: pip install resend[async]",
                 )
 
-            content, _status_code, resp_headers = await async_client.request(
-                method=self.verb,
-                url=url,
-                headers=headers,
-                json=json_params,
-                files=self.files,
-                data=self.data,
-            )
+            kwargs: Dict[str, Any] = {
+                "method": self.verb,
+                "url": url,
+                "headers": headers,
+                "json": json_params,
+            }
+            if self.files is not None:
+                kwargs["files"] = self.files
+            if self.data is not None:
+                kwargs["data"] = self.data
+
+            content, _status_code, resp_headers = await async_client.request(**kwargs)
 
         # Safety net around the HTTP Client
         except ResendError:

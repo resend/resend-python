@@ -166,11 +166,6 @@ class ContactImports:
         """
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path("/contacts/imports", query_params)
-        # Append status filter if provided (PaginationHelper only handles limit/after/before)
-        if params and "status" in params:
-            separator = "&" if "?" in path else "?"
-            path = f"{path}{separator}status={params['status']}"
-
         resp = request.Request[ContactImports.ListContactImportsResponse](
             path=path,
             params={},
@@ -254,10 +249,6 @@ class ContactImports:
         """
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path("/contacts/imports", query_params)
-        if params and "status" in params:
-            separator = "&" if "?" in path else "?"
-            path = f"{path}{separator}status={params['status']}"
-
         resp = await AsyncRequest[ContactImports.ListContactImportsResponse](
             path=path,
             params={},
