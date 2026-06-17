@@ -30,7 +30,9 @@ class CustomRequestsClient(HTTPClient):
                 method=method,
                 url=url,
                 headers=headers,
-                json=json,
+                json=json if data is None and files is None else None,
+                files=files,
+                data=data,
                 timeout=self.timeout,
             )
             return (
