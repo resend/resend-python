@@ -10,10 +10,10 @@ class TestContactImports(ResendBaseTest):
             {"object": "contact_import", "id": "479e3145-dd38-476b-932c-529ceb705947"}
         )
 
-        params: resend.ContactImports.CreateParams = {
+        params: resend.Contacts.Imports.CreateParams = {
             "file": b"email,first_name\nsteve@example.com,Steve",
         }
-        resp: resend.ContactImports.CreateContactImportResponse = resend.Contacts.Imports.create(params)
+        resp: resend.Contacts.Imports.CreateContactImportResponse = resend.Contacts.Imports.create(params)
         assert resp["id"] == "479e3145-dd38-476b-932c-529ceb705947"
         assert resp["object"] == "contact_import"
 
@@ -22,7 +22,7 @@ class TestContactImports(ResendBaseTest):
             {"object": "contact_import", "id": "479e3145-dd38-476b-932c-529ceb705947"}
         )
 
-        params: resend.ContactImports.CreateParams = {
+        params: resend.Contacts.Imports.CreateParams = {
             "file": b"email,first_name\nsteve@example.com,Steve",
             "filename": "contacts.csv",
             "on_conflict": "upsert",
@@ -84,7 +84,7 @@ class TestContactImports(ResendBaseTest):
             }
         )
 
-        result: resend.ContactImports.ListContactImportsResponse = resend.Contacts.Imports.list()
+        result: resend.Contacts.Imports.ListContactImportsResponse = resend.Contacts.Imports.list()
         assert result["object"] == "list"
         assert result["has_more"] is False
         assert len(result["data"]) == 1
