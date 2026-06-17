@@ -37,7 +37,7 @@ class RequestsClient(HTTPClient):
                     method=method,
                     url=url,
                     headers=headers,
-                    json=json,
+                    json=json if data is None else None,
                     data=data,
                     timeout=self._timeout,
                 )

@@ -37,7 +37,7 @@ class HTTPXClient(AsyncHTTPClient):
                         method=method,
                         url=url,
                         headers=headers,
-                        json=json,
+                        json=json if data is None else None,
                         data=data,
                     )
                 return resp.content, resp.status_code, resp.headers

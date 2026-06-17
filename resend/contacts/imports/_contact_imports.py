@@ -90,21 +90,12 @@ class ContactImports:
         Cursor for backward pagination (exclusive).
         """
 
-    @classmethod
-    def create(cls, params: CreateParams) -> CreateContactImportResponse:
-        """
-        Create a new contact import from a CSV file.
-        see more: https://resend.com/docs/api-reference/contacts/create-contact-import
-
-        Args:
-            params (CreateParams): Import parameters including the CSV file content.
-
-        Returns:
-            CreateContactImportResponse: The created import job with its ID.
-        """
+    @staticmethod
+    def _build_multipart(
+        params: "ContactImports.CreateParams",
+    ) -> tuple:
         if not params.get("file"):
             raise ValueError("file is required")
-
         filename = params.get("filename", "import.csv")
         files: Dict[str, Any] = {
             "file": (filename, params["file"], "text/csv"),
@@ -120,7 +111,21 @@ class ContactImports:
             )
         if "topics" in params:
             form_data["topics"] = json_lib.dumps(params["topics"])
+        return files, form_data
 
+    @classmethod
+    def create(cls, params: CreateParams) -> CreateContactImportResponse:
+        """
+        Create a new contact import from a CSV file.
+        see more: https://resend.com/docs/api-reference/contacts/create-contact-import
+
+        Args:
+            params (CreateParams): Import parameters including the CSV file content.
+
+        Returns:
+            CreateContactImportResponse: The created import job with its ID.
+        """
+        files, form_data = cls._build_multipart(params)
         resp = request.Request[ContactImports.CreateContactImportResponse](
             path="/contacts/imports",
             params={},
@@ -185,25 +190,7 @@ class ContactImports:
         Returns:
             CreateContactImportResponse: The created import job with its ID.
         """
-        if not params.get("file"):
-            raise ValueError("file is required")
-
-        filename = params.get("filename", "import.csv")
-        files: Dict[str, Any] = {
-            "file": (filename, params["file"], "text/csv"),
-        }
-        form_data: Dict[str, str] = {}
-        if "column_map" in params:
-            form_data["column_map"] = json_lib.dumps(params["column_map"])
-        if "on_conflict" in params:
-            form_data["on_conflict"] = params["on_conflict"]
-        if "segments" in params:
-            form_data["segments"] = json_lib.dumps(
-                [{"id": sid} for sid in params["segments"]]
-            )
-        if "topics" in params:
-            form_data["topics"] = json_lib.dumps(params["topics"])
-
+        files, form_data = cls._build_multipart(params)
         resp = await AsyncRequest[ContactImports.CreateContactImportResponse](
             path="/contacts/imports",
             params={},
