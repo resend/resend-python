@@ -181,6 +181,10 @@ class _ReceivedEmailDefaultAttrs(_ReceivedEmailFromParam, BaseResponse):
     """
     Reply-to addresses.
     """
+    received_for: List[str]
+    """
+    Addresses the email was received for (forwarding recipients).
+    """
     message_id: str
     """
     The message ID of the email.
@@ -211,6 +215,7 @@ class ReceivedEmail(_ReceivedEmailDefaultAttrs):
         bcc (Optional[List[str]]): Bcc recipients.
         cc (Optional[List[str]]): Cc recipients.
         reply_to (Optional[List[str]]): Reply-to addresses.
+        received_for (List[str]): Addresses the email was received for (forwarding recipients).
         message_id (str): The message ID of the email.
         headers (NotRequired[Dict[str, str]]): Email headers.
         attachments (List[EmailAttachment]): List of attachments.

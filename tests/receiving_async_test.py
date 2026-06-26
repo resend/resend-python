@@ -20,6 +20,7 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
                 "to": ["recipient@example.com"],
                 "subject": "Test subject",
                 "created_at": "2024-01-01T00:00:00Z",
+                "received_for": ["forwarded@example.com"],
             }
         )
 
@@ -28,6 +29,7 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
         )
         assert email["id"] == "67d9bcdb-5a02-42d7-8da9-0d6feea18cff"
         assert email["object"] == "received_email"
+        assert email["received_for"] == ["forwarded@example.com"]
 
     async def test_receiving_get_async_with_html_format_cid(self) -> None:
         self.set_mock_json(
