@@ -195,3 +195,91 @@ class Audiences:
             stacklevel=2,
         )
         return Segments.remove(id)
+
+    @classmethod
+    async def create_async(cls, params: CreateParams) -> CreateAudienceResponse:
+        """
+        Create a list of contacts (async).
+        see more: https://resend.com/docs/api-reference/audiences/create-audience
+
+        Args:
+            params (CreateParams): The audience creation parameters
+
+        Returns:
+            CreateAudienceResponse: The created audience response
+
+        .. deprecated::
+            Use Segments.create_async() instead. Audiences is now an alias for Segments.
+        """
+        warnings.warn(
+            "Audiences is deprecated. Use Segments instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return await Segments.create_async(params)
+
+    @classmethod
+    async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
+        """
+        Retrieve a list of audiences (async).
+        see more: https://resend.com/docs/api-reference/audiences/list-audiences
+
+        Args:
+            params (Optional[ListParams]): Optional pagination parameters
+
+        Returns:
+            ListResponse: A list of audience objects
+
+        .. deprecated::
+            Use Segments.list_async() instead. Audiences is now an alias for Segments.
+        """
+        warnings.warn(
+            "Audiences is deprecated. Use Segments instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return await Segments.list_async(params)
+
+    @classmethod
+    async def get_async(cls, id: str) -> Audience:
+        """
+        Retrieve a single audience (async).
+        see more: https://resend.com/docs/api-reference/audiences/get-audience
+
+        Args:
+            id (str): The audience ID
+
+        Returns:
+            Audience: The audience object
+
+        .. deprecated::
+            Use Segments.get_async() instead. Audiences is now an alias for Segments.
+        """
+        warnings.warn(
+            "Audiences is deprecated. Use Segments instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return await Segments.get_async(id)
+
+    @classmethod
+    async def remove_async(cls, id: str) -> RemoveAudienceResponse:
+        """
+        Delete a single audience (async).
+        see more: https://resend.com/docs/api-reference/audiences/delete-audience
+
+        Args:
+            id (str): The audience ID
+
+        Returns:
+            RemoveAudienceResponse: The removed audience response
+
+        .. deprecated::
+            Use Segments.remove_async() instead. Audiences is now an alias for Segments.
+        """
+        warnings.warn(
+            "Audiences is deprecated. Use Segments instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return await Segments.remove_async(id)
