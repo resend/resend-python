@@ -16,6 +16,10 @@ class _EmailDefaultAttrs(_FromParam):
     """
     The Email ID.
     """
+    message_id: str
+    """
+    RFC Message-ID header value for the email.
+    """
     to: Union[List[str], str]
     """
     List of email addresses to send the email to.
@@ -60,6 +64,7 @@ class Email(_EmailDefaultAttrs):
 
     Attributes:
         id (str): The Email ID.
+        message_id (str): RFC Message-ID header value for the email.
         from (str): The email address the email was sent from.
         to (Union[List[str], str]): List of email addresses to send the email to.
         created_at (str): When the email was created.

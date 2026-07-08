@@ -1,5 +1,6 @@
 import base64
 import hmac
+import json
 import time
 from hashlib import sha256
 from typing import Any, Dict, List, Optional, cast
@@ -17,6 +18,7 @@ except ImportError:
     pass
 from resend.webhooks._webhook import (VerifyWebhookOptions, Webhook,
                                       WebhookEvent, WebhookStatus)
+from resend.webhooks._webhook_event import WebhookEventPayload
 
 # Default tolerance for timestamp validation (5 minutes)
 DEFAULT_WEBHOOK_TOLERANCE_SECONDS = 300
@@ -263,7 +265,7 @@ class Webhooks:
         return resp
 
     @classmethod
-    def verify(cls, options: VerifyWebhookOptions) -> None:
+    def verify(cls, options: VerifyWebhookOptions) -> WebhookEventPayload:
         """
         Verify validates a webhook payload using HMAC-SHA256 signature verification.
         This implements manual verification without external dependencies.
@@ -279,7 +281,7 @@ class Webhooks:
             ValueError: If verification fails or required parameters are missing
 
         Returns:
-            None: Returns None on successful verification, raises ValueError otherwise
+            WebhookEventPayload: The verified and parsed webhook event payload
         """
         # Validate required parameters
         if not options:
@@ -350,7 +352,13 @@ class Webhooks:
 
             received_signature = parts[1]
             if hmac.compare_digest(expected_signature, received_signature):
-                return  # Signature matches
+                try:
+                    return cast(
+                        WebhookEventPayload,
+                        json.loads(options["payload"]),
+                    )
+                except json.JSONDecodeError as e:
+                    raise ValueError(f"failed to parse webhook payload: {e}")
 
         raise ValueError("no matching signature found")
 

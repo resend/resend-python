@@ -115,7 +115,7 @@ class TestWebhookVerification:
         secret = "whsec_" + base64.b64encode(b"test_secret_key").decode("utf-8")
         msg_id = "msg_123"
         timestamp = str(int(time.time()))
-        payload = '{"type":"email.sent","data":{"email_id":"123"}}'
+        payload = '{"type":"email.sent","created_at":"2026-02-22T23:41:12.126Z","data":{"email_id":"123","message_id":"<msg@example.com>","created_at":"2026-02-22T23:41:11.894719+00:00","from":"onboarding@resend.dev","to":["delivered@resend.dev"],"subject":"Hello"}}'
 
         signature = self._generate_test_signature(secret, msg_id, timestamp, payload)
 
@@ -132,14 +132,17 @@ class TestWebhookVerification:
         }
 
         # Should not raise an exception
-        resend.Webhooks.verify(options)
+        event = resend.Webhooks.verify(options)
+        assert event["type"] == "email.sent"
+        assert event["data"]["email_id"] == "123"
+        assert event["data"]["message_id"] == "<msg@example.com>"
 
     def test_verify_invalid_signature(self) -> None:
         """Test webhook verification with invalid signature"""
         secret = "whsec_" + base64.b64encode(b"test_secret_key").decode("utf-8")
         msg_id = "msg_123"
         timestamp = str(int(time.time()))
-        payload = '{"type":"email.sent","data":{"email_id":"123"}}'
+        payload = '{"type":"email.sent","created_at":"2026-02-22T23:41:12.126Z","data":{"email_id":"123","message_id":"<msg@example.com>","created_at":"2026-02-22T23:41:11.894719+00:00","from":"onboarding@resend.dev","to":["delivered@resend.dev"],"subject":"Hello"}}'
 
         headers: resend.WebhookHeaders = {
             "id": msg_id,
@@ -162,7 +165,7 @@ class TestWebhookVerification:
         msg_id = "msg_123"
         # Timestamp from 10 minutes ago (beyond the 5-minute tolerance)
         timestamp = str(int(time.time()) - 600)
-        payload = '{"type":"email.sent","data":{"email_id":"123"}}'
+        payload = '{"type":"email.sent","created_at":"2026-02-22T23:41:12.126Z","data":{"email_id":"123","message_id":"<msg@example.com>","created_at":"2026-02-22T23:41:11.894719+00:00","from":"onboarding@resend.dev","to":["delivered@resend.dev"],"subject":"Hello"}}'
 
         signature = self._generate_test_signature(secret, msg_id, timestamp, payload)
 
@@ -261,7 +264,7 @@ class TestWebhookVerification:
         secret = "whsec_" + base64.b64encode(b"test_secret_key").decode("utf-8")
         msg_id = "msg_123"
         timestamp = str(int(time.time()))
-        payload = '{"type":"email.sent","data":{"email_id":"123"}}'
+        payload = '{"type":"email.sent","created_at":"2026-02-22T23:41:12.126Z","data":{"email_id":"123","message_id":"<msg@example.com>","created_at":"2026-02-22T23:41:11.894719+00:00","from":"onboarding@resend.dev","to":["delivered@resend.dev"],"subject":"Hello"}}'
 
         valid_signature = self._generate_test_signature(
             secret, msg_id, timestamp, payload
@@ -281,7 +284,9 @@ class TestWebhookVerification:
         }
 
         # Should not raise an exception (finds the valid signature)
-        resend.Webhooks.verify(options)
+        event = resend.Webhooks.verify(options)
+        assert event["type"] == "email.sent"
+        assert event["data"]["message_id"] == "<msg@example.com>"
 
     def test_verify_tampered_payload(self) -> None:
         """Test webhook verification with tampered payload"""
@@ -311,4 +316,28 @@ class TestWebhookVerification:
         }
 
         with pytest.raises(ValueError, match="no matching signature found"):
+            resend.Webhooks.verify(options)
+
+    def test_verify_invalid_json_payload(self) -> None:
+        """Test webhook verification with invalid JSON after valid signature"""
+        secret = "whsec_" + base64.b64encode(b"test_secret_key").decode("utf-8")
+        msg_id = "msg_123"
+        timestamp = str(int(time.time()))
+        payload = "not-json"
+
+        signature = self._generate_test_signature(secret, msg_id, timestamp, payload)
+
+        headers: resend.WebhookHeaders = {
+            "id": msg_id,
+            "timestamp": timestamp,
+            "signature": signature,
+        }
+
+        options: resend.VerifyWebhookOptions = {
+            "payload": payload,
+            "headers": headers,
+            "webhook_secret": secret,
+        }
+
+        with pytest.raises(ValueError, match="failed to parse webhook payload"):
             resend.Webhooks.verify(options)
