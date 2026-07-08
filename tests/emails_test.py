@@ -203,9 +203,7 @@ class TestResendEmail(ResendBaseTest):
         assert len(emails["data"]) == 2
         assert emails["has_more"] == True
         assert emails["data"][0]["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
-        assert (
-            emails["data"][0]["message_id"] == "<111-222-333@email.example.com>"
-        )
+        assert emails["data"][0]["message_id"] == "<111-222-333@email.example.com>"
         assert emails["data"][1]["id"] == "5ef9a417-02e9-4d39-ad75-9611e0fcc33d"
 
     def test_email_list_with_params(self) -> None:
