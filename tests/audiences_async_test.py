@@ -110,3 +110,122 @@ class TestResendSegmentsAsync(AsyncResendBaseTest):
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
             _ = await resend.Segments.list_async()
+
+
+class TestResendAudiencesAsync(AsyncResendBaseTest):
+    async def test_audiences_create_async(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "audience",
+                "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+                "name": "Registered Users",
+            }
+        )
+
+        params: resend.Audiences.CreateParams = {
+            "name": "Python SDK Audience",
+        }
+        with pytest.warns(DeprecationWarning):
+            audience = await resend.Audiences.create_async(params)
+        assert audience["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert audience["name"] == "Registered Users"
+
+    async def test_audiences_create_async_raises_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        params: resend.Audiences.CreateParams = {
+            "name": "Python SDK Audience",
+        }
+        with pytest.warns(DeprecationWarning):
+            with pytest.raises(NoContentError):
+                _ = await resend.Audiences.create_async(params)
+
+    async def test_audiences_get_async(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "audience",
+                "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+                "name": "Registered Users",
+                "created_at": "2023-10-06T22:59:55.977Z",
+            }
+        )
+
+        with pytest.warns(DeprecationWarning):
+            audience = await resend.Audiences.get_async(
+                id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
+            )
+        assert audience["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert audience["name"] == "Registered Users"
+        assert audience["created_at"] == "2023-10-06T22:59:55.977Z"
+
+    async def test_audiences_get_async_raises_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.warns(DeprecationWarning):
+            with pytest.raises(NoContentError):
+                _ = await resend.Audiences.get_async(
+                    id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
+                )
+
+    async def test_audiences_remove_async(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "audience",
+                "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+                "deleted": True,
+            }
+        )
+
+        with pytest.warns(DeprecationWarning):
+            rmed: resend.Audiences.RemoveAudienceResponse = (
+                await resend.Audiences.remove_async(
+                    "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+                )
+            )
+        assert rmed["object"] == "audience"
+        assert rmed["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert rmed["deleted"] is True
+
+    async def test_audiences_remove_async_raises_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.warns(DeprecationWarning):
+            with pytest.raises(NoContentError):
+                _ = await resend.Audiences.remove_async(
+                    id="78261eea-8f8b-4381-83c6-79fa7120f1cf"
+                )
+
+    async def test_audiences_list_async(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+                        "name": "Registered Users",
+                        "created_at": "2023-10-06T22:59:55.977Z",
+                    }
+                ],
+            }
+        )
+
+        with pytest.warns(DeprecationWarning):
+            audiences: resend.Audiences.ListResponse = (
+                await resend.Audiences.list_async()
+            )
+        assert audiences["object"] == "list"
+        assert audiences["has_more"] is False
+        assert audiences["data"][0]["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert audiences["data"][0]["name"] == "Registered Users"
+
+    async def test_audiences_list_async_raises_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.warns(DeprecationWarning):
+            with pytest.raises(NoContentError):
+                _ = await resend.Audiences.list_async()
