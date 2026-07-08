@@ -61,9 +61,19 @@ class TestResendApiKeysAsync(AsyncResendBaseTest):
             _ = await resend.ApiKeys.list_async()
 
     async def test_api_keys_remove_async(self) -> None:
-        self.set_mock_text("")
-
-        # Remove operation returns None, verify no exceptions raised
-        await resend.ApiKeys.remove_async(
-            api_key_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+        self.set_mock_json(
+            {
+                "object": "api_key",
+                "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+                "deleted": True,
+            }
         )
+
+        deleted_key: resend.ApiKeys.DeleteApiKeyResponse = (
+            await resend.ApiKeys.remove_async(
+                api_key_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            )
+        )
+        assert deleted_key["object"] == "api_key"
+        assert deleted_key["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+        assert deleted_key["deleted"] is True
