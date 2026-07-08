@@ -62,57 +62,26 @@ class BaseEmailEventData(_BaseEmailEventDataFromParam):
     """
 
 
-class EmailBounce(TypedDict):
-    """
-    Bounce details from the receiving server.
+# API fields use camelCase (subType) to match webhook JSON payloads.
+EmailBounce = TypedDict(
+    "EmailBounce",
+    {
+        "message": str,
+        "subType": str,
+        "type": str,
+    },
+)
 
-    Attributes:
-        message (str): Detailed bounce message from the receiving server.
-        subType (str): Bounce sub-type (e.g., Suppressed, MessageRejected).
-        type (str): Bounce type (e.g., Permanent, Temporary).
-    """
-
-    message: str
-    """
-    Detailed bounce message from the receiving server.
-    """
-    subType: str
-    """
-    Bounce sub-type (e.g., Suppressed, MessageRejected).
-    """
-    type: str
-    """
-    Bounce type (e.g., Permanent, Temporary).
-    """
-
-
-class EmailClick(TypedDict):
-    """
-    Click tracking details.
-
-    Attributes:
-        ipAddress (str): IP address of the user who clicked the link.
-        link (str): The URL that was clicked.
-        timestamp (str): ISO 8601 timestamp when the click occurred.
-        userAgent (str): User agent string of the browser that clicked the link.
-    """
-
-    ipAddress: str
-    """
-    IP address of the user who clicked the link.
-    """
-    link: str
-    """
-    The URL that was clicked.
-    """
-    timestamp: str
-    """
-    ISO 8601 timestamp when the click occurred.
-    """
-    userAgent: str
-    """
-    User agent string of the browser that clicked the link.
-    """
+# API fields use camelCase (ipAddress, userAgent) to match webhook JSON payloads.
+EmailClick = TypedDict(
+    "EmailClick",
+    {
+        "ipAddress": str,
+        "link": str,
+        "timestamp": str,
+        "userAgent": str,
+    },
+)
 
 
 class EmailFailed(TypedDict):
