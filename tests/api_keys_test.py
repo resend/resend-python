@@ -128,11 +128,17 @@ class TestResendApiKeys(ResendBaseTest):
         assert keys["data"][0]["id"] == "test-key-3"
 
     def test_api_keys_remove(self) -> None:
-        self.set_mock_text("")
-
-        assert (
-            resend.ApiKeys.remove(
-                api_key_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
-            )
-            is None
+        self.set_mock_json(
+            {
+                "object": "api_key",
+                "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+                "deleted": True,
+            }
         )
+
+        deleted_key: resend.ApiKeys.DeleteApiKeyResponse = resend.ApiKeys.remove(
+            api_key_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+        )
+        assert deleted_key["object"] == "api_key"
+        assert deleted_key["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+        assert deleted_key["deleted"] is True

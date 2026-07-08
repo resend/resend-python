@@ -57,6 +57,29 @@ class ApiKeys:
         The token of the created API key
         """
 
+    class DeleteApiKeyResponse(BaseResponse):
+        """
+        DeleteApiKeyResponse is the type that wraps the deleted API key response.
+
+        Attributes:
+            object (str): The object type, always "api_key"
+            id (str): The ID of the deleted API key
+            deleted (bool): Whether the API key was deleted
+        """
+
+        object: str
+        """
+        The object type, always "api_key"
+        """
+        id: str
+        """
+        The ID of the deleted API key
+        """
+        deleted: bool
+        """
+        Whether the API key was deleted
+        """
+
     class ListParams(TypedDict):
         limit: NotRequired[int]
         """
@@ -134,7 +157,7 @@ class ApiKeys:
         return resp
 
     @classmethod
-    def remove(cls, api_key_id: str) -> None:
+    def remove(cls, api_key_id: str) -> DeleteApiKeyResponse:
         """
         Remove an existing API key.
         see more: https://resend.com/docs/api-reference/api-keys/delete-api-key
@@ -143,13 +166,13 @@ class ApiKeys:
             api_key_id (str): The ID of the API key to remove
 
         Returns:
-            None
+            DeleteApiKeyResponse: The deleted API key response
         """
         path = f"/api-keys/{api_key_id}"
-
-        # This would raise if failed
-        request.Request[None](path=path, params={}, verb="delete").perform()
-        return None
+        resp = request.Request[ApiKeys.DeleteApiKeyResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
 
     @classmethod
     async def create_async(cls, params: CreateParams) -> CreateApiKeyResponse:
@@ -190,7 +213,7 @@ class ApiKeys:
         return resp
 
     @classmethod
-    async def remove_async(cls, api_key_id: str) -> None:
+    async def remove_async(cls, api_key_id: str) -> DeleteApiKeyResponse:
         """
         Remove an existing API key (async).
         see more: https://resend.com/docs/api-reference/api-keys/delete-api-key
@@ -199,10 +222,10 @@ class ApiKeys:
             api_key_id (str): The ID of the API key to remove
 
         Returns:
-            None
+            DeleteApiKeyResponse: The deleted API key response
         """
         path = f"/api-keys/{api_key_id}"
-
-        # This would raise if failed
-        await AsyncRequest[None](path=path, params={}, verb="delete").perform()
-        return None
+        resp = await AsyncRequest[ApiKeys.DeleteApiKeyResponse](
+            path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
