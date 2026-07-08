@@ -41,6 +41,7 @@ class TestResendEmail(ResendBaseTest):
             {
                 "object": "email",
                 "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+                "message_id": "<111-222-333@email.example.com>",
                 "to": ["james@bond.com"],
                 "from": "onboarding@resend.dev",
                 "created_at": "2023-04-03T22:13:42.674981+00:00",
@@ -58,6 +59,7 @@ class TestResendEmail(ResendBaseTest):
             email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
         )
         assert email["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+        assert email["message_id"] == "<111-222-333@email.example.com>"
 
     def test_should_get_email_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
@@ -165,6 +167,7 @@ class TestResendEmail(ResendBaseTest):
                 "data": [
                     {
                         "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+                        "message_id": "<111-222-333@email.example.com>",
                         "to": ["james@bond.com"],
                         "from": "onboarding@resend.dev",
                         "created_at": "2023-04-03T22:13:42.674981+00:00",
@@ -178,6 +181,7 @@ class TestResendEmail(ResendBaseTest):
                     },
                     {
                         "id": "5ef9a417-02e9-4d39-ad75-9611e0fcc33d",
+                        "message_id": "<222-333-444@email.example.com>",
                         "to": ["test@example.com"],
                         "from": "hello@resend.dev",
                         "created_at": "2023-04-04T10:15:42.674981+00:00",
@@ -199,6 +203,7 @@ class TestResendEmail(ResendBaseTest):
         assert len(emails["data"]) == 2
         assert emails["has_more"] == True
         assert emails["data"][0]["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+        assert emails["data"][0]["message_id"] == "<111-222-333@email.example.com>"
         assert emails["data"][1]["id"] == "5ef9a417-02e9-4d39-ad75-9611e0fcc33d"
 
     def test_email_list_with_params(self) -> None:
