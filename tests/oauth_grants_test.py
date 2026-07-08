@@ -69,7 +69,7 @@ class TestResendOAuthGrants(ResendBaseTest):
         assert grant["revoked_reason"] == "revoked_from_api"
         assert grant["client"]["logo_uri"] is None
 
-    def test_should_list_oauth_grants_raise_exception_when_no_content(self) -> None:
+    def test_list_oauth_grants_returns_no_content_error(self) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
             _ = resend.OAuthGrants.list()
@@ -159,7 +159,7 @@ class TestResendOAuthGrants(ResendBaseTest):
         assert revoked["revoked_at"] == "2023-06-22T06:10:36.144Z"
         assert revoked["revoked_reason"] == "revoked_from_api"
 
-    def test_should_revoke_oauth_grant_raise_exception_when_no_content(self) -> None:
+    def test_revoke_oauth_grant_returns_no_content_error(self) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
             _ = resend.OAuthGrants.revoke(oauth_grant_id="grant-1")

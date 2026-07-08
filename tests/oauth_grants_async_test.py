@@ -39,7 +39,7 @@ class TestResendOAuthGrantsAsync(AsyncResendBaseTest):
             assert grant["scopes"] == ["emails:send"]
             assert grant["client"]["name"] == "Resend CLI"
 
-    async def test_should_list_oauth_grants_async_raise_exception_when_no_content(
+    async def test_list_oauth_grants_async_returns_no_content_error(
         self,
     ) -> None:
         self.set_mock_json(None)
@@ -66,7 +66,7 @@ class TestResendOAuthGrantsAsync(AsyncResendBaseTest):
         assert revoked["revoked_at"] == "2023-06-22T06:10:36.144Z"
         assert revoked["revoked_reason"] == "revoked_from_api"
 
-    async def test_should_revoke_oauth_grant_async_raise_exception_when_no_content(
+    async def test_revoke_oauth_grant_async_returns_no_content_error(
         self,
     ) -> None:
         self.set_mock_json(None)
