@@ -47,6 +47,8 @@ from .http_client_async import \
 from .http_client_requests import RequestsClient
 from .logs._log import Log
 from .logs._logs import Logs
+from .oauth_grants._oauth_grant import OAuthGrant, OAuthGrantClient
+from .oauth_grants._oauth_grants import OAuthGrants
 from .request import Request
 from .segments._segment import Segment
 from .segments._segments import Segments
@@ -94,6 +96,7 @@ __all__ = [
     "Webhooks",
     "Topics",
     "Logs",
+    "OAuthGrants",
     # Types
     "Audience",
     "Automation",
@@ -139,6 +142,8 @@ __all__ = [
     "WebhookStatus",
     "VerifyWebhookOptions",
     "Topic",
+    "OAuthGrant",
+    "OAuthGrantClient",
     "BatchValidationError",
     "ReceivedEmail",
     "EmailAttachment",
