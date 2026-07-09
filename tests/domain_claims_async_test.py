@@ -41,6 +41,27 @@ class TestDomainClaimsAsync(AsyncResendBaseTest):
         assert claim["status"] == "pending"
         assert claim["record"]["type"] == "TXT"
 
+    async def test_domain_claims_create_async_with_options(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "domain_claim",
+                "id": "dacf4072-4119-4d88-932f-6c6126d3a9d1",
+                "name": "example.com",
+                "status": "pending",
+            }
+        )
+
+        params: resend.Domains.Claims.CreateParams = {
+            "name": "example.com",
+            "region": "us-east-1",
+            "custom_return_path": "send",
+            "open_tracking": True,
+            "click_tracking": False,
+            "tracking_subdomain": "links",
+        }
+        claim = await resend.Domains.Claims.create_async(params)
+        assert claim["id"] == "dacf4072-4119-4d88-932f-6c6126d3a9d1"
+
     async def test_should_create_domain_claim_async_raise_exception_when_no_content(
         self,
     ) -> None:
