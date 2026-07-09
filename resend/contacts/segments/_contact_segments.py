@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Optional, cast
+from urllib.parse import quote
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -185,7 +186,8 @@ class ContactSegments:
             raise ValueError("Either contact_id or email must be provided")
 
         segment_id = params["segment_id"]
-        path = f"/contacts/{contact_identifier}/segments/{segment_id}"
+        encoded_contact_identifier = quote(contact_identifier, safe="")
+        path = f"/contacts/{encoded_contact_identifier}/segments/{segment_id}"
         resp = request.Request[ContactSegments.AddContactSegmentResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
@@ -210,7 +212,8 @@ class ContactSegments:
             raise ValueError("Either contact_id or email must be provided")
 
         segment_id = params["segment_id"]
-        path = f"/contacts/{contact_identifier}/segments/{segment_id}"
+        encoded_contact_identifier = quote(contact_identifier, safe="")
+        path = f"/contacts/{encoded_contact_identifier}/segments/{segment_id}"
         resp = request.Request[ContactSegments.RemoveContactSegmentResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
@@ -237,7 +240,8 @@ class ContactSegments:
         if not contact_identifier:
             raise ValueError("Either contact_id or email must be provided")
 
-        base_path = f"/contacts/{contact_identifier}/segments"
+        encoded_contact_identifier = quote(contact_identifier, safe="")
+        base_path = f"/contacts/{encoded_contact_identifier}/segments"
         query_params = cast(Dict[Any, Any], pagination) if pagination else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[ContactSegments.ListContactSegmentsResponse](
@@ -264,7 +268,8 @@ class ContactSegments:
             raise ValueError("Either contact_id or email must be provided")
 
         segment_id = params["segment_id"]
-        path = f"/contacts/{contact_identifier}/segments/{segment_id}"
+        encoded_contact_identifier = quote(contact_identifier, safe="")
+        path = f"/contacts/{encoded_contact_identifier}/segments/{segment_id}"
         resp = await AsyncRequest[ContactSegments.AddContactSegmentResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
         ).perform_with_content()
@@ -289,7 +294,8 @@ class ContactSegments:
             raise ValueError("Either contact_id or email must be provided")
 
         segment_id = params["segment_id"]
-        path = f"/contacts/{contact_identifier}/segments/{segment_id}"
+        encoded_contact_identifier = quote(contact_identifier, safe="")
+        path = f"/contacts/{encoded_contact_identifier}/segments/{segment_id}"
         resp = await AsyncRequest[ContactSegments.RemoveContactSegmentResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
@@ -316,7 +322,8 @@ class ContactSegments:
         if not contact_identifier:
             raise ValueError("Either contact_id or email must be provided")
 
-        base_path = f"/contacts/{contact_identifier}/segments"
+        encoded_contact_identifier = quote(contact_identifier, safe="")
+        base_path = f"/contacts/{encoded_contact_identifier}/segments"
         query_params = cast(Dict[Any, Any], pagination) if pagination else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = await AsyncRequest[ContactSegments.ListContactSegmentsResponse](

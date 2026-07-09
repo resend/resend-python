@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Optional, cast
+from urllib.parse import quote
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -238,14 +239,15 @@ class Contacts:
         contact_identifier = (
             params.get("email") if params.get("email") is not None else params.get("id")
         )
+        encoded_contact_identifier = quote(cast(str, contact_identifier), safe="")
         audience_id = params.get("audience_id")
 
         if audience_id:
             # Audience-specific contact (no properties support)
-            path = f"/audiences/{audience_id}/contacts/{contact_identifier}"
+            path = f"/audiences/{audience_id}/contacts/{encoded_contact_identifier}"
         else:
             # Global contact (supports properties)
-            path = f"/contacts/{contact_identifier}"
+            path = f"/contacts/{encoded_contact_identifier}"
 
         resp = request.Request[Contacts.UpdateContactResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
@@ -316,12 +318,13 @@ class Contacts:
         if contact_identifier is None:
             raise ValueError("id or email must be provided")
 
+        encoded_contact_identifier = quote(contact_identifier, safe="")
         if audience_id:
             # Audience-specific contact
-            path = f"/audiences/{audience_id}/contacts/{contact_identifier}"
+            path = f"/audiences/{audience_id}/contacts/{encoded_contact_identifier}"
         else:
             # Global contact
-            path = f"/contacts/{contact_identifier}"
+            path = f"/contacts/{encoded_contact_identifier}"
 
         resp = request.Request[Contact](
             path=path, params={}, verb="get"
@@ -353,12 +356,13 @@ class Contacts:
         if contact_identifier is None:
             raise ValueError("id or email must be provided")
 
+        encoded_contact_identifier = quote(contact_identifier, safe="")
         if audience_id:
             # Audience-specific contact
-            path = f"/audiences/{audience_id}/contacts/{contact_identifier}"
+            path = f"/audiences/{audience_id}/contacts/{encoded_contact_identifier}"
         else:
             # Global contact
-            path = f"/contacts/{contact_identifier}"
+            path = f"/contacts/{encoded_contact_identifier}"
 
         resp = request.Request[Contacts.RemoveContactResponse](
             path=path, params={}, verb="delete"
@@ -414,12 +418,13 @@ class Contacts:
         contact_identifier = (
             params.get("email") if params.get("email") is not None else params.get("id")
         )
+        encoded_contact_identifier = quote(cast(str, contact_identifier), safe="")
         audience_id = params.get("audience_id")
 
         if audience_id:
-            path = f"/audiences/{audience_id}/contacts/{contact_identifier}"
+            path = f"/audiences/{audience_id}/contacts/{encoded_contact_identifier}"
         else:
-            path = f"/contacts/{contact_identifier}"
+            path = f"/contacts/{encoded_contact_identifier}"
 
         resp = await AsyncRequest[Contacts.UpdateContactResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
@@ -486,10 +491,11 @@ class Contacts:
         if contact_identifier is None:
             raise ValueError("id or email must be provided")
 
+        encoded_contact_identifier = quote(contact_identifier, safe="")
         if audience_id:
-            path = f"/audiences/{audience_id}/contacts/{contact_identifier}"
+            path = f"/audiences/{audience_id}/contacts/{encoded_contact_identifier}"
         else:
-            path = f"/contacts/{contact_identifier}"
+            path = f"/contacts/{encoded_contact_identifier}"
 
         resp = await AsyncRequest[Contact](
             path=path, params={}, verb="get"
@@ -520,10 +526,11 @@ class Contacts:
         if contact_identifier is None:
             raise ValueError("id or email must be provided")
 
+        encoded_contact_identifier = quote(contact_identifier, safe="")
         if audience_id:
-            path = f"/audiences/{audience_id}/contacts/{contact_identifier}"
+            path = f"/audiences/{audience_id}/contacts/{encoded_contact_identifier}"
         else:
-            path = f"/contacts/{contact_identifier}"
+            path = f"/contacts/{encoded_contact_identifier}"
 
         resp = await AsyncRequest[Contacts.RemoveContactResponse](
             path=path, params={}, verb="delete"
