@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List
 from unittest.mock import patch
 
 import resend
@@ -195,12 +195,12 @@ class TestResendBatchSend(ResendBaseTest):
             }
         ]
 
-        captured_params: list = []
+        captured_params: List[Any] = []
         original_init = request.Request.__init__
 
-        def capturing_init(instance, *args, **kwargs):
+        def capturing_init(instance: Any, *args: Any, **kwargs: Any) -> None:
             captured_params.append(kwargs.get("params"))
-            return original_init(instance, *args, **kwargs)
+            original_init(instance, *args, **kwargs)
 
         with patch.object(request.Request, "__init__", capturing_init):
             emails: resend.Batch.SendResponse = resend.Batch.send(params)
