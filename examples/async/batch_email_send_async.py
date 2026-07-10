@@ -12,7 +12,7 @@ if not os.environ["RESEND_API_KEY"]:
 
 
 async def main() -> None:
-    params: List[resend.Emails.SendParams] = [
+    params: List[resend.Batch.SendParams] = [
         {
             "from": "onboarding@resend.dev",
             "to": ["delivered@resend.dev"],

@@ -8,7 +8,7 @@ if not os.environ["RESEND_API_KEY"]:
     raise EnvironmentError("RESEND_API_KEY is missing")
 
 
-params: List[resend.Emails.SendParams] = [
+params: List[resend.Batch.SendParams] = [
     {
         "from": "onboarding@resend.dev",
         "to": ["delivered@resend.dev"],
@@ -55,7 +55,7 @@ try:
     print("sending with permissive validation mode")
 
     # Example with some invalid emails to demonstrate error handling
-    mixed_params: List[resend.Emails.SendParams] = [
+    mixed_params: List[resend.Batch.SendParams] = [
         {
             "from": "onboarding@resend.dev",
             "to": ["delivered@resend.dev"],

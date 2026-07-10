@@ -1,6 +1,8 @@
 from typing import List
+from unittest.mock import patch
 
 import resend
+from resend import request
 from resend.exceptions import NoContentError
 from tests.conftest import ResendBaseTest
 
@@ -18,7 +20,7 @@ class TestResendBatchSend(ResendBaseTest):
             }
         )
 
-        params: List[resend.Emails.SendParams] = [
+        params: List[resend.Batch.SendParams] = [
             {
                 "from": "from@resend.dev",
                 "to": ["to@resend.dev"],
@@ -48,7 +50,7 @@ class TestResendBatchSend(ResendBaseTest):
             }
         )
 
-        params: List[resend.Emails.SendParams] = [
+        params: List[resend.Batch.SendParams] = [
             {
                 "from": "from@resend.dev",
                 "to": ["to@resend.dev"],
@@ -74,7 +76,7 @@ class TestResendBatchSend(ResendBaseTest):
 
     def test_should_send_batch_email_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
-        params: List[resend.Emails.SendParams] = [
+        params: List[resend.Batch.SendParams] = [
             {
                 "from": "from@resend.dev",
                 "to": ["to@resend.dev"],
@@ -101,7 +103,7 @@ class TestResendBatchSend(ResendBaseTest):
             }
         )
 
-        params: List[resend.Emails.SendParams] = [
+        params: List[resend.Batch.SendParams] = [
             {
                 "from": "from@resend.dev",
                 "to": ["to@resend.dev"],
@@ -141,7 +143,7 @@ class TestResendBatchSend(ResendBaseTest):
             }
         )
 
-        params: List[resend.Emails.SendParams] = [
+        params: List[resend.Batch.SendParams] = [
             {
                 "from": "from@resend.dev",
                 "to": ["to@resend.dev"],
@@ -167,3 +169,45 @@ class TestResendBatchSend(ResendBaseTest):
         assert len(emails["errors"]) == 1
         assert emails["errors"][0]["index"] == 1
         assert emails["errors"][0]["message"] == "The `to` field is missing."
+
+    def test_batch_email_send_with_tags_attachments_and_scheduled_at(self) -> None:
+        self.set_mock_json(
+            {
+                "data": [{"id": "ae2014de-c168-4c61-8267-70d2662a1ce1"}]
+            }
+        )
+
+        attachment: resend.Attachment = {
+            "filename": "invoice.pdf",
+            "content": [1, 2, 3],
+            "content_type": "application/pdf",
+        }
+
+        params: List[resend.Batch.SendParams] = [
+            {
+                "from": "from@resend.dev",
+                "to": ["to@resend.dev"],
+                "subject": "hey",
+                "html": "<strong>hello, world!</strong>",
+                "tags": [{"name": "category", "value": "notification"}],
+                "scheduled_at": "2024-09-05T11:52:01.858Z",
+                "attachments": [attachment],
+            }
+        ]
+
+        captured_params: list = []
+        original_init = request.Request.__init__
+
+        def capturing_init(instance, *args, **kwargs):
+            captured_params.append(kwargs.get("params"))
+            return original_init(instance, *args, **kwargs)
+
+        with patch.object(request.Request, "__init__", capturing_init):
+            emails: resend.Batch.SendResponse = resend.Batch.send(params)
+
+        assert emails["data"][0]["id"] == "ae2014de-c168-4c61-8267-70d2662a1ce1"
+
+        sent_params = captured_params[0]
+        assert sent_params[0]["tags"] == [{"name": "category", "value": "notification"}]
+        assert sent_params[0]["scheduled_at"] == "2024-09-05T11:52:01.858Z"
+        assert sent_params[0]["attachments"][0]["filename"] == "invoice.pdf"

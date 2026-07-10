@@ -22,7 +22,7 @@ class TestResendBatchSendAsync(AsyncResendBaseTest):
             }
         )
 
-        params: List[resend.Emails.SendParams] = [
+        params: List[resend.Batch.SendParams] = [
             {
                 "from": "from@resend.dev",
                 "to": ["to@resend.dev"],
@@ -52,7 +52,7 @@ class TestResendBatchSendAsync(AsyncResendBaseTest):
             }
         )
 
-        params: List[resend.Emails.SendParams] = [
+        params: List[resend.Batch.SendParams] = [
             {
                 "from": "from@resend.dev",
                 "to": ["to@resend.dev"],
@@ -82,7 +82,7 @@ class TestResendBatchSendAsync(AsyncResendBaseTest):
         self,
     ) -> None:
         self.set_mock_json(None)
-        params: List[resend.Emails.SendParams] = [
+        params: List[resend.Batch.SendParams] = [
             {
                 "from": "from@resend.dev",
                 "to": ["to@resend.dev"],
