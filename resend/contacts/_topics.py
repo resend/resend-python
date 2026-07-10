@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Optional, Union, cast
+from urllib.parse import quote
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -140,7 +141,8 @@ class Topics:
         if contact is None:
             raise ValueError("contact_id or email must be provided")
 
-        base_path = f"/contacts/{contact}/topics"
+        encoded_contact = quote(contact, safe="")
+        base_path = f"/contacts/{encoded_contact}/topics"
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = request.Request[_ListResponse](
@@ -172,7 +174,8 @@ class Topics:
         contact = (
             params.get("id") if params.get("id") is not None else params.get("email")
         )
-        path = f"/contacts/{contact}/topics"
+        encoded_contact = quote(cast(str, contact), safe="")
+        path = f"/contacts/{encoded_contact}/topics"
 
         # Send the topics array directly as the request body (not wrapped in an object)
         # The Request class accepts Union[Dict, List] as params
@@ -211,7 +214,8 @@ class Topics:
         if contact is None:
             raise ValueError("contact_id or email must be provided")
 
-        base_path = f"/contacts/{contact}/topics"
+        encoded_contact = quote(contact, safe="")
+        base_path = f"/contacts/{encoded_contact}/topics"
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = await AsyncRequest[_ListResponse](
@@ -240,7 +244,8 @@ class Topics:
         contact = (
             params.get("id") if params.get("id") is not None else params.get("email")
         )
-        path = f"/contacts/{contact}/topics"
+        encoded_contact = quote(cast(str, contact), safe="")
+        path = f"/contacts/{encoded_contact}/topics"
 
         request_body: Union[Dict[str, Any], List[Dict[str, Any]]] = cast(
             List[Dict[str, Any]], params["topics"]

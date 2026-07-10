@@ -30,6 +30,20 @@ class TestResendContactSegmentsAsync(AsyncResendBaseTest):
         response = await resend.Contacts.Segments.add_async(params)
         assert response["id"] == "contact-segment-id-456"
 
+    async def test_contact_segments_add_async_encodes_email_identifier(self) -> None:
+        self.set_mock_json({"id": "contact-segment-id-456"})
+
+        params: resend.ContactSegments.AddParams = {
+            "segment_id": "segment-123",
+            "email": "team/a?b@example.com",
+        }
+        response = await resend.Contacts.Segments.add_async(params)
+        assert response["id"] == "contact-segment-id-456"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com/segments/segment-123"
+        )
+
     async def test_contact_segments_add_async_raises_without_identifier(self) -> None:
         params: resend.ContactSegments.AddParams = {
             "segment_id": "segment-123",
@@ -59,6 +73,20 @@ class TestResendContactSegmentsAsync(AsyncResendBaseTest):
         response = await resend.Contacts.Segments.remove_async(params)
         assert response["id"] == "contact-segment-id-123"
         assert response["deleted"] is True
+
+    async def test_contact_segments_remove_async_encodes_email_identifier(self) -> None:
+        self.set_mock_json({"id": "contact-segment-id-456", "deleted": True})
+
+        params: resend.ContactSegments.RemoveParams = {
+            "segment_id": "segment-123",
+            "email": "team/a?b@example.com",
+        }
+        response = await resend.Contacts.Segments.remove_async(params)
+        assert response["deleted"] is True
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com/segments/segment-123"
+        )
 
     async def test_contact_segments_remove_async_raises_without_identifier(
         self,
@@ -112,6 +140,25 @@ class TestResendContactSegmentsAsync(AsyncResendBaseTest):
         assert len(response["data"]) == 2
         assert response["data"][0]["id"] == "segment-1"
         assert response["data"][1]["id"] == "segment-2"
+
+    async def test_contact_segments_list_async_encodes_email_identifier(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [],
+            }
+        )
+
+        params: resend.ContactSegments.ListParams = {
+            "email": "team/a?b@example.com",
+        }
+        response = await resend.Contacts.Segments.list_async(params)
+        assert response["has_more"] is False
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com/segments"
+        )
 
     async def test_contact_segments_list_async_raises_without_identifier(self) -> None:
         params: resend.ContactSegments.ListParams = {}

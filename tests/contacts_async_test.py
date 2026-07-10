@@ -58,6 +58,25 @@ class TestResendContactsAsync(AsyncResendBaseTest):
         contact = await resend.Contacts.update_async(params)
         assert contact["id"] == "479e3145-dd38-476b-932c-529ceb705947"
 
+    async def test_contacts_update_async_encodes_email_identifier(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "contact",
+                "id": "global-contact-123",
+            }
+        )
+
+        params: resend.Contacts.UpdateParams = {
+            "email": "team/a?b@example.com",
+            "first_name": "Updated Global",
+        }
+        contact = await resend.Contacts.update_async(params)
+        assert contact["id"] == "global-contact-123"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com"
+        )
+
     async def test_contacts_update_async_missing_required_params(self) -> None:
         params: resend.Contacts.UpdateParams = {
             "audience_id": "48c269ed-9873-4d60-bdd9-cd7e6fc0b9b8",
@@ -131,6 +150,24 @@ class TestResendContactsAsync(AsyncResendBaseTest):
         assert contact["created_at"] == "2023-10-06T23:47:56.678Z"
         assert contact["unsubscribed"] is False
 
+    async def test_contacts_get_async_encodes_email_identifier(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "contact",
+                "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
+                "email": "team/a?b@example.com",
+                "created_at": "2023-10-06T23:47:56.678Z",
+                "unsubscribed": False,
+            }
+        )
+
+        contact = await resend.Contacts.get_async(email="team/a?b@example.com")
+        assert contact["email"] == "team/a?b@example.com"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com"
+        )
+
     async def test_contacts_get_async_raises(self) -> None:
         resend.api_key = "re_123"
 
@@ -192,6 +229,22 @@ class TestResendContactsAsync(AsyncResendBaseTest):
         )
         assert rmed["id"] == "520784e2-887d-4c25-b53c-4ad46ad38100"
         assert rmed["deleted"] is True
+
+    async def test_contacts_remove_async_encodes_email_identifier(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "contact",
+                "id": "520784e2-887d-4c25-b53c-4ad46ad38100",
+                "deleted": True,
+            }
+        )
+
+        rmed = await resend.Contacts.remove_async(email="team/a?b@example.com")
+        assert rmed["deleted"] is True
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com"
+        )
 
     async def test_should_remove_contacts_async_by_email_raise_exception_when_no_content(
         self,

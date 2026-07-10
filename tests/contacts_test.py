@@ -122,6 +122,24 @@ class TestResendContacts(ResendBaseTest):
         assert contact["created_at"] == "2023-10-06T23:47:56.678Z"
         assert contact["unsubscribed"] is False
 
+    def test_contacts_get_encodes_email_identifier(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "contact",
+                "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
+                "email": "team/a?b@example.com",
+                "created_at": "2023-10-06T23:47:56.678Z",
+                "unsubscribed": False,
+            }
+        )
+
+        contact = resend.Contacts.get(email="team/a?b@example.com")
+        assert contact["email"] == "team/a?b@example.com"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com"
+        )
+
     def test_contacts_get_raises(self) -> None:
         resend.api_key = "re_123"
 
@@ -330,6 +348,25 @@ class TestResendContacts(ResendBaseTest):
         contact = resend.Contacts.update(params)
         assert contact["id"] == "global-contact-123"
 
+    def test_contacts_update_encodes_email_identifier(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "contact",
+                "id": "global-contact-123",
+            }
+        )
+
+        params: resend.Contacts.UpdateParams = {
+            "email": "team/a?b@example.com",
+            "first_name": "Updated Global",
+        }
+        contact = resend.Contacts.update(params)
+        assert contact["id"] == "global-contact-123"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com"
+        )
+
     def test_contacts_get_global(self) -> None:
         self.set_mock_json(
             {
@@ -348,9 +385,6 @@ class TestResendContacts(ResendBaseTest):
         assert contact["id"] == "global-contact-123"
         assert contact["email"] == "global@example.com"
         assert contact.get("properties") == {"tier": "premium"}
-
-    # Note: Global contacts only accept UUID identifiers, not emails
-    # The API returns "The `id` must be a valid UUID" for email identifiers
 
     def test_contacts_list_global(self) -> None:
         self.set_mock_json(
@@ -459,5 +493,18 @@ class TestResendContacts(ResendBaseTest):
         assert rmed["contact"] == "global-contact-789"
         assert rmed["deleted"] is True
 
-    # Note: Global contacts only accept UUID identifiers for remove operations
-    # Email-based removal would fail with "The `id` must be a valid UUID" error
+    def test_contacts_remove_encodes_email_identifier(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "contact",
+                "contact": "global-contact-789",
+                "deleted": True,
+            }
+        )
+
+        rmed = resend.Contacts.remove(email="team/a?b@example.com")
+        assert rmed["deleted"] is True
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com"
+        )

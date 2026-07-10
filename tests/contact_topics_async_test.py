@@ -59,6 +59,24 @@ class TestResendContactTopicsAsync(AsyncResendBaseTest):
         assert response["has_more"] is False
         assert response["data"][0]["id"] == "topic_123"
 
+    async def test_contact_topics_list_async_encodes_email_identifier(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [],
+            }
+        )
+
+        response: ContactsTopics.ListResponse = await resend.Contacts.Topics.list_async(
+            email="team/a?b@example.com"
+        )
+        assert response["has_more"] is False
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com/topics"
+        )
+
     async def test_contact_topics_list_async_raises_when_no_contact_identifier(
         self,
     ) -> None:
@@ -112,6 +130,28 @@ class TestResendContactTopicsAsync(AsyncResendBaseTest):
             await resend.Contacts.Topics.update_async(params)
         )
         assert response["id"] == "cont_456"
+
+    async def test_contact_topics_update_async_encodes_email_identifier(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "cont_456",
+            }
+        )
+
+        params: ContactsTopics.UpdateParams = {
+            "email": "team/a?b@example.com",
+            "topics": [
+                {"id": "topic_1", "subscription": "opt_in"},
+            ],
+        }
+        response: ContactsTopics.UpdateResponse = (
+            await resend.Contacts.Topics.update_async(params)
+        )
+        assert response["id"] == "cont_456"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com/topics"
+        )
 
     async def test_contact_topics_update_async_raises_when_no_contact_identifier(
         self,

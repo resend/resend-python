@@ -26,6 +26,20 @@ class TestResendContactSegments(ResendBaseTest):
         response = resend.Contacts.Segments.add(params)
         assert response["id"] == "contact-segment-id-456"
 
+    def test_contact_segments_add_encodes_email_identifier(self) -> None:
+        self.set_mock_json({"id": "contact-segment-id-456"})
+
+        params: resend.ContactSegments.AddParams = {
+            "segment_id": "segment-123",
+            "email": "team/a?b@example.com",
+        }
+        response = resend.Contacts.Segments.add(params)
+        assert response["id"] == "contact-segment-id-456"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com/segments/segment-123"
+        )
+
     def test_contact_segments_add_raises_without_identifier(self) -> None:
         params: resend.ContactSegments.AddParams = {
             "segment_id": "segment-123",
@@ -55,6 +69,20 @@ class TestResendContactSegments(ResendBaseTest):
         response = resend.Contacts.Segments.remove(params)
         assert response["id"] == "contact-segment-id-456"
         assert response["deleted"] is True
+
+    def test_contact_segments_remove_encodes_email_identifier(self) -> None:
+        self.set_mock_json({"id": "contact-segment-id-456", "deleted": True})
+
+        params: resend.ContactSegments.RemoveParams = {
+            "segment_id": "segment-123",
+            "email": "team/a?b@example.com",
+        }
+        response = resend.Contacts.Segments.remove(params)
+        assert response["deleted"] is True
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com/segments/segment-123"
+        )
 
     def test_contact_segments_remove_raises_without_identifier(self) -> None:
         params: resend.ContactSegments.RemoveParams = {
@@ -119,6 +147,25 @@ class TestResendContactSegments(ResendBaseTest):
         assert response["has_more"] is False
         assert len(response["data"]) == 1
         assert response["data"][0]["id"] == "segment-3"
+
+    def test_contact_segments_list_encodes_email_identifier(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [],
+            }
+        )
+
+        params: resend.ContactSegments.ListParams = {
+            "email": "team/a?b@example.com",
+        }
+        response = resend.Contacts.Segments.list(params)
+        assert response["has_more"] is False
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/contacts/team%2Fa%3Fb%40example.com/segments"
+        )
 
     def test_contact_segments_list_with_pagination(self) -> None:
         self.set_mock_json(
