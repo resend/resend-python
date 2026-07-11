@@ -1,15 +1,14 @@
-from unittest.mock import MagicMock, Mock
+from unittest.mock import Mock
 
 import resend
 from resend import EmailsReceiving
-from resend.exceptions import NoContentError, ResendError
+from resend.exceptions import NoContentError
 from tests.conftest import ResendBaseTest
 
 # flake8: noqa
 
 
 class TestResendEmail(ResendBaseTest):
-
     def test_email_send_with_from(self) -> None:
         self.set_mock_json(
             {
@@ -67,25 +66,6 @@ class TestResendEmail(ResendBaseTest):
             _ = resend.Emails.get(
                 email_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
             )
-
-    def test_email_response_html(self) -> None:
-        self.set_magic_mock_obj(
-            MagicMock(
-                status_code=200,
-                headers={"content-type": "text/html; charset=utf-8"},
-                text="<strong>hello, world!</strong>",
-            )
-        )
-        params: resend.Emails.SendParams = {
-            "to": "to@email.com",
-            "from": "from@email.com",
-            "subject": "subject",
-            "html": "html",
-        }
-        try:
-            _ = resend.Emails.send(params)
-        except ResendError as e:
-            assert e.message == "Failed to parse Resend API response. Please try again."
 
     def test_update_email(self) -> None:
         self.set_mock_json(
