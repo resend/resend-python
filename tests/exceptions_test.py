@@ -3,7 +3,8 @@ import unittest
 import pytest
 
 from resend.exceptions import (ApplicationError, MissingApiKeyError,
-                               RateLimitError, ResendError, ValidationError,
+                               MissingRequiredFieldsError, RateLimitError,
+                               ResendError, ValidationError,
                                raise_for_code_and_type)
 
 
@@ -22,6 +23,23 @@ class TestResendError(unittest.TestCase):
         with pytest.raises(ValidationError) as e:
             raise_for_code_and_type(422, "validation_error", "err")
         assert e.type is ValidationError
+
+    def test_missing_required_field_singular(self) -> None:
+        # Resend API docs use singular `missing_required_field`.
+        with pytest.raises(MissingRequiredFieldsError) as e:
+            raise_for_code_and_type(422, "missing_required_field", "Missing `to` field")
+        assert e.type is MissingRequiredFieldsError
+        assert e.value.error_type == "missing_required_field"
+        assert e.value.code == 422
+
+    def test_missing_required_fields_plural_alias(self) -> None:
+        # Keep plural as a backward-compatible alias.
+        with pytest.raises(MissingRequiredFieldsError) as e:
+            raise_for_code_and_type(
+                422, "missing_required_fields", "Missing `to` field"
+            )
+        assert e.type is MissingRequiredFieldsError
+        assert e.value.error_type == "missing_required_fields"
 
     def test_validation_error_from_400(self) -> None:
         with pytest.raises(ValidationError) as e:
