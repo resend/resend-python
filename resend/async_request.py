@@ -112,7 +112,7 @@ class AsyncRequest(Generic[T]):
             if self.data is not None:
                 kwargs["data"] = self.data
 
-            content, _status_code, resp_headers = await async_client.request(**kwargs)
+            content, status_code, resp_headers = await async_client.request(**kwargs)
 
         # Safety net around the HTTP Client
         except ResendError:
@@ -128,15 +128,20 @@ class AsyncRequest(Generic[T]):
         # Store response headers for later access
         self._response_headers = dict(resp_headers)
 
+        # When the body is not usable JSON (CDN HTML, empty 5xx, proxies), the
+        # HTTP status is the only trustworthy signal. Keep it for 4xx/5xx;
+        # fall back to 500 if the status looks successful but the body is not.
+        error_code = status_code if status_code >= 400 else 500
+
         content_type = {k.lower(): v for k, v in resp_headers.items()}.get(
             "content-type", ""
         )
 
         if "application/json" not in content_type:
             raise_for_code_and_type(
-                code=500,
+                code=error_code,
                 message=f"Expected JSON response but got: {content_type}",
-                error_type="InternalServerError",
+                error_type="application_error",
                 headers=self._response_headers,
             )
 
@@ -149,8 +154,8 @@ class AsyncRequest(Generic[T]):
             return parsed_data
         except json.JSONDecodeError:
             raise_for_code_and_type(
-                code=500,
+                code=error_code,
                 message="Failed to decode JSON response",
-                error_type="InternalServerError",
+                error_type="application_error",
                 headers=self._response_headers,
             )
