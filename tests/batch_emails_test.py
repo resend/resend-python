@@ -170,18 +170,12 @@ class TestResendBatchSend(ResendBaseTest):
         assert emails["errors"][0]["index"] == 1
         assert emails["errors"][0]["message"] == "The `to` field is missing."
 
-    def test_batch_email_send_with_tags_attachments_and_scheduled_at(self) -> None:
+    def test_batch_email_send_with_tags(self) -> None:
         self.set_mock_json(
             {
                 "data": [{"id": "ae2014de-c168-4c61-8267-70d2662a1ce1"}]
             }
         )
-
-        attachment: resend.Attachment = {
-            "filename": "invoice.pdf",
-            "content": [1, 2, 3],
-            "content_type": "application/pdf",
-        }
 
         params: List[resend.Batch.SendParams] = [
             {
@@ -190,8 +184,6 @@ class TestResendBatchSend(ResendBaseTest):
                 "subject": "hey",
                 "html": "<strong>hello, world!</strong>",
                 "tags": [{"name": "category", "value": "notification"}],
-                "scheduled_at": "2024-09-05T11:52:01.858Z",
-                "attachments": [attachment],
             }
         ]
 
@@ -209,5 +201,3 @@ class TestResendBatchSend(ResendBaseTest):
 
         sent_params = captured_params[0]
         assert sent_params[0]["tags"] == [{"name": "category", "value": "notification"}]
-        assert sent_params[0]["scheduled_at"] == "2024-09-05T11:52:01.858Z"
-        assert sent_params[0]["attachments"][0]["filename"] == "invoice.pdf"

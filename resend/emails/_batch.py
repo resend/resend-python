@@ -5,7 +5,7 @@ from typing_extensions import Literal, NotRequired, TypedDict
 from resend import request
 from resend._base_response import BaseResponse
 
-from ._emails import Emails
+from ._emails import _BatchSendParamsDefault
 
 # Async imports (optional - only available with pip install resend[async])
 try:
@@ -42,7 +42,7 @@ class BatchValidationError(TypedDict):
 
 class Batch:
 
-    class SendParams(Emails.SendParams):
+    class SendParams(_BatchSendParamsDefault):
         """SendParams is the class that wraps the parameters for each email in a batch send.
 
         Attributes:
@@ -55,11 +55,12 @@ class Batch:
             html (NotRequired[str]): The HTML content of the email.
             text (NotRequired[str]): The text content of the email.
             headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
-            attachments (NotRequired[List[Union[Attachment, RemoteAttachment]]]): List of attachments to be added to the email.
             tags (NotRequired[List[Tag]]): List of tags to be added to the email.
-            scheduled_at (NotRequired[str]): Schedule email to be sent later.
-            The date should be in ISO 8601 format (e.g: 2024-08-05T11:52:01.858Z).
             template (NotRequired[EmailTemplate]): Template configuration for sending emails using predefined templates.
+
+        Note:
+            The batch API does not support `attachments` or `scheduled_at`.
+            Use the single email endpoint for those features.
         """
 
     class SendOptions(TypedDict):

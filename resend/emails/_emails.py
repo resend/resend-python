@@ -134,6 +134,49 @@ class _SendParamsDefault(_SendParamsFrom):
     """
 
 
+class _BatchSendParamsDefault(_SendParamsFrom):
+    to: Union[str, List[str]]
+    """
+    List of email addresses to send the email to.
+    """
+    subject: NotRequired[str]
+    """
+    The subject of the email.
+    """
+    bcc: NotRequired[Union[List[str], str]]
+    """
+    Bcc
+    """
+    cc: NotRequired[Union[List[str], str]]
+    """
+    Cc
+    """
+    reply_to: NotRequired[Union[List[str], str]]
+    """
+    Reply to
+    """
+    html: NotRequired[str]
+    """
+    The HTML content of the email.
+    """
+    text: NotRequired[str]
+    """
+    The text content of the email.
+    """
+    headers: NotRequired[Dict[str, str]]
+    """
+    Custom headers to be added to the email.
+    """
+    tags: NotRequired[List[Tag]]
+    """
+    List of tags to be added to the email.
+    """
+    template: NotRequired[EmailTemplate]
+    """
+    Template configuration for sending emails using predefined templates.
+    """
+
+
 class Emails:
     Attachments = Attachments
     Receiving = Receiving
