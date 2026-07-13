@@ -96,6 +96,10 @@ echo
 # the examples expect (they read ../resources/<file>). The SDK itself is NOT
 # mounted — it's pulled from PyPI so we test exactly what customers get.
 
+# `docker run` sits in an `|| status=$?` list so that a failing example
+# (non-zero exit from the container) doesn't trip `errexit` and abort before we
+# reach the summary block below. We capture the status and report it ourselves.
+status=0
 docker run --rm \
   -e RESEND_API_KEY="$API_KEY" \
   -e SDK_VERSION="$VERSION" \
@@ -107,7 +111,11 @@ docker run --rm \
   bash -c '
     set -u
     echo "==> pip install resend==$SDK_VERSION"
-    pip install --quiet --no-cache-dir --disable-pip-version-check "resend==$SDK_VERSION"
+    if ! pip install --quiet --no-cache-dir --disable-pip-version-check "resend==$SDK_VERSION"; then
+      echo "  ❌ FAILED to install resend==$SDK_VERSION from PyPI." >&2
+      echo "     Check the version exists on PyPI and that the network is reachable." >&2
+      exit 1
+    fi
     echo "==> installed: $(pip show resend | grep -i "^Version:")"
     echo
 
@@ -142,9 +150,8 @@ docker run --rm \
     echo "  Passed: ${passed[*]:-none}"
     echo "  Failed: ${failed[*]:-none}"
     exit $fail
-  '
+  ' || status=$?
 
-status=$?
 echo
 if [[ $status -eq 0 ]]; then
   echo "✅ Smoke test passed for resend==$VERSION"
