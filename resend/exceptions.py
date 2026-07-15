@@ -199,6 +199,8 @@ class RateLimitError(ResendError):
 ERRORS: Dict[str, Dict[str, Any]] = {
     "400": {"validation_error": ValidationError},
     "422": {
+        # API docs use singular `missing_required_field`; keep plural as alias.
+        "missing_required_field": MissingRequiredFieldsError,
         "missing_required_fields": MissingRequiredFieldsError,
         "validation_error": ValidationError,
     },
@@ -232,7 +234,8 @@ def raise_for_code_and_type(
             or
         ValidationError: If the error type is validation_error
             or
-        MissingRequiredFieldsError: If the error type is missing_required_fields
+        MissingRequiredFieldsError: If the error type is missing_required_field
+            (or legacy missing_required_fields)
             or
         MissingApiKeyError: If the error type is missing_api_key
             or
