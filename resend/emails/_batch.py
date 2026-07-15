@@ -57,10 +57,6 @@ class Batch:
             headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
             tags (NotRequired[List[Tag]]): List of tags to be added to the email.
             template (NotRequired[EmailTemplate]): Template configuration for sending emails using predefined templates.
-
-        Note:
-            The batch API does not support `attachments` or `scheduled_at`.
-            Use the single email endpoint for those features.
         """
 
     class SendOptions(TypedDict):
