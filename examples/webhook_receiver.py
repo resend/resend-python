@@ -53,9 +53,9 @@ def webhook_handler() -> Tuple[Dict[str, Union[str, bool]], int]:
         "signature": request.headers.get("svix-signature", ""),
     }
 
-    # Verify the webhook
+    # Verify the webhook. On success, returns the parsed payload.
     try:
-        resend.Webhooks.verify(
+        payload = resend.Webhooks.verify(
             {
                 "payload": body,
                 "headers": headers,
@@ -66,27 +66,23 @@ def webhook_handler() -> Tuple[Dict[str, Union[str, bool]], int]:
         print(f"Webhook verification failed: {e}")
         return {"error": "Webhook verification failed"}, 400
 
-    # Parse the verified payload
-    try:
-        payload = json.loads(body)
-    except json.JSONDecodeError as e:
-        print(f"Error parsing JSON: {e}")
-        return {"error": "Invalid JSON payload"}, 400
-
     # Process the webhook event
     event_type = payload.get("type")
-    print("✓ Webhook verified successfully!")
+    print("Webhook verified successfully!")
     print(f"Event Type: {event_type}")
     print(f"Payload: {json.dumps(payload, indent=2)}")
 
-    print(f"Event: {payload.get('data', {}).get('email_id')}")
+    data = payload.get("data", {})
+    print(f"Event email_id: {data.get('email_id')}")
+    if data.get("message_id"):
+        print(f"Event message_id: {data.get('message_id')}")
 
     return {"success": True}, 200
 
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
-    print(f"🚀 Webhook receiver listening on http://localhost:{port}/webhook")
+    print(f"Webhook receiver listening on http://localhost:{port}/webhook")
     print("Send a POST request with Resend webhook headers to test verification")
     print(f"Using webhook secret: {WEBHOOK_SECRET[:15]}...")
     app.run(host="0.0.0.0", port=port, debug=True)
