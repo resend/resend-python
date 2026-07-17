@@ -22,7 +22,8 @@ from .contacts._contact import Contact
 from .contacts._contact_topic import ContactTopic, TopicSubscriptionUpdate
 from .contacts._contacts import Contacts
 from .contacts._topics import Topics as ContactsTopics
-from .contacts.imports._contact_import import ContactImport, ContactImportCounts
+from .contacts.imports._contact_import import (ContactImport,
+                                               ContactImportCounts)
 from .contacts.imports._contact_imports import ContactImports
 from .contacts.segments._contact_segment import ContactSegment
 from .contacts.segments._contact_segments import ContactSegments
@@ -61,6 +62,19 @@ from .topics._topics import Topics
 from .version import __version__, get_version
 from .webhooks._webhook import (VerifyWebhookOptions, Webhook, WebhookEvent,
                                 WebhookHeaders, WebhookStatus)
+from .webhooks._webhook_event import (BaseEmailEventData, ContactCreatedEvent,
+                                      ContactDeletedEvent, ContactEventData,
+                                      ContactUpdatedEvent, DomainCreatedEvent,
+                                      DomainDeletedEvent, DomainEventData,
+                                      DomainUpdatedEvent, EmailBouncedEvent,
+                                      EmailClickedEvent, EmailComplainedEvent,
+                                      EmailDeliveredEvent,
+                                      EmailDeliveryDelayedEvent,
+                                      EmailFailedEvent, EmailOpenedEvent,
+                                      EmailReceivedEvent, EmailScheduledEvent,
+                                      EmailSentEvent, EmailSuppressedEvent,
+                                      ReceivedEmailEventData,
+                                      WebhookEventPayload)
 from .webhooks._webhooks import Webhooks
 
 # Type for clients that support both sync and async
@@ -143,9 +157,31 @@ __all__ = [
     "Variable",
     "Webhook",
     "WebhookEvent",
+    "WebhookEventPayload",
     "WebhookHeaders",
     "WebhookStatus",
     "VerifyWebhookOptions",
+    "BaseEmailEventData",
+    "ReceivedEmailEventData",
+    "ContactEventData",
+    "DomainEventData",
+    "EmailSentEvent",
+    "EmailScheduledEvent",
+    "EmailDeliveredEvent",
+    "EmailDeliveryDelayedEvent",
+    "EmailComplainedEvent",
+    "EmailBouncedEvent",
+    "EmailOpenedEvent",
+    "EmailClickedEvent",
+    "EmailReceivedEvent",
+    "EmailFailedEvent",
+    "EmailSuppressedEvent",
+    "ContactCreatedEvent",
+    "ContactUpdatedEvent",
+    "ContactDeletedEvent",
+    "DomainCreatedEvent",
+    "DomainUpdatedEvent",
+    "DomainDeletedEvent",
     "Topic",
     "OAuthGrant",
     "OAuthGrantClient",
