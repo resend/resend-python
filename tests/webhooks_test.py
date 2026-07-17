@@ -322,6 +322,39 @@ class TestWebhookVerification:
         assert event["data"]["message_id"] == "<111-222-333@email.example.com>"
         assert event["data"]["received_for"] == ["forwarded@example.com"]
 
+    def test_verify_returns_bounced_payload(self) -> None:
+        """Test verify returns the nested bounce object including diagnosticCode"""
+        secret = "whsec_" + base64.b64encode(b"test_secret_key").decode("utf-8")
+        msg_id = "msg_bounce"
+        timestamp = str(int(time.time()))
+        payload = (
+            '{"type":"email.bounced","created_at":"2026-02-22T23:41:12.126Z",'
+            '"data":{"email_id":"123","message_id":"<111@example.com>",'
+            '"from":"Acme <onboarding@resend.dev>","to":["bounced@resend.dev"],'
+            '"subject":"Hello","created_at":"2026-02-22T23:41:11.894719+00:00",'
+            '"bounce":{"diagnosticCode":"smtp; 550 5.1.1 user unknown",'
+            '"message":"The recipient does not exist.",'
+            '"subType":"General","type":"Permanent"}}}'
+        )
+
+        signature = self._generate_test_signature(secret, msg_id, timestamp, payload)
+        options: resend.VerifyWebhookOptions = {
+            "payload": payload,
+            "headers": {
+                "id": msg_id,
+                "timestamp": timestamp,
+                "signature": signature,
+            },
+            "webhook_secret": secret,
+        }
+
+        event = resend.Webhooks.verify(options)
+        assert event["type"] == "email.bounced"
+        bounce = event["data"]["bounce"]
+        assert bounce["diagnosticCode"] == "smtp; 550 5.1.1 user unknown"
+        assert bounce["type"] == "Permanent"
+        assert bounce["subType"] == "General"
+
     def test_verify_invalid_json_payload(self) -> None:
         """Test verify raises when the signature is valid but the body is not JSON"""
         secret = "whsec_" + base64.b64encode(b"test_secret_key").decode("utf-8")

@@ -14,8 +14,14 @@ _FromField = TypedDict(
 class EmailBounce(TypedDict):
     """
     Bounce details included on ``email.bounced`` webhook events.
+
+    Field names match the API payload (camelCase).
     """
 
+    diagnosticCode: NotRequired[str]  # noqa: N815
+    """
+    Diagnostic code returned by the receiving server, when available.
+    """
     message: str
     """
     Detailed bounce message from the receiving server.
