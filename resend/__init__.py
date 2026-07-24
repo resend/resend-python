@@ -55,6 +55,12 @@ from .oauth_grants._oauth_grants import OAuthGrants
 from .request import Request
 from .segments._segment import Segment
 from .segments._segments import Segments
+from .suppressions._suppression import (Suppression, SuppressionListItem,
+                                        SuppressionOrigin)
+from .suppressions._suppressions import Suppressions
+from .suppressions.batch._suppressions_batch import (BatchRemovedSuppression,
+                                                     BatchSuppression,
+                                                     SuppressionsBatch)
 from .templates._template import Template, TemplateListItem, Variable
 from .templates._templates import Templates
 from .topics._topic import Topic
@@ -114,6 +120,8 @@ __all__ = [
     "Topics",
     "Logs",
     "OAuthGrants",
+    "Suppressions",
+    "SuppressionsBatch",
     # Types
     "Audience",
     "Automation",
@@ -152,6 +160,11 @@ __all__ = [
     "Tag",
     "Broadcast",
     "Segment",
+    "Suppression",
+    "SuppressionListItem",
+    "SuppressionOrigin",
+    "BatchSuppression",
+    "BatchRemovedSuppression",
     "Template",
     "TemplateListItem",
     "Variable",
