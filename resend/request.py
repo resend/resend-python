@@ -33,15 +33,32 @@ class Request(Generic[T]):
         self.files = files
         self.data = data
         self._response_headers: Dict[str, str] = {}
+        self._response_status_code: Optional[int] = None
 
     def perform(self) -> Union[T, None]:
         data = self.make_request(url=f"{resend.api_url}{self.path}")
 
-        if isinstance(data, dict) and data.get("statusCode") not in (None, 200):
+        body_status_code = data.get("statusCode") if isinstance(data, dict) else None
+        error_code = (
+            self._response_status_code
+            if self._response_status_code is not None
+            and self._response_status_code >= 400
+            else body_status_code
+        )
+
+        if error_code not in (None, 200):
             raise_for_code_and_type(
-                code=data.get("statusCode") or 500,
-                message=data.get("message", "Unknown error"),
-                error_type=data.get("name", "InternalServerError"),
+                code=error_code or 500,
+                message=(
+                    data.get("message", "Unknown error")
+                    if isinstance(data, dict)
+                    else "Unknown error"
+                ),
+                error_type=(
+                    data.get("name", "InternalServerError")
+                    if isinstance(data, dict)
+                    else "InternalServerError"
+                ),
                 headers=self._response_headers,
             )
 
@@ -99,7 +116,7 @@ class Request(Generic[T]):
             if self.data is not None:
                 kwargs["data"] = self.data
 
-            content, _status_code, resp_headers = sync_client.request(**kwargs)
+            content, status_code, resp_headers = sync_client.request(**kwargs)
 
         # Safety net around the HTTP Client
         except Exception as e:
@@ -112,6 +129,12 @@ class Request(Generic[T]):
 
         # Store response headers for later access
         self._response_headers = dict(resp_headers)
+        self._response_status_code = status_code
+
+        # When the body is not usable JSON (CDN HTML, empty 5xx, proxies), the
+        # HTTP status is the only trustworthy signal. Keep it for 4xx/5xx;
+        # fall back to 500 if the status looks successful but the body is not.
+        error_code = status_code if status_code >= 400 else 500
 
         content_type = {k.lower(): v for k, v in resp_headers.items()}.get(
             "content-type", ""
@@ -119,9 +142,9 @@ class Request(Generic[T]):
 
         if "application/json" not in content_type:
             raise_for_code_and_type(
-                code=500,
+                code=error_code,
                 message=f"Expected JSON response but got: {content_type}",
-                error_type="InternalServerError",
+                error_type="application_error",
                 headers=self._response_headers,
             )
 
@@ -134,8 +157,8 @@ class Request(Generic[T]):
             return parsed_data
         except json.JSONDecodeError:
             raise_for_code_and_type(
-                code=500,
+                code=error_code,
                 message="Failed to decode JSON response",
-                error_type="InternalServerError",
+                error_type="application_error",
                 headers=self._response_headers,
             )
