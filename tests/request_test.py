@@ -5,7 +5,8 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 import pytest
 
 from resend import request
-from resend.exceptions import ApplicationError, ResendError
+from resend.exceptions import (ApplicationError, RateLimitError, ResendError,
+                               ValidationError)
 from resend.version import get_version
 
 
@@ -172,9 +173,40 @@ class TestResendRequest(unittest.TestCase):
         self.assertEqual(err.error_type, "application_error")
         self.assertEqual(err.message, "Failed to decode JSON response")
 
+    @patch("resend.http_client_requests.requests.request")
+    @patch("resend.api_key", new="test_key")
+    def test_json_error_uses_http_status_when_body_omits_status_code(
+        self, mock_requests: MagicMock
+    ) -> None:
+        mock_response = Mock()
+        mock_response.content = (
+            b'{"name":"rate_limit_exceeded","message":"Too many requests"}'
+        )
+        mock_response.status_code = 429
+        mock_response.headers = {
+            "content-type": "application/json",
+            "retry-after": "2",
+        }
+        mock_requests.return_value = mock_response
+
+        req = request.Request[Dict[str, Any]](
+            path="/emails",
+            params={},
+            verb="post",
+        )
+
+        with self.assertRaises(RateLimitError) as ctx:
+            req.perform()
+
+        err = ctx.exception
+        self.assertEqual(err.code, 429)
+        self.assertEqual(err.error_type, "rate_limit_exceeded")
+        self.assertEqual(err.message, "Too many requests")
+        self.assertEqual(err.headers.get("retry-after"), "2")
+
 
 @pytest.mark.asyncio
-class TestResendAsyncRequestNonJson:
+class TestResendAsyncRequestHttpStatusErrors:
     async def test_async_non_json_preserves_http_status(self) -> None:
 
         import resend
@@ -203,5 +235,37 @@ class TestResendAsyncRequestNonJson:
             assert err.code == 401
             assert err.error_type == "application_error"
             assert "text/html" in err.message
+        finally:
+            resend.default_async_http_client = original
+
+    async def test_async_json_error_uses_http_status_when_body_omits_status_code(
+        self,
+    ) -> None:
+        import resend
+        from resend import async_request
+
+        mock_client = AsyncMock()
+        mock_client.request.return_value = (
+            b'{"name":"validation_error","message":"Invalid event payload"}',
+            422,
+            {"content-type": "application/json"},
+        )
+
+        original = resend.default_async_http_client
+        resend.api_key = "test_key"
+        resend.default_async_http_client = mock_client
+        try:
+            req = async_request.AsyncRequest[Dict[str, Any]](
+                path="/events/send",
+                params={},
+                verb="post",
+            )
+            with pytest.raises(ValidationError) as ctx:
+                await req.perform()
+
+            err = ctx.value
+            assert err.code == 422
+            assert err.error_type == "validation_error"
+            assert err.message == "Invalid event payload"
         finally:
             resend.default_async_http_client = original

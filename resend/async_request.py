@@ -34,15 +34,32 @@ class AsyncRequest(Generic[T]):
         self.files = files
         self.data = data
         self._response_headers: Dict[str, str] = {}
+        self._response_status_code: Optional[int] = None
 
     async def perform(self) -> Union[T, None]:
         data = await self.make_request(url=f"{resend.api_url}{self.path}")
 
-        if isinstance(data, dict) and data.get("statusCode") not in (None, 200):
+        body_status_code = data.get("statusCode") if isinstance(data, dict) else None
+        error_code = (
+            self._response_status_code
+            if self._response_status_code is not None
+            and self._response_status_code >= 400
+            else body_status_code
+        )
+
+        if error_code not in (None, 200):
             raise_for_code_and_type(
-                code=data.get("statusCode") or 500,
-                message=data.get("message", "Unknown error"),
-                error_type=data.get("name", "InternalServerError"),
+                code=error_code or 500,
+                message=(
+                    data.get("message", "Unknown error")
+                    if isinstance(data, dict)
+                    else "Unknown error"
+                ),
+                error_type=(
+                    data.get("name", "InternalServerError")
+                    if isinstance(data, dict)
+                    else "InternalServerError"
+                ),
                 headers=self._response_headers,
             )
 
@@ -127,6 +144,7 @@ class AsyncRequest(Generic[T]):
 
         # Store response headers for later access
         self._response_headers = dict(resp_headers)
+        self._response_status_code = status_code
 
         # When the body is not usable JSON (CDN HTML, empty 5xx, proxies), the
         # HTTP status is the only trustworthy signal. Keep it for 4xx/5xx;
