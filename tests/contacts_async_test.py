@@ -110,7 +110,7 @@ class TestResendContactsAsync(AsyncResendBaseTest):
                 "email": "steve.wozniak@gmail.com",
                 "first_name": "Steve",
                 "last_name": "Wozniak",
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
                 "unsubscribed": False,
             }
         )
@@ -123,7 +123,7 @@ class TestResendContactsAsync(AsyncResendBaseTest):
         assert contact["email"] == "steve.wozniak@gmail.com"
         assert contact["first_name"] == "Steve"
         assert contact["last_name"] == "Wozniak"
-        assert contact["created_at"] == "2023-10-06T23:47:56.678Z"
+        assert contact["created_at"] == "2023-10-06 23:47:56.678+00"
         assert contact["unsubscribed"] is False
 
     async def test_contacts_get_async_by_email(self) -> None:
@@ -134,7 +134,7 @@ class TestResendContactsAsync(AsyncResendBaseTest):
                 "email": "steve@woz.com",
                 "first_name": "Steve",
                 "last_name": "Wozniak",
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
                 "unsubscribed": False,
             }
         )
@@ -147,7 +147,7 @@ class TestResendContactsAsync(AsyncResendBaseTest):
         assert contact["email"] == "steve@woz.com"
         assert contact["first_name"] == "Steve"
         assert contact["last_name"] == "Wozniak"
-        assert contact["created_at"] == "2023-10-06T23:47:56.678Z"
+        assert contact["created_at"] == "2023-10-06 23:47:56.678+00"
         assert contact["unsubscribed"] is False
 
     async def test_contacts_get_async_encodes_email_identifier(self) -> None:
@@ -156,7 +156,7 @@ class TestResendContactsAsync(AsyncResendBaseTest):
                 "object": "contact",
                 "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
                 "email": "team/a?b@example.com",
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
                 "unsubscribed": False,
             }
         )
@@ -276,7 +276,7 @@ class TestResendContactsAsync(AsyncResendBaseTest):
                         "email": "steve.wozniak@gmail.com",
                         "first_name": "Steve",
                         "last_name": "Wozniak",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                         "unsubscribed": False,
                     }
                 ],
@@ -290,7 +290,7 @@ class TestResendContactsAsync(AsyncResendBaseTest):
         assert contacts["data"][0]["email"] == "steve.wozniak@gmail.com"
         assert contacts["data"][0]["first_name"] == "Steve"
         assert contacts["data"][0]["last_name"] == "Wozniak"
-        assert contacts["data"][0]["created_at"] == "2023-10-06T23:47:56.678Z"
+        assert contacts["data"][0]["created_at"] == "2023-10-06 23:47:56.678+00"
         assert contacts["data"][0]["unsubscribed"] is False
 
     async def test_should_list_contacts_async_raise_exception_when_no_content(
@@ -313,7 +313,7 @@ class TestResendContactsAsync(AsyncResendBaseTest):
                         "email": "steve.wozniak@gmail.com",
                         "first_name": "Steve",
                         "last_name": "Wozniak",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                         "unsubscribed": False,
                     }
                 ],

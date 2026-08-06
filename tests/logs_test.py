@@ -11,7 +11,7 @@ class TestResendLogs(ResendBaseTest):
             {
                 "object": "log",
                 "id": "37e4414c-5e25-4dbc-a071-43552a4bd53b",
-                "created_at": "2024-01-01T00:00:00.000000+00:00",
+                "created_at": "2024-01-01 00:00:00+00",
                 "endpoint": "/emails",
                 "method": "POST",
                 "response_status": 200,
@@ -26,7 +26,7 @@ class TestResendLogs(ResendBaseTest):
         )
         assert log["object"] == "log"
         assert log["id"] == "37e4414c-5e25-4dbc-a071-43552a4bd53b"
-        assert log["created_at"] == "2024-01-01T00:00:00.000000+00:00"
+        assert log["created_at"] == "2024-01-01 00:00:00+00"
         assert log["endpoint"] == "/emails"
         assert log["method"] == "POST"
         assert log["response_status"] == 200
@@ -47,7 +47,7 @@ class TestResendLogs(ResendBaseTest):
                 "data": [
                     {
                         "id": "37e4414c-5e25-4dbc-a071-43552a4bd53b",
-                        "created_at": "2024-01-01T00:00:00.000000+00:00",
+                        "created_at": "2024-01-01 00:00:00+00",
                         "endpoint": "/emails",
                         "method": "POST",
                         "response_status": 200,
@@ -63,7 +63,7 @@ class TestResendLogs(ResendBaseTest):
         assert len(logs["data"]) == 1
         log = logs["data"][0]
         assert log["id"] == "37e4414c-5e25-4dbc-a071-43552a4bd53b"
-        assert log["created_at"] == "2024-01-01T00:00:00.000000+00:00"
+        assert log["created_at"] == "2024-01-01 00:00:00+00"
         assert log["endpoint"] == "/emails"
         assert log["method"] == "POST"
         assert log["response_status"] == 200
@@ -82,7 +82,7 @@ class TestResendLogs(ResendBaseTest):
                 "data": [
                     {
                         "id": "log-id-1",
-                        "created_at": "2024-01-01T00:00:00.000000+00:00",
+                        "created_at": "2024-01-01 00:00:00+00",
                         "endpoint": "/emails",
                         "method": "POST",
                         "response_status": 200,
@@ -90,7 +90,7 @@ class TestResendLogs(ResendBaseTest):
                     },
                     {
                         "id": "log-id-2",
-                        "created_at": "2024-01-02T00:00:00.000000+00:00",
+                        "created_at": "2024-01-02 00:00:00+00",
                         "endpoint": "/domains",
                         "method": "GET",
                         "response_status": 200,
@@ -116,7 +116,7 @@ class TestResendLogs(ResendBaseTest):
                 "data": [
                     {
                         "id": "log-id-3",
-                        "created_at": "2024-01-03T00:00:00.000000+00:00",
+                        "created_at": "2024-01-03 00:00:00+00",
                         "endpoint": "/api-keys",
                         "method": "DELETE",
                         "response_status": 200,

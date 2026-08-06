@@ -42,7 +42,7 @@ class TestResendSegmentsAsync(AsyncResendBaseTest):
                 "object": "audience",
                 "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                 "name": "Registered Users",
-                "created_at": "2023-10-06T22:59:55.977Z",
+                "created_at": "2023-10-06 22:59:55.977+00",
             }
         )
 
@@ -51,7 +51,7 @@ class TestResendSegmentsAsync(AsyncResendBaseTest):
         )
         assert segment["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert segment["name"] == "Registered Users"
-        assert segment["created_at"] == "2023-10-06T22:59:55.977Z"
+        assert segment["created_at"] == "2023-10-06 22:59:55.977+00"
 
     async def test_should_get_segments_async_raise_exception_when_no_content(
         self,
@@ -94,7 +94,7 @@ class TestResendSegmentsAsync(AsyncResendBaseTest):
                     {
                         "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "name": "Registered Users",
-                        "created_at": "2023-10-06T22:59:55.977Z",
+                        "created_at": "2023-10-06 22:59:55.977+00",
                     }
                 ],
             }
@@ -147,7 +147,7 @@ class TestResendAudiencesAsync(AsyncResendBaseTest):
                 "object": "audience",
                 "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                 "name": "Registered Users",
-                "created_at": "2023-10-06T22:59:55.977Z",
+                "created_at": "2023-10-06 22:59:55.977+00",
             }
         )
 
@@ -157,7 +157,7 @@ class TestResendAudiencesAsync(AsyncResendBaseTest):
             )
         assert audience["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert audience["name"] == "Registered Users"
-        assert audience["created_at"] == "2023-10-06T22:59:55.977Z"
+        assert audience["created_at"] == "2023-10-06 22:59:55.977+00"
 
     async def test_audiences_get_async_raises_when_no_content(
         self,
@@ -207,7 +207,7 @@ class TestResendAudiencesAsync(AsyncResendBaseTest):
                     {
                         "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "name": "Registered Users",
-                        "created_at": "2023-10-06T22:59:55.977Z",
+                        "created_at": "2023-10-06 22:59:55.977+00",
                     }
                 ],
             }

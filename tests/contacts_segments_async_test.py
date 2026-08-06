@@ -118,12 +118,12 @@ class TestResendContactSegmentsAsync(AsyncResendBaseTest):
                     {
                         "id": "segment-1",
                         "name": "Segment 1",
-                        "created_at": "2023-10-06T22:59:55.977Z",
+                        "created_at": "2023-10-06 22:59:55.977+00",
                     },
                     {
                         "id": "segment-2",
                         "name": "Segment 2",
-                        "created_at": "2023-10-07T22:59:55.977Z",
+                        "created_at": "2023-10-07 22:59:55.977+00",
                     },
                 ],
             }

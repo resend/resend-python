@@ -72,9 +72,9 @@ class TestResendTemplatesAsync(AsyncResendBaseTest):
                         "fallback_value": 25,
                     },
                 ],
-                "created_at": "2024-01-15T10:30:00.000Z",
-                "updated_at": "2024-01-15T10:30:00.000Z",
-                "published_at": "2024-01-15T11:00:00.000Z",
+                "created_at": "2024-01-15 10:30:00+00",
+                "updated_at": "2024-01-15 10:30:00+00",
+                "published_at": "2024-01-15 11:00:00+00",
             }
         )
 
@@ -196,9 +196,9 @@ class TestResendTemplatesAsync(AsyncResendBaseTest):
                         "id": "template-1",
                         "name": "welcome-email",
                         "status": "published",
-                        "published_at": "2024-01-15T11:00:00.000Z",
-                        "created_at": "2024-01-15T10:30:00.000Z",
-                        "updated_at": "2024-01-15T10:30:00.000Z",
+                        "published_at": "2024-01-15 11:00:00+00",
+                        "created_at": "2024-01-15 10:30:00+00",
+                        "updated_at": "2024-01-15 10:30:00+00",
                         "alias": "welcome",
                     }
                 ],

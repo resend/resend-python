@@ -11,7 +11,7 @@ class ContactProperty(TypedDict):
         id (str): The unique identifier for the contact property
         key (str): The key name of the property
         object (str): The object type, always "contact_property"
-        created_at (str): The ISO 8601 timestamp when the property was created
+        created_at (str): The timestamp when the property was created
         type (str): The data type of the property (e.g., "string", "number")
         fallback_value (Union[str, int, float, None]): The default value used when a contact doesn't have this property set
     """
@@ -30,7 +30,7 @@ class ContactProperty(TypedDict):
     """
     created_at: str
     """
-    The ISO 8601 timestamp when the property was created.
+    The timestamp when the property was created.
     """
     type: str
     """

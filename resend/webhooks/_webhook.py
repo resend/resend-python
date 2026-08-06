@@ -100,7 +100,7 @@ class Webhook(TypedDict):
     """
     created_at: str
     """
-    When the webhook was created (ISO 8601 format)
+    When the webhook was created
     """
     status: WebhookStatus
     """

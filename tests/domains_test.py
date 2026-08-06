@@ -11,7 +11,7 @@ class TestResendDomains(ResendBaseTest):
             {
                 "id": "4dd369bc-aa82-4ff3-97de-514ae3000ee0",
                 "name": "example.com",
-                "created_at": "2023-03-28T17:12:02.059593+00:00",
+                "created_at": "2023-03-28 17:12:02.059593+00",
                 "status": "not_started",
                 "records": [
                     {
@@ -71,7 +71,7 @@ class TestResendDomains(ResendBaseTest):
         assert domain["id"] == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
         assert domain["name"] == "example.com"
         assert domain["status"] == "not_started"
-        assert domain["created_at"] == "2023-03-28T17:12:02.059593+00:00"
+        assert domain["created_at"] == "2023-03-28 17:12:02.059593+00"
         assert domain["region"] == "us-east-1"
 
     def test_should_create_domains_raise_exception_when_no_content(self) -> None:
@@ -89,7 +89,7 @@ class TestResendDomains(ResendBaseTest):
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
                 "name": "example.com",
                 "status": "not_started",
-                "created_at": "2023-04-26T20:21:26.347412+00:00",
+                "created_at": "2023-04-26 20:21:26.347412+00",
                 "region": "us-east-1",
             }
         )
@@ -100,7 +100,7 @@ class TestResendDomains(ResendBaseTest):
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
         assert domain["name"] == "example.com"
         assert domain["status"] == "not_started"
-        assert domain["created_at"] == "2023-04-26T20:21:26.347412+00:00"
+        assert domain["created_at"] == "2023-04-26 20:21:26.347412+00"
         assert domain["region"] == "us-east-1"
 
     def test_should_get_domains_raise_exception_when_no_content(self) -> None:
@@ -120,7 +120,7 @@ class TestResendDomains(ResendBaseTest):
                         "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
                         "name": "example.com",
                         "status": "not_started",
-                        "created_at": "2023-04-26T20:21:26.347412+00:00",
+                        "created_at": "2023-04-26 20:21:26.347412+00",
                         "region": "us-east-1",
                     }
                 ],
@@ -133,7 +133,7 @@ class TestResendDomains(ResendBaseTest):
         assert domains["data"][0]["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
         assert domains["data"][0]["name"] == "example.com"
         assert domains["data"][0]["status"] == "not_started"
-        assert domains["data"][0]["created_at"] == "2023-04-26T20:21:26.347412+00:00"
+        assert domains["data"][0]["created_at"] == "2023-04-26 20:21:26.347412+00"
         assert domains["data"][0]["region"] == "us-east-1"
 
     def test_should_list_domains_raise_exception_when_no_content(self) -> None:
@@ -185,7 +185,7 @@ class TestResendDomains(ResendBaseTest):
             {
                 "id": "4dd369bc-aa82-4ff3-97de-514ae3000ee0",
                 "name": "example.com",
-                "created_at": "2023-03-28T17:12:02.059593+00:00",
+                "created_at": "2023-03-28 17:12:02.059593+00",
                 "status": "not_started",
                 "open_tracking": True,
                 "click_tracking": True,
@@ -256,7 +256,7 @@ class TestResendDomains(ResendBaseTest):
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
                 "name": "example.com",
                 "status": "not_started",
-                "created_at": "2023-04-26T20:21:26.347412+00:00",
+                "created_at": "2023-04-26 20:21:26.347412+00",
                 "region": "us-east-1",
                 "open_tracking": True,
                 "click_tracking": True,
@@ -348,14 +348,14 @@ class TestResendDomains(ResendBaseTest):
                         "id": "domain-1",
                         "name": "example1.com",
                         "status": "verified",
-                        "created_at": "2023-04-26T20:21:26.347412+00:00",
+                        "created_at": "2023-04-26 20:21:26.347412+00",
                         "region": "us-east-1",
                     },
                     {
                         "id": "domain-2",
                         "name": "example2.com",
                         "status": "not_started",
-                        "created_at": "2023-04-27T20:21:26.347412+00:00",
+                        "created_at": "2023-04-27 20:21:26.347412+00",
                         "region": "us-west-2",
                     },
                 ],
@@ -380,7 +380,7 @@ class TestResendDomains(ResendBaseTest):
                         "id": "domain-3",
                         "name": "example3.com",
                         "status": "verified",
-                        "created_at": "2023-04-25T20:21:26.347412+00:00",
+                        "created_at": "2023-04-25 20:21:26.347412+00",
                         "region": "eu-west-1",
                     }
                 ],

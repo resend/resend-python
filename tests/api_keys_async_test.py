@@ -41,7 +41,7 @@ class TestResendApiKeysAsync(AsyncResendBaseTest):
                     {
                         "id": "91f3200a-df72-4654-b0cd-f202395f5354",
                         "name": "Production",
-                        "created_at": "2023-04-08T00:11:13.110779+00:00",
+                        "created_at": "2023-04-08 00:11:13.110779+00",
                     }
                 ]
             }
@@ -51,7 +51,7 @@ class TestResendApiKeysAsync(AsyncResendBaseTest):
         for key in keys["data"]:
             assert key["id"] == "91f3200a-df72-4654-b0cd-f202395f5354"
             assert key["name"] == "Production"
-            assert key["created_at"] == "2023-04-08T00:11:13.110779+00:00"
+            assert key["created_at"] == "2023-04-08 00:11:13.110779+00"
 
     async def test_should_list_api_key_async_raise_exception_when_no_content(
         self,

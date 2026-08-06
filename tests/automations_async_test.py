@@ -56,8 +56,8 @@ class TestResendAutomationsAsync(AsyncResendBaseTest):
                 "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
                 "name": "Welcome Sequence",
                 "status": "enabled",
-                "created_at": "2024-01-01T00:00:00.000Z",
-                "updated_at": "2024-01-02T00:00:00.000Z",
+                "created_at": "2024-01-01 00:00:00+00",
+                "updated_at": "2024-01-02 00:00:00+00",
                 "steps": [],
                 "connections": [],
             }
@@ -155,8 +155,8 @@ class TestResendAutomationsAsync(AsyncResendBaseTest):
                         "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
                         "name": "Welcome Sequence",
                         "status": "enabled",
-                        "created_at": "2024-01-01T00:00:00.000Z",
-                        "updated_at": "2024-01-02T00:00:00.000Z",
+                        "created_at": "2024-01-01 00:00:00+00",
+                        "updated_at": "2024-01-02 00:00:00+00",
                     },
                 ],
             }
@@ -182,9 +182,9 @@ class TestResendAutomationsAsync(AsyncResendBaseTest):
                     {
                         "id": "run_123",
                         "status": "completed",
-                        "started_at": "2024-01-01T10:00:00.000Z",
-                        "completed_at": "2024-01-01T10:05:00.000Z",
-                        "created_at": "2024-01-01T09:59:00.000Z",
+                        "started_at": "2024-01-01 10:00:00+00",
+                        "completed_at": "2024-01-01 10:05:00+00",
+                        "created_at": "2024-01-01 09:59:00+00",
                     },
                 ],
             }
@@ -211,9 +211,9 @@ class TestResendAutomationsAsync(AsyncResendBaseTest):
                 "object": "automation_run",
                 "id": "run_123",
                 "status": "completed",
-                "started_at": "2024-01-01T10:00:00.000Z",
-                "completed_at": "2024-01-01T10:05:00.000Z",
-                "created_at": "2024-01-01T09:59:00.000Z",
+                "started_at": "2024-01-01 10:00:00+00",
+                "completed_at": "2024-01-01 10:05:00+00",
+                "created_at": "2024-01-01 09:59:00+00",
                 "steps": [],
             }
         )

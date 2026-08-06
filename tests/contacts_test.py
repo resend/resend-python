@@ -82,7 +82,7 @@ class TestResendContacts(ResendBaseTest):
                 "email": "steve.wozniak@gmail.com",
                 "first_name": "Steve",
                 "last_name": "Wozniak",
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
                 "unsubscribed": False,
             }
         )
@@ -95,7 +95,7 @@ class TestResendContacts(ResendBaseTest):
         assert contact["email"] == "steve.wozniak@gmail.com"
         assert contact.get("first_name") == "Steve"
         assert contact.get("last_name") == "Wozniak"
-        assert contact["created_at"] == "2023-10-06T23:47:56.678Z"
+        assert contact["created_at"] == "2023-10-06 23:47:56.678+00"
         assert contact["unsubscribed"] is False
 
     def test_contacts_get_by_email(self) -> None:
@@ -106,7 +106,7 @@ class TestResendContacts(ResendBaseTest):
                 "email": "steve@woz.com",
                 "first_name": "Steve",
                 "last_name": "Wozniak",
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
                 "unsubscribed": False,
             }
         )
@@ -119,7 +119,7 @@ class TestResendContacts(ResendBaseTest):
         assert contact["email"] == "steve@woz.com"
         assert contact["first_name"] == "Steve"
         assert contact["last_name"] == "Wozniak"
-        assert contact["created_at"] == "2023-10-06T23:47:56.678Z"
+        assert contact["created_at"] == "2023-10-06 23:47:56.678+00"
         assert contact["unsubscribed"] is False
 
     def test_contacts_get_encodes_email_identifier(self) -> None:
@@ -128,7 +128,7 @@ class TestResendContacts(ResendBaseTest):
                 "object": "contact",
                 "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
                 "email": "team/a?b@example.com",
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
                 "unsubscribed": False,
             }
         )
@@ -229,7 +229,7 @@ class TestResendContacts(ResendBaseTest):
                         "email": "steve.wozniak@gmail.com",
                         "first_name": "Steve",
                         "last_name": "Wozniak",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                         "unsubscribed": False,
                     }
                 ],
@@ -245,7 +245,7 @@ class TestResendContacts(ResendBaseTest):
         assert contacts["data"][0]["email"] == "steve.wozniak@gmail.com"
         assert contacts["data"][0].get("first_name") == "Steve"
         assert contacts["data"][0].get("last_name") == "Wozniak"
-        assert contacts["data"][0]["created_at"] == "2023-10-06T23:47:56.678Z"
+        assert contacts["data"][0]["created_at"] == "2023-10-06 23:47:56.678+00"
         assert contacts["data"][0]["unsubscribed"] is False
 
     def test_should_list_contacts_raise_exception_when_no_content(self) -> None:
@@ -264,7 +264,7 @@ class TestResendContacts(ResendBaseTest):
                         "email": "contact1@example.com",
                         "first_name": "Contact",
                         "last_name": "One",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                         "unsubscribed": False,
                     },
                     {
@@ -272,7 +272,7 @@ class TestResendContacts(ResendBaseTest):
                         "email": "contact2@example.com",
                         "first_name": "Contact",
                         "last_name": "Two",
-                        "created_at": "2023-10-07T23:47:56.678Z",
+                        "created_at": "2023-10-07 23:47:56.678+00",
                         "unsubscribed": False,
                     },
                 ],
@@ -303,7 +303,7 @@ class TestResendContacts(ResendBaseTest):
                         "email": "contact3@example.com",
                         "first_name": "Contact",
                         "last_name": "Three",
-                        "created_at": "2023-10-05T23:47:56.678Z",
+                        "created_at": "2023-10-05 23:47:56.678+00",
                         "unsubscribed": False,
                     }
                 ],
@@ -375,7 +375,7 @@ class TestResendContacts(ResendBaseTest):
                 "email": "global@example.com",
                 "first_name": "Global",
                 "last_name": "Contact",
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
                 "unsubscribed": False,
                 "properties": {"tier": "premium"},
             }
@@ -397,7 +397,7 @@ class TestResendContacts(ResendBaseTest):
                         "email": "global1@example.com",
                         "first_name": "Global",
                         "last_name": "One",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                         "unsubscribed": False,
                         "properties": {"tier": "free"},
                     },
@@ -406,7 +406,7 @@ class TestResendContacts(ResendBaseTest):
                         "email": "global2@example.com",
                         "first_name": "Global",
                         "last_name": "Two",
-                        "created_at": "2023-10-07T23:47:56.678Z",
+                        "created_at": "2023-10-07 23:47:56.678+00",
                         "unsubscribed": False,
                         "properties": {"tier": "premium"},
                     },
@@ -432,7 +432,7 @@ class TestResendContacts(ResendBaseTest):
                         "email": "steve.wozniak@gmail.com",
                         "first_name": "Steve",
                         "last_name": "Wozniak",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                         "unsubscribed": False,
                     }
                 ],
@@ -458,7 +458,7 @@ class TestResendContacts(ResendBaseTest):
                         "email": "contact1@example.com",
                         "first_name": "Contact",
                         "last_name": "One",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                         "unsubscribed": False,
                     }
                 ],

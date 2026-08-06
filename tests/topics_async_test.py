@@ -42,7 +42,7 @@ class TestResendTopicsAsync(AsyncResendBaseTest):
                 "name": "Weekly Newsletter",
                 "description": "Weekly newsletter for our subscribers",
                 "default_subscription": "opt_in",
-                "created_at": "2023-04-08T00:11:13.110779+00:00",
+                "created_at": "2023-04-08 00:11:13.110779+00",
             }
         )
 
@@ -121,7 +121,7 @@ class TestResendTopicsAsync(AsyncResendBaseTest):
                         "name": "Weekly Newsletter",
                         "description": "Weekly newsletter for our subscribers",
                         "default_subscription": "opt_in",
-                        "created_at": "2023-04-08T00:11:13.110779+00:00",
+                        "created_at": "2023-04-08 00:11:13.110779+00",
                     }
                 ],
             }

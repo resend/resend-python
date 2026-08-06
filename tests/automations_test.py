@@ -65,8 +65,8 @@ class TestResendAutomations(ResendBaseTest):
                 "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
                 "name": "Welcome Sequence",
                 "status": "enabled",
-                "created_at": "2024-01-01T00:00:00.000Z",
-                "updated_at": "2024-01-02T00:00:00.000Z",
+                "created_at": "2024-01-01 00:00:00+00",
+                "updated_at": "2024-01-02 00:00:00+00",
                 "steps": [
                     {
                         "key": "trigger_1",
@@ -83,8 +83,8 @@ class TestResendAutomations(ResendBaseTest):
         assert automation["id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
         assert automation["name"] == "Welcome Sequence"
         assert automation["status"] == "enabled"
-        assert automation["created_at"] == "2024-01-01T00:00:00.000Z"
-        assert automation["updated_at"] == "2024-01-02T00:00:00.000Z"
+        assert automation["created_at"] == "2024-01-01 00:00:00+00"
+        assert automation["updated_at"] == "2024-01-02 00:00:00+00"
         assert len(automation["steps"]) == 1
         assert automation["steps"][0]["key"] == "trigger_1"
         assert automation["steps"][0]["type"] == "trigger"
@@ -159,15 +159,15 @@ class TestResendAutomations(ResendBaseTest):
                         "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
                         "name": "Welcome Sequence",
                         "status": "enabled",
-                        "created_at": "2024-01-01T00:00:00.000Z",
-                        "updated_at": "2024-01-02T00:00:00.000Z",
+                        "created_at": "2024-01-01 00:00:00+00",
+                        "updated_at": "2024-01-02 00:00:00+00",
                     },
                     {
                         "id": "c7e35c9f-bf1c-5d4d-cf1d-460cce08492f",
                         "name": "Onboarding Flow",
                         "status": "disabled",
-                        "created_at": "2024-02-01T00:00:00.000Z",
-                        "updated_at": "2024-02-02T00:00:00.000Z",
+                        "created_at": "2024-02-01 00:00:00+00",
+                        "updated_at": "2024-02-02 00:00:00+00",
                     },
                 ],
             }
@@ -182,7 +182,7 @@ class TestResendAutomations(ResendBaseTest):
         assert first["id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
         assert first["name"] == "Welcome Sequence"
         assert first["status"] == "enabled"
-        assert first["created_at"] == "2024-01-01T00:00:00.000Z"
+        assert first["created_at"] == "2024-01-01 00:00:00+00"
 
         second = automations["data"][1]
         assert second["id"] == "c7e35c9f-bf1c-5d4d-cf1d-460cce08492f"
@@ -198,8 +198,8 @@ class TestResendAutomations(ResendBaseTest):
                         "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
                         "name": "Welcome Sequence",
                         "status": "enabled",
-                        "created_at": "2024-01-01T00:00:00.000Z",
-                        "updated_at": "2024-01-02T00:00:00.000Z",
+                        "created_at": "2024-01-01 00:00:00+00",
+                        "updated_at": "2024-01-02 00:00:00+00",
                     },
                 ],
             }
@@ -221,8 +221,8 @@ class TestResendAutomations(ResendBaseTest):
                         "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
                         "name": "Welcome Sequence",
                         "status": "enabled",
-                        "created_at": "2024-01-01T00:00:00.000Z",
-                        "updated_at": "2024-01-02T00:00:00.000Z",
+                        "created_at": "2024-01-01 00:00:00+00",
+                        "updated_at": "2024-01-02 00:00:00+00",
                     },
                 ],
             }
@@ -245,16 +245,16 @@ class TestResendAutomations(ResendBaseTest):
                     {
                         "id": "run_123",
                         "status": "completed",
-                        "started_at": "2024-01-01T10:00:00.000Z",
-                        "completed_at": "2024-01-01T10:05:00.000Z",
-                        "created_at": "2024-01-01T09:59:00.000Z",
+                        "started_at": "2024-01-01 10:00:00+00",
+                        "completed_at": "2024-01-01 10:05:00+00",
+                        "created_at": "2024-01-01 09:59:00+00",
                     },
                     {
                         "id": "run_456",
                         "status": "running",
-                        "started_at": "2024-01-02T10:00:00.000Z",
+                        "started_at": "2024-01-02 10:00:00+00",
                         "completed_at": None,
-                        "created_at": "2024-01-02T09:59:00.000Z",
+                        "created_at": "2024-01-02 09:59:00+00",
                     },
                 ],
             }
@@ -268,8 +268,8 @@ class TestResendAutomations(ResendBaseTest):
         first = runs["data"][0]
         assert first["id"] == "run_123"
         assert first["status"] == "completed"
-        assert first["started_at"] == "2024-01-01T10:00:00.000Z"
-        assert first["completed_at"] == "2024-01-01T10:05:00.000Z"
+        assert first["started_at"] == "2024-01-01 10:00:00+00"
+        assert first["completed_at"] == "2024-01-01 10:05:00+00"
 
         second = runs["data"][1]
         assert second["id"] == "run_456"
@@ -285,9 +285,9 @@ class TestResendAutomations(ResendBaseTest):
                     {
                         "id": "run_123",
                         "status": "completed",
-                        "started_at": "2024-01-01T10:00:00.000Z",
-                        "completed_at": "2024-01-01T10:05:00.000Z",
-                        "created_at": "2024-01-01T09:59:00.000Z",
+                        "started_at": "2024-01-01 10:00:00+00",
+                        "completed_at": "2024-01-01 10:05:00+00",
+                        "created_at": "2024-01-01 09:59:00+00",
                     },
                 ],
             }
@@ -306,29 +306,29 @@ class TestResendAutomations(ResendBaseTest):
                 "object": "automation_run",
                 "id": "run_123",
                 "status": "completed",
-                "started_at": "2024-01-01T10:00:00.000Z",
-                "completed_at": "2024-01-01T10:05:00.000Z",
-                "created_at": "2024-01-01T09:59:00.000Z",
+                "started_at": "2024-01-01 10:00:00+00",
+                "completed_at": "2024-01-01 10:05:00+00",
+                "created_at": "2024-01-01 09:59:00+00",
                 "steps": [
                     {
                         "key": "trigger_1",
                         "type": "trigger",
                         "status": "completed",
-                        "started_at": "2024-01-01T10:00:00.000Z",
-                        "completed_at": "2024-01-01T10:00:01.000Z",
+                        "started_at": "2024-01-01 10:00:00+00",
+                        "completed_at": "2024-01-01 10:00:01+00",
                         "output": None,
                         "error": None,
-                        "created_at": "2024-01-01T09:59:00.000Z",
+                        "created_at": "2024-01-01 09:59:00+00",
                     },
                     {
                         "key": "email_1",
                         "type": "send_email",
                         "status": "completed",
-                        "started_at": "2024-01-01T10:01:00.000Z",
-                        "completed_at": "2024-01-01T10:01:02.000Z",
+                        "started_at": "2024-01-01 10:01:00+00",
+                        "completed_at": "2024-01-01 10:01:02+00",
                         "output": None,
                         "error": None,
-                        "created_at": "2024-01-01T09:59:00.000Z",
+                        "created_at": "2024-01-01 09:59:00+00",
                     },
                 ],
             }
@@ -340,8 +340,8 @@ class TestResendAutomations(ResendBaseTest):
         assert run["object"] == "automation_run"
         assert run["id"] == "run_123"
         assert run["status"] == "completed"
-        assert run["started_at"] == "2024-01-01T10:00:00.000Z"
-        assert run["completed_at"] == "2024-01-01T10:05:00.000Z"
+        assert run["started_at"] == "2024-01-01 10:00:00+00"
+        assert run["completed_at"] == "2024-01-01 10:05:00+00"
         assert len(run["steps"]) == 2
         assert run["steps"][0]["key"] == "trigger_1"
         assert run["steps"][0]["type"] == "trigger"

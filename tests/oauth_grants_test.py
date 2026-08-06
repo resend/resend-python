@@ -16,7 +16,7 @@ class TestResendOAuthGrants(ResendBaseTest):
                         "id": "650e8400-e29b-41d4-a716-446655440001",
                         "client_id": "430eed87-632a-4ea6-90db-0aace67ec228",
                         "scopes": ["emails:send"],
-                        "created_at": "2023-06-21T06:10:36.144Z",
+                        "created_at": "2023-06-21 06:10:36.144+00",
                         "revoked_at": None,
                         "revoked_reason": None,
                         "client": {
@@ -35,7 +35,7 @@ class TestResendOAuthGrants(ResendBaseTest):
             assert grant["id"] == "650e8400-e29b-41d4-a716-446655440001"
             assert grant["client_id"] == "430eed87-632a-4ea6-90db-0aace67ec228"
             assert grant["scopes"] == ["emails:send"]
-            assert grant["created_at"] == "2023-06-21T06:10:36.144Z"
+            assert grant["created_at"] == "2023-06-21 06:10:36.144+00"
             assert grant["revoked_at"] is None
             assert grant["revoked_reason"] is None
             assert grant["client"]["name"] == "Resend CLI"
@@ -51,8 +51,8 @@ class TestResendOAuthGrants(ResendBaseTest):
                         "id": "650e8400-e29b-41d4-a716-446655440002",
                         "client_id": "430eed87-632a-4ea6-90db-0aace67ec228",
                         "scopes": ["emails:send", "domains:read"],
-                        "created_at": "2023-06-20T06:10:36.144Z",
-                        "revoked_at": "2023-06-22T06:10:36.144Z",
+                        "created_at": "2023-06-20 06:10:36.144+00",
+                        "revoked_at": "2023-06-22 06:10:36.144+00",
                         "revoked_reason": "revoked_from_api",
                         "client": {
                             "name": "Resend CLI",
@@ -65,7 +65,7 @@ class TestResendOAuthGrants(ResendBaseTest):
 
         grants: resend.OAuthGrants.ListResponse = resend.OAuthGrants.list()
         grant = grants["data"][0]
-        assert grant["revoked_at"] == "2023-06-22T06:10:36.144Z"
+        assert grant["revoked_at"] == "2023-06-22 06:10:36.144+00"
         assert grant["revoked_reason"] == "revoked_from_api"
         assert grant["client"]["logo_uri"] is None
 
@@ -84,7 +84,7 @@ class TestResendOAuthGrants(ResendBaseTest):
                         "id": "grant-1",
                         "client_id": "client-1",
                         "scopes": ["emails:send"],
-                        "created_at": "2023-06-21T06:10:36.144Z",
+                        "created_at": "2023-06-21 06:10:36.144+00",
                         "revoked_at": None,
                         "revoked_reason": None,
                         "client": {"name": "Resend CLI", "logo_uri": None},
@@ -93,7 +93,7 @@ class TestResendOAuthGrants(ResendBaseTest):
                         "id": "grant-2",
                         "client_id": "client-1",
                         "scopes": ["emails:send"],
-                        "created_at": "2023-06-20T06:10:36.144Z",
+                        "created_at": "2023-06-20 06:10:36.144+00",
                         "revoked_at": None,
                         "revoked_reason": None,
                         "client": {"name": "Resend CLI", "logo_uri": None},
@@ -123,7 +123,7 @@ class TestResendOAuthGrants(ResendBaseTest):
                         "id": "grant-3",
                         "client_id": "client-1",
                         "scopes": ["emails:send"],
-                        "created_at": "2023-06-19T06:10:36.144Z",
+                        "created_at": "2023-06-19 06:10:36.144+00",
                         "revoked_at": None,
                         "revoked_reason": None,
                         "client": {"name": "Resend CLI", "logo_uri": None},

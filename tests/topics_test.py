@@ -51,7 +51,7 @@ class TestResendTopics(ResendBaseTest):
                 "name": "Weekly Newsletter",
                 "description": "Weekly newsletter for our subscribers",
                 "default_subscription": "opt_in",
-                "created_at": "2023-04-08T00:11:13.110779+00:00",
+                "created_at": "2023-04-08 00:11:13.110779+00",
             }
         )
 
@@ -60,7 +60,7 @@ class TestResendTopics(ResendBaseTest):
         assert topic["name"] == "Weekly Newsletter"
         assert topic["description"] == "Weekly newsletter for our subscribers"
         assert topic["default_subscription"] == "opt_in"
-        assert topic["created_at"] == "2023-04-08T00:11:13.110779+00:00"
+        assert topic["created_at"] == "2023-04-08 00:11:13.110779+00"
 
     def test_should_get_topics_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
@@ -155,7 +155,7 @@ class TestResendTopics(ResendBaseTest):
                         "name": "Weekly Newsletter",
                         "description": "Weekly newsletter for our subscribers",
                         "default_subscription": "opt_in",
-                        "created_at": "2023-04-08T00:11:13.110779+00:00",
+                        "created_at": "2023-04-08 00:11:13.110779+00",
                     }
                 ],
             }
@@ -187,14 +187,14 @@ class TestResendTopics(ResendBaseTest):
                         "name": "First Topic",
                         "description": "First topic description",
                         "default_subscription": "opt_in",
-                        "created_at": "2023-04-08T00:11:13.110779+00:00",
+                        "created_at": "2023-04-08 00:11:13.110779+00",
                     },
                     {
                         "id": "topic-2",
                         "name": "Second Topic",
                         "description": "Second topic description",
                         "default_subscription": "opt_out",
-                        "created_at": "2023-04-09T00:11:13.110779+00:00",
+                        "created_at": "2023-04-09 00:11:13.110779+00",
                     },
                 ],
             }
@@ -222,7 +222,7 @@ class TestResendTopics(ResendBaseTest):
                         "name": "Third Topic",
                         "description": "Third topic description",
                         "default_subscription": "opt_in",
-                        "created_at": "2023-04-07T00:11:13.110779+00:00",
+                        "created_at": "2023-04-07 00:11:13.110779+00",
                     }
                 ],
             }

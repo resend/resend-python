@@ -19,7 +19,7 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
                 "from": "sender@example.com",
                 "to": ["recipient@example.com"],
                 "subject": "Test subject",
-                "created_at": "2024-01-01T00:00:00Z",
+                "created_at": "2024-01-01 00:00:00+00",
                 "received_for": ["forwarded@example.com"],
             }
         )
@@ -39,7 +39,7 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
                 "from": "sender@example.com",
                 "to": ["recipient@example.com"],
                 "subject": "Test subject",
-                "created_at": "2024-01-01T00:00:00Z",
+                "created_at": "2024-01-01 00:00:00+00",
             }
         )
 
@@ -61,7 +61,7 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
                 "from": "sender@example.com",
                 "to": ["recipient@example.com"],
                 "subject": "Test subject",
-                "created_at": "2024-01-01T00:00:00Z",
+                "created_at": "2024-01-01 00:00:00+00",
             }
         )
 
@@ -95,7 +95,7 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
                         "from": "sender@example.com",
                         "to": ["recipient@example.com"],
                         "subject": "Test subject",
-                        "created_at": "2024-01-01T00:00:00Z",
+                        "created_at": "2024-01-01 00:00:00+00",
                     }
                 ],
             }
@@ -126,7 +126,7 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
                 "content_disposition": "inline",
                 "content_id": "img001",
                 "download_url": "https://inbound-cdn.resend.com/test/attachments/test-id",
-                "expires_at": "2025-10-17T14:29:41.521Z",
+                "expires_at": "2025-10-17 14:29:41.521+00",
             }
         )
 
@@ -164,7 +164,7 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
                         "content_id": "img001",
                         "size": 1024,
                         "download_url": "https://inbound-cdn.resend.com/test/attachments/2a0c9ce0?signature=sig-123",
-                        "expires_at": "2025-10-17T14:29:41.521Z",
+                        "expires_at": "2025-10-17 14:29:41.521+00",
                     },
                     {
                         "id": "3b1d0df1-4223-5839-a87f-58eecd27b429",
@@ -173,7 +173,7 @@ class TestResendReceivingAsync(AsyncResendBaseTest):
                         "content_disposition": "attachment",
                         "size": 2048,
                         "download_url": "https://inbound-cdn.resend.com/test/attachments/3b1d0df1?signature=sig-456",
-                        "expires_at": "2025-10-17T14:29:41.521Z",
+                        "expires_at": "2025-10-17 14:29:41.521+00",
                     },
                 ],
             }

@@ -27,8 +27,8 @@ class TestDomainClaimsAsync(AsyncResendBaseTest):
                 },
                 "blocked_reason": None,
                 "failure_reason": None,
-                "created_at": "2026-06-16T17:12:02.059593+00:00",
-                "expires_at": "2026-06-23T17:12:02.059593+00:00",
+                "created_at": "2026-06-16 17:12:02.059593+00",
+                "expires_at": "2026-06-23 17:12:02.059593+00",
             }
         )
 
@@ -81,8 +81,8 @@ class TestDomainClaimsAsync(AsyncResendBaseTest):
                 "region": "us-east-1",
                 "blocked_reason": "grace_period",
                 "failure_reason": None,
-                "created_at": "2026-06-16T17:12:02.059593+00:00",
-                "expires_at": "2026-06-23T17:12:02.059593+00:00",
+                "created_at": "2026-06-16 17:12:02.059593+00",
+                "expires_at": "2026-06-23 17:12:02.059593+00",
             }
         )
 

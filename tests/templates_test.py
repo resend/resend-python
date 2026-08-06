@@ -79,9 +79,9 @@ class TestResendTemplates(ResendBaseTest):
                         "fallback_value": 25,
                     },
                 ],
-                "created_at": "2024-01-15T10:30:00.000Z",
-                "updated_at": "2024-01-15T10:30:00.000Z",
-                "published_at": "2024-01-15T11:00:00.000Z",
+                "created_at": "2024-01-15 10:30:00+00",
+                "updated_at": "2024-01-15 10:30:00+00",
+                "published_at": "2024-01-15 11:00:00+00",
             }
         )
 
@@ -105,9 +105,9 @@ class TestResendTemplates(ResendBaseTest):
         assert template["variables"][1]["key"] == "AGE"
         assert template["variables"][1]["type"] == "number"
         assert template["variables"][1]["fallback_value"] == 25
-        assert template["created_at"] == "2024-01-15T10:30:00.000Z"
-        assert template["updated_at"] == "2024-01-15T10:30:00.000Z"
-        assert template["published_at"] == "2024-01-15T11:00:00.000Z"
+        assert template["created_at"] == "2024-01-15 10:30:00+00"
+        assert template["updated_at"] == "2024-01-15 10:30:00+00"
+        assert template["published_at"] == "2024-01-15 11:00:00+00"
 
     def test_templates_update(self) -> None:
         self.set_mock_json(
@@ -171,9 +171,9 @@ class TestResendTemplates(ResendBaseTest):
                         "id": "template-1",
                         "name": "welcome-email",
                         "status": "published",
-                        "published_at": "2024-01-15T11:00:00.000Z",
-                        "created_at": "2024-01-15T10:30:00.000Z",
-                        "updated_at": "2024-01-15T10:30:00.000Z",
+                        "published_at": "2024-01-15 11:00:00+00",
+                        "created_at": "2024-01-15 10:30:00+00",
+                        "updated_at": "2024-01-15 10:30:00+00",
                         "alias": "welcome",
                     },
                     {
@@ -181,8 +181,8 @@ class TestResendTemplates(ResendBaseTest):
                         "name": "goodbye-email",
                         "status": "draft",
                         "published_at": None,
-                        "created_at": "2024-01-16T10:30:00.000Z",
-                        "updated_at": "2024-01-16T10:30:00.000Z",
+                        "created_at": "2024-01-16 10:30:00+00",
+                        "updated_at": "2024-01-16 10:30:00+00",
                         "alias": "goodbye",
                     },
                 ],
@@ -198,9 +198,9 @@ class TestResendTemplates(ResendBaseTest):
         assert template["id"] == "template-1"
         assert template["name"] == "welcome-email"
         assert template["status"] == "published"
-        assert template["published_at"] == "2024-01-15T11:00:00.000Z"
-        assert template["created_at"] == "2024-01-15T10:30:00.000Z"
-        assert template["updated_at"] == "2024-01-15T10:30:00.000Z"
+        assert template["published_at"] == "2024-01-15 11:00:00+00"
+        assert template["created_at"] == "2024-01-15 10:30:00+00"
+        assert template["updated_at"] == "2024-01-15 10:30:00+00"
         assert template["alias"] == "welcome"
 
         template = templates["data"][1]
@@ -208,8 +208,8 @@ class TestResendTemplates(ResendBaseTest):
         assert template["name"] == "goodbye-email"
         assert template["status"] == "draft"
         assert template["published_at"] is None
-        assert template["created_at"] == "2024-01-16T10:30:00.000Z"
-        assert template["updated_at"] == "2024-01-16T10:30:00.000Z"
+        assert template["created_at"] == "2024-01-16 10:30:00+00"
+        assert template["updated_at"] == "2024-01-16 10:30:00+00"
         assert template["alias"] == "goodbye"
 
     def test_templates_list_with_pagination_params(self) -> None:
@@ -222,9 +222,9 @@ class TestResendTemplates(ResendBaseTest):
                         "id": "template-1",
                         "name": "welcome-email",
                         "status": "published",
-                        "published_at": "2024-01-15T11:00:00.000Z",
-                        "created_at": "2024-01-15T10:30:00.000Z",
-                        "updated_at": "2024-01-15T10:30:00.000Z",
+                        "published_at": "2024-01-15 11:00:00+00",
+                        "created_at": "2024-01-15 10:30:00+00",
+                        "updated_at": "2024-01-15 10:30:00+00",
                         "alias": "welcome",
                     }
                 ],
@@ -252,8 +252,8 @@ class TestResendTemplates(ResendBaseTest):
                         "name": "password-reset",
                         "status": "draft",
                         "published_at": None,
-                        "created_at": "2024-01-14T10:30:00.000Z",
-                        "updated_at": "2024-01-14T10:30:00.000Z",
+                        "created_at": "2024-01-14 10:30:00+00",
+                        "updated_at": "2024-01-14 10:30:00+00",
                         "alias": "password-reset",
                     }
                 ],

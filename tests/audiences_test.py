@@ -36,14 +36,14 @@ class TestResendAudiences(ResendBaseTest):
                 "object": "audience",
                 "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                 "name": "Registered Users",
-                "created_at": "2023-10-06T22:59:55.977Z",
+                "created_at": "2023-10-06 22:59:55.977+00",
             }
         )
 
         audience = resend.Audiences.get(id="78261eea-8f8b-4381-83c6-79fa7120f1cf")
         assert audience["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert audience["name"] == "Registered Users"
-        assert audience["created_at"] == "2023-10-06T22:59:55.977Z"
+        assert audience["created_at"] == "2023-10-06 22:59:55.977+00"
 
     def test_should_get_audiences_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
@@ -80,7 +80,7 @@ class TestResendAudiences(ResendBaseTest):
                     {
                         "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "name": "Registered Users",
-                        "created_at": "2023-10-06T22:59:55.977Z",
+                        "created_at": "2023-10-06 22:59:55.977+00",
                     }
                 ],
             }
@@ -106,12 +106,12 @@ class TestResendAudiences(ResendBaseTest):
                     {
                         "id": "audience-1",
                         "name": "First Audience",
-                        "created_at": "2023-10-06T22:59:55.977Z",
+                        "created_at": "2023-10-06 22:59:55.977+00",
                     },
                     {
                         "id": "audience-2",
                         "name": "Second Audience",
-                        "created_at": "2023-10-07T22:59:55.977Z",
+                        "created_at": "2023-10-07 22:59:55.977+00",
                     },
                 ],
             }
@@ -137,7 +137,7 @@ class TestResendAudiences(ResendBaseTest):
                     {
                         "id": "audience-3",
                         "name": "Third Audience",
-                        "created_at": "2023-10-05T22:59:55.977Z",
+                        "created_at": "2023-10-05 22:59:55.977+00",
                     }
                 ],
             }
