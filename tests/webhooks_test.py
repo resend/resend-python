@@ -32,7 +32,7 @@ class TestWebhooks(ResendBaseTest):
         webhook_response = {
             "id": "wh_123",
             "object": "webhook",
-            "created_at": "2024-01-01T00:00:00Z",
+            "created_at": "2024-01-01 00:00:00+00",
             "status": "enabled",
             "endpoint": "https://example.com/webhook",
             "events": ["email.sent"],
@@ -65,7 +65,7 @@ class TestWebhooks(ResendBaseTest):
                 {
                     "id": "wh_123",
                     "object": "webhook",
-                    "created_at": "2024-01-01T00:00:00Z",
+                    "created_at": "2024-01-01 00:00:00+00",
                     "status": "enabled",
                     "endpoint": "https://example.com/webhook",
                     "events": ["email.sent"],
@@ -119,7 +119,7 @@ class TestWebhookVerification:
             '{"type":"email.sent","created_at":"2026-02-22T23:41:12.126Z",'
             '"data":{"email_id":"123","message_id":"<111@example.com>",'
             '"from":"Acme <onboarding@resend.dev>","to":["delivered@resend.dev"],'
-            '"subject":"Hello","created_at":"2026-02-22T23:41:11.894719+00:00"}}'
+            '"subject":"Hello","created_at":"2026-02-22T23:41:11.894Z"}}'
         )
 
         signature = self._generate_test_signature(secret, msg_id, timestamp, payload)
@@ -299,7 +299,7 @@ class TestWebhookVerification:
         timestamp = str(int(time.time()))
         payload = (
             '{"type":"email.received","created_at":"2026-02-22T23:41:12.126Z",'
-            '"data":{"email_id":"567","created_at":"2026-02-22T23:41:11.894719+00:00",'
+            '"data":{"email_id":"567","created_at":"2026-02-22T23:41:11.894Z",'
             '"from":"onboarding@resend.dev","to":["delivered@resend.dev"],'
             '"bcc":[],"cc":[],"received_for":["forwarded@example.com"],'
             '"message_id":"<111-222-333@email.example.com>",'
@@ -331,7 +331,7 @@ class TestWebhookVerification:
             '{"type":"email.bounced","created_at":"2026-02-22T23:41:12.126Z",'
             '"data":{"email_id":"123","message_id":"<111@example.com>",'
             '"from":"Acme <onboarding@resend.dev>","to":["bounced@resend.dev"],'
-            '"subject":"Hello","created_at":"2026-02-22T23:41:11.894719+00:00",'
+            '"subject":"Hello","created_at":"2026-02-22T23:41:11.894Z",'
             '"bounce":{"diagnosticCode":"smtp; 550 5.1.1 user unknown",'
             '"message":"The recipient does not exist.",'
             '"subType":"General","type":"Permanent"}}}'

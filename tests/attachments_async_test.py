@@ -20,7 +20,7 @@ class TestResendAttachmentsAsync(AsyncResendBaseTest):
                 "content_disposition": "inline",
                 "content_id": "img001",
                 "download_url": "https://cdn.resend.com/emails/test/attachments/test-id",
-                "expires_at": "2025-10-17T14:29:41.521Z",
+                "expires_at": "2025-10-17 14:29:41.521+00",
             }
         )
 
@@ -57,7 +57,7 @@ class TestResendAttachmentsAsync(AsyncResendBaseTest):
                         "content_disposition": "inline",
                         "size": 1024,
                         "download_url": "https://cdn.resend.com/emails/test/attachments/test-id",
-                        "expires_at": "2025-10-17T14:29:41.521Z",
+                        "expires_at": "2025-10-17 14:29:41.521+00",
                     }
                 ],
             }

@@ -37,8 +37,8 @@ class TestResendApiKeys(ResendBaseTest):
                     {
                         "id": "91f3200a-df72-4654-b0cd-f202395f5354",
                         "name": "Production",
-                        "created_at": "2023-04-08T00:11:13.110779+00:00",
-                        "last_used_at": "2023-04-08T12:00:00.000000+00:00",
+                        "created_at": "2023-04-08 00:11:13.110779+00",
+                        "last_used_at": "2023-04-08 12:00:00+00",
                     }
                 ],
             }
@@ -50,8 +50,8 @@ class TestResendApiKeys(ResendBaseTest):
         for key in keys["data"]:
             assert key["id"] == "91f3200a-df72-4654-b0cd-f202395f5354"
             assert key["name"] == "Production"
-            assert key["created_at"] == "2023-04-08T00:11:13.110779+00:00"
-            assert key["last_used_at"] == "2023-04-08T12:00:00.000000+00:00"
+            assert key["created_at"] == "2023-04-08 00:11:13.110779+00"
+            assert key["last_used_at"] == "2023-04-08 12:00:00+00"
 
     def test_api_keys_list_last_used_at_none(self) -> None:
         self.set_mock_json(
@@ -62,7 +62,7 @@ class TestResendApiKeys(ResendBaseTest):
                     {
                         "id": "91f3200a-df72-4654-b0cd-f202395f5354",
                         "name": "Production",
-                        "created_at": "2023-04-08T00:11:13.110779+00:00",
+                        "created_at": "2023-04-08 00:11:13.110779+00",
                         "last_used_at": None,
                     }
                 ],
@@ -86,12 +86,12 @@ class TestResendApiKeys(ResendBaseTest):
                     {
                         "id": "test-key-1",
                         "name": "Test Key 1",
-                        "created_at": "2023-04-08T00:11:13.110779+00:00",
+                        "created_at": "2023-04-08 00:11:13.110779+00",
                     },
                     {
                         "id": "test-key-2",
                         "name": "Test Key 2",
-                        "created_at": "2023-04-09T00:11:13.110779+00:00",
+                        "created_at": "2023-04-09 00:11:13.110779+00",
                     },
                 ],
             }
@@ -114,7 +114,7 @@ class TestResendApiKeys(ResendBaseTest):
                     {
                         "id": "test-key-3",
                         "name": "Test Key 3",
-                        "created_at": "2023-04-07T00:11:13.110779+00:00",
+                        "created_at": "2023-04-07 00:11:13.110779+00",
                     }
                 ],
             }

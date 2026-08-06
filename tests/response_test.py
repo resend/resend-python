@@ -19,7 +19,7 @@ class TestResponseDict(ResendBaseTest):
                         "content_disposition": "inline",
                         "size": 1024,
                         "download_url": "https://cdn.resend.com/att-1",
-                        "expires_at": "2025-10-17T14:29:41.521Z",
+                        "expires_at": "2025-10-17 14:29:41.521+00",
                     },
                 ],
             }
@@ -45,7 +45,7 @@ class TestResponseDict(ResendBaseTest):
                         "content_disposition": "inline",
                         "size": 1024,
                         "download_url": "https://cdn.resend.com/att-1",
-                        "expires_at": "2025-10-17T14:29:41.521Z",
+                        "expires_at": "2025-10-17 14:29:41.521+00",
                     },
                 ],
             }

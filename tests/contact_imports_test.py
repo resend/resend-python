@@ -43,7 +43,7 @@ class TestContactImports(ResendBaseTest):
                 "object": "contact_import",
                 "id": "479e3145-dd38-476b-932c-529ceb705947",
                 "status": "completed",
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
                 "counts": {
                     "total": 100,
                     "created": 80,
@@ -78,7 +78,7 @@ class TestContactImports(ResendBaseTest):
                         "object": "contact_import",
                         "id": "479e3145-dd38-476b-932c-529ceb705947",
                         "status": "completed",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                     }
                 ],
             }

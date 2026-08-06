@@ -36,14 +36,14 @@ class TestResendSegments(ResendBaseTest):
                 "object": "audience",
                 "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                 "name": "Registered Users",
-                "created_at": "2023-10-06T22:59:55.977Z",
+                "created_at": "2023-10-06 22:59:55.977+00",
             }
         )
 
         segment = resend.Segments.get(id="78261eea-8f8b-4381-83c6-79fa7120f1cf")
         assert segment["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert segment["name"] == "Registered Users"
-        assert segment["created_at"] == "2023-10-06T22:59:55.977Z"
+        assert segment["created_at"] == "2023-10-06 22:59:55.977+00"
 
     def test_should_get_segments_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
@@ -80,7 +80,7 @@ class TestResendSegments(ResendBaseTest):
                     {
                         "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "name": "Registered Users",
-                        "created_at": "2023-10-06T22:59:55.977Z",
+                        "created_at": "2023-10-06 22:59:55.977+00",
                     }
                 ],
             }
@@ -106,12 +106,12 @@ class TestResendSegments(ResendBaseTest):
                     {
                         "id": "segment-1",
                         "name": "First Segment",
-                        "created_at": "2023-10-06T22:59:55.977Z",
+                        "created_at": "2023-10-06 22:59:55.977+00",
                     },
                     {
                         "id": "segment-2",
                         "name": "Second Segment",
-                        "created_at": "2023-10-07T22:59:55.977Z",
+                        "created_at": "2023-10-07 22:59:55.977+00",
                     },
                 ],
             }
@@ -137,7 +137,7 @@ class TestResendSegments(ResendBaseTest):
                     {
                         "id": "segment-3",
                         "name": "Third Segment",
-                        "created_at": "2023-10-05T22:59:55.977Z",
+                        "created_at": "2023-10-05 22:59:55.977+00",
                     }
                 ],
             }

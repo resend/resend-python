@@ -42,7 +42,7 @@ class TestResendBroadcasts(ResendBaseTest):
                 "reply_to": None,
                 "preview_text": "Check out our latest announcements",
                 "status": "draft",
-                "created_at": "2024-12-01T19:32:22.980Z",
+                "created_at": "2024-12-01 19:32:22.98+00",
                 "scheduled_at": None,
                 "sent_at": None,
                 "html": "<p>Hello World</p>",
@@ -59,7 +59,7 @@ class TestResendBroadcasts(ResendBaseTest):
         assert broadcast["reply_to"] is None
         assert broadcast["preview_text"] == "Check out our latest announcements"
         assert broadcast["status"] == "draft"
-        assert broadcast["created_at"] == "2024-12-01T19:32:22.980Z"
+        assert broadcast["created_at"] == "2024-12-01 19:32:22.98+00"
         assert broadcast["scheduled_at"] is None
         assert broadcast["sent_at"] is None
         assert broadcast["html"] == "<p>Hello World</p>"
@@ -124,7 +124,7 @@ class TestResendBroadcasts(ResendBaseTest):
                         "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
                         "audience_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "status": "draft",
-                        "created_at": "2024-11-01T15:13:31.723Z",
+                        "created_at": "2024-11-01 15:13:31.723+00",
                         "scheduled_at": None,
                         "sent_at": None,
                     },
@@ -132,9 +132,9 @@ class TestResendBroadcasts(ResendBaseTest):
                         "id": "559ac32e-9ef5-46fb-82a1-b76b840c0f7b",
                         "audience_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "status": "sent",
-                        "created_at": "2024-12-01T19:32:22.980Z",
-                        "scheduled_at": "2024-12-02T19:32:22.980Z",
-                        "sent_at": "2024-12-02T19:32:22.980Z",
+                        "created_at": "2024-12-01 19:32:22.98+00",
+                        "scheduled_at": "2024-12-02 19:32:22.98+00",
+                        "sent_at": "2024-12-02 19:32:22.98+00",
                     },
                 ],
             }
@@ -149,7 +149,7 @@ class TestResendBroadcasts(ResendBaseTest):
         assert broadcast["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
         assert broadcast["audience_id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert broadcast["status"] == "draft"
-        assert broadcast["created_at"] == "2024-11-01T15:13:31.723Z"
+        assert broadcast["created_at"] == "2024-11-01 15:13:31.723+00"
         assert broadcast["scheduled_at"] is None
         assert broadcast["sent_at"] is None
 
@@ -157,9 +157,9 @@ class TestResendBroadcasts(ResendBaseTest):
         assert broadcast["id"] == "559ac32e-9ef5-46fb-82a1-b76b840c0f7b"
         assert broadcast["audience_id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert broadcast["status"] == "sent"
-        assert broadcast["created_at"] == "2024-12-01T19:32:22.980Z"
-        assert broadcast["scheduled_at"] == "2024-12-02T19:32:22.980Z"
-        assert broadcast["sent_at"] == "2024-12-02T19:32:22.980Z"
+        assert broadcast["created_at"] == "2024-12-01 19:32:22.98+00"
+        assert broadcast["scheduled_at"] == "2024-12-02 19:32:22.98+00"
+        assert broadcast["sent_at"] == "2024-12-02 19:32:22.98+00"
 
     def test_broadcasts_list_with_pagination_params(self) -> None:
         self.set_mock_json(
@@ -171,7 +171,7 @@ class TestResendBroadcasts(ResendBaseTest):
                         "id": "broadcast-1",
                         "audience_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "status": "draft",
-                        "created_at": "2024-11-01T15:13:31.723Z",
+                        "created_at": "2024-11-01 15:13:31.723+00",
                         "scheduled_at": None,
                         "sent_at": None,
                     },
@@ -179,9 +179,9 @@ class TestResendBroadcasts(ResendBaseTest):
                         "id": "broadcast-2",
                         "audience_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "status": "sent",
-                        "created_at": "2024-12-01T19:32:22.980Z",
-                        "scheduled_at": "2024-12-02T19:32:22.980Z",
-                        "sent_at": "2024-12-02T19:32:22.980Z",
+                        "created_at": "2024-12-01 19:32:22.98+00",
+                        "scheduled_at": "2024-12-02 19:32:22.98+00",
+                        "sent_at": "2024-12-02 19:32:22.98+00",
                     },
                 ],
             }
@@ -210,7 +210,7 @@ class TestResendBroadcasts(ResendBaseTest):
                         "id": "broadcast-3",
                         "audience_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "status": "draft",
-                        "created_at": "2024-10-01T15:13:31.723Z",
+                        "created_at": "2024-10-01 15:13:31.723+00",
                         "scheduled_at": None,
                         "sent_at": None,
                     }

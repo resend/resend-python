@@ -101,12 +101,12 @@ class TestResendContactSegments(ResendBaseTest):
                     {
                         "id": "segment-1",
                         "name": "Segment 1",
-                        "created_at": "2023-10-06T22:59:55.977Z",
+                        "created_at": "2023-10-06 22:59:55.977+00",
                     },
                     {
                         "id": "segment-2",
                         "name": "Segment 2",
-                        "created_at": "2023-10-07T22:59:55.977Z",
+                        "created_at": "2023-10-07 22:59:55.977+00",
                     },
                 ],
             }
@@ -133,7 +133,7 @@ class TestResendContactSegments(ResendBaseTest):
                     {
                         "id": "segment-3",
                         "name": "Segment 3",
-                        "created_at": "2023-10-08T22:59:55.977Z",
+                        "created_at": "2023-10-08 22:59:55.977+00",
                     }
                 ],
             }
@@ -176,7 +176,7 @@ class TestResendContactSegments(ResendBaseTest):
                     {
                         "id": "segment-4",
                         "name": "Segment 4",
-                        "created_at": "2023-10-09T22:59:55.977Z",
+                        "created_at": "2023-10-09 22:59:55.977+00",
                     }
                 ],
             }

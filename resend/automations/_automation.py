@@ -118,11 +118,11 @@ class AutomationRunStep(TypedDict):
     """
     started_at: Union[str, None]
     """
-    When the step started executing (ISO 8601 format), or None if not started.
+    When the step started executing, or None if not started.
     """
     completed_at: Union[str, None]
     """
-    When the step completed executing (ISO 8601 format), or None if not completed.
+    When the step completed executing, or None if not completed.
     """
     output: Any
     """
@@ -134,7 +134,7 @@ class AutomationRunStep(TypedDict):
     """
     created_at: str
     """
-    When the run step was created (ISO 8601 format).
+    When the run step was created.
     """
 
 
@@ -164,11 +164,11 @@ class AutomationListItem(TypedDict):
     """
     created_at: str
     """
-    When the automation was created (ISO 8601 format).
+    When the automation was created.
     """
     updated_at: str
     """
-    When the automation was last updated (ISO 8601 format).
+    When the automation was last updated.
     """
 
 
@@ -205,11 +205,11 @@ class Automation(TypedDict):
     """
     created_at: str
     """
-    When the automation was created (ISO 8601 format).
+    When the automation was created.
     """
     updated_at: str
     """
-    When the automation was last updated (ISO 8601 format).
+    When the automation was last updated.
     """
     steps: List[AutomationResponseStep]
     """
@@ -243,15 +243,15 @@ class AutomationRunListItem(TypedDict):
     """
     started_at: Union[str, None]
     """
-    When the run started (ISO 8601 format), or None.
+    When the run started, or None.
     """
     completed_at: Union[str, None]
     """
-    When the run completed (ISO 8601 format), or None.
+    When the run completed, or None.
     """
     created_at: str
     """
-    When the run was created (ISO 8601 format).
+    When the run was created.
     """
 
 
@@ -283,15 +283,15 @@ class AutomationRun(TypedDict):
     """
     started_at: Union[str, None]
     """
-    When the run started (ISO 8601 format), or None.
+    When the run started, or None.
     """
     completed_at: Union[str, None]
     """
-    When the run completed (ISO 8601 format), or None.
+    When the run completed, or None.
     """
     created_at: str
     """
-    When the run was created (ISO 8601 format).
+    When the run was created.
     """
     steps: List[AutomationRunStep]
     """

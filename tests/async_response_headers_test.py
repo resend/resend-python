@@ -87,7 +87,7 @@ class TestResponseHeadersIntegrationAsync:
         mock_client.request.return_value = (
             b'{"id": "email_456", "object": "received_email", '
             b'"from": "sender@example.com", "to": ["recipient@example.com"], '
-            b'"subject": "Hello", "created_at": "2024-01-01T00:00:00Z", '
+            b'"subject": "Hello", "created_at": "2024-01-01 00:00:00+00", '
             b'"message_id": "msg_123", "attachments": [], '
             b'"headers": {"List-Unsubscribe": "<mailto:unsub@example.com>", '
             b'"X-Custom": "value"}}',

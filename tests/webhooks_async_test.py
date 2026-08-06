@@ -43,7 +43,7 @@ class TestResendWebhooksAsync(AsyncResendBaseTest):
             {
                 "id": "wh_123",
                 "object": "webhook",
-                "created_at": "2024-01-01T00:00:00Z",
+                "created_at": "2024-01-01 00:00:00+00",
                 "status": "enabled",
                 "endpoint": "https://example.com/webhook",
                 "events": ["email.sent"],
@@ -93,7 +93,7 @@ class TestResendWebhooksAsync(AsyncResendBaseTest):
                     {
                         "id": "wh_123",
                         "object": "webhook",
-                        "created_at": "2024-01-01T00:00:00Z",
+                        "created_at": "2024-01-01 00:00:00+00",
                         "status": "enabled",
                         "endpoint": "https://example.com/webhook",
                         "events": ["email.sent"],

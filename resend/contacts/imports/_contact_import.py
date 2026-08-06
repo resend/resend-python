@@ -32,7 +32,7 @@ class ContactImport(BaseResponse):
         object (str): Always 'contact_import'.
         id (str): Unique identifier for the contact import.
         status (str): 'queued', 'in_progress', 'completed', or 'failed'.
-        created_at (str): ISO 8601 timestamp of when the import was created.
+        created_at (str): Timestamp of when the import was created.
         counts (ContactImportCounts): Row-level import statistics (present when status is completed or failed).
     """
 

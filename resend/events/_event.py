@@ -41,11 +41,11 @@ class EventListItem(TypedDict):
     """
     created_at: str
     """
-    When the event was created (ISO 8601 format).
+    When the event was created.
     """
     updated_at: Union[str, None]
     """
-    When the event was last updated (ISO 8601 format), or None.
+    When the event was last updated, or None.
     """
 
 
@@ -80,9 +80,9 @@ class Event(TypedDict):
     """
     created_at: str
     """
-    When the event was created (ISO 8601 format).
+    When the event was created.
     """
     updated_at: Union[str, None]
     """
-    When the event was last updated (ISO 8601 format), or None.
+    When the event was last updated, or None.
     """

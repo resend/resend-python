@@ -47,7 +47,7 @@ class TestResendContactPropertiesAsync(AsyncResendBaseTest):
                 "id": "prop_123456",
                 "key": "age",
                 "object": "contact_property",
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
                 "type": "number",
                 "fallback_value": 0,
             }
@@ -78,7 +78,7 @@ class TestResendContactPropertiesAsync(AsyncResendBaseTest):
                         "id": "prop_123456",
                         "key": "age",
                         "object": "contact_property",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                         "type": "number",
                         "fallback_value": 0,
                     }

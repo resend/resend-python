@@ -18,7 +18,7 @@ class TestResendAttachments(ResendBaseTest):
                 "content_disposition": "inline",
                 "content_id": "img001",
                 "download_url": "https://inbound-cdn.resend.com/4ef9a417-02e9-4d39-ad75-9611e0fcc33c/attachments/2a0c9ce0-3112-4728-976e-47ddcd16a318?some-params=example&signature=sig-123",
-                "expires_at": "2025-10-17T14:29:41.521Z",
+                "expires_at": "2025-10-17 14:29:41.521+00",
             }
         )
 
@@ -35,7 +35,7 @@ class TestResendAttachments(ResendBaseTest):
         assert attachment["content_disposition"] == "inline"
         assert attachment["content_id"] == "img001"
         assert "https://inbound-cdn.resend.com" in attachment["download_url"]
-        assert attachment["expires_at"] == "2025-10-17T14:29:41.521Z"
+        assert attachment["expires_at"] == "2025-10-17 14:29:41.521+00"
 
     def test_receiving_get_attachment_without_content_id(self) -> None:
         self.set_mock_json(
@@ -46,7 +46,7 @@ class TestResendAttachments(ResendBaseTest):
                 "content_type": "application/pdf",
                 "content_disposition": "attachment",
                 "download_url": "https://inbound-cdn.resend.com/test-email/attachments/test-attachment",
-                "expires_at": "2025-10-18T10:00:00.000Z",
+                "expires_at": "2025-10-18 10:00:00+00",
             }
         )
 
@@ -87,7 +87,7 @@ class TestResendAttachments(ResendBaseTest):
                         "content_id": "img001",
                         "size": 1024,
                         "download_url": "https://inbound-cdn.resend.com/test/attachments/2a0c9ce0?signature=sig-123",
-                        "expires_at": "2025-10-17T14:29:41.521Z",
+                        "expires_at": "2025-10-17 14:29:41.521+00",
                     },
                     {
                         "id": "3b1d0df1-4223-5839-a87f-58eecd27b429",
@@ -96,7 +96,7 @@ class TestResendAttachments(ResendBaseTest):
                         "content_disposition": "attachment",
                         "size": 2048,
                         "download_url": "https://inbound-cdn.resend.com/test/attachments/3b1d0df1?signature=sig-456",
-                        "expires_at": "2025-10-17T14:29:41.521Z",
+                        "expires_at": "2025-10-17 14:29:41.521+00",
                     },
                 ],
             }
@@ -115,7 +115,7 @@ class TestResendAttachments(ResendBaseTest):
         assert attachments["data"][0]["filename"] == "avatar.png"
         assert attachments["data"][0]["size"] == 1024
         assert "https://inbound-cdn.resend.com" in attachments["data"][0]["download_url"]
-        assert attachments["data"][0]["expires_at"] == "2025-10-17T14:29:41.521Z"
+        assert attachments["data"][0]["expires_at"] == "2025-10-17 14:29:41.521+00"
         assert attachments["data"][1]["id"] == "3b1d0df1-4223-5839-a87f-58eecd27b429"
         assert attachments["data"][1]["filename"] == "document.pdf"
 
@@ -132,7 +132,7 @@ class TestResendAttachments(ResendBaseTest):
                         "content_disposition": "inline",
                         "size": 1024,
                         "download_url": "https://inbound-cdn.resend.com/test/attachments/2a0c9ce0?signature=sig-123",
-                        "expires_at": "2025-10-17T14:29:41.521Z",
+                        "expires_at": "2025-10-17 14:29:41.521+00",
                     },
                 ],
             }

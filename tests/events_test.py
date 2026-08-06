@@ -46,7 +46,7 @@ class TestResendEvents(ResendBaseTest):
                 "id": "56261eea-8f8b-4381-83c6-79fa7120f1cf",
                 "name": "user.signed_up",
                 "schema": {"plan": "string"},
-                "created_at": "2024-01-01T00:00:00.000Z",
+                "created_at": "2024-01-01 00:00:00+00",
                 "updated_at": None,
             }
         )
@@ -56,7 +56,7 @@ class TestResendEvents(ResendBaseTest):
         assert event["id"] == "56261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert event["name"] == "user.signed_up"
         assert event["schema"] == {"plan": "string"}
-        assert event["created_at"] == "2024-01-01T00:00:00.000Z"
+        assert event["created_at"] == "2024-01-01 00:00:00+00"
         assert event["updated_at"] is None
 
     def test_events_get_by_name(self) -> None:
@@ -66,7 +66,7 @@ class TestResendEvents(ResendBaseTest):
                 "id": "56261eea-8f8b-4381-83c6-79fa7120f1cf",
                 "name": "user.signed_up",
                 "schema": None,
-                "created_at": "2024-01-01T00:00:00.000Z",
+                "created_at": "2024-01-01 00:00:00+00",
                 "updated_at": None,
             }
         )
@@ -189,15 +189,15 @@ class TestResendEvents(ResendBaseTest):
                         "id": "56261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "name": "user.signed_up",
                         "schema": {"plan": "string"},
-                        "created_at": "2024-01-01T00:00:00.000Z",
+                        "created_at": "2024-01-01 00:00:00+00",
                         "updated_at": None,
                     },
                     {
                         "id": "67372ffb-9g9c-5492-94d7-80gb8231g2dg",
                         "name": "user.upgraded",
                         "schema": None,
-                        "created_at": "2024-02-01T00:00:00.000Z",
-                        "updated_at": "2024-02-15T00:00:00.000Z",
+                        "created_at": "2024-02-01 00:00:00+00",
+                        "updated_at": "2024-02-15 00:00:00+00",
                     },
                 ],
             }
@@ -217,7 +217,7 @@ class TestResendEvents(ResendBaseTest):
         second = events["data"][1]
         assert second["name"] == "user.upgraded"
         assert second["schema"] is None
-        assert second["updated_at"] == "2024-02-15T00:00:00.000Z"
+        assert second["updated_at"] == "2024-02-15 00:00:00+00"
 
     def test_events_list_with_pagination_params(self) -> None:
         self.set_mock_json(
@@ -229,7 +229,7 @@ class TestResendEvents(ResendBaseTest):
                         "id": "56261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "name": "user.signed_up",
                         "schema": None,
-                        "created_at": "2024-01-01T00:00:00.000Z",
+                        "created_at": "2024-01-01 00:00:00+00",
                         "updated_at": None,
                     }
                 ],

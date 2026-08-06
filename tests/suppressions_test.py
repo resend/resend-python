@@ -43,14 +43,14 @@ class TestSuppressions(ResendBaseTest):
                         "email": "bounced@example.com",
                         "origin": "bounce",
                         "source_id": "479e3145-dd38-476b-932c-529ceb705947",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                     },
                     {
                         "id": "fd61172c-cafc-40f5-b049-b45947779a29",
                         "email": "manual@example.com",
                         "origin": "manual",
                         "source_id": None,
-                        "created_at": "2023-10-07T23:47:56.678Z",
+                        "created_at": "2023-10-07 23:47:56.678+00",
                     },
                 ],
             }
@@ -65,7 +65,7 @@ class TestSuppressions(ResendBaseTest):
         assert bounced["email"] == "bounced@example.com"
         assert bounced["origin"] == "bounce"
         assert bounced["source_id"] == "479e3145-dd38-476b-932c-529ceb705947"
-        assert bounced["created_at"] == "2023-10-06T23:47:56.678Z"
+        assert bounced["created_at"] == "2023-10-06 23:47:56.678+00"
 
         manual = suppressions["data"][1]
         assert manual["origin"] == "manual"
@@ -82,7 +82,7 @@ class TestSuppressions(ResendBaseTest):
                         "email": "bounced@example.com",
                         "origin": "bounce",
                         "source_id": "479e3145-dd38-476b-932c-529ceb705947",
-                        "created_at": "2023-10-06T23:47:56.678Z",
+                        "created_at": "2023-10-06 23:47:56.678+00",
                     }
                 ],
             }
@@ -126,7 +126,7 @@ class TestSuppressions(ResendBaseTest):
                 "email": "bounced@example.com",
                 "origin": "bounce",
                 "source_id": "479e3145-dd38-476b-932c-529ceb705947",
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
             }
         )
 
@@ -147,7 +147,7 @@ class TestSuppressions(ResendBaseTest):
                 "email": "manual@example.com",
                 "origin": "manual",
                 "source_id": None,
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
             }
         )
 
@@ -163,7 +163,7 @@ class TestSuppressions(ResendBaseTest):
                 "email": "user+tag@example.com",
                 "origin": "manual",
                 "source_id": None,
-                "created_at": "2023-10-06T23:47:56.678Z",
+                "created_at": "2023-10-06 23:47:56.678+00",
             }
         )
 

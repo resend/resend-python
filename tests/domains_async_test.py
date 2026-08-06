@@ -15,7 +15,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
             {
                 "id": "4dd369bc-aa82-4ff3-97de-514ae3000ee0",
                 "name": "example.com",
-                "created_at": "2023-03-28T17:12:02.059593+00:00",
+                "created_at": "2023-03-28 17:12:02.059593+00",
                 "status": "not_started",
                 "records": [
                     {
@@ -73,7 +73,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
         assert domain["id"] == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
         assert domain["name"] == "example.com"
         assert domain["status"] == "not_started"
-        assert domain["created_at"] == "2023-03-28T17:12:02.059593+00:00"
+        assert domain["created_at"] == "2023-03-28 17:12:02.059593+00"
         assert domain["region"] == "us-east-1"
 
     async def test_should_create_domains_async_raise_exception_when_no_content(
@@ -93,7 +93,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
                 "name": "example.com",
                 "status": "not_started",
-                "created_at": "2023-04-26T20:21:26.347412+00:00",
+                "created_at": "2023-04-26 20:21:26.347412+00",
                 "region": "us-east-1",
             }
         )
@@ -104,7 +104,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
         assert domain["name"] == "example.com"
         assert domain["status"] == "not_started"
-        assert domain["created_at"] == "2023-04-26T20:21:26.347412+00:00"
+        assert domain["created_at"] == "2023-04-26 20:21:26.347412+00"
         assert domain["region"] == "us-east-1"
 
     async def test_should_get_domains_async_raise_exception_when_no_content(
@@ -124,7 +124,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
                         "id": "4dd369bc-aa82-4ff3-97de-514ae3000ee0",
                         "name": "example.com",
                         "status": "not_started",
-                        "created_at": "2023-03-28T17:12:02.059593+00:00",
+                        "created_at": "2023-03-28 17:12:02.059593+00",
                         "region": "us-east-1",
                     }
                 ]
@@ -136,7 +136,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
             assert domain["id"] == "4dd369bc-aa82-4ff3-97de-514ae3000ee0"
             assert domain["name"] == "example.com"
             assert domain["status"] == "not_started"
-            assert domain["created_at"] == "2023-03-28T17:12:02.059593+00:00"
+            assert domain["created_at"] == "2023-03-28 17:12:02.059593+00"
             assert domain["region"] == "us-east-1"
 
     async def test_should_list_domains_async_raise_exception_when_no_content(
@@ -151,7 +151,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
             {
                 "id": "4dd369bc-aa82-4ff3-97de-514ae3000ee0",
                 "name": "example.com",
-                "created_at": "2023-03-28T17:12:02.059593+00:00",
+                "created_at": "2023-03-28 17:12:02.059593+00",
                 "status": "not_started",
                 "open_tracking": True,
                 "click_tracking": True,
@@ -220,7 +220,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
                 "name": "example.com",
                 "status": "not_started",
-                "created_at": "2023-04-26T20:21:26.347412+00:00",
+                "created_at": "2023-04-26 20:21:26.347412+00",
                 "region": "us-east-1",
                 "open_tracking": True,
                 "click_tracking": True,
@@ -267,7 +267,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
                 "name": "example.com",
                 "status": "not_started",
-                "created_at": "2023-04-26T20:21:26.347412+00:00",
+                "created_at": "2023-04-26 20:21:26.347412+00",
                 "region": "us-east-1",
             }
         )
@@ -282,7 +282,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
         assert domain["name"] == "example.com"
         assert domain["status"] == "not_started"
-        assert domain["created_at"] == "2023-04-26T20:21:26.347412+00:00"
+        assert domain["created_at"] == "2023-04-26 20:21:26.347412+00"
         assert domain["region"] == "us-east-1"
 
     async def test_domains_update_async_with_tracking_subdomain(self) -> None:
@@ -318,7 +318,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
                 "name": "example.com",
                 "status": "not_started",
-                "created_at": "2023-04-26T20:21:26.347412+00:00",
+                "created_at": "2023-04-26 20:21:26.347412+00",
                 "region": "us-east-1",
             }
         )
@@ -329,7 +329,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
         assert domain["name"] == "example.com"
         assert domain["status"] == "not_started"
-        assert domain["created_at"] == "2023-04-26T20:21:26.347412+00:00"
+        assert domain["created_at"] == "2023-04-26 20:21:26.347412+00"
         assert domain["region"] == "us-east-1"
 
     async def test_should_remove_domains_async_raise_exception_when_no_content(
@@ -348,7 +348,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
                 "name": "example.com",
                 "status": "verified",
-                "created_at": "2023-04-26T20:21:26.347412+00:00",
+                "created_at": "2023-04-26 20:21:26.347412+00",
                 "region": "us-east-1",
             }
         )
@@ -359,7 +359,7 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
         assert domain["name"] == "example.com"
         assert domain["status"] == "verified"
-        assert domain["created_at"] == "2023-04-26T20:21:26.347412+00:00"
+        assert domain["created_at"] == "2023-04-26 20:21:26.347412+00"
         assert domain["region"] == "us-east-1"
 
     async def test_should_verify_domains_async_raise_exception_when_no_content(

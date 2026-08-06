@@ -15,7 +15,7 @@ class TestResendLogsAsync(AsyncResendBaseTest):
             {
                 "object": "log",
                 "id": "37e4414c-5e25-4dbc-a071-43552a4bd53b",
-                "created_at": "2024-01-01T00:00:00.000000+00:00",
+                "created_at": "2024-01-01 00:00:00+00",
                 "endpoint": "/emails",
                 "method": "POST",
                 "response_status": 200,
@@ -49,7 +49,7 @@ class TestResendLogsAsync(AsyncResendBaseTest):
                 "data": [
                     {
                         "id": "37e4414c-5e25-4dbc-a071-43552a4bd53b",
-                        "created_at": "2024-01-01T00:00:00.000000+00:00",
+                        "created_at": "2024-01-01 00:00:00+00",
                         "endpoint": "/emails",
                         "method": "POST",
                         "response_status": 200,
@@ -81,7 +81,7 @@ class TestResendLogsAsync(AsyncResendBaseTest):
                 "data": [
                     {
                         "id": "log-id-1",
-                        "created_at": "2024-01-01T00:00:00.000000+00:00",
+                        "created_at": "2024-01-01 00:00:00+00",
                         "endpoint": "/emails",
                         "method": "POST",
                         "response_status": 200,

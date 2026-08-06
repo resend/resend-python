@@ -38,7 +38,7 @@ class TestResendEventsAsync(AsyncResendBaseTest):
                 "id": "56261eea-8f8b-4381-83c6-79fa7120f1cf",
                 "name": "user.signed_up",
                 "schema": {"plan": "string"},
-                "created_at": "2024-01-01T00:00:00.000Z",
+                "created_at": "2024-01-01 00:00:00+00",
                 "updated_at": None,
             }
         )
@@ -129,7 +129,7 @@ class TestResendEventsAsync(AsyncResendBaseTest):
                         "id": "56261eea-8f8b-4381-83c6-79fa7120f1cf",
                         "name": "user.signed_up",
                         "schema": None,
-                        "created_at": "2024-01-01T00:00:00.000Z",
+                        "created_at": "2024-01-01 00:00:00+00",
                         "updated_at": None,
                     },
                 ],
