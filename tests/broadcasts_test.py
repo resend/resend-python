@@ -101,6 +101,18 @@ class TestResendBroadcasts(ResendBaseTest):
         broadcast: resend.Broadcasts.CreateResponse = resend.Broadcasts.create(params)
         assert broadcast["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
 
+    def test_broadcasts_cancel(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "broadcast",
+                "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+            }
+        )
+
+        canceled = resend.Broadcasts.cancel("78261eea-8f8b-4381-83c6-79fa7120f1cf")
+        assert canceled["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        assert canceled["object"] == "broadcast"
+
     def test_broadcasts_remove(self) -> None:
         self.set_mock_json(
             {

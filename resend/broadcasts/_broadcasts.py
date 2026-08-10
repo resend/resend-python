@@ -238,6 +238,24 @@ class Broadcasts:
         Whether there are more results available for pagination
         """
 
+    class CancelResponse(BaseResponse):
+        """
+        CancelResponse is the class that wraps the response of the cancel method.
+
+        Attributes:
+            object (str): object type: "broadcast"
+            id (str): id of the canceled broadcast
+        """
+
+        object: str
+        """
+        object type: "broadcast"
+        """
+        id: str
+        """
+        id of the canceled broadcast
+        """
+
     class RemoveResponse(BaseResponse):
         """
         RemoveResponse is the class that wraps the response of the remove method.
@@ -361,6 +379,24 @@ class Broadcasts:
         return resp
 
     @classmethod
+    def cancel(cls, id: str) -> CancelResponse:
+        """
+        Cancel a queued or scheduled broadcast.
+        see more: https://resend.com/docs/api-reference/broadcasts/cancel-broadcast
+
+        Args:
+            id (str): The broadcast ID
+
+        Returns:
+            CancelResponse: The cancel response object
+        """
+        path = f"/broadcasts/{id}/cancel"
+        resp = request.Request[Broadcasts.CancelResponse](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
     def remove(cls, id: str) -> RemoveResponse:
         """
         Delete a single broadcast.
@@ -467,6 +503,24 @@ class Broadcasts:
         path = f"/broadcasts/{id}"
         resp = await AsyncRequest[Broadcast](
             path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def cancel_async(cls, id: str) -> CancelResponse:
+        """
+        Cancel a queued or scheduled broadcast (async).
+        see more: https://resend.com/docs/api-reference/broadcasts/cancel-broadcast
+
+        Args:
+            id (str): The broadcast ID
+
+        Returns:
+            CancelResponse: The cancel response object
+        """
+        path = f"/broadcasts/{id}/cancel"
+        resp = await AsyncRequest[Broadcasts.CancelResponse](
+            path=path, params={}, verb="post"
         ).perform_with_content()
         return resp
 
