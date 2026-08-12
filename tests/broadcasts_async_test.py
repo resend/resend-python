@@ -139,6 +139,15 @@ class TestResendBroadcastsAsync(AsyncResendBaseTest):
         assert canceled["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert canceled["object"] == "broadcast"
 
+    async def test_should_cancel_broadcasts_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = await resend.Broadcasts.cancel_async(
+                "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+            )
+
     async def test_broadcasts_remove_async(self) -> None:
         self.set_mock_json(
             {
