@@ -11,7 +11,7 @@ from resend.version import get_version
 
 
 class TestResendRequest(unittest.TestCase):
-    @patch("resend.http_client_requests.requests.request")
+    @patch("resend.http_client_requests.requests.Session.request")
     @patch("resend.api_key", new="test_key")
     def test_request_idempotency_key_is_set(self, mock_requests: MagicMock) -> None:
         mock_response = Mock()
@@ -41,7 +41,7 @@ class TestResendRequest(unittest.TestCase):
         self.assertEqual(headers["User-Agent"], f"resend-python:{get_version()}")
         self.assertEqual(headers["Idempotency-Key"], "abc-123")
 
-    @patch("resend.http_client_requests.requests.request")
+    @patch("resend.http_client_requests.requests.Session.request")
     @patch("resend.api_key", new="test_key")
     def test_request_idempotency_key_is_not_set(self, mock_requests: MagicMock) -> None:
         mock_response = Mock()
@@ -72,7 +72,7 @@ class TestResendRequest(unittest.TestCase):
             "Idempotency-Key", headers, "Idempotency-Key should not be set"
         )
 
-    @patch("resend.http_client_requests.requests.request")
+    @patch("resend.http_client_requests.requests.Session.request")
     @patch("resend.api_key", new="test_key")
     def test_non_json_preserves_http_status_when_client_error(
         self, mock_requests: MagicMock
@@ -101,7 +101,7 @@ class TestResendRequest(unittest.TestCase):
         self.assertIn("text/html", err.message)
         self.assertEqual(err.headers.get("retry-after"), "2")
 
-    @patch("resend.http_client_requests.requests.request")
+    @patch("resend.http_client_requests.requests.Session.request")
     @patch("resend.api_key", new="test_key")
     def test_non_json_preserves_http_status_when_server_error(
         self, mock_requests: MagicMock
@@ -125,7 +125,7 @@ class TestResendRequest(unittest.TestCase):
         self.assertEqual(err.code, 503)
         self.assertEqual(err.error_type, "application_error")
 
-    @patch("resend.http_client_requests.requests.request")
+    @patch("resend.http_client_requests.requests.Session.request")
     @patch("resend.api_key", new="test_key")
     def test_non_json_falls_back_to_500_when_status_is_success(
         self, mock_requests: MagicMock
@@ -150,7 +150,7 @@ class TestResendRequest(unittest.TestCase):
         self.assertEqual(err.error_type, "application_error")
         self.assertIn("text/html", err.message)
 
-    @patch("resend.http_client_requests.requests.request")
+    @patch("resend.http_client_requests.requests.Session.request")
     @patch("resend.api_key", new="test_key")
     def test_invalid_json_preserves_http_status(self, mock_requests: MagicMock) -> None:
         mock_response = Mock()
@@ -173,7 +173,7 @@ class TestResendRequest(unittest.TestCase):
         self.assertEqual(err.error_type, "application_error")
         self.assertEqual(err.message, "Failed to decode JSON response")
 
-    @patch("resend.http_client_requests.requests.request")
+    @patch("resend.http_client_requests.requests.Session.request")
     @patch("resend.api_key", new="test_key")
     def test_json_error_uses_http_status_when_body_omits_status_code(
         self, mock_requests: MagicMock
