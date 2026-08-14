@@ -169,6 +169,24 @@ class Automations:
         Whether the automation was successfully deleted.
         """
 
+    class DuplicateResponse(BaseResponse):
+        """
+        DuplicateResponse is the class that wraps the response of the duplicate method.
+
+        Attributes:
+            object (str): The object type, always "automation"
+            id (str): The ID of the newly created automation
+        """
+
+        object: str
+        """
+        The object type, always "automation".
+        """
+        id: str
+        """
+        The ID of the newly created automation.
+        """
+
     class StopResponse(BaseResponse):
         """
         StopResponse is the class that wraps the response of the stop method.
@@ -444,6 +462,24 @@ class Automations:
         return resp
 
     @classmethod
+    def duplicate(cls, automation_id: str) -> "Automations.DuplicateResponse":
+        """
+        Duplicate an automation.
+        see more: https://resend.com/docs/api-reference/automations/duplicate-automation
+
+        Args:
+            automation_id (str): The automation ID
+
+        Returns:
+            DuplicateResponse: The duplicate response
+        """
+        path = f"/automations/{automation_id}/duplicate"
+        resp = request.Request[Automations.DuplicateResponse](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
     def stop(cls, automation_id: str) -> "Automations.StopResponse":
         """
         Stop all active runs of an automation.
@@ -561,6 +597,26 @@ class Automations:
         path = f"/automations/{automation_id}"
         resp = await AsyncRequest[Automations.DeleteResponse](
             path=path, params={}, verb="delete"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def duplicate_async(
+        cls, automation_id: str
+    ) -> "Automations.DuplicateResponse":
+        """
+        Duplicate an automation (async).
+        see more: https://resend.com/docs/api-reference/automations/duplicate-automation
+
+        Args:
+            automation_id (str): The automation ID
+
+        Returns:
+            DuplicateResponse: The duplicate response
+        """
+        path = f"/automations/{automation_id}/duplicate"
+        resp = await AsyncRequest[Automations.DuplicateResponse](
+            path=path, params={}, verb="post"
         ).perform_with_content()
         return resp
 

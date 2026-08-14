@@ -135,6 +135,18 @@ class TestResendAutomations(ResendBaseTest):
         assert resp["id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
         assert resp["deleted"] is True
 
+    def test_automations_duplicate(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "automation",
+                "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
+            }
+        )
+
+        resp = resend.Automations.duplicate("b6d24b8e-af0b-4c3c-be0c-359bbd97381e")
+        assert resp["object"] == "automation"
+        assert resp["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
+
     def test_automations_stop(self) -> None:
         self.set_mock_json(
             {
