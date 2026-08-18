@@ -123,6 +123,27 @@ class TestResendAutomationsAsync(AsyncResendBaseTest):
                 "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
             )
 
+    async def test_automations_duplicate_async(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "automation",
+                "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
+            }
+        )
+
+        resp = await resend.Automations.duplicate_async(
+            "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
+        )
+        assert resp["object"] == "automation"
+        assert resp["id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
+
+    async def test_automations_duplicate_async_raises_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = await resend.Automations.duplicate_async(
+                "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
+            )
+
     async def test_automations_stop_async(self) -> None:
         self.set_mock_json(
             {
