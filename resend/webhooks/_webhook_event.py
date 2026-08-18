@@ -277,13 +277,13 @@ class ContactEventData(TypedDict):
     """
     Whether the contact is unsubscribed.
     """
-    first_name: NotRequired[str]
+    first_name: NotRequired[Optional[str]]
     """
-    The contact's first name.
+    The contact's first name. None when the contact has no first name.
     """
-    last_name: NotRequired[str]
+    last_name: NotRequired[Optional[str]]
     """
-    The contact's last name.
+    The contact's last name. None when the contact has no last name.
     """
 
 
