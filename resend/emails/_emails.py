@@ -71,6 +71,30 @@ class _CancelScheduledEmailResponse(BaseResponse):
     """
 
 
+class _ShareParams(TypedDict):
+    expires_in: NotRequired[str]
+    """
+    A human-readable duration for how long the share link stays valid
+    (e.g. "10m", "2 hours", "1 day", "1h 30m"). Defaults to "48h".
+    Capped at 48 hours.
+    """
+
+
+class _ShareEmailResponse(BaseResponse):
+    object: str
+    """
+    The object type: email
+    """
+    id: str
+    """
+    The ID of the email that was shared.
+    """
+    url: str
+    """
+    The shareable link URL.
+    """
+
+
 # SendParamsFrom is declared with functional TypedDict syntax here because
 # "from" is a reserved keyword in Python, and this is the best way to
 # support type-checking for it.
@@ -154,6 +178,26 @@ class Emails:
         Attributes:
             object (str): The object type
             id (str): The ID of the updated email.
+        """
+
+    class ShareParams(_ShareParams):
+        """
+        ShareParams is the class that wraps the parameters for the share method.
+
+        Attributes:
+            expires_in (NotRequired[str]): A human-readable duration for how long \
+            the share link stays valid (e.g. "10m", "2 hours", "1 day", "1h 30m"). \
+            Defaults to "48h". Capped at 48 hours.
+        """
+
+    class ShareEmailResponse(_ShareEmailResponse):
+        """
+        ShareEmailResponse is the type that wraps the response of a shared email link.
+
+        Attributes:
+            object (str): The object type
+            id (str): The ID of the email that was shared.
+            url (str): The shareable link URL.
         """
 
     class UpdateParams(_UpdateParams):
@@ -347,6 +391,29 @@ class Emails:
         return resp
 
     @classmethod
+    def share(
+        cls, email_id: str, params: Optional[ShareParams] = None
+    ) -> ShareEmailResponse:
+        """
+        Create a shareable link for an email.
+        see more: https://resend.com/docs/api-reference/emails/share-email
+
+        Args:
+            email_id (str): The ID of the email (sent or received) to share
+            params (Optional[ShareParams]): The share parameters
+
+        Returns:
+            ShareEmailResponse: The response object that contains the shareable link URL
+        """
+        path = f"/emails/{email_id}/share"
+        resp = request.Request[_ShareEmailResponse](
+            path=path,
+            params=cast(Dict[Any, Any], params) if params else {},
+            verb="post",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
     def list(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve a list of emails.
@@ -471,5 +538,28 @@ class Emails:
             path=path,
             params=cast(Dict[Any, Any], params),
             verb="patch",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def share_async(
+        cls, email_id: str, params: Optional[ShareParams] = None
+    ) -> ShareEmailResponse:
+        """
+        Create a shareable link for an email (async version).
+        see more: https://resend.com/docs/api-reference/emails/share-email
+
+        Args:
+            email_id (str): The ID of the email (sent or received) to share
+            params (Optional[ShareParams]): The share parameters
+
+        Returns:
+            ShareEmailResponse: The response object that contains the shareable link URL
+        """
+        path = f"/emails/{email_id}/share"
+        resp = await AsyncRequest[_ShareEmailResponse](
+            path=path,
+            params=cast(Dict[Any, Any], params) if params else {},
+            verb="post",
         ).perform_with_content()
         return resp
