@@ -178,7 +178,7 @@ class ApiKeys:
         api_key_id = params["api_key_id"]
         path = f"/api-keys/{api_key_id}"
         resp = request.Request[ApiKeys.UpdateApiKeyResponse](
-            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+            path=path, params={"name": params["name"]}, verb="patch"
         ).perform_with_content()
         return resp
 
@@ -258,7 +258,7 @@ class ApiKeys:
         api_key_id = params["api_key_id"]
         path = f"/api-keys/{api_key_id}"
         resp = await AsyncRequest[ApiKeys.UpdateApiKeyResponse](
-            path=path, params=cast(Dict[Any, Any], params), verb="patch"
+            path=path, params={"name": params["name"]}, verb="patch"
         ).perform_with_content()
         return resp
 
