@@ -127,6 +127,31 @@ class TestResendApiKeys(ResendBaseTest):
         assert len(keys["data"]) == 1
         assert keys["data"][0]["id"] == "test-key-3"
 
+    def test_api_keys_update(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "api_key",
+                "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            }
+        )
+
+        params: resend.ApiKeys.UpdateParams = {
+            "api_key_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            "name": "updated-name",
+        }
+        updated_key: resend.ApiKeys.UpdateApiKeyResponse = resend.ApiKeys.update(params)
+        assert updated_key["object"] == "api_key"
+        assert updated_key["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+
+    def test_should_update_api_key_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        params: resend.ApiKeys.UpdateParams = {
+            "api_key_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            "name": "updated-name",
+        }
+        with self.assertRaises(NoContentError):
+            _ = resend.ApiKeys.update(params)
+
     def test_api_keys_remove(self) -> None:
         self.set_mock_json(
             {

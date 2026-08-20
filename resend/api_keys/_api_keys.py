@@ -80,6 +80,24 @@ class ApiKeys:
         Whether the API key was deleted
         """
 
+    class UpdateApiKeyResponse(BaseResponse):
+        """
+        UpdateApiKeyResponse is the type that wraps the response of the API key that was updated
+
+        Attributes:
+            object (str): The object type, always "api_key"
+            id (str): The ID of the updated API key
+        """
+
+        object: str
+        """
+        The object type, always "api_key"
+        """
+        id: str
+        """
+        The ID of the updated API key
+        """
+
     class ListParams(TypedDict):
         limit: NotRequired[int]
         """
@@ -115,6 +133,16 @@ class ApiKeys:
         This is only used when the permission is set to sending_access.
         """
 
+    class UpdateParams(TypedDict):
+        api_key_id: str
+        """
+        The API key ID.
+        """
+        name: str
+        """
+        The API key name.
+        """
+
     @classmethod
     def create(cls, params: CreateParams) -> CreateApiKeyResponse:
         """
@@ -130,6 +158,27 @@ class ApiKeys:
         path = "/api-keys"
         resp = request.Request[ApiKeys.CreateApiKeyResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    def update(cls, params: UpdateParams) -> UpdateApiKeyResponse:
+        """
+        Update an existing API key's name.
+        see more: https://resend.com/docs/api-reference/api-keys/update-api-key
+
+        Args:
+            params (UpdateParams): The API key update parameters
+                - api_key_id: The API key ID
+                - name: The new API key name
+
+        Returns:
+            UpdateApiKeyResponse: The updated API key response with id
+        """
+        api_key_id = params["api_key_id"]
+        path = f"/api-keys/{api_key_id}"
+        resp = request.Request[ApiKeys.UpdateApiKeyResponse](
+            path=path, params={"name": params["name"]}, verb="patch"
         ).perform_with_content()
         return resp
 
@@ -189,6 +238,27 @@ class ApiKeys:
         path = "/api-keys"
         resp = await AsyncRequest[ApiKeys.CreateApiKeyResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, params: UpdateParams) -> UpdateApiKeyResponse:
+        """
+        Update an existing API key's name (async).
+        see more: https://resend.com/docs/api-reference/api-keys/update-api-key
+
+        Args:
+            params (UpdateParams): The API key update parameters
+                - api_key_id: The API key ID
+                - name: The new API key name
+
+        Returns:
+            UpdateApiKeyResponse: The updated API key response with id
+        """
+        api_key_id = params["api_key_id"]
+        path = f"/api-keys/{api_key_id}"
+        resp = await AsyncRequest[ApiKeys.UpdateApiKeyResponse](
+            path=path, params={"name": params["name"]}, verb="patch"
         ).perform_with_content()
         return resp
 

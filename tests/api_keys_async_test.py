@@ -60,6 +60,35 @@ class TestResendApiKeysAsync(AsyncResendBaseTest):
         with pytest.raises(NoContentError):
             _ = await resend.ApiKeys.list_async()
 
+    async def test_api_keys_update_async(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "api_key",
+                "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            }
+        )
+
+        params: resend.ApiKeys.UpdateParams = {
+            "api_key_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            "name": "updated-name",
+        }
+        updated_key: resend.ApiKeys.UpdateApiKeyResponse = (
+            await resend.ApiKeys.update_async(params)
+        )
+        assert updated_key["object"] == "api_key"
+        assert updated_key["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+
+    async def test_should_update_api_key_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        params: resend.ApiKeys.UpdateParams = {
+            "api_key_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            "name": "updated-name",
+        }
+        with pytest.raises(NoContentError):
+            _ = await resend.ApiKeys.update_async(params)
+
     async def test_api_keys_remove_async(self) -> None:
         self.set_mock_json(
             {

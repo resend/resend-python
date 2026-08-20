@@ -19,6 +19,13 @@ async def main() -> None:
     print("Created new api key")
     print(f"Key id: {key['id']} and token: {key['token']}")
 
+    update_params: resend.ApiKeys.UpdateParams = {
+        "api_key_id": key["id"],
+        "name": "renamed-example",
+    }
+    updated_key = await resend.ApiKeys.update_async(update_params)
+    print(f"Updated api key: {updated_key['id']}")
+
     keys: resend.ApiKeys.ListResponse = await resend.ApiKeys.list_async()
     for k in keys["data"]:
         print(k["id"])
