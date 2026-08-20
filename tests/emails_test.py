@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import resend
 from resend import EmailsReceiving
-from resend.exceptions import NoContentError
+from resend.exceptions import NoContentError, ResendError, ValidationError
 from tests.conftest import ResendBaseTest
 
 # flake8: noqa
@@ -92,6 +92,82 @@ class TestResendEmail(ResendBaseTest):
             email_id="49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
         )
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+
+    def test_share_email_default_expires_in(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "email",
+                "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+                "url": "https://resend.com/share/49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            }
+        )
+        shared_email: resend.Emails.ShareEmailResponse = resend.Emails.share(
+            email_id="49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+        )
+        assert shared_email["object"] == "email"
+        assert shared_email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+        assert (
+            shared_email["url"]
+            == "https://resend.com/share/49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+        )
+
+    def test_share_email_with_custom_expires_in(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "email",
+                "id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+                "url": "https://resend.com/share/49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            }
+        )
+        share_params: resend.Emails.ShareParams = {
+            "expires_in": "10m",
+        }
+        shared_email: resend.Emails.ShareEmailResponse = resend.Emails.share(
+            email_id="49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            params=share_params,
+        )
+        assert shared_email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+        assert (
+            shared_email["url"]
+            == "https://resend.com/share/49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
+        )
+
+    def test_share_email_with_malformed_expires_in_raises_validation_error(
+        self,
+    ) -> None:
+        self.set_mock_json(
+            {
+                "statusCode": 422,
+                "name": "validation_error",
+                "message": "expires_in must not exceed 48 hours",
+            }
+        )
+        share_params: resend.Emails.ShareParams = {
+            "expires_in": "72h",
+        }
+        with self.assertRaises(ValidationError):
+            _ = resend.Emails.share(
+                email_id="49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+                params=share_params,
+            )
+
+    def test_share_email_with_unknown_id_raises_error(self) -> None:
+        self.set_mock_json(
+            {
+                "statusCode": 404,
+                "name": "not_found",
+                "message": "Email not found",
+            }
+        )
+        with self.assertRaises(ResendError):
+            _ = resend.Emails.share(email_id="does-not-exist")
+
+    def test_should_share_email_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Emails.share(
+                email_id="49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            )
 
     def test_email_send_with_attachment(self) -> None:
         self.set_mock_json(
