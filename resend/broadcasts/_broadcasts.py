@@ -7,6 +7,9 @@ from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
 from ._broadcast import Broadcast
+from ._broadcast_recipient import (BroadcastRecipient,
+                                   BroadcastRecipientBounceType,
+                                   BroadcastRecipientEventType)
 
 # Async imports (optional - only available with pip install resend[async])
 try:
@@ -238,6 +241,77 @@ class Broadcasts:
         Whether there are more results available for pagination
         """
 
+    class RecipientsParams(TypedDict):
+        """RecipientsParams is the class that wraps the parameters for the recipients method.
+
+        Attributes:
+            broadcast_id (str): The ID of the broadcast.
+            type (BroadcastRecipientEventType): The recipient event type to filter by.
+            email (NotRequired[str]): Filter recipients by email address (substring match).
+            bounce_type (NotRequired[BroadcastRecipientBounceType]): Filter bounced recipients
+                by bounce type. Only valid when type is "bounced".
+            limit (NotRequired[int]): Number of recipients to retrieve. Maximum is 100, and minimum is 1.
+            after (NotRequired[str]): The ID after which we'll retrieve more recipients (for pagination).
+            before (NotRequired[str]): The ID before which we'll retrieve more recipients (for pagination).
+        """
+
+        broadcast_id: str
+        """
+        The ID of the broadcast.
+        """
+        type: BroadcastRecipientEventType
+        """
+        The recipient event type to filter by.
+        """
+        email: NotRequired[str]
+        """
+        Filter recipients by email address (substring match).
+        """
+        bounce_type: NotRequired[BroadcastRecipientBounceType]
+        """
+        Filter bounced recipients by bounce type.
+        Only valid when type is "bounced".
+        """
+        limit: NotRequired[int]
+        """
+        Number of recipients to retrieve. Maximum is 100, and minimum is 1.
+        """
+        after: NotRequired[str]
+        """
+        The ID after which we'll retrieve more recipients (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the before parameter.
+        """
+        before: NotRequired[str]
+        """
+        The ID before which we'll retrieve more recipients (for pagination).
+        This ID will not be included in the returned list.
+        Cannot be used with the after parameter.
+        """
+
+    class RecipientsResponse(BaseResponse):
+        """
+        RecipientsResponse is the class that wraps the response of the recipients method with pagination metadata.
+
+        Attributes:
+            object (str): object type, always "list"
+            data (List[BroadcastRecipient]): A list of broadcast recipient objects
+            has_more (bool): Whether there are more results available
+        """
+
+        object: str
+        """
+        object type, always "list"
+        """
+        data: List[BroadcastRecipient]
+        """
+        A list of broadcast recipient objects
+        """
+        has_more: bool
+        """
+        Whether there are more results available for pagination
+        """
+
     class CancelResponse(BaseResponse):
         """
         CancelResponse is the class that wraps the response of the cancel method.
@@ -379,6 +453,26 @@ class Broadcasts:
         return resp
 
     @classmethod
+    def recipients(cls, params: RecipientsParams) -> RecipientsResponse:
+        """
+        Retrieve a broadcast's recipients for a given event type.
+        see more: https://resend.com/docs/api-reference/broadcasts/list-broadcast-recipients
+
+        Args:
+            params (RecipientsParams): The recipients filter and pagination parameters
+
+        Returns:
+            RecipientsResponse: A list of broadcast recipient objects
+        """
+        base_path = f"/broadcasts/{params['broadcast_id']}/recipients"
+        query_params = {k: v for k, v in params.items() if k != "broadcast_id"}
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = request.Request[Broadcasts.RecipientsResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
     def cancel(cls, id: str) -> CancelResponse:
         """
         Cancel a queued or scheduled broadcast.
@@ -502,6 +596,26 @@ class Broadcasts:
         """
         path = f"/broadcasts/{id}"
         resp = await AsyncRequest[Broadcast](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def recipients_async(cls, params: RecipientsParams) -> RecipientsResponse:
+        """
+        Retrieve a broadcast's recipients for a given event type (async).
+        see more: https://resend.com/docs/api-reference/broadcasts/list-broadcast-recipients
+
+        Args:
+            params (RecipientsParams): The recipients filter and pagination parameters
+
+        Returns:
+            RecipientsResponse: A list of broadcast recipient objects
+        """
+        base_path = f"/broadcasts/{params['broadcast_id']}/recipients"
+        query_params = {k: v for k, v in params.items() if k != "broadcast_id"}
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Broadcasts.RecipientsResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
