@@ -1003,6 +1003,53 @@ class TestResendEmail(ResendBaseTest):
             )
         )
 
+    def test_metrics_raises_when_email_and_broadcast_dimensions_combined(
+        self,
+    ) -> None:
+        params: resend.Emails.MetricsParams = {
+            "dimensions": ["email", "broadcast"],
+        }
+        try:
+            resend.Emails.metrics(params=params)
+            self.fail("expected ValueError")
+        except ValueError as e:
+            assert str(e) == (
+                "the broadcast dimension/broadcast_id filter cannot be "
+                "combined with the email dimension/email_id filter"
+            )
+        self.mock.assert_not_called()
+
+    def test_metrics_raises_when_broadcast_dimension_combined_with_email_id(
+        self,
+    ) -> None:
+        params: resend.Emails.MetricsParams = {
+            "dimensions": ["broadcast"],
+            "email_id": ["4dd369bc-aa82-4ff3-97de-514ae3000ee0"],
+        }
+        with self.assertRaises(ValueError):
+            resend.Emails.metrics(params=params)
+        self.mock.assert_not_called()
+
+    def test_metrics_raises_when_email_dimension_combined_with_broadcast_id(
+        self,
+    ) -> None:
+        params: resend.Emails.MetricsParams = {
+            "dimensions": ["email"],
+            "broadcast_id": ["b3a6e6e2-9f2b-4e2a-9b1b-1a2b3c4d5e6f"],
+        }
+        with self.assertRaises(ValueError):
+            resend.Emails.metrics(params=params)
+        self.mock.assert_not_called()
+
+    def test_metrics_raises_when_email_id_and_broadcast_id_combined(self) -> None:
+        params: resend.Emails.MetricsParams = {
+            "email_id": ["4dd369bc-aa82-4ff3-97de-514ae3000ee0"],
+            "broadcast_id": ["b3a6e6e2-9f2b-4e2a-9b1b-1a2b3c4d5e6f"],
+        }
+        with self.assertRaises(ValueError):
+            resend.Emails.metrics(params=params)
+        self.mock.assert_not_called()
+
     def test_should_metrics_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):

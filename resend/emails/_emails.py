@@ -274,6 +274,19 @@ class _SendParamsDefault(_SendParamsFrom):
     """
 
 
+def _validate_metrics_params(params: Optional["Emails.MetricsParams"]) -> None:
+    if not params:
+        return
+    dimensions = params.get("dimensions") or []
+    has_broadcast = "broadcast" in dimensions or bool(params.get("broadcast_id"))
+    has_email = "email" in dimensions or bool(params.get("email_id"))
+    if has_broadcast and has_email:
+        raise ValueError(
+            "the broadcast dimension/broadcast_id filter cannot be combined "
+            "with the email dimension/email_id filter"
+        )
+
+
 def _build_metrics_query_params(
     params: Optional["Emails.MetricsParams"],
 ) -> Optional[Dict[str, Any]]:
@@ -615,6 +628,7 @@ class Emails:
         Returns:
             MetricsResponse: The requested metrics, totaled and (optionally) broken down by dimension
         """
+        _validate_metrics_params(params)
         base_path = "/emails/metrics"
         query_params = _build_metrics_query_params(params)
         path = PaginationHelper.build_paginated_path(base_path, query_params)
@@ -705,6 +719,7 @@ class Emails:
         Returns:
             MetricsResponse: The requested metrics, totaled and (optionally) broken down by dimension
         """
+        _validate_metrics_params(params)
         base_path = "/emails/metrics"
         query_params = _build_metrics_query_params(params)
         path = PaginationHelper.build_paginated_path(base_path, query_params)
