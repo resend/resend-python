@@ -8,10 +8,16 @@ from resend.http_client import HTTPClient
 class RequestsClient(HTTPClient):
     """
     This is the default HTTP client implementation using the requests library.
+
+    The client holds a single :class:`requests.Session` so that the underlying
+    TCP connection (and its TLS handshake) is reused across requests. Call
+    :meth:`close` when the client is no longer needed, or use it as a context
+    manager.
     """
 
     def __init__(self, timeout: int = 30):
         self._timeout = timeout
+        self._session = requests.Session()
 
     def request(
         self,
@@ -24,7 +30,7 @@ class RequestsClient(HTTPClient):
     ) -> Tuple[bytes, int, Mapping[str, str]]:
         try:
             if files is not None:
-                resp = requests.request(
+                resp = self._session.request(
                     method=method,
                     url=url,
                     headers=headers,
@@ -33,7 +39,7 @@ class RequestsClient(HTTPClient):
                     timeout=self._timeout,
                 )
             else:
-                resp = requests.request(
+                resp = self._session.request(
                     method=method,
                     url=url,
                     headers=headers,
@@ -46,3 +52,13 @@ class RequestsClient(HTTPClient):
             # This gets caught by the request.perform() method
             # and raises a ResendError with the error type "HttpClientError"
             raise RuntimeError(f"Request failed: {e}") from e
+
+    def close(self) -> None:
+        """Close the underlying session and release pooled connections."""
+        self._session.close()
+
+    def __enter__(self) -> "RequestsClient":
+        return self
+
+    def __exit__(self, *args: Any) -> None:
+        self.close()
