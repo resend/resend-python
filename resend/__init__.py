@@ -16,6 +16,7 @@ from .automations._automation import (Automation, AutomationConnection,
 from .automations._automations import Automations
 from .broadcasts._broadcast import Broadcast
 from .broadcasts._broadcasts import Broadcasts
+from .broadcasts._clicked_link import ClickedLink
 from .contact_properties._contact_properties import ContactProperties
 from .contact_properties._contact_property import ContactProperty
 from .contacts._contact import Contact
@@ -159,6 +160,7 @@ __all__ = [
     "EmailTemplate",
     "Tag",
     "Broadcast",
+    "ClickedLink",
     "Segment",
     "Suppression",
     "SuppressionListItem",

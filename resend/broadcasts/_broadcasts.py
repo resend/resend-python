@@ -7,6 +7,7 @@ from resend._base_response import BaseResponse
 from resend.pagination_helper import PaginationHelper
 
 from ._broadcast import Broadcast
+from ._clicked_link import ClickedLink
 
 # Async imports (optional - only available with pip install resend[async])
 try:
@@ -238,6 +239,47 @@ class Broadcasts:
         Whether there are more results available for pagination
         """
 
+    class ListClickedLinksParams(TypedDict):
+        limit: NotRequired[int]
+        """
+        Number of clicked links to retrieve. Maximum is 100, and minimum is 1.
+        """
+        after: NotRequired[str]
+        """
+        The cursor after which we'll retrieve more clicked links (for pagination).
+        This cursor will not be included in the returned list.
+        Cannot be used with the before parameter.
+        """
+        before: NotRequired[str]
+        """
+        The cursor before which we'll retrieve more clicked links (for pagination).
+        This cursor will not be included in the returned list.
+        Cannot be used with the after parameter.
+        """
+
+    class ListClickedLinksResponse(BaseResponse):
+        """
+        ListClickedLinksResponse is the class that wraps the response of the clicked_links method with pagination metadata.
+
+        Attributes:
+            object (str): object type, always "list"
+            data (List[ClickedLink]): A list of clicked link objects
+            has_more (bool): Whether there are more results available
+        """
+
+        object: str
+        """
+        object type, always "list"
+        """
+        data: List[ClickedLink]
+        """
+        A list of clicked link objects
+        """
+        has_more: bool
+        """
+        Whether there are more results available for pagination
+        """
+
     class CancelResponse(BaseResponse):
         """
         CancelResponse is the class that wraps the response of the cancel method.
@@ -379,6 +421,33 @@ class Broadcasts:
         return resp
 
     @classmethod
+    def clicked_links(
+        cls, id: str, params: Optional[ListClickedLinksParams] = None
+    ) -> ListClickedLinksResponse:
+        """
+        Retrieve a broadcast's clicked links.
+        see more: https://resend.com/docs/api-reference/broadcasts/list-broadcast-clicked-links
+
+        Args:
+            id (str): The broadcast ID
+            params (Optional[ListClickedLinksParams]): Optional pagination parameters
+                - limit: Number of clicked links to retrieve (max 100, min 1).
+                  If not provided, all clicked links will be returned without pagination.
+                - after: cursor after which to retrieve more clicked links
+                - before: cursor before which to retrieve more clicked links
+
+        Returns:
+            ListClickedLinksResponse: A list of clicked link objects
+        """
+        base_path = f"/broadcasts/{id}/clicked-links"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = request.Request[Broadcasts.ListClickedLinksResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
     def cancel(cls, id: str) -> CancelResponse:
         """
         Cancel a queued or scheduled broadcast.
@@ -502,6 +571,29 @@ class Broadcasts:
         """
         path = f"/broadcasts/{id}"
         resp = await AsyncRequest[Broadcast](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def clicked_links_async(
+        cls, id: str, params: Optional[ListClickedLinksParams] = None
+    ) -> ListClickedLinksResponse:
+        """
+        Retrieve a broadcast's clicked links (async).
+        see more: https://resend.com/docs/api-reference/broadcasts/list-broadcast-clicked-links
+
+        Args:
+            id (str): The broadcast ID
+            params (Optional[ListClickedLinksParams]): Optional pagination parameters
+
+        Returns:
+            ListClickedLinksResponse: A list of clicked link objects
+        """
+        base_path = f"/broadcasts/{id}/clicked-links"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Broadcasts.ListClickedLinksResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
