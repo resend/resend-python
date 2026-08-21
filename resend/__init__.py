@@ -15,6 +15,10 @@ from .automations._automation import (Automation, AutomationConnection,
                                       AutomationStepType)
 from .automations._automations import Automations
 from .broadcasts._broadcast import Broadcast
+from .broadcasts._broadcast_recipient import (BroadcastRecipient,
+                                              BroadcastRecipientBounceType,
+                                              BroadcastRecipientClickedLink,
+                                              BroadcastRecipientEventType)
 from .broadcasts._broadcasts import Broadcasts
 from .broadcasts._clicked_link import ClickedLink
 from .contact_properties._contact_properties import ContactProperties
@@ -161,6 +165,10 @@ __all__ = [
     "Tag",
     "Broadcast",
     "ClickedLink",
+    "BroadcastRecipient",
+    "BroadcastRecipientBounceType",
+    "BroadcastRecipientClickedLink",
+    "BroadcastRecipientEventType",
     "Segment",
     "Suppression",
     "SuppressionListItem",

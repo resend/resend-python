@@ -1,7 +1,7 @@
 import pytest
 
 import resend
-from resend.exceptions import NoContentError
+from resend.exceptions import NoContentError, ResendError
 from tests.conftest import AsyncResendBaseTest
 
 # flake8: noqa
@@ -225,6 +225,152 @@ class TestResendBroadcastsAsync(AsyncResendBaseTest):
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
             _ = await resend.Broadcasts.list_async()
+
+    async def test_broadcasts_recipients_async(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "b2Zmc2V0OjA",
+                        "contact_id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
+                        "email": "carter@example.com",
+                    }
+                ],
+            }
+        )
+
+        params: resend.Broadcasts.RecipientsParams = {
+            "broadcast_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+            "type": "delivered",
+        }
+        recipients: resend.Broadcasts.RecipientsResponse = (
+            await resend.Broadcasts.recipients_async(params)
+        )
+        assert recipients["object"] == "list"
+        assert recipients["has_more"] is False
+        assert len(recipients["data"]) == 1
+
+        recipient = recipients["data"][0]
+        assert recipient["id"] == "b2Zmc2V0OjA"
+        assert recipient["contact_id"] == "e169aa45-1ecf-4183-9955-b1499d5701d3"
+        assert recipient["email"] == "carter@example.com"
+
+    async def test_broadcasts_recipients_async_opened_has_count(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "b2Zmc2V0OjA",
+                        "contact_id": None,
+                        "email": "carter@example.com",
+                        "count": 3,
+                    }
+                ],
+            }
+        )
+
+        params: resend.Broadcasts.RecipientsParams = {
+            "broadcast_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+            "type": "opened",
+        }
+        recipients = await resend.Broadcasts.recipients_async(params)
+        recipient = recipients["data"][0]
+        assert recipient["contact_id"] is None
+        assert recipient["count"] == 3
+
+    async def test_broadcasts_recipients_async_clicked_has_clicked_links(
+        self,
+    ) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "b2Zmc2V0OjA",
+                        "contact_id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
+                        "email": "carter@example.com",
+                        "count": 2,
+                        "clicked_links": [
+                            {"url": "https://resend.com/pricing", "clicks": 2}
+                        ],
+                    }
+                ],
+            }
+        )
+
+        params: resend.Broadcasts.RecipientsParams = {
+            "broadcast_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+            "type": "clicked",
+            "email": "carter",
+            "limit": 10,
+        }
+        recipients = await resend.Broadcasts.recipients_async(params)
+        recipient = recipients["data"][0]
+        assert recipient["count"] == 2
+        assert recipient["clicked_links"] == [
+            {"url": "https://resend.com/pricing", "clicks": 2}
+        ]
+
+    async def test_broadcasts_recipients_async_bounced_has_bounce_type(
+        self,
+    ) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "b2Zmc2V0OjA",
+                        "contact_id": None,
+                        "email": "carter@example.com",
+                        "bounce_type": "permanent",
+                    }
+                ],
+            }
+        )
+
+        params: resend.Broadcasts.RecipientsParams = {
+            "broadcast_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+            "type": "bounced",
+            "bounce_type": "permanent",
+        }
+        recipients = await resend.Broadcasts.recipients_async(params)
+        recipient = recipients["data"][0]
+        assert recipient["bounce_type"] == "permanent"
+
+    async def test_broadcasts_recipients_async_raise_exception_when_not_found(
+        self,
+    ) -> None:
+        self.set_mock_json(
+            {
+                "statusCode": 404,
+                "name": "not_found",
+                "message": "Broadcast not found",
+            }
+        )
+
+        params: resend.Broadcasts.RecipientsParams = {
+            "broadcast_id": "does-not-exist",
+            "type": "sent",
+        }
+        with pytest.raises(ResendError):
+            _ = await resend.Broadcasts.recipients_async(params)
+
+    async def test_should_recipients_broadcasts_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        params: resend.Broadcasts.RecipientsParams = {
+            "broadcast_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+            "type": "sent",
+        }
+        with pytest.raises(NoContentError):
+            _ = await resend.Broadcasts.recipients_async(params)
 
     async def test_broadcasts_clicked_links_async(self) -> None:
         self.set_mock_json(
