@@ -300,6 +300,7 @@ def _build_metrics_query_params(
     return {
         key: ",".join(value) if isinstance(value, list) else value
         for key, value in params.items()
+        if not (isinstance(value, list) and not value)
     }
 
 
@@ -620,7 +621,7 @@ class Emails:
     def metrics(cls, params: Optional[MetricsParams] = None) -> MetricsResponse:
         """
         Retrieve email metrics.
-        This is a beta endpoint and its shape may change ahead of GA.
+        see more: https://resend.com/docs/api-reference/emails/get-metrics
 
         Args:
             params (Optional[MetricsParams]): The metrics query parameters
@@ -711,7 +712,7 @@ class Emails:
     ) -> MetricsResponse:
         """
         Retrieve email metrics (async version).
-        This is a beta endpoint and its shape may change ahead of GA.
+        see more: https://resend.com/docs/api-reference/emails/get-metrics
 
         Args:
             params (Optional[MetricsParams]): The metrics query parameters

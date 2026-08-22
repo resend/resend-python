@@ -1050,7 +1050,7 @@ class TestResendEmail(ResendBaseTest):
             resend.Emails.metrics(params=params)
         self.mock.assert_not_called()
 
-    def test_should_metrics_raise_exception_when_no_content(self) -> None:
+    def test_metrics_raises_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
             _ = resend.Emails.metrics()
