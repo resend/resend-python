@@ -241,3 +241,96 @@ class TestResendBroadcasts(ResendBaseTest):
         assert broadcasts["has_more"] is False
         assert len(broadcasts["data"]) == 1
         assert broadcasts["data"][0]["id"] == "broadcast-3"
+
+    def test_broadcasts_clicked_links(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "b2Zmc2V0OjA",
+                        "url": "https://resend.com/pricing",
+                        "clicks": 42,
+                        "unique_clicks": 30,
+                    },
+                    {
+                        "id": "b2Zmc2V0OjE",
+                        "url": "https://resend.com/docs",
+                        "clicks": 17,
+                        "unique_clicks": 15,
+                    },
+                ],
+            }
+        )
+
+        clicked_links: resend.Broadcasts.ListClickedLinksResponse = (
+            resend.Broadcasts.clicked_links("559ac32e-9ef5-46fb-82a1-b76b840c0f7b")
+        )
+        assert clicked_links["object"] == "list"
+        assert clicked_links["has_more"] is False
+        assert len(clicked_links["data"]) == 2
+
+        link = clicked_links["data"][0]
+        assert link["id"] == "b2Zmc2V0OjA"
+        assert link["url"] == "https://resend.com/pricing"
+        assert link["clicks"] == 42
+        assert link["unique_clicks"] == 30
+
+        link = clicked_links["data"][1]
+        assert link["id"] == "b2Zmc2V0OjE"
+        assert link["url"] == "https://resend.com/docs"
+        assert link["clicks"] == 17
+        assert link["unique_clicks"] == 15
+
+    def test_broadcasts_clicked_links_with_pagination_params(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": True,
+                "data": [
+                    {
+                        "id": "b2Zmc2V0OjA",
+                        "url": "https://resend.com/pricing",
+                        "clicks": 42,
+                        "unique_clicks": 30,
+                    },
+                ],
+            }
+        )
+
+        params: resend.Broadcasts.ListClickedLinksParams = {
+            "limit": 1,
+            "after": "cursor-value",
+        }
+        clicked_links: resend.Broadcasts.ListClickedLinksResponse = (
+            resend.Broadcasts.clicked_links(
+                "559ac32e-9ef5-46fb-82a1-b76b840c0f7b", params=params
+            )
+        )
+        assert clicked_links["object"] == "list"
+        assert clicked_links["has_more"] is True
+        assert len(clicked_links["data"]) == 1
+        assert clicked_links["data"][0]["id"] == "b2Zmc2V0OjA"
+
+    def test_broadcasts_clicked_links_with_before_param(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [],
+            }
+        )
+
+        params: resend.Broadcasts.ListClickedLinksParams = {
+            "limit": 1,
+            "before": "cursor-value",
+        }
+        clicked_links: resend.Broadcasts.ListClickedLinksResponse = (
+            resend.Broadcasts.clicked_links(
+                "559ac32e-9ef5-46fb-82a1-b76b840c0f7b", params=params
+            )
+        )
+        assert clicked_links["object"] == "list"
+        assert clicked_links["has_more"] is False
+        assert len(clicked_links["data"]) == 0
