@@ -46,6 +46,17 @@ retrieved: resend.Broadcast = resend.Broadcasts.get(id=broadcast["id"])
 print("retrieved broadcast !\n")
 print(retrieved)
 
+recipients_params: resend.Broadcasts.RecipientsParams = {
+    "broadcast_id": broadcast["id"],
+    "type": "delivered",
+}
+recipients: resend.Broadcasts.RecipientsResponse = resend.Broadcasts.recipients(
+    recipients_params
+)
+print("Broadcast recipients !\n")
+print(f"Found {len(recipients['data'])} recipients")
+print(f"Has more recipients: {recipients['has_more']}")
+
 if retrieved["status"] == "draft":
     removed: resend.Broadcasts.RemoveResponse = resend.Broadcasts.remove(
         id=broadcast["id"]
