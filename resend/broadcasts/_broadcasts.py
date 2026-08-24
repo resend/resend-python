@@ -246,7 +246,6 @@ class Broadcasts:
         """RecipientsParams is the class that wraps the parameters for the recipients method.
 
         Attributes:
-            broadcast_id (str): The ID of the broadcast.
             type (BroadcastRecipientEventType): The recipient event type to filter by.
             email (NotRequired[str]): Filter recipients by email address (substring match).
             bounce_type (NotRequired[BroadcastRecipientBounceType]): Filter bounced recipients
@@ -256,10 +255,6 @@ class Broadcasts:
             before (NotRequired[str]): The ID before which we'll retrieve more recipients (for pagination).
         """
 
-        broadcast_id: str
-        """
-        The ID of the broadcast.
-        """
         type: BroadcastRecipientEventType
         """
         The recipient event type to filter by.
@@ -495,20 +490,22 @@ class Broadcasts:
         return resp
 
     @classmethod
-    def recipients(cls, params: RecipientsParams) -> RecipientsResponse:
+    def recipients(cls, id: str, params: RecipientsParams) -> RecipientsResponse:
         """
         Retrieve a broadcast's recipients for a given event type.
         see more: https://resend.com/docs/api-reference/broadcasts/list-broadcast-recipients
 
         Args:
+            id (str): The broadcast ID
             params (RecipientsParams): The recipients filter and pagination parameters
 
         Returns:
             RecipientsResponse: A list of broadcast recipient objects
         """
-        base_path = f"/broadcasts/{params['broadcast_id']}/recipients"
-        query_params = {k: v for k, v in params.items() if k != "broadcast_id"}
-        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        base_path = f"/broadcasts/{id}/recipients"
+        path = PaginationHelper.build_paginated_path(
+            base_path, cast(Dict[Any, Any], params)
+        )
         resp = request.Request[Broadcasts.RecipientsResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -670,20 +667,24 @@ class Broadcasts:
         return resp
 
     @classmethod
-    async def recipients_async(cls, params: RecipientsParams) -> RecipientsResponse:
+    async def recipients_async(
+        cls, id: str, params: RecipientsParams
+    ) -> RecipientsResponse:
         """
         Retrieve a broadcast's recipients for a given event type (async).
         see more: https://resend.com/docs/api-reference/broadcasts/list-broadcast-recipients
 
         Args:
+            id (str): The broadcast ID
             params (RecipientsParams): The recipients filter and pagination parameters
 
         Returns:
             RecipientsResponse: A list of broadcast recipient objects
         """
-        base_path = f"/broadcasts/{params['broadcast_id']}/recipients"
-        query_params = {k: v for k, v in params.items() if k != "broadcast_id"}
-        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        base_path = f"/broadcasts/{id}/recipients"
+        path = PaginationHelper.build_paginated_path(
+            base_path, cast(Dict[Any, Any], params)
+        )
         resp = await AsyncRequest[Broadcasts.RecipientsResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
