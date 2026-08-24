@@ -225,3 +225,55 @@ class TestResendBroadcastsAsync(AsyncResendBaseTest):
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
             _ = await resend.Broadcasts.list_async()
+
+    async def test_broadcasts_clicked_links_async(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "b2Zmc2V0OjA",
+                        "url": "https://resend.com/pricing",
+                        "clicks": 42,
+                        "unique_clicks": 30,
+                    },
+                    {
+                        "id": "b2Zmc2V0OjE",
+                        "url": "https://resend.com/docs",
+                        "clicks": 17,
+                        "unique_clicks": 15,
+                    },
+                ],
+            }
+        )
+
+        clicked_links: resend.Broadcasts.ListClickedLinksResponse = (
+            await resend.Broadcasts.clicked_links_async(
+                "559ac32e-9ef5-46fb-82a1-b76b840c0f7b"
+            )
+        )
+        assert clicked_links["object"] == "list"
+        assert clicked_links["has_more"] is False
+        assert len(clicked_links["data"]) == 2
+
+        link = clicked_links["data"][0]
+        assert link["id"] == "b2Zmc2V0OjA"
+        assert link["url"] == "https://resend.com/pricing"
+        assert link["clicks"] == 42
+        assert link["unique_clicks"] == 30
+
+        link = clicked_links["data"][1]
+        assert link["id"] == "b2Zmc2V0OjE"
+        assert link["url"] == "https://resend.com/docs"
+        assert link["clicks"] == 17
+        assert link["unique_clicks"] == 15
+
+    async def test_should_clicked_links_broadcasts_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = await resend.Broadcasts.clicked_links_async(
+                "559ac32e-9ef5-46fb-82a1-b76b840c0f7b"
+            )
