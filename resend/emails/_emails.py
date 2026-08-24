@@ -153,7 +153,7 @@ class _MetricsParams(TypedDict):
     The dimensions to break results down by. Defaults to no dimensions, in
     which case only `totals` is returned and `data` is omitted.
     Note: the "email" and "broadcast" dimensions cannot be combined
-    (validated server-side).
+    (raises ValueError before the request is sent).
     """
     domain_id: NotRequired[List[str]]
     """
@@ -163,13 +163,13 @@ class _MetricsParams(TypedDict):
     """
     Restrict results to these email IDs. Maximum 100.
     Cannot be combined with the "broadcast" dimension or broadcast_id filter
-    (validated server-side).
+    (raises ValueError before the request is sent).
     """
     broadcast_id: NotRequired[List[str]]
     """
     Restrict results to these broadcast IDs. Maximum 100.
     Cannot be combined with the "email" dimension or email_id filter
-    (validated server-side).
+    (raises ValueError before the request is sent).
     """
 
 
