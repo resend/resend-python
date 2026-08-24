@@ -58,11 +58,10 @@ async def main() -> None:
     print(retrieved)
 
     recipients_params: resend.Broadcasts.RecipientsParams = {
-        "broadcast_id": broadcast["id"],
         "type": "delivered",
     }
     recipients: resend.Broadcasts.RecipientsResponse = (
-        await resend.Broadcasts.recipients_async(recipients_params)
+        await resend.Broadcasts.recipients_async(broadcast["id"], recipients_params)
     )
     print("Broadcast recipients !\n")
     print(f"Found {len(recipients['data'])} recipients")

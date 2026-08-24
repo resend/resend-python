@@ -258,11 +258,10 @@ class TestResendBroadcasts(ResendBaseTest):
         )
 
         params: resend.Broadcasts.RecipientsParams = {
-            "broadcast_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
             "type": "delivered",
         }
         recipients: resend.Broadcasts.RecipientsResponse = resend.Broadcasts.recipients(
-            params
+            "78261eea-8f8b-4381-83c6-79fa7120f1cf", params
         )
         assert recipients["object"] == "list"
         assert recipients["has_more"] is False
@@ -290,10 +289,11 @@ class TestResendBroadcasts(ResendBaseTest):
         )
 
         params: resend.Broadcasts.RecipientsParams = {
-            "broadcast_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
             "type": "opened",
         }
-        recipients = resend.Broadcasts.recipients(params)
+        recipients = resend.Broadcasts.recipients(
+            "78261eea-8f8b-4381-83c6-79fa7120f1cf", params
+        )
         recipient = recipients["data"][0]
         assert recipient["contact_id"] is None
         assert recipient["count"] == 3
@@ -318,12 +318,13 @@ class TestResendBroadcasts(ResendBaseTest):
         )
 
         params: resend.Broadcasts.RecipientsParams = {
-            "broadcast_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
             "type": "clicked",
             "email": "carter",
             "limit": 10,
         }
-        recipients = resend.Broadcasts.recipients(params)
+        recipients = resend.Broadcasts.recipients(
+            "78261eea-8f8b-4381-83c6-79fa7120f1cf", params
+        )
         recipient = recipients["data"][0]
         assert recipient["count"] == 2
         assert recipient["clicked_links"] == [
@@ -347,11 +348,12 @@ class TestResendBroadcasts(ResendBaseTest):
         )
 
         params: resend.Broadcasts.RecipientsParams = {
-            "broadcast_id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
             "type": "bounced",
             "bounce_type": "permanent",
         }
-        recipients = resend.Broadcasts.recipients(params)
+        recipients = resend.Broadcasts.recipients(
+            "78261eea-8f8b-4381-83c6-79fa7120f1cf", params
+        )
         recipient = recipients["data"][0]
         assert recipient["bounce_type"] == "permanent"
 
@@ -365,11 +367,10 @@ class TestResendBroadcasts(ResendBaseTest):
         )
 
         params: resend.Broadcasts.RecipientsParams = {
-            "broadcast_id": "does-not-exist",
             "type": "sent",
         }
         with self.assertRaises(ResendError):
-            _ = resend.Broadcasts.recipients(params)
+            _ = resend.Broadcasts.recipients("does-not-exist", params)
 
     def test_broadcasts_clicked_links(self) -> None:
         self.set_mock_json(
