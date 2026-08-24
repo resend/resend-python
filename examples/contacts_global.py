@@ -48,7 +48,8 @@ cont_by_id: resend.Contact = resend.Contacts.get(id=contact["id"])
 print("Retrieved contact by ID:")
 print(cont_by_id)
 if "properties" in cont_by_id:
-    print(f"Custom properties: {cont_by_id['properties']}")
+    for name, prop in cont_by_id["properties"].items():
+        print(f"Custom property {name}: {prop['value']} ({prop['type']})")
 
 # List all global contacts
 print("\n--- Listing all global contacts ---")

@@ -377,14 +377,16 @@ class TestResendContacts(ResendBaseTest):
                 "last_name": "Contact",
                 "created_at": "2023-10-06 23:47:56.678+00",
                 "unsubscribed": False,
-                "properties": {"tier": "premium"},
+                "properties": {"tier": {"value": "premium", "type": "string"}},
             }
         )
 
         contact: resend.Contact = resend.Contacts.get(id="global-contact-123")
         assert contact["id"] == "global-contact-123"
         assert contact["email"] == "global@example.com"
-        assert contact.get("properties") == {"tier": "premium"}
+        assert contact.get("properties") == {
+            "tier": {"value": "premium", "type": "string"}
+        }
 
     def test_contacts_list_global(self) -> None:
         self.set_mock_json(
@@ -399,7 +401,6 @@ class TestResendContacts(ResendBaseTest):
                         "last_name": "One",
                         "created_at": "2023-10-06 23:47:56.678+00",
                         "unsubscribed": False,
-                        "properties": {"tier": "free"},
                     },
                     {
                         "id": "global-2",
@@ -408,7 +409,6 @@ class TestResendContacts(ResendBaseTest):
                         "last_name": "Two",
                         "created_at": "2023-10-07 23:47:56.678+00",
                         "unsubscribed": False,
-                        "properties": {"tier": "premium"},
                     },
                 ],
             }
