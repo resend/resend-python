@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Union, cast
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 from resend._base_response import BaseResponse
@@ -16,6 +16,35 @@ try:
     from resend.async_request import AsyncRequest
 except ImportError:
     pass
+
+MetricsGranularity = Literal["hourly", "daily", "weekly", "monthly"]
+
+MetricsMetric = Literal[
+    "received",
+    "delivered",
+    "complained",
+    "suppressed",
+    "bounced",
+    "bounced_transient",
+    "bounced_permanent",
+    "bounced_undetermined",
+    "opened",
+    "clicked",
+    "unsubscribed",
+    "delivery_delayed",
+    "failed",
+    "sent",
+    "unique_opened",
+    "unique_clicked",
+    "delivery_rate",
+    "open_rate",
+    "click_rate",
+    "bounce_rate",
+    "complaint_rate",
+    "unsubscribe_rate",
+]
+
+MetricsDimension = Literal["period", "domain", "email", "broadcast"]
 
 
 class EmailTemplate(TypedDict):
@@ -95,6 +124,93 @@ class _ShareEmailResponse(BaseResponse):
     """
 
 
+class _MetricsParams(TypedDict):
+    start_date: NotRequired[str]
+    """
+    Start of the date range, as an ISO 8601 date or datetime.
+    Defaults to 6 days before end_date.
+    """
+    end_date: NotRequired[str]
+    """
+    End of the date range, as an ISO 8601 date or datetime.
+    Defaults to now.
+    """
+    timezone: NotRequired[str]
+    """
+    IANA timezone (e.g. "America/New_York") used to bucket results.
+    Defaults to "UTC".
+    """
+    granularity: NotRequired[MetricsGranularity]
+    """
+    The bucket size used for the "period" dimension. Defaults to "daily".
+    """
+    metrics: NotRequired[List[MetricsMetric]]
+    """
+    The metrics to compute. Defaults to all available metrics.
+    """
+    dimensions: NotRequired[List[MetricsDimension]]
+    """
+    The dimensions to break results down by. Defaults to no dimensions, in
+    which case only `totals` is returned and `data` is omitted.
+    Note: the "email" and "broadcast" dimensions cannot be combined
+    (raises ValueError before the request is sent).
+    """
+    domain_id: NotRequired[List[str]]
+    """
+    Restrict results to these sending domain IDs. Maximum 100.
+    """
+    email_id: NotRequired[List[str]]
+    """
+    Restrict results to these email IDs. Maximum 100.
+    Cannot be combined with the "broadcast" dimension or broadcast_id filter
+    (raises ValueError before the request is sent).
+    """
+    broadcast_id: NotRequired[List[str]]
+    """
+    Restrict results to these broadcast IDs. Maximum 100.
+    Cannot be combined with the "email" dimension or email_id filter
+    (raises ValueError before the request is sent).
+    """
+
+
+class _MetricsResponse(BaseResponse):
+    object: str
+    """
+    The object type: "metrics"
+    """
+    start_date: str
+    """
+    Start of the date range that was queried.
+    """
+    end_date: str
+    """
+    End of the date range that was queried.
+    """
+    metrics: List[str]
+    """
+    The metrics that were computed.
+    """
+    dimensions: List[str]
+    """
+    The dimensions results are broken down by.
+    """
+    granularity: str
+    """
+    The bucket size used for the "period" dimension.
+    """
+    totals: Dict[str, Any]
+    """
+    The requested metrics, totaled across the whole date range.
+    """
+    data: NotRequired[List[Dict[str, Any]]]
+    """
+    One row per combination of requested dimensions, each containing the
+    dimension key fields (e.g. `period`, `domain_id`/`domain_name`,
+    `email_id`, `broadcast_id`/`broadcast_name`) plus the requested metrics.
+    Omitted when `dimensions` is empty.
+    """
+
+
 # SendParamsFrom is declared with functional TypedDict syntax here because
 # "from" is a reserved keyword in Python, and this is the best way to
 # support type-checking for it.
@@ -158,6 +274,36 @@ class _SendParamsDefault(_SendParamsFrom):
     """
 
 
+def _validate_metrics_params(params: Optional["Emails.MetricsParams"]) -> None:
+    if not params:
+        return
+    dimensions = params.get("dimensions") or []
+    has_broadcast = "broadcast" in dimensions or bool(params.get("broadcast_id"))
+    has_email = "email" in dimensions or bool(params.get("email_id"))
+    if has_broadcast and has_email:
+        raise ValueError(
+            "the broadcast dimension/broadcast_id filter cannot be combined "
+            "with the email dimension/email_id filter"
+        )
+
+
+def _build_metrics_query_params(
+    params: Optional["Emails.MetricsParams"],
+) -> Optional[Dict[str, Any]]:
+    """
+    Comma-join list-valued params (metrics, dimensions, domain_id, email_id,
+    broadcast_id) the way the metrics endpoint expects them in the query
+    string; PaginationHelper.build_paginated_path does not join lists itself.
+    """
+    if not params:
+        return None
+    return {
+        key: ",".join(value) if isinstance(value, list) else value
+        for key, value in params.items()
+        if not (isinstance(value, list) and not value)
+    }
+
+
 class Emails:
     Attachments = Attachments
     Receiving = Receiving
@@ -198,6 +344,42 @@ class Emails:
             object (str): The object type
             id (str): The ID of the email that was shared.
             url (str): The shareable link URL.
+        """
+
+    class MetricsParams(_MetricsParams):
+        """
+        MetricsParams is the class that wraps the parameters for the metrics method.
+
+        Attributes:
+            start_date (NotRequired[str]): Start of the date range (ISO 8601). \
+            Defaults to 6 days before end_date.
+            end_date (NotRequired[str]): End of the date range (ISO 8601). Defaults to now.
+            timezone (NotRequired[str]): IANA timezone, e.g. "America/New_York". Defaults to "UTC".
+            granularity (NotRequired[MetricsGranularity]): Bucket size for the "period" \
+            dimension. Defaults to "daily".
+            metrics (NotRequired[List[MetricsMetric]]): The metrics to compute. \
+            Defaults to all available metrics.
+            dimensions (NotRequired[List[MetricsDimension]]): The dimensions to break \
+            results down by. Defaults to none, in which case only `totals` is returned.
+            domain_id (NotRequired[List[str]]): Restrict results to these sending domain IDs.
+            email_id (NotRequired[List[str]]): Restrict results to these email IDs.
+            broadcast_id (NotRequired[List[str]]): Restrict results to these broadcast IDs.
+        """
+
+    class MetricsResponse(_MetricsResponse):
+        """
+        MetricsResponse is the type that wraps the response of the metrics method.
+
+        Attributes:
+            object (str): The object type: "metrics"
+            start_date (str): Start of the date range that was queried.
+            end_date (str): End of the date range that was queried.
+            metrics (List[str]): The metrics that were computed.
+            dimensions (List[str]): The dimensions results are broken down by.
+            granularity (str): The bucket size used for the "period" dimension.
+            totals (Dict[str, Any]): The requested metrics, totaled across the whole date range.
+            data (NotRequired[List[Dict[str, Any]]]): One row per combination of requested \
+            dimensions. Omitted when `dimensions` is empty.
         """
 
     class UpdateParams(_UpdateParams):
@@ -436,6 +618,29 @@ class Emails:
         return resp
 
     @classmethod
+    def metrics(cls, params: Optional[MetricsParams] = None) -> MetricsResponse:
+        """
+        Retrieve email metrics.
+        see more: https://resend.com/docs/api-reference/emails/get-metrics
+
+        Args:
+            params (Optional[MetricsParams]): The metrics query parameters
+
+        Returns:
+            MetricsResponse: The requested metrics, totaled and (optionally) broken down by dimension
+        """
+        _validate_metrics_params(params)
+        base_path = "/emails/metrics"
+        query_params = _build_metrics_query_params(params)
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = request.Request[Emails.MetricsResponse](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
     async def send_async(
         cls, params: SendParams, options: Optional[SendOptions] = None
     ) -> SendResponse:
@@ -495,6 +700,31 @@ class Emails:
         query_params = cast(Dict[Any, Any], params) if params else None
         path = PaginationHelper.build_paginated_path(base_path, query_params)
         resp = await AsyncRequest[Emails.ListResponse](
+            path=path,
+            params={},
+            verb="get",
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def metrics_async(
+        cls, params: Optional[MetricsParams] = None
+    ) -> MetricsResponse:
+        """
+        Retrieve email metrics (async version).
+        see more: https://resend.com/docs/api-reference/emails/get-metrics
+
+        Args:
+            params (Optional[MetricsParams]): The metrics query parameters
+
+        Returns:
+            MetricsResponse: The requested metrics, totaled and (optionally) broken down by dimension
+        """
+        _validate_metrics_params(params)
+        base_path = "/emails/metrics"
+        query_params = _build_metrics_query_params(params)
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        resp = await AsyncRequest[Emails.MetricsResponse](
             path=path,
             params={},
             verb="get",

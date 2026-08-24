@@ -677,6 +677,384 @@ class TestResendEmail(ResendBaseTest):
         email: resend.Emails.SendResponse = resend.Emails.send(params)
         assert email["id"] == "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"
 
+    def test_metrics_with_no_params(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-02T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered", "opened"],
+                "dimensions": [],
+                "granularity": "daily",
+                "totals": {"delivered": 100, "opened": 40},
+            }
+        )
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics()
+        assert metrics["object"] == "metrics"
+        assert metrics["totals"]["delivered"] == 100
+        assert "data" not in metrics
+        self.mock.assert_called_with(url="https://api.resend.com/emails/metrics")
+
+    def test_metrics_with_period_dimension(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered"],
+                "dimensions": ["period"],
+                "granularity": "daily",
+                "totals": {"delivered": 100},
+                "data": [
+                    {"period": "2026-07-01", "delivered": 10},
+                    {"period": "2026-07-02", "delivered": 20},
+                ],
+            }
+        )
+        params: resend.Emails.MetricsParams = {"dimensions": ["period"]}
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["dimensions"] == ["period"]
+        assert metrics["data"][0]["period"] == "2026-07-01"
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?dimensions=period"
+        )
+
+    def test_metrics_with_domain_dimension(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered"],
+                "dimensions": ["domain"],
+                "granularity": "daily",
+                "totals": {"delivered": 100},
+                "data": [
+                    {
+                        "domain_id": "d68a4265-d33b-4658-b9e6-c9d0c5b0e4a3",
+                        "domain_name": "example.com",
+                        "delivered": 100,
+                    },
+                ],
+            }
+        )
+        params: resend.Emails.MetricsParams = {"dimensions": ["domain"]}
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["dimensions"] == ["domain"]
+        assert metrics["data"][0]["domain_name"] == "example.com"
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?dimensions=domain"
+        )
+
+    def test_metrics_with_email_dimension(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered"],
+                "dimensions": ["email"],
+                "granularity": "daily",
+                "totals": {"delivered": 1},
+                "data": [
+                    {
+                        "email_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+                        "delivered": 1,
+                    },
+                ],
+            }
+        )
+        params: resend.Emails.MetricsParams = {"dimensions": ["email"]}
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["dimensions"] == ["email"]
+        assert metrics["data"][0]["email_id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?dimensions=email"
+        )
+
+    def test_metrics_with_broadcast_dimension(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered", "opened"],
+                "dimensions": ["broadcast"],
+                "granularity": "daily",
+                "totals": {"delivered": 100, "opened": 40},
+                "data": [
+                    {
+                        "broadcast_id": "b3a6e6e2-9f2b-4e2a-9b1b-1a2b3c4d5e6f",
+                        "broadcast_name": "July Newsletter",
+                        "delivered": 100,
+                        "opened": 40,
+                    },
+                ],
+            }
+        )
+        params: resend.Emails.MetricsParams = {"dimensions": ["broadcast"]}
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["dimensions"] == ["broadcast"]
+        assert metrics["data"][0]["broadcast_name"] == "July Newsletter"
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?dimensions=broadcast"
+        )
+
+    def test_metrics_with_multiple_dimensions(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered", "opened"],
+                "dimensions": ["period", "broadcast"],
+                "granularity": "daily",
+                "totals": {"delivered": 100, "opened": 40},
+                "data": [
+                    {
+                        "period": "2026-07-01",
+                        "broadcast_id": "b3a6e6e2-9f2b-4e2a-9b1b-1a2b3c4d5e6f",
+                        "broadcast_name": "July Newsletter",
+                        "delivered": 10,
+                        "opened": 4,
+                    },
+                ],
+            }
+        )
+        params: resend.Emails.MetricsParams = {"dimensions": ["period", "broadcast"]}
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["dimensions"] == ["period", "broadcast"]
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?dimensions=period%2Cbroadcast"
+        )
+
+    def test_metrics_with_single_domain_id_filter(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered"],
+                "dimensions": [],
+                "granularity": "daily",
+                "totals": {"delivered": 50},
+            }
+        )
+        params: resend.Emails.MetricsParams = {
+            "domain_id": ["d68a4265-d33b-4658-b9e6-c9d0c5b0e4a3"],
+        }
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["totals"]["delivered"] == 50
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?domain_id=d68a4265-d33b-4658-b9e6-c9d0c5b0e4a3"
+        )
+
+    def test_metrics_with_multiple_domain_id_filter(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered"],
+                "dimensions": [],
+                "granularity": "daily",
+                "totals": {"delivered": 90},
+            }
+        )
+        params: resend.Emails.MetricsParams = {
+            "domain_id": [
+                "d68a4265-d33b-4658-b9e6-c9d0c5b0e4a3",
+                "e79b5376-e44c-5769-c0f7-dae1d6c1f5b4",
+            ],
+        }
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["totals"]["delivered"] == 90
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?domain_id=d68a4265-d33b-4658-b9e6-c9d0c5b0e4a3%2Ce79b5376-e44c-5769-c0f7-dae1d6c1f5b4"
+        )
+
+    def test_metrics_with_single_email_id_filter(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered"],
+                "dimensions": [],
+                "granularity": "daily",
+                "totals": {"delivered": 1},
+            }
+        )
+        params: resend.Emails.MetricsParams = {
+            "email_id": ["4ef9a417-02e9-4d39-ad75-9611e0fcc33c"],
+        }
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["totals"]["delivered"] == 1
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?email_id=4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
+        )
+
+    def test_metrics_with_multiple_email_id_filter(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered"],
+                "dimensions": [],
+                "granularity": "daily",
+                "totals": {"delivered": 2},
+            }
+        )
+        params: resend.Emails.MetricsParams = {
+            "email_id": [
+                "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+                "5ef9a417-02e9-4d39-ad75-9611e0fcc33d",
+            ],
+        }
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["totals"]["delivered"] == 2
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?email_id=4ef9a417-02e9-4d39-ad75-9611e0fcc33c%2C5ef9a417-02e9-4d39-ad75-9611e0fcc33d"
+        )
+
+    def test_metrics_with_single_broadcast_id_filter(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered"],
+                "dimensions": [],
+                "granularity": "daily",
+                "totals": {"delivered": 100},
+            }
+        )
+        params: resend.Emails.MetricsParams = {
+            "broadcast_id": ["b3a6e6e2-9f2b-4e2a-9b1b-1a2b3c4d5e6f"],
+        }
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["totals"]["delivered"] == 100
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?broadcast_id=b3a6e6e2-9f2b-4e2a-9b1b-1a2b3c4d5e6f"
+        )
+
+    def test_metrics_with_multiple_broadcast_id_filter(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered"],
+                "dimensions": [],
+                "granularity": "daily",
+                "totals": {"delivered": 150},
+            }
+        )
+        params: resend.Emails.MetricsParams = {
+            "broadcast_id": [
+                "b3a6e6e2-9f2b-4e2a-9b1b-1a2b3c4d5e6f",
+                "c4b7f7f3-a03c-5f3b-ac2c-2b3c4d5e6f70",
+            ],
+        }
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["totals"]["delivered"] == 150
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/metrics?broadcast_id=b3a6e6e2-9f2b-4e2a-9b1b-1a2b3c4d5e6f%2Cc4b7f7f3-a03c-5f3b-ac2c-2b3c4d5e6f70"
+        )
+
+    def test_metrics_with_metrics_granularity_and_timezone(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "metrics",
+                "start_date": "2026-07-01T00:00:00.000Z",
+                "end_date": "2026-07-08T00:00:00.000Z",
+                "metrics": ["delivered", "opened", "clicked"],
+                "dimensions": ["period"],
+                "granularity": "hourly",
+                "totals": {"delivered": 100, "opened": 40, "clicked": 10},
+                "data": [
+                    {
+                        "period": "2026-07-01T00:00:00.000Z",
+                        "delivered": 5,
+                        "opened": 2,
+                        "clicked": 1,
+                    },
+                ],
+            }
+        )
+        params: resend.Emails.MetricsParams = {
+            "start_date": "2026-07-01",
+            "end_date": "2026-07-08",
+            "timezone": "America/New_York",
+            "granularity": "hourly",
+            "metrics": ["delivered", "opened", "clicked"],
+            "dimensions": ["period"],
+        }
+        metrics: resend.Emails.MetricsResponse = resend.Emails.metrics(params=params)
+        assert metrics["granularity"] == "hourly"
+        assert metrics["metrics"] == ["delivered", "opened", "clicked"]
+        self.mock.assert_called_with(
+            url=(
+                "https://api.resend.com/emails/metrics?"
+                "start_date=2026-07-01&end_date=2026-07-08"
+                "&timezone=America%2FNew_York&granularity=hourly"
+                "&metrics=delivered%2Copened%2Cclicked&dimensions=period"
+            )
+        )
+
+    def test_metrics_raises_when_email_and_broadcast_dimensions_combined(
+        self,
+    ) -> None:
+        params: resend.Emails.MetricsParams = {
+            "dimensions": ["email", "broadcast"],
+        }
+        try:
+            resend.Emails.metrics(params=params)
+            self.fail("expected ValueError")
+        except ValueError as e:
+            assert str(e) == (
+                "the broadcast dimension/broadcast_id filter cannot be "
+                "combined with the email dimension/email_id filter"
+            )
+        self.mock.assert_not_called()
+
+    def test_metrics_raises_when_broadcast_dimension_combined_with_email_id(
+        self,
+    ) -> None:
+        params: resend.Emails.MetricsParams = {
+            "dimensions": ["broadcast"],
+            "email_id": ["4dd369bc-aa82-4ff3-97de-514ae3000ee0"],
+        }
+        with self.assertRaises(ValueError):
+            resend.Emails.metrics(params=params)
+        self.mock.assert_not_called()
+
+    def test_metrics_raises_when_email_dimension_combined_with_broadcast_id(
+        self,
+    ) -> None:
+        params: resend.Emails.MetricsParams = {
+            "dimensions": ["email"],
+            "broadcast_id": ["b3a6e6e2-9f2b-4e2a-9b1b-1a2b3c4d5e6f"],
+        }
+        with self.assertRaises(ValueError):
+            resend.Emails.metrics(params=params)
+        self.mock.assert_not_called()
+
+    def test_metrics_raises_when_email_id_and_broadcast_id_combined(self) -> None:
+        params: resend.Emails.MetricsParams = {
+            "email_id": ["4dd369bc-aa82-4ff3-97de-514ae3000ee0"],
+            "broadcast_id": ["b3a6e6e2-9f2b-4e2a-9b1b-1a2b3c4d5e6f"],
+        }
+        with self.assertRaises(ValueError):
+            resend.Emails.metrics(params=params)
+        self.mock.assert_not_called()
+
+    def test_metrics_raises_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Emails.metrics()
+
 
 import unittest as _unittest
 
