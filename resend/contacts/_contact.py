@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -23,13 +23,13 @@ class Contact(TypedDict):
     """
     The email of the contact.
     """
-    first_name: NotRequired[str]
+    first_name: Optional[str]
     """
-    The first name of the contact.
+    The first name of the contact. None when the contact has no first name.
     """
-    last_name: NotRequired[str]
+    last_name: Optional[str]
     """
-    The last name of the contact.
+    The last name of the contact. None when the contact has no last name.
     """
     created_at: str
     """
