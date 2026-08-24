@@ -74,3 +74,12 @@ if list_response["data"]:
     print(f"Has more broadcasts: {paginated_broadcasts['has_more']}")
 else:
     print("No broadcasts available for pagination example")
+
+print("\n--- Clicked links ---")
+clicked_links: resend.Broadcasts.ListClickedLinksResponse = (
+    resend.Broadcasts.clicked_links(id=broadcast["id"])
+)
+print(f"Found {len(clicked_links['data'])} clicked links")
+print(f"Has more clicked links: {clicked_links['has_more']}")
+for link in clicked_links["data"]:
+    print(f"{link['url']}: {link['clicks']} clicks, {link['unique_clicks']} unique")
