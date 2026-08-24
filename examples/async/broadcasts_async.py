@@ -57,6 +57,17 @@ async def main() -> None:
     print("retrieved broadcast !\n")
     print(retrieved)
 
+    recipients_params: resend.Broadcasts.RecipientsParams = {
+        "broadcast_id": broadcast["id"],
+        "type": "delivered",
+    }
+    recipients: resend.Broadcasts.RecipientsResponse = (
+        await resend.Broadcasts.recipients_async(recipients_params)
+    )
+    print("Broadcast recipients !\n")
+    print(f"Found {len(recipients['data'])} recipients")
+    print(f"Has more recipients: {recipients['has_more']}")
+
     if retrieved["status"] == "draft":
         removed: resend.Broadcasts.RemoveResponse = (
             await resend.Broadcasts.remove_async(id=broadcast["id"])
