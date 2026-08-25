@@ -5,7 +5,7 @@ import time
 from hashlib import sha256
 from typing import Any, Dict, List, Optional, cast
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 from resend._base_response import BaseResponse
@@ -25,6 +25,45 @@ DEFAULT_WEBHOOK_TOLERANCE_SECONDS = 300
 
 
 class Webhooks:
+    class ListEventsParams(TypedDict):
+        limit: NotRequired[int]
+        after: NotRequired[str]
+
+    class ListEventAttemptsParams(TypedDict):
+        limit: NotRequired[int]
+        after: NotRequired[str]
+
+    class WebhookEventSummary(TypedDict):
+        id: str
+        type: str
+        created_at: str
+        status: Literal["pending", "attempting", "success", "failed"]
+
+    class ListEventsResponse(BaseResponse):
+        object: str
+        has_more: bool
+        data: List["Webhooks.WebhookEventSummary"]
+
+    class GetEventResponse(BaseResponse):
+        object: str
+        id: str
+        type: str
+        created_at: str
+        status: Literal["pending", "attempting", "success", "failed"]
+        next_attempt_at: Optional[str]
+        payload: WebhookEventPayload
+
+    class WebhookEventAttempt(TypedDict):
+        id: str
+        http_status_code: int
+        response: str
+        sent_at: str
+
+    class ListEventAttemptsResponse(BaseResponse):
+        object: str
+        has_more: bool
+        data: List["Webhooks.WebhookEventAttempt"]
+
     class ListParams(TypedDict):
         limit: NotRequired[int]
         """
@@ -246,6 +285,38 @@ class Webhooks:
         return resp
 
     @classmethod
+    def list_events(
+        cls, webhook_id: str, params: Optional[ListEventsParams] = None
+    ) -> ListEventsResponse:
+        base_path = f"/webhooks/{webhook_id}/events"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        return request.Request[Webhooks.ListEventsResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+
+    @classmethod
+    def get_event(cls, webhook_id: str, event_id: str) -> GetEventResponse:
+        path = f"/webhooks/{webhook_id}/events/{event_id}"
+        return request.Request[Webhooks.GetEventResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+
+    @classmethod
+    def list_event_attempts(
+        cls,
+        webhook_id: str,
+        event_id: str,
+        params: Optional[ListEventAttemptsParams] = None,
+    ) -> ListEventAttemptsResponse:
+        base_path = f"/webhooks/{webhook_id}/events/{event_id}/attempts"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        return request.Request[Webhooks.ListEventAttemptsResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+
+    @classmethod
     def remove(cls, webhook_id: str) -> DeleteWebhookResponse:
         """
         Remove an existing webhook.
@@ -437,6 +508,38 @@ class Webhooks:
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
+
+    @classmethod
+    async def list_events_async(
+        cls, webhook_id: str, params: Optional[ListEventsParams] = None
+    ) -> ListEventsResponse:
+        base_path = f"/webhooks/{webhook_id}/events"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        return await AsyncRequest[Webhooks.ListEventsResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+
+    @classmethod
+    async def get_event_async(cls, webhook_id: str, event_id: str) -> GetEventResponse:
+        path = f"/webhooks/{webhook_id}/events/{event_id}"
+        return await AsyncRequest[Webhooks.GetEventResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
+
+    @classmethod
+    async def list_event_attempts_async(
+        cls,
+        webhook_id: str,
+        event_id: str,
+        params: Optional[ListEventAttemptsParams] = None,
+    ) -> ListEventAttemptsResponse:
+        base_path = f"/webhooks/{webhook_id}/events/{event_id}/attempts"
+        query_params = cast(Dict[Any, Any], params) if params else None
+        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        return await AsyncRequest[Webhooks.ListEventAttemptsResponse](
+            path=path, params={}, verb="get"
+        ).perform_with_content()
 
     @classmethod
     async def remove_async(cls, webhook_id: str) -> DeleteWebhookResponse:
