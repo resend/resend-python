@@ -69,7 +69,7 @@ class TestResendApiKeysAsync(AsyncResendBaseTest):
         )
 
         params: resend.ApiKeys.UpdateParams = {
-            "api_key_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
             "name": "updated-name",
         }
         updated_key: resend.ApiKeys.UpdateApiKeyResponse = (
@@ -83,7 +83,7 @@ class TestResendApiKeysAsync(AsyncResendBaseTest):
     ) -> None:
         self.set_mock_json(None)
         params: resend.ApiKeys.UpdateParams = {
-            "api_key_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
             "name": "updated-name",
         }
         with pytest.raises(NoContentError):

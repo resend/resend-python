@@ -17,7 +17,7 @@ print("Created new api key")
 print(f"Key id: {created_key['id']} and token: {created_key['token']}")
 
 update_params: resend.ApiKeys.UpdateParams = {
-    "api_key_id": created_key["id"],
+    "id": created_key["id"],
     "name": "renamed-example",
 }
 updated_key: resend.ApiKeys.UpdateApiKeyResponse = resend.ApiKeys.update(update_params)

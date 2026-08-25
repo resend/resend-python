@@ -20,7 +20,7 @@ async def main() -> None:
     print(f"Key id: {key['id']} and token: {key['token']}")
 
     update_params: resend.ApiKeys.UpdateParams = {
-        "api_key_id": key["id"],
+        "id": key["id"],
         "name": "renamed-example",
     }
     updated_key = await resend.ApiKeys.update_async(update_params)
