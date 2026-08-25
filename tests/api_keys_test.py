@@ -136,7 +136,7 @@ class TestResendApiKeys(ResendBaseTest):
         )
 
         params: resend.ApiKeys.UpdateParams = {
-            "api_key_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
             "name": "updated-name",
         }
         updated_key: resend.ApiKeys.UpdateApiKeyResponse = resend.ApiKeys.update(params)
@@ -146,7 +146,7 @@ class TestResendApiKeys(ResendBaseTest):
     def test_should_update_api_key_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
         params: resend.ApiKeys.UpdateParams = {
-            "api_key_id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
+            "id": "4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
             "name": "updated-name",
         }
         with self.assertRaises(NoContentError):

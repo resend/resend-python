@@ -134,7 +134,7 @@ class ApiKeys:
         """
 
     class UpdateParams(TypedDict):
-        api_key_id: str
+        id: str
         """
         The API key ID.
         """
@@ -169,13 +169,13 @@ class ApiKeys:
 
         Args:
             params (UpdateParams): The API key update parameters
-                - api_key_id: The API key ID
+                - id: The API key ID
                 - name: The new API key name
 
         Returns:
             UpdateApiKeyResponse: The updated API key response with id
         """
-        api_key_id = params["api_key_id"]
+        api_key_id = params["id"]
         path = f"/api-keys/{api_key_id}"
         resp = request.Request[ApiKeys.UpdateApiKeyResponse](
             path=path, params={"name": params["name"]}, verb="patch"
@@ -249,13 +249,13 @@ class ApiKeys:
 
         Args:
             params (UpdateParams): The API key update parameters
-                - api_key_id: The API key ID
+                - id: The API key ID
                 - name: The new API key name
 
         Returns:
             UpdateApiKeyResponse: The updated API key response with id
         """
-        api_key_id = params["api_key_id"]
+        api_key_id = params["id"]
         path = f"/api-keys/{api_key_id}"
         resp = await AsyncRequest[ApiKeys.UpdateApiKeyResponse](
             path=path, params={"name": params["name"]}, verb="patch"
