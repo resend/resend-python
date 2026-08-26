@@ -109,6 +109,85 @@ class TestResendWebhooksAsync(AsyncResendBaseTest):
         assert len(webhooks["data"]) == 1
         assert webhooks["data"][0]["id"] == "wh_123"
 
+    async def test_webhooks_list_events_async(self) -> None:
+        response = {
+            "object": "list",
+            "has_more": True,
+            "data": [
+                {
+                    "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                    "type": "email.sent",
+                    "created_at": "2024-01-01T00:00:00.000Z",
+                    "status": "success",
+                }
+            ],
+        }
+        self.set_mock_json(response)
+        params: resend.Webhooks.ListEventsParams = {
+            "limit": 10,
+            "after": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+        }
+
+        events = await resend.Webhooks.list_events_async("wh_123", params)
+
+        assert events == response
+        self.mock.assert_awaited_once_with(
+            url="https://api.resend.com/webhooks/wh_123/events?limit=10&after=msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        )
+
+    async def test_webhooks_get_event_async(self) -> None:
+        response = {
+            "object": "webhook_event",
+            "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+            "type": "email.sent",
+            "created_at": "2024-01-01T00:00:00.000Z",
+            "status": "pending",
+            "next_attempt_at": None,
+            "payload": {
+                "type": "email.sent",
+                "created_at": "2024-01-01T00:00:00.000Z",
+                "data": {},
+            },
+        }
+        self.set_mock_json(response)
+
+        event = await resend.Webhooks.get_event_async(
+            "wh_123", "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        )
+
+        assert event == response
+        self.mock.assert_awaited_once_with(
+            url="https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        )
+
+    async def test_webhooks_list_event_attempts_async(self) -> None:
+        response = {
+            "object": "list",
+            "has_more": False,
+            "data": [
+                {
+                    "id": "atmpt_2ZbUCwvGmIT4mLIN6d3Yz0Ainbd",
+                    "http_status_code": 200,
+                    "response": "OK",
+                    "sent_at": "2024-01-01T00:00:00.000Z",
+                }
+            ],
+        }
+        self.set_mock_json(response)
+        params: resend.Webhooks.ListEventAttemptsParams = {
+            "limit": 5,
+            "after": "atmpt_2ZbUCwvGmIT4mLIN6d3Yz0Ainbd",
+        }
+
+        attempts = await resend.Webhooks.list_event_attempts_async(
+            "wh_123", "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2", params
+        )
+
+        assert attempts == response
+        self.mock.assert_awaited_once_with(
+            url="https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2/attempts?limit=5&after=atmpt_2ZbUCwvGmIT4mLIN6d3Yz0Ainbd"
+        )
+
     async def test_should_list_webhooks_async_raise_exception_when_no_content(
         self,
     ) -> None:
