@@ -27,42 +27,117 @@ DEFAULT_WEBHOOK_TOLERANCE_SECONDS = 300
 class Webhooks:
     class ListEventsParams(TypedDict):
         limit: NotRequired[int]
+        """
+        Number of webhook events to retrieve. Maximum is 100, and minimum is 1.
+        """
         after: NotRequired[str]
+        """
+        The ID after which we'll retrieve more webhook events.
+        """
 
     class ListEventAttemptsParams(TypedDict):
         limit: NotRequired[int]
+        """
+        Number of delivery attempts to retrieve. Maximum is 100, and minimum is 1.
+        """
         after: NotRequired[str]
+        """
+        The ID after which we'll retrieve more delivery attempts.
+        """
 
     class WebhookEventSummary(TypedDict):
         id: str
-        type: str
+        """
+        The webhook event ID.
+        """
+        type: WebhookEvent
+        """
+        The webhook event type.
+        """
         created_at: str
+        """
+        The date and time when the webhook event was created.
+        """
         status: Literal["pending", "attempting", "success", "failed"]
+        """
+        The delivery status of the webhook event.
+        """
 
     class ListEventsResponse(BaseResponse):
         object: str
+        """
+        The object type, always "list".
+        """
         has_more: bool
+        """
+        Whether there are more webhook events available for pagination.
+        """
         data: List["Webhooks.WebhookEventSummary"]
+        """
+        A list of webhook events.
+        """
 
     class GetEventResponse(BaseResponse):
         object: str
+        """
+        The object type, always "webhook_event".
+        """
         id: str
-        type: str
+        """
+        The webhook event ID.
+        """
+        type: WebhookEvent
+        """
+        The webhook event type.
+        """
         created_at: str
+        """
+        The date and time when the webhook event was created.
+        """
         status: Literal["pending", "attempting", "success", "failed"]
+        """
+        The delivery status of the webhook event.
+        """
         next_attempt_at: Optional[str]
+        """
+        The date and time of the next delivery attempt, if one is scheduled.
+        """
         payload: WebhookEventPayload
+        """
+        The webhook event payload.
+        """
 
     class WebhookEventAttempt(TypedDict):
         id: str
+        """
+        The delivery attempt ID.
+        """
         http_status_code: int
+        """
+        The HTTP status code returned by the webhook endpoint.
+        """
         response: str
+        """
+        The response returned by the webhook endpoint.
+        """
         sent_at: str
+        """
+        The date and time when the delivery attempt was sent.
+        """
 
     class ListEventAttemptsResponse(BaseResponse):
         object: str
+        """
+        The object type, always "list".
+        """
         has_more: bool
+        """
+        Whether there are more delivery attempts available for pagination.
+        """
         data: List["Webhooks.WebhookEventAttempt"]
+        """
+        A list of webhook event delivery attempts.
+        """
 
     class ListParams(TypedDict):
         limit: NotRequired[int]

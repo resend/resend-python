@@ -59,6 +59,26 @@ if webhooks["data"]:
 else:
     print("No webhooks available for pagination example")
 
+webhook_events: resend.Webhooks.ListEventsResponse = resend.Webhooks.list_events(
+    webhook["id"], {"limit": 10}
+)
+print(f"Found {len(webhook_events['data'])} webhook events")
+print(f"Has more webhook events: {webhook_events['has_more']}")
+if webhook_events["data"]:
+    event_id = webhook_events["data"][0]["id"]
+    webhook_event: resend.Webhooks.GetEventResponse = resend.Webhooks.get_event(
+        webhook["id"], event_id
+    )
+    print(f"Retrieved webhook event: {webhook_event['id']}")
+
+    attempts: resend.Webhooks.ListEventAttemptsResponse = (
+        resend.Webhooks.list_event_attempts(webhook["id"], event_id, {"limit": 10})
+    )
+    print(f"Found {len(attempts['data'])} delivery attempts")
+    print(f"Has more delivery attempts: {attempts['has_more']}")
+else:
+    print("No webhook events available")
+
 rm_webhook: resend.Webhooks.DeleteWebhookResponse = resend.Webhooks.remove(
     webhook_id=webhook["id"]
 )
