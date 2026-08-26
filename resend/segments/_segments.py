@@ -117,7 +117,6 @@ class Segments:
         Attributes:
             object (str): The object type, "segment"
             id (str): The ID of the updated segment
-            name (str): The name of the updated segment
         """
 
         object: str
@@ -127,10 +126,6 @@ class Segments:
         id: str
         """
         The ID of the updated segment
-        """
-        name: str
-        """
-        The name of the updated segment
         """
 
     class UpdateParams(TypedDict):

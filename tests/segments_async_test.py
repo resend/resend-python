@@ -15,7 +15,6 @@ class TestResendSegmentsAsync(AsyncResendBaseTest):
             {
                 "object": "segment",
                 "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
-                "name": "Renamed Segment",
             }
         )
 
@@ -27,7 +26,6 @@ class TestResendSegmentsAsync(AsyncResendBaseTest):
         )
         assert segment["object"] == "segment"
         assert segment["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
-        assert segment["name"] == "Renamed Segment"
 
     async def test_should_update_segments_async_raise_exception_when_no_content(
         self,

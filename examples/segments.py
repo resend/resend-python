@@ -26,7 +26,7 @@ update_params: resend.Segments.UpdateParams = {
 updated_segment: resend.Segments.UpdateSegmentResponse = resend.Segments.update(
     id=segment["id"], params=update_params
 )
-print(f"\n✓ Updated segment: {updated_segment['name']}")
+print(f"\n✓ Updated segment: {updated_segment['id']}")
 
 # List all segments
 segments: resend.Segments.ListResponse = resend.Segments.list()

@@ -55,7 +55,6 @@ class TestResendSegments(ResendBaseTest):
             {
                 "object": "segment",
                 "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
-                "name": "Renamed Segment",
             }
         )
 
@@ -67,7 +66,6 @@ class TestResendSegments(ResendBaseTest):
         )
         assert segment["object"] == "segment"
         assert segment["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
-        assert segment["name"] == "Renamed Segment"
 
     def test_should_update_segments_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
