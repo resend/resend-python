@@ -110,6 +110,30 @@ class Segments:
         The name of the segment.
         """
 
+    class UpdateSegmentResponse(BaseResponse):
+        """
+        UpdateSegmentResponse is the type that wraps the response of the segment that was updated
+
+        Attributes:
+            object (str): The object type, "segment"
+            id (str): The ID of the updated segment
+        """
+
+        object: str
+        """
+        The object type, "segment"
+        """
+        id: str
+        """
+        The ID of the updated segment
+        """
+
+    class UpdateParams(TypedDict):
+        name: str
+        """
+        The new name of the segment.
+        """
+
     @classmethod
     def create(cls, params: CreateParams) -> CreateSegmentResponse:
         """
@@ -168,6 +192,26 @@ class Segments:
         path = f"/segments/{id}"
         resp = request.Request[Segment](
             path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    def update(cls, id: str, params: UpdateParams) -> UpdateSegmentResponse:
+        """
+        Update an existing segment's name.
+        see more: https://resend.com/docs/api-reference/segments/update-segment
+
+        Args:
+            id (str): The segment ID
+            params (UpdateParams): The segment update parameters
+                - name: The new name of the segment
+
+        Returns:
+            UpdateSegmentResponse: The updated segment response
+        """
+        path = f"/segments/{id}"
+        resp = request.Request[Segments.UpdateSegmentResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
 
@@ -242,6 +286,26 @@ class Segments:
         path = f"/segments/{id}"
         resp = await AsyncRequest[Segment](
             path=path, params={}, verb="get"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def update_async(cls, id: str, params: UpdateParams) -> UpdateSegmentResponse:
+        """
+        Update an existing segment's name (async).
+        see more: https://resend.com/docs/api-reference/segments/update-segment
+
+        Args:
+            id (str): The segment ID
+            params (UpdateParams): The segment update parameters
+                - name: The new name of the segment
+
+        Returns:
+            UpdateSegmentResponse: The updated segment response
+        """
+        path = f"/segments/{id}"
+        resp = await AsyncRequest[Segments.UpdateSegmentResponse](
+            path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
 

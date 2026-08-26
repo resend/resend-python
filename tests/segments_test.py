@@ -50,6 +50,33 @@ class TestResendSegments(ResendBaseTest):
         with self.assertRaises(NoContentError):
             _ = resend.Segments.get(id="78261eea-8f8b-4381-83c6-79fa7120f1cf")
 
+    def test_segments_update(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "segment",
+                "id": "78261eea-8f8b-4381-83c6-79fa7120f1cf",
+            }
+        )
+
+        params: resend.Segments.UpdateParams = {
+            "name": "Renamed Segment",
+        }
+        segment = resend.Segments.update(
+            id="78261eea-8f8b-4381-83c6-79fa7120f1cf", params=params
+        )
+        assert segment["object"] == "segment"
+        assert segment["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+
+    def test_should_update_segments_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        params: resend.Segments.UpdateParams = {
+            "name": "Renamed Segment",
+        }
+        with self.assertRaises(NoContentError):
+            _ = resend.Segments.update(
+                id="78261eea-8f8b-4381-83c6-79fa7120f1cf", params=params
+            )
+
     def test_segments_remove(self) -> None:
         self.set_mock_json(
             {
