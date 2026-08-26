@@ -19,6 +19,15 @@ seg: resend.Segment = resend.Segments.get(segment["id"])
 print(f"\n✓ Retrieved segment: {seg['name']}")
 print(f"  Created at: {seg['created_at']}")
 
+# Update the segment's name
+update_params: resend.Segments.UpdateParams = {
+    "name": "VIP Newsletter Subscribers (renamed)",
+}
+updated_segment: resend.Segments.UpdateSegmentResponse = resend.Segments.update(
+    id=segment["id"], params=update_params
+)
+print(f"\n✓ Updated segment: {updated_segment['name']}")
+
 # List all segments
 segments: resend.Segments.ListResponse = resend.Segments.list()
 print(f"\n✓ List of segments: {[s['name'] for s in segments['data']]}")
