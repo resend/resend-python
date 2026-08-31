@@ -19,6 +19,27 @@ except ImportError:
     pass
 
 
+class CreateParamsSegment(TypedDict):
+    id: str
+    """
+    The segment id.
+    """
+
+
+class CreateParamsTopic(TypedDict):
+    id: str
+    """
+    The topic id.
+    """
+    subscription: Literal[
+        "opt_in",
+        "opt_out",
+    ]
+    """
+    The subscription status of the topic.
+    """
+
+
 class Contacts:
     # Sub-API for managing contact-segment associations
     Segments = ContactSegments
@@ -132,25 +153,6 @@ class Contacts:
         The ID of the updated contact.
         """
 
-    class CreateParamsSegment(TypedDict):
-        id: str
-        """
-        The segment id.
-        """
-
-    class CreateParamsTopic(TypedDict):
-        id: str
-        """
-        The topic id.
-        """
-        subscription: Literal[
-            "opt_in",
-            "opt_out",
-        ]
-        """
-        The subscription status of the topic.
-        """
-
     class CreateParams(TypedDict):
         email: str
         """
@@ -172,11 +174,11 @@ class Contacts:
         """
         The unsubscribed status of the contact.
         """
-        segments: NotRequired[List[Contacts.CreateParamsSegment]]
+        segments: NotRequired[List[CreateParamsSegment]]
         """
         Segments to add the contact to. Each entry must have an id.
         """
-        topics: NotRequired[List[Contacts.CreateParamsTopic]]
+        topics: NotRequired[List[CreateParamsTopic]]
         """
         Topics to add the contact to. Each entry must have an id and subscription status.
         """
