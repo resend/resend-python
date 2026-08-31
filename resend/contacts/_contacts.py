@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Literal, Optional, cast
 from urllib.parse import quote
 
 from typing_extensions import NotRequired, TypedDict
@@ -138,6 +138,19 @@ class Contacts:
         The segment id.
         """
 
+    class CreateParamsTopic(TypedDict):
+        id: str
+        """
+        The topic id.
+        """
+        subscription: Literal[
+            "opt_in",
+            "opt_out",
+        ]
+        """
+        The subscription status of the topic.
+        """
+
     class CreateParams(TypedDict):
         email: str
         """
@@ -162,6 +175,10 @@ class Contacts:
         segments: NotRequired[List[CreateParamsSegment]]
         """
         Segments to add the contact to. Each entry must have an id.
+        """
+        topics: NotRequired[List[CreateParamsTopic]]
+        """
+        Topics to add the contact to. Each entry must have an id and subscription status.
         """
         properties: NotRequired[Dict[str, Any]]
         """
