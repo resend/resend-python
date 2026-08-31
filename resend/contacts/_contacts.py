@@ -172,11 +172,11 @@ class Contacts:
         """
         The unsubscribed status of the contact.
         """
-        segments: NotRequired[List[CreateParamsSegment]]
+        segments: NotRequired[List[Contacts.CreateParamsSegment]]
         """
         Segments to add the contact to. Each entry must have an id.
         """
-        topics: NotRequired[List[CreateParamsTopic]]
+        topics: NotRequired[List[Contacts.CreateParamsTopic]]
         """
         Topics to add the contact to. Each entry must have an id and subscription status.
         """
