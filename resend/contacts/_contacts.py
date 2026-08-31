@@ -132,6 +132,12 @@ class Contacts:
         The ID of the updated contact.
         """
 
+    class CreateParamsSegment(TypedDict):
+        id: str
+        """
+        The segment id.
+        """
+
     class CreateParams(TypedDict):
         email: str
         """
@@ -152,6 +158,10 @@ class Contacts:
         unsubscribed: NotRequired[bool]
         """
         The unsubscribed status of the contact.
+        """
+        segments: NotRequired[List[CreateParamsSegment]]
+        """
+        Segments to add the contact to. Each entry must have an id.
         """
         properties: NotRequired[Dict[str, Any]]
         """
