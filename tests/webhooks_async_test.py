@@ -162,6 +162,15 @@ class TestResendWebhooksAsync(AsyncResendBaseTest):
             url="https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
         )
 
+    async def test_should_replay_event_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = await resend.Webhooks.replay_event_async(
+                "wh_123", "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+            )
+
     async def test_webhooks_list_event_attempts_async(self) -> None:
         response = {
             "object": "list",

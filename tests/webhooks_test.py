@@ -9,6 +9,7 @@ from unittest.mock import create_autospec
 import pytest
 
 import resend
+from resend.exceptions import NoContentError
 from resend.http_client import HTTPClient
 from tests.conftest import ResendBaseTest
 
@@ -134,6 +135,13 @@ class TestWebhooks(ResendBaseTest):
         self.mock.assert_called_once_with(
             url="https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
         )
+
+    def test_should_replay_event_raise_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = resend.Webhooks.replay_event(
+                "wh_123", "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+            )
 
     def test_webhooks_list_event_attempts(self) -> None:
         response = {
