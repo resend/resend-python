@@ -162,33 +162,6 @@ class TestResendWebhooksAsync(AsyncResendBaseTest):
             url="https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
         )
 
-    async def test_webhooks_replay_event_async(self) -> None:
-        self.patcher.stop()
-        client = AsyncMock()
-        client.request.return_value = (
-            b'{"object": "webhook_event", "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"}',
-            200,
-            {"Content-Type": "application/json"},
-        )
-        original_client = resend.default_async_http_client
-        resend.default_async_http_client = client
-
-        try:
-            event = await resend.Webhooks.replay_event_async(
-                "wh_123", "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
-            )
-        finally:
-            resend.default_async_http_client = original_client
-
-        assert event["object"] == "webhook_event"
-        assert event["id"] == "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
-        _, kwargs = client.request.call_args
-        assert kwargs["method"] == "post"
-        assert (
-            kwargs["url"]
-            == "https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2/replay"
-        )
-
     async def test_webhooks_list_event_attempts_async(self) -> None:
         response = {
             "object": "list",
@@ -237,3 +210,33 @@ class TestResendWebhooksAsync(AsyncResendBaseTest):
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
             _ = await resend.Webhooks.remove_async("wh_123")
+
+
+class TestWebhooksRequestAsync:
+    def setup_method(self) -> None:
+        resend.api_key = "re_123"
+        self.mock_client = AsyncMock()
+        self.mock_client.request.return_value = (
+            b'{"object": "webhook_event", "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"}',
+            200,
+            {"content-type": "application/json"},
+        )
+        self.previous_async_http_client = resend.default_async_http_client
+        resend.default_async_http_client = self.mock_client
+
+    def teardown_method(self) -> None:
+        resend.default_async_http_client = self.previous_async_http_client
+
+    async def test_replay_event_async_posts_to_the_replay_path(self) -> None:
+        event = await resend.Webhooks.replay_event_async(
+            "wh_123", "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        )
+
+        assert event["object"] == "webhook_event"
+        assert event["id"] == "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "post"
+        assert (
+            kwargs["url"]
+            == "https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2/replay"
+        )

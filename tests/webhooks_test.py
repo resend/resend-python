@@ -3,6 +3,7 @@ import hmac
 import time
 from hashlib import sha256
 from typing import Any, Dict
+from unittest import TestCase
 from unittest.mock import create_autospec
 
 import pytest
@@ -134,29 +135,6 @@ class TestWebhooks(ResendBaseTest):
             url="https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
         )
 
-    def test_webhooks_replay_event(self) -> None:
-        self.patcher.stop()
-        client = create_autospec(HTTPClient, instance=True)
-        client.request.return_value = (
-            b'{"object": "webhook_event", "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"}',
-            200,
-            {"Content-Type": "application/json"},
-        )
-        resend.default_http_client = client
-
-        event = resend.Webhooks.replay_event(
-            "wh_123", "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
-        )
-
-        assert event["object"] == "webhook_event"
-        assert event["id"] == "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
-        _, kwargs = client.request.call_args
-        assert kwargs["method"] == "post"
-        assert (
-            kwargs["url"]
-            == "https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2/replay"
-        )
-
     def test_webhooks_list_event_attempts(self) -> None:
         response = {
             "object": "list",
@@ -192,6 +170,37 @@ class TestWebhooks(ResendBaseTest):
         result = resend.Webhooks.remove("wh_123")
         assert result["id"] == "wh_123"
         assert result["deleted"] is True
+
+
+class TestWebhooksRequest(TestCase):
+    def setUp(self) -> None:
+        resend.api_key = "re_123"
+        self.mock_client = create_autospec(HTTPClient, instance=True)
+        self.mock_client.name = "mock"
+        self.mock_client.request.return_value = (
+            b'{"object": "webhook_event", "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"}',
+            200,
+            {"Content-Type": "application/json"},
+        )
+        self.previous_http_client = resend.default_http_client
+        resend.default_http_client = self.mock_client
+
+    def tearDown(self) -> None:
+        resend.default_http_client = self.previous_http_client
+
+    def test_replay_event_posts_to_the_replay_path(self) -> None:
+        event = resend.Webhooks.replay_event(
+            "wh_123", "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        )
+
+        assert event["object"] == "webhook_event"
+        assert event["id"] == "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "post"
+        assert (
+            kwargs["url"]
+            == "https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2/replay"
+        )
 
 
 class TestWebhookVerification:
