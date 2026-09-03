@@ -3,10 +3,12 @@ import hmac
 import time
 from hashlib import sha256
 from typing import Any, Dict
+from unittest.mock import create_autospec
 
 import pytest
 
 import resend
+from resend.http_client import HTTPClient
 from tests.conftest import ResendBaseTest
 
 
@@ -130,6 +132,29 @@ class TestWebhooks(ResendBaseTest):
         assert event == response
         self.mock.assert_called_once_with(
             url="https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        )
+
+    def test_webhooks_replay_event(self) -> None:
+        self.patcher.stop()
+        client = create_autospec(HTTPClient, instance=True)
+        client.request.return_value = (
+            b'{"object": "webhook_event", "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"}',
+            200,
+            {"Content-Type": "application/json"},
+        )
+        resend.default_http_client = client
+
+        event = resend.Webhooks.replay_event(
+            "wh_123", "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        )
+
+        assert event["object"] == "webhook_event"
+        assert event["id"] == "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        _, kwargs = client.request.call_args
+        assert kwargs["method"] == "post"
+        assert (
+            kwargs["url"]
+            == "https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2/replay"
         )
 
     def test_webhooks_list_event_attempts(self) -> None:

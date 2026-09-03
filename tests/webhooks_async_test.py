@@ -160,6 +160,22 @@ class TestResendWebhooksAsync(AsyncResendBaseTest):
             url="https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
         )
 
+    async def test_webhooks_replay_event_async(self) -> None:
+        response = {
+            "object": "webhook_event",
+            "id": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+        }
+        self.set_mock_json(response)
+
+        event = await resend.Webhooks.replay_event_async(
+            "wh_123", "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+        )
+
+        assert event == response
+        self.mock.assert_awaited_once_with(
+            url="https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2/replay"
+        )
+
     async def test_webhooks_list_event_attempts_async(self) -> None:
         response = {
             "object": "list",
