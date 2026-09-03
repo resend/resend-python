@@ -136,7 +136,7 @@ class TestWebhooks(ResendBaseTest):
             url="https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
         )
 
-    def test_should_replay_event_raise_exception_when_no_content(self) -> None:
+    def test_replay_event_raises_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
             _ = resend.Webhooks.replay_event(
