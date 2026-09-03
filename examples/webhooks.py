@@ -71,6 +71,11 @@ if webhook_events["data"]:
     )
     print(f"Retrieved webhook event: {webhook_event['id']}")
 
+    replayed: resend.Webhooks.ReplayEventResponse = resend.Webhooks.replay_event(
+        webhook["id"], event_id
+    )
+    print(f"Replayed webhook event: {replayed['id']}")
+
     attempts: resend.Webhooks.ListEventAttemptsResponse = (
         resend.Webhooks.list_event_attempts(webhook["id"], event_id, {"limit": 10})
     )
