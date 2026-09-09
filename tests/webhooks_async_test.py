@@ -220,6 +220,13 @@ class TestResendWebhooksAsync(AsyncResendBaseTest):
         with pytest.raises(NoContentError):
             _ = await resend.Webhooks.remove_async("wh_123")
 
+    async def test_rotate_signing_secret_async_raises_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = await resend.Webhooks.rotate_signing_secret_async("wh_123")
+
 
 class TestWebhooksRequestAsync:
     def setup_method(self) -> None:
@@ -248,4 +255,22 @@ class TestWebhooksRequestAsync:
         assert (
             kwargs["url"]
             == "https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2/replay"
+        )
+
+    async def test_rotate_signing_secret_async_posts_to_the_rotate_path(self) -> None:
+        self.mock_client.request.return_value = (
+            b'{"object": "webhook", "id": "wh_123", "signing_secret": "whsec_new"}',
+            200,
+            {"content-type": "application/json"},
+        )
+
+        webhook = await resend.Webhooks.rotate_signing_secret_async("wh_123")
+
+        assert webhook["object"] == "webhook"
+        assert webhook["id"] == "wh_123"
+        assert webhook["signing_secret"] == "whsec_new"
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "post"
+        assert (
+            kwargs["url"] == "https://api.resend.com/webhooks/wh_123/signing-secret/rotate"
         )

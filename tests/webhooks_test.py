@@ -179,6 +179,11 @@ class TestWebhooks(ResendBaseTest):
         assert result["id"] == "wh_123"
         assert result["deleted"] is True
 
+    def test_rotate_signing_secret_raises_exception_when_no_content(self) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = resend.Webhooks.rotate_signing_secret("wh_123")
+
 
 class TestWebhooksRequest(TestCase):
     def setUp(self) -> None:
@@ -208,6 +213,25 @@ class TestWebhooksRequest(TestCase):
         assert (
             kwargs["url"]
             == "https://api.resend.com/webhooks/wh_123/events/msg_1srOrx2ZWZBpBUvZwXKQmoEYga2/replay"
+        )
+
+    def test_rotate_signing_secret_posts_to_the_rotate_path(self) -> None:
+        self.mock_client.request.return_value = (
+            b'{"object": "webhook", "id": "wh_123", "signing_secret": "whsec_new"}',
+            200,
+            {"Content-Type": "application/json"},
+        )
+
+        webhook = resend.Webhooks.rotate_signing_secret("wh_123")
+
+        assert webhook["object"] == "webhook"
+        assert webhook["id"] == "wh_123"
+        assert webhook["signing_secret"] == "whsec_new"
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "post"
+        assert (
+            kwargs["url"]
+            == "https://api.resend.com/webhooks/wh_123/signing-secret/rotate"
         )
 
 

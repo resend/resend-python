@@ -84,6 +84,11 @@ if webhook_events["data"]:
 else:
     print("No webhook events available")
 
+rotated: resend.Webhooks.RotateSigningSecretResponse = (
+    resend.Webhooks.rotate_signing_secret(webhook["id"])
+)
+print(f"Rotated signing secret: {rotated['signing_secret']}")
+
 rm_webhook: resend.Webhooks.DeleteWebhookResponse = resend.Webhooks.remove(
     webhook_id=webhook["id"]
 )

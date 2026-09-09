@@ -283,6 +283,29 @@ class Webhooks:
         Whether the webhook was successfully deleted
         """
 
+    class RotateSigningSecretResponse(BaseResponse):
+        """
+        RotateSigningSecretResponse is the type that wraps the response of the webhook whose signing secret was rotated
+
+        Attributes:
+            object (str): The object type, always "webhook"
+            id (str): The ID of the webhook
+            signing_secret (str): The new signing secret for webhook verification
+        """
+
+        object: str
+        """
+        The object type, always "webhook"
+        """
+        id: str
+        """
+        The ID of the webhook
+        """
+        signing_secret: str
+        """
+        The new signing secret for webhook verification
+        """
+
     @classmethod
     def create(cls, params: CreateParams) -> CreateWebhookResponse:
         """
@@ -470,6 +493,23 @@ class Webhooks:
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp
+
+    @classmethod
+    def rotate_signing_secret(cls, webhook_id: str) -> RotateSigningSecretResponse:
+        """
+        Rotate the signing secret of a webhook.
+        see more: https://resend.com/docs/api-reference/webhooks/rotate-signing-secret
+
+        Args:
+            webhook_id (str): The webhook ID
+
+        Returns:
+            RotateSigningSecretResponse: The webhook with its new signing_secret
+        """
+        path = f"/webhooks/{webhook_id}/signing-secret/rotate"
+        return request.Request[Webhooks.RotateSigningSecretResponse](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
 
     @classmethod
     def verify(cls, options: VerifyWebhookOptions) -> WebhookEventPayload:
@@ -749,6 +789,25 @@ class Webhooks:
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp
+
+    @classmethod
+    async def rotate_signing_secret_async(
+        cls, webhook_id: str
+    ) -> RotateSigningSecretResponse:
+        """
+        Rotate the signing secret of a webhook (async).
+        see more: https://resend.com/docs/api-reference/webhooks/rotate-signing-secret
+
+        Args:
+            webhook_id (str): The webhook ID
+
+        Returns:
+            RotateSigningSecretResponse: The webhook with its new signing_secret
+        """
+        path = f"/webhooks/{webhook_id}/signing-secret/rotate"
+        return await AsyncRequest[Webhooks.RotateSigningSecretResponse](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
 
     @staticmethod
     def _generate_signature(secret: bytes, content: bytes) -> str:
