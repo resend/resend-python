@@ -1,3 +1,4 @@
+import pickle
 import unittest
 
 import pytest
@@ -130,3 +131,31 @@ class TestResendError(unittest.TestCase):
                 headers=headers,
             )
         assert e.value.headers == headers
+
+
+@pytest.mark.parametrize(  # type: ignore[untyped-decorator]
+    "protocol", range(pickle.HIGHEST_PROTOCOL + 1)
+)
+@pytest.mark.parametrize(  # type: ignore[untyped-decorator]
+    ("code", "error_type"),
+    [
+        (999, "unknown"),
+        (400, "validation_error"),
+        (401, "missing_api_key"),
+        (403, "invalid_api_key"),
+        (422, "missing_required_field"),
+        (429, "rate_limit_exceeded"),
+        (500, "application_error"),
+    ],
+)
+def test_error_pickle_round_trip(code: int, error_type: str, protocol: int) -> None:
+    with pytest.raises(ResendError) as caught:
+        raise_for_code_and_type(code, error_type, "msg", headers={"retry-after": "5"})
+
+    error = caught.value
+    restored = pickle.loads(pickle.dumps(error, protocol=protocol))
+
+    assert type(restored) is type(error)
+    assert restored.args == error.args
+    assert str(restored) == str(error)
+    assert restored.__dict__ == error.__dict__
