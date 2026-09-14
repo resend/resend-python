@@ -35,6 +35,14 @@ updated_broadcast: resend.Broadcasts.UpdateResponse = resend.Broadcasts.update(
 print("Updated broadcast!")
 print(updated_broadcast)
 
+duplicated: resend.Broadcasts.DuplicateResponse = resend.Broadcasts.duplicate(
+    id=broadcast["id"]
+)
+print("Duplicated broadcast with ID: {}".format(duplicated["id"]))
+print(duplicated)
+resend.Broadcasts.remove(id=duplicated["id"])
+print("Removed the duplicate!")
+
 send_params: resend.Broadcasts.SendParams = {
     "broadcast_id": broadcast["id"],
 }

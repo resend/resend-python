@@ -148,6 +148,33 @@ class TestResendBroadcastsAsync(AsyncResendBaseTest):
                 "78261eea-8f8b-4381-83c6-79fa7120f1cf"
             )
 
+    async def test_broadcasts_duplicate_async(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "broadcast",
+                "id": "3d4a472d-bc6d-4dd2-aa9d-d3d50ce87222",
+            }
+        )
+
+        duplicated = await resend.Broadcasts.duplicate_async(
+            "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        )
+        assert duplicated["id"] == "3d4a472d-bc6d-4dd2-aa9d-d3d50ce87222"
+        assert duplicated["object"] == "broadcast"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/broadcasts/78261eea-8f8b-4381-83c6-79fa7120f1cf/duplicate"
+        )
+
+    async def test_should_duplicate_broadcasts_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = await resend.Broadcasts.duplicate_async(
+                "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+            )
+
     async def test_broadcasts_remove_async(self) -> None:
         self.set_mock_json(
             {

@@ -367,6 +367,24 @@ class Broadcasts:
         id of the canceled broadcast
         """
 
+    class DuplicateResponse(BaseResponse):
+        """
+        DuplicateResponse is the class that wraps the response of the duplicate method.
+
+        Attributes:
+            object (str): object type: "broadcast"
+            id (str): id of the duplicated broadcast
+        """
+
+        object: str
+        """
+        object type: "broadcast"
+        """
+        id: str
+        """
+        id of the duplicated broadcast
+        """
+
     class RemoveResponse(BaseResponse):
         """
         RemoveResponse is the class that wraps the response of the remove method.
@@ -557,6 +575,26 @@ class Broadcasts:
         return resp
 
     @classmethod
+    def duplicate(cls, id: str) -> DuplicateResponse:
+        """
+        Duplicate a broadcast.
+        see more: https://resend.com/docs/api-reference/broadcasts/duplicate-broadcast
+
+        Creates a new draft with the same content as the source, named after it with " (copy)" appended.
+
+        Args:
+            id (str): The broadcast ID
+
+        Returns:
+            DuplicateResponse: The duplicate response object
+        """
+        path = f"/broadcasts/{id}/duplicate"
+        resp = request.Request[Broadcasts.DuplicateResponse](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
     def remove(cls, id: str) -> RemoveResponse:
         """
         Delete a single broadcast.
@@ -727,6 +765,26 @@ class Broadcasts:
         """
         path = f"/broadcasts/{id}/cancel"
         resp = await AsyncRequest[Broadcasts.CancelResponse](
+            path=path, params={}, verb="post"
+        ).perform_with_content()
+        return resp
+
+    @classmethod
+    async def duplicate_async(cls, id: str) -> DuplicateResponse:
+        """
+        Duplicate a broadcast (async).
+        see more: https://resend.com/docs/api-reference/broadcasts/duplicate-broadcast
+
+        Creates a new draft with the same content as the source, named after it with " (copy)" appended.
+
+        Args:
+            id (str): The broadcast ID
+
+        Returns:
+            DuplicateResponse: The duplicate response object
+        """
+        path = f"/broadcasts/{id}/duplicate"
+        resp = await AsyncRequest[Broadcasts.DuplicateResponse](
             path=path, params={}, verb="post"
         ).perform_with_content()
         return resp
