@@ -1,0 +1,108 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+concurrency:
+  group: release
+  cancel-in-progress: false
+permissions: {}
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    outputs:
+      stable: ${{ steps.meta.outputs.stable }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.11"
+      - name: Resolve release metadata
+        id: meta
+        run: |
+          python - <<'EOF'
+          import os
+          import re
+          import sys
+
+          source = open("resend/version.py", encoding="utf8").read()
+          found = re.search(r'^__version__ = "([^"]+)"$', source, re.MULTILINE)
+          if found is None:
+              print("::error::resend/version.py has no __version__ line")
+              sys.exit(1)
+          version = found.group(1)
+
+          shape = re.fullmatch(
+              r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?P<pre>(a|b|rc)(0|[1-9]\d*))?",
+              version,
+              re.ASCII,
+          )
+          if shape is None:
+              print(f"::error::resend/version.py version {version} is not a release version (X.Y.Z with an optional aN, bN or rcN suffix)")
+              sys.exit(1)
+
+          tag = os.environ["GITHUB_REF_NAME"]
+          if os.environ["GITHUB_EVENT_NAME"] == "push" and tag != f"v{version}":
+              print(f"::error::Tag {tag} does not match resend/version.py version {version}")
+              sys.exit(1)
+
+          stable = "false" if shape.group("pre") else "true"
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf8") as output:
+              output.write(f"stable={stable}\n")
+          EOF
+      - name: Install dependencies
+        run: pip install tox build
+      - name: Lint
+        run: tox -e lint
+      - name: Typecheck
+        run: tox -e mypy
+      - name: Test
+        run: tox -e py
+      - name: Build
+        run: |
+          rm -rf dist
+          python -m build
+      - name: Smoke test the wheel
+        run: |
+          python -m venv /tmp/smoke
+          /tmp/smoke/bin/pip install --quiet dist/*.whl
+          /tmp/smoke/bin/python -I -c 'import resend; print(resend.__version__)'
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+          overwrite: true
+  publish-pypi:
+    needs: ci
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+  release:
+    needs: [ci, publish-pypi]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          prerelease: ${{ needs.ci.outputs.stable != 'true' }}
+          make_latest: ${{ needs.ci.outputs.stable == 'true' }}
+          generate_release_notes: true
