@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 concurrency:
   group: release
   cancel-in-progress: false
@@ -24,23 +25,36 @@ jobs:
       - name: Resolve release metadata
         id: meta
         run: |
-          VERSION="$(python -c 'import re; print(re.search(r"__version__ = \"([^\"]+)\"", open("resend/version.py").read()).group(1))')"
-          if ! python -c 'import re, sys; sys.exit(0 if re.fullmatch(r"\d+\.\d+\.\d+((a|b|rc)\d+)?", sys.argv[1]) else 1)' "$VERSION"; then
-            echo "::error::resend/version.py version $VERSION is not a release version (X.Y.Z with an optional aN, bN or rcN suffix)"
-            exit 1
-          fi
-          if [ "$GITHUB_REF_NAME" != "v$VERSION" ]; then
-            echo "::error::Tag $GITHUB_REF_NAME does not match resend/version.py version $VERSION"
-            exit 1
-          fi
-          case "$VERSION" in
-            *a*|*b*|*rc*) STABLE=false ;;
-            *) STABLE=true ;;
-          esac
-          {
-            echo "version=$VERSION"
-            echo "stable=$STABLE"
-          } >> "$GITHUB_OUTPUT"
+          python - <<'EOF'
+          import os
+          import re
+          import sys
+
+          source = open("resend/version.py", encoding="utf8").read()
+          found = re.search(r'^__version__ = "([^"]+)"$', source, re.MULTILINE)
+          if found is None:
+              print("::error::resend/version.py has no __version__ line")
+              sys.exit(1)
+          version = found.group(1)
+
+          shape = re.fullmatch(
+              r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?P<pre>(a|b|rc)(0|[1-9]\d*))?",
+              version,
+              re.ASCII,
+          )
+          if shape is None:
+              print(f"::error::resend/version.py version {version} is not a release version (X.Y.Z with an optional aN, bN or rcN suffix)")
+              sys.exit(1)
+
+          tag = os.environ["GITHUB_REF_NAME"]
+          if os.environ["GITHUB_EVENT_NAME"] == "push" and tag != f"v{version}":
+              print(f"::error::Tag {tag} does not match resend/version.py version {version}")
+              sys.exit(1)
+
+          stable = "false" if shape.group("pre") else "true"
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf8") as output:
+              output.write(f"version={version}\nstable={stable}\n")
+          EOF
       - name: Install dependencies
         run: pip install tox build
       - name: Lint
@@ -53,13 +67,20 @@ jobs:
         run: |
           rm -rf dist
           python -m build
+      - name: Smoke test the wheel
+        run: |
+          python -m venv /tmp/smoke
+          /tmp/smoke/bin/pip install --quiet dist/*.whl
+          /tmp/smoke/bin/python -c 'import resend; print(resend.__version__)'
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dist
           path: dist/
           if-no-files-found: error
+          overwrite: true
   publish-pypi:
     needs: ci
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: pypi
@@ -74,6 +95,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
   release:
     needs: [ci, publish-pypi]
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
