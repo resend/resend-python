@@ -133,10 +133,10 @@ class TestResendError(unittest.TestCase):
         assert e.value.headers == headers
 
 
-@pytest.mark.parametrize(  # type: ignore[untyped-decorator]
+@pytest.mark.parametrize(  # type: ignore
     "protocol", range(pickle.HIGHEST_PROTOCOL + 1)
 )
-@pytest.mark.parametrize(  # type: ignore[untyped-decorator]
+@pytest.mark.parametrize(  # type: ignore
     ("code", "error_type"),
     [
         (999, "unknown"),
