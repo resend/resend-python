@@ -15,7 +15,6 @@ jobs:
     permissions:
       contents: read
     outputs:
-      version: ${{ steps.meta.outputs.version }}
       stable: ${{ steps.meta.outputs.stable }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -53,7 +52,7 @@ jobs:
 
           stable = "false" if shape.group("pre") else "true"
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf8") as output:
-              output.write(f"version={version}\nstable={stable}\n")
+              output.write(f"stable={stable}\n")
           EOF
       - name: Install dependencies
         run: pip install tox build
