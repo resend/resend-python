@@ -113,6 +113,24 @@ class TestResendBroadcasts(ResendBaseTest):
         assert canceled["id"] == "78261eea-8f8b-4381-83c6-79fa7120f1cf"
         assert canceled["object"] == "broadcast"
 
+    def test_broadcasts_duplicate(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "broadcast",
+                "id": "3d4a472d-bc6d-4dd2-aa9d-d3d50ce87222",
+            }
+        )
+
+        duplicated = resend.Broadcasts.duplicate(
+            "78261eea-8f8b-4381-83c6-79fa7120f1cf"
+        )
+        assert duplicated["id"] == "3d4a472d-bc6d-4dd2-aa9d-d3d50ce87222"
+        assert duplicated["object"] == "broadcast"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/broadcasts/78261eea-8f8b-4381-83c6-79fa7120f1cf/duplicate"
+        )
+
     def test_broadcasts_remove(self) -> None:
         self.set_mock_json(
             {
