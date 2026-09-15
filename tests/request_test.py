@@ -1,3 +1,4 @@
+import asyncio
 import unittest
 from typing import Any, Dict
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
@@ -8,6 +9,45 @@ from resend import request
 from resend.exceptions import (ApplicationError, RateLimitError, ResendError,
                                ValidationError)
 from resend.version import get_version
+
+
+@pytest.mark.parametrize("content", [b'"\xff"', b'\xff\xfe{', b'not-json'])
+@pytest.mark.parametrize("status_code", [200, 429, 502])
+class TestResponseDecodingErrors:
+    def test_sync_preserves_status_and_headers(
+        self, content: bytes, status_code: int
+    ) -> None:
+        headers = {"content-type": "application/json", "retry-after": "2"}
+        response = Mock(content=content, status_code=status_code, headers=headers)
+        req = request.Request[Dict[str, Any]]("/emails", {}, "get")
+
+        with patch("resend.http_client_requests.requests.request", return_value=response):
+            with pytest.raises(ResendError) as error:
+                req.perform()
+
+        assert error.value.code == (status_code if status_code >= 400 else 500)
+        assert error.value.headers == headers
+        assert error.value.message == "Failed to decode JSON response"
+
+    def test_async_preserves_status_and_headers(
+        self, content: bytes, status_code: int
+    ) -> None:
+        from resend.async_request import AsyncRequest
+        from resend.http_client_httpx import HTTPXClient
+
+        headers = {"content-type": "application/json", "retry-after": "2"}
+        response = Mock(content=content, status_code=status_code, headers=headers)
+        req = AsyncRequest[Dict[str, Any]]("/emails", {}, "get")
+
+        with patch("resend.default_async_http_client", HTTPXClient()):
+            with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as send:
+                send.return_value = response
+                with pytest.raises(ResendError) as error:
+                    asyncio.run(req.perform())
+
+        assert error.value.code == (status_code if status_code >= 400 else 500)
+        assert error.value.headers == headers
+        assert error.value.message == "Failed to decode JSON response"
 
 
 class TestResendRequest(unittest.TestCase):

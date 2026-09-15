@@ -170,7 +170,7 @@ class AsyncRequest(Generic[T]):
                 parsed_data["http_headers"] = dict(self._response_headers)
             # For list responses, return as-is (lists can't have headers key)
             return parsed_data
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, UnicodeDecodeError):
             raise_for_code_and_type(
                 code=error_code,
                 message="Failed to decode JSON response",
