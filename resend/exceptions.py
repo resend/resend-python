@@ -38,6 +38,10 @@ class ResendError(Exception):
         self.error_type = error_type
         self.headers = headers or {}
 
+    def __reduce__(self) -> Any:
+        # Exception.args does not contain all of our constructor arguments.
+        return (Exception.__new__, (type(self), *self.args), self.__dict__)
+
 
 class MissingApiKeyError(ResendError):
     """see https://resend.com/docs/api-reference/errors"""
