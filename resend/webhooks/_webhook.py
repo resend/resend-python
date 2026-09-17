@@ -25,6 +25,9 @@ WebhookEvent = Literal[
     "domain.created",
     "domain.updated",
     "domain.deleted",
+    # Suppression events
+    "suppression.added",
+    "suppression.removed",
 ]
 
 

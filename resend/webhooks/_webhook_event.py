@@ -2,6 +2,8 @@ from typing import Dict, List, Optional, Union
 
 from typing_extensions import Literal, NotRequired, TypedDict
 
+from resend.suppressions._suppression import SuppressionOrigin
+
 # Functional syntax required because ``from`` is a reserved keyword.
 _FromField = TypedDict(
     "_FromField",
@@ -353,6 +355,34 @@ class DomainEventData(TypedDict):
     """
 
 
+class SuppressionEventData(TypedDict):
+    """
+    ``data`` payload for suppression webhook events.
+    """
+
+    id: str
+    """
+    The suppression ID.
+    """
+    email: str
+    """
+    The suppressed email address.
+    """
+    origin: SuppressionOrigin
+    """
+    What caused the address to be suppressed.
+    """
+    source_id: Optional[str]
+    """
+    The ID of the event that caused the suppression, such as the email that
+    bounced or complained. None for manual suppressions.
+    """
+    created_at: str
+    """
+    When the suppression was created.
+    """
+
+
 class EmailSentEvent(TypedDict):
     """Webhook payload for ``email.sent``."""
 
@@ -489,6 +519,22 @@ class DomainDeletedEvent(TypedDict):
     data: DomainEventData
 
 
+class SuppressionAddedEvent(TypedDict):
+    """Webhook payload for ``suppression.added``."""
+
+    type: Literal["suppression.added"]
+    created_at: str
+    data: SuppressionEventData
+
+
+class SuppressionRemovedEvent(TypedDict):
+    """Webhook payload for ``suppression.removed``."""
+
+    type: Literal["suppression.removed"]
+    created_at: str
+    data: SuppressionEventData
+
+
 WebhookEventPayload = Union[
     EmailSentEvent,
     EmailScheduledEvent,
@@ -507,6 +553,8 @@ WebhookEventPayload = Union[
     DomainCreatedEvent,
     DomainUpdatedEvent,
     DomainDeletedEvent,
+    SuppressionAddedEvent,
+    SuppressionRemovedEvent,
 ]
 """
 Union of all Resend webhook event payload shapes returned by ``Webhooks.verify``.
