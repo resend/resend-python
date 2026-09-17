@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Union
 
 from typing_extensions import Literal, NotRequired, TypedDict
 
-from resend.suppressions._suppression import SuppressionOrigin
+from resend.suppressions._suppression import SuppressionListItem
 
 # Functional syntax required because ``from`` is a reserved keyword.
 _FromField = TypedDict(
@@ -355,31 +355,12 @@ class DomainEventData(TypedDict):
     """
 
 
-class SuppressionEventData(TypedDict):
+class SuppressionEventData(SuppressionListItem):
     """
     ``data`` payload for suppression webhook events.
-    """
 
-    id: str
-    """
-    The suppression ID.
-    """
-    email: str
-    """
-    The suppressed email address.
-    """
-    origin: SuppressionOrigin
-    """
-    What caused the address to be suppressed.
-    """
-    source_id: Optional[str]
-    """
-    The ID of the event that caused the suppression, such as the email that
-    bounced or complained. None for manual suppressions.
-    """
-    created_at: str
-    """
-    When the suppression was created.
+    Same shape as ``SuppressionListItem``: ``id``, ``email``, ``origin``,
+    ``source_id``, ``created_at``.
     """
 
 
