@@ -85,6 +85,9 @@ from .webhooks._webhook_event import (BaseEmailEventData, ContactCreatedEvent,
                                       EmailReceivedEvent, EmailScheduledEvent,
                                       EmailSentEvent, EmailSuppressedEvent,
                                       ReceivedEmailEventData,
+                                      SuppressionAddedEvent,
+                                      SuppressionEventData,
+                                      SuppressionRemovedEvent,
                                       WebhookEventPayload)
 from .webhooks._webhooks import Webhooks
 
@@ -205,6 +208,9 @@ __all__ = [
     "DomainCreatedEvent",
     "DomainUpdatedEvent",
     "DomainDeletedEvent",
+    "SuppressionEventData",
+    "SuppressionAddedEvent",
+    "SuppressionRemovedEvent",
     "Topic",
     "OAuthGrant",
     "OAuthGrantClient",
