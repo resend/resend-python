@@ -19,7 +19,7 @@ class TestResendUsage(ResendBaseTest):
                         "resets_at": "2026-07-17T00:00:00.000Z",
                     },
                     "monthly": {
-                        "used": 5422,
+                        "used": 5442,
                         "limit": 10000,
                         "sent": 1000,
                         "received": 4442,
@@ -51,7 +51,7 @@ class TestResendUsage(ResendBaseTest):
         assert usage["emails"]["daily"]["sent"] == 57
         assert usage["emails"]["daily"]["received"] == 201
         assert usage["emails"]["daily"]["resets_at"] == "2026-07-17T00:00:00.000Z"
-        assert usage["emails"]["monthly"]["used"] == 5422
+        assert usage["emails"]["monthly"]["used"] == 5442
         assert usage["emails"]["monthly"]["limit"] == 10000
         assert usage["contacts"]["used"] == 85000
         assert usage["contacts"]["limit"] == 150000
