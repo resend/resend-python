@@ -70,6 +70,10 @@ from .templates._template import Template, TemplateListItem, Variable
 from .templates._templates import Templates
 from .topics._topic import Topic
 from .topics._topics import Topics
+from .usage._usage import (AiCreditsUsage, AutomationRunsUsage,
+                           BroadcastsUsage, ContactsUsage, DomainsUsage,
+                           EmailsDailyUsage, EmailsMonthlyUsage, EmailsUsage,
+                           RateLimitUsage, SegmentsUsage, Usage)
 from .version import __version__, get_version
 from .webhooks._webhook import (VerifyWebhookOptions, Webhook, WebhookEvent,
                                 WebhookHeaders, WebhookStatus)
@@ -130,6 +134,7 @@ __all__ = [
     "OAuthGrants",
     "Suppressions",
     "SuppressionsBatch",
+    "Usage",
     # Types
     "Audience",
     "Automation",
@@ -224,6 +229,16 @@ __all__ = [
     "EmailsReceiving",
     "EmailAttachments",
     "ContactsTopics",
+    "EmailsUsage",
+    "EmailsDailyUsage",
+    "EmailsMonthlyUsage",
+    "ContactsUsage",
+    "SegmentsUsage",
+    "BroadcastsUsage",
+    "AiCreditsUsage",
+    "AutomationRunsUsage",
+    "DomainsUsage",
+    "RateLimitUsage",
     # HTTP Clients
     "HTTPClient",
     # Default HTTP Client
