@@ -2,6 +2,7 @@ from typing import Dict, List, Optional, Union
 
 from typing_extensions import Literal, NotRequired, TypedDict
 
+from resend.contacts._contact_topic import TopicSubscriptionUpdate
 from resend.suppressions._suppression import SuppressionListItem
 
 # Functional syntax required because ``from`` is a reserved keyword.
@@ -289,6 +290,21 @@ class ContactEventData(TypedDict):
     """
 
 
+class ContactTopicsEventData(TypedDict):
+    """
+    ``data`` payload for ``contact.topics.updated`` events.
+    """
+
+    email: str
+    """
+    The contact email address.
+    """
+    topics: List[TopicSubscriptionUpdate]
+    """
+    The topics changed in this update, each with its new subscription.
+    """
+
+
 class DomainRecord(TypedDict):
     """
     DNS record included on domain webhook events.
@@ -361,6 +377,41 @@ class SuppressionEventData(SuppressionListItem):
 
     Same shape as ``SuppressionListItem``: ``id``, ``email``, ``origin``,
     ``source_id``, ``created_at``.
+    """
+
+
+class TopicEventData(TypedDict):
+    """
+    ``data`` payload for topic webhook events.
+    """
+
+    id: str
+    """
+    The topic ID.
+    """
+    name: str
+    """
+    The topic name.
+    """
+    description: Optional[str]
+    """
+    The topic description. None when the topic has no description.
+    """
+    default_subscription: Literal["opt_in", "opt_out"]
+    """
+    The default subscription preference for new contacts.
+    """
+    deleted: bool
+    """
+    Whether the topic is deleted. True on ``topic.deleted`` events.
+    """
+    created_at: str
+    """
+    When the topic was created.
+    """
+    updated_at: str
+    """
+    When the topic was last updated.
     """
 
 
@@ -476,6 +527,14 @@ class ContactDeletedEvent(TypedDict):
     data: ContactEventData
 
 
+class ContactTopicsUpdatedEvent(TypedDict):
+    """Webhook payload for ``contact.topics.updated``."""
+
+    type: Literal["contact.topics.updated"]
+    created_at: str
+    data: ContactTopicsEventData
+
+
 class DomainCreatedEvent(TypedDict):
     """Webhook payload for ``domain.created``."""
 
@@ -516,6 +575,30 @@ class SuppressionRemovedEvent(TypedDict):
     data: SuppressionEventData
 
 
+class TopicCreatedEvent(TypedDict):
+    """Webhook payload for ``topic.created``."""
+
+    type: Literal["topic.created"]
+    created_at: str
+    data: TopicEventData
+
+
+class TopicUpdatedEvent(TypedDict):
+    """Webhook payload for ``topic.updated``."""
+
+    type: Literal["topic.updated"]
+    created_at: str
+    data: TopicEventData
+
+
+class TopicDeletedEvent(TypedDict):
+    """Webhook payload for ``topic.deleted``."""
+
+    type: Literal["topic.deleted"]
+    created_at: str
+    data: TopicEventData
+
+
 WebhookEventPayload = Union[
     EmailSentEvent,
     EmailScheduledEvent,
@@ -531,11 +614,15 @@ WebhookEventPayload = Union[
     ContactCreatedEvent,
     ContactUpdatedEvent,
     ContactDeletedEvent,
+    ContactTopicsUpdatedEvent,
     DomainCreatedEvent,
     DomainUpdatedEvent,
     DomainDeletedEvent,
     SuppressionAddedEvent,
     SuppressionRemovedEvent,
+    TopicCreatedEvent,
+    TopicUpdatedEvent,
+    TopicDeletedEvent,
 ]
 """
 Union of all Resend webhook event payload shapes returned by ``Webhooks.verify``.
