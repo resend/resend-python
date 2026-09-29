@@ -2,7 +2,6 @@ from typing import Dict, List, Optional, Union
 
 from typing_extensions import Literal, NotRequired, TypedDict
 
-from resend.contacts._contact_topic import TopicSubscriptionUpdate
 from resend.suppressions._suppression import SuppressionListItem
 
 # Functional syntax required because ``from`` is a reserved keyword.
@@ -290,6 +289,21 @@ class ContactEventData(TypedDict):
     """
 
 
+class ContactTopicSubscription(TypedDict):
+    """
+    Topic entry on ``contact.topics.updated`` events.
+    """
+
+    id: str
+    """
+    The topic ID.
+    """
+    subscription: Literal["opt_in", "opt_out"]
+    """
+    The contact's new subscription to the topic.
+    """
+
+
 class ContactTopicsEventData(TypedDict):
     """
     ``data`` payload for ``contact.topics.updated`` events.
@@ -299,7 +313,7 @@ class ContactTopicsEventData(TypedDict):
     """
     The contact email address.
     """
-    topics: List[TopicSubscriptionUpdate]
+    topics: List[ContactTopicSubscription]
     """
     The topics changed in this update, each with its new subscription.
     """
