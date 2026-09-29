@@ -603,7 +603,11 @@ class Webhooks:
                 continue
 
             received_signature = parts[1]
-            if hmac.compare_digest(expected_signature, received_signature):
+            # Compare bytes: str comparison raises TypeError on non-ASCII input
+            if hmac.compare_digest(
+                expected_signature.encode("utf-8"),
+                received_signature.encode("utf-8", "replace"),
+            ):
                 try:
                     return cast(WebhookEventPayload, json.loads(options["payload"]))
                 except json.JSONDecodeError as e:
