@@ -309,6 +309,41 @@ class TestWebhookVerification:
         with pytest.raises(ValueError, match="no matching signature found"):
             resend.Webhooks.verify(options)
 
+    def test_verify_non_ascii_signature(self) -> None:
+        """Test webhook verification rejects a non-ASCII signature with ValueError"""
+        secret = "whsec_" + base64.b64encode(b"test_secret_key").decode("utf-8")
+
+        options: resend.VerifyWebhookOptions = {
+            "payload": '{"type":"email.sent","data":{"email_id":"123"}}',
+            "headers": {
+                "id": "msg_123",
+                "timestamp": str(int(time.time())),
+                "signature": "v1,\u00e9\u00e8",
+            },
+            "webhook_secret": secret,
+        }
+
+        with pytest.raises(ValueError, match="no matching signature found"):
+            resend.Webhooks.verify(options)
+
+    def test_verify_unpaired_surrogate_signature(self) -> None:
+        """Test webhook verification rejects a signature with an unpaired surrogate with ValueError"""
+        secret = "whsec_" + base64.b64encode(b"test_secret_key").decode("utf-8")
+
+        options: resend.VerifyWebhookOptions = {
+            "payload": '{"type":"email.sent","data":{"email_id":"123"}}',
+            "headers": {
+                "id": "msg_123",
+                "timestamp": str(int(time.time())),
+                # A raw 0xE9 header byte decoded with errors="surrogateescape"
+                "signature": "v1,\udce9",
+            },
+            "webhook_secret": secret,
+        }
+
+        with pytest.raises(ValueError, match="no matching signature found"):
+            resend.Webhooks.verify(options)
+
     def test_verify_expired_timestamp(self) -> None:
         """Test webhook verification with expired timestamp"""
         secret = "whsec_" + base64.b64encode(b"test_secret_key").decode("utf-8")
