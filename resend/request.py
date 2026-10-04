@@ -140,7 +140,7 @@ class Request(Generic[T]):
             "content-type", ""
         )
 
-        if "application/json" not in content_type:
+        if content_type.split(";", 1)[0].strip().lower() != "application/json":
             raise_for_code_and_type(
                 code=error_code,
                 message=f"Expected JSON response but got: {content_type}",
