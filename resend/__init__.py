@@ -109,6 +109,7 @@ default_http_client: ResendHTTPClient = RequestsClient()
 # Async HTTP client — auto-detected if httpx is installed, can be overridden
 # with any AsyncHTTPClient subclass. Set to None if no async library is available.
 default_async_http_client: Optional[AsyncHTTPClient] = None
+_auto_async_http_client: Optional[AsyncHTTPClient] = None
 
 # Config vars
 api_key = os.environ.get("RESEND_API_KEY")
@@ -262,7 +263,8 @@ try:
     from .async_request import AsyncRequest  # noqa: F401
     from .http_client_httpx import HTTPXClient  # noqa: F401
 
-    default_async_http_client = HTTPXClient()
+    _auto_async_http_client = HTTPXClient()
+    default_async_http_client = _auto_async_http_client
     __all__.extend(["AsyncHTTPClient", "HTTPXClient", "AsyncRequest"])
 except ImportError:
     pass

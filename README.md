@@ -97,3 +97,15 @@ import resend
 resend.api_key = "re_yourkey"
 resend.default_async_http_client = resend.HTTPXClient(timeout=60)
 ```
+
+Legacy configurations that assign an `AsyncHTTPClient` to
+`resend.default_http_client` are also supported. Async requests select a client
+in this order:
+
+1. A replacement client assigned to `resend.default_async_http_client`.
+2. An `AsyncHTTPClient` assigned to `resend.default_http_client`.
+3. The automatic `HTTPXClient`, if httpx is installed.
+
+Setting `resend.default_async_http_client = None` still permits the legacy
+fallback. Prefer the dedicated async setting for new code, so the sync client
+remains available for synchronous calls.
