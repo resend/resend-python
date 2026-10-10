@@ -1,5 +1,9 @@
+from unittest import TestCase
+from unittest.mock import create_autospec
+
 import resend
 from resend.exceptions import NoContentError, ResendError
+from resend.http_client import HTTPClient
 from tests.conftest import ResendBaseTest
 
 # flake8: noqa
@@ -482,3 +486,45 @@ class TestResendBroadcasts(ResendBaseTest):
         assert clicked_links["object"] == "list"
         assert clicked_links["has_more"] is False
         assert len(clicked_links["data"]) == 0
+
+
+class TestBroadcastsRequestBody(TestCase):
+    def setUp(self) -> None:
+        resend.api_key = "re_123"
+        self.mock_client = create_autospec(HTTPClient, instance=True)
+        self.mock_client.request.return_value = (
+            b'{"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"}',
+            200,
+            {"Content-Type": "application/json"},
+        )
+        self.previous_http_client = resend.default_http_client
+        resend.default_http_client = self.mock_client
+
+    def tearDown(self) -> None:
+        resend.default_http_client = self.previous_http_client
+
+    def test_create_sends_preview_text_and_topic_id(self) -> None:
+        params: resend.Broadcasts.CreateParams = {
+            "segment_id": "78b8d3bc-a55a-45a3-aee6-6ec0a5e13d7e",
+            "from": "hi@example.com",
+            "subject": "Hello, world!",
+            "preview_text": "Product updates for this month",
+            "topic_id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
+        }
+        resend.Broadcasts.create(params)
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["json"]["preview_text"] == "Product updates for this month"
+        assert kwargs["json"]["topic_id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
+
+    def test_update_sends_preview_text_and_topic_id(self) -> None:
+        params: resend.Broadcasts.UpdateParams = {
+            "broadcast_id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            "preview_text": "Product updates for this month",
+            "topic_id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
+        }
+        resend.Broadcasts.update(params)
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["json"]["preview_text"] == "Product updates for this month"
+        assert kwargs["json"]["topic_id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
