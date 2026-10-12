@@ -6,8 +6,8 @@ from resend.pagination_helper import PaginationHelper
 def build_inbox_query_path(path: str, params: Optional[Mapping[str, Any]] = None) -> str:
     """
     Build a path with the query parameters of an inbox list or search call.
-    Lists become comma-separated values, and booleans become the literal
-    ``true`` or ``false`` that the API accepts.
+    Lists become comma-separated values, and empty lists are left out.
+    Booleans become the literal ``true`` or ``false`` that the API accepts.
 
     Args:
         path: The base API path (e.g., "/inboxes/{inbox_id}/threads")
@@ -26,7 +26,8 @@ def build_inbox_query_path(path: str, params: Optional[Mapping[str, Any]] = None
         if isinstance(value, bool):
             query[key] = "true" if value else "false"
         elif isinstance(value, (list, tuple)):
-            query[key] = ",".join(str(item) for item in value)
+            if value:
+                query[key] = ",".join(str(item) for item in value)
         else:
             query[key] = value
 

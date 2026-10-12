@@ -741,6 +741,13 @@ class TestInboxesRequest(TestCase):
             f"?folders=inbox%2Csent&labels={LABEL_ID}&read=false"
         )
 
+    def test_threads_list_leaves_out_empty_lists(self) -> None:
+        resend.Inboxes.Threads.list(INBOX_ID, {"folders": [], "labels": [], "limit": 5})
+        assert (
+            self.last_request()["url"]
+            == f"https://api.resend.com/inboxes/{INBOX_ID}/threads?limit=5"
+        )
+
     def test_threads_search_builds_the_query(self) -> None:
         params: resend.Inboxes.Threads.SearchParams = {
             "query": "invoice -draft",
