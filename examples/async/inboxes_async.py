@@ -43,7 +43,7 @@ async def main() -> None:
                 {
                     "inbox_id": inbox_id,
                     "thread_id": thread_id,
-                    "email_id": emails["data"][-1]["id"],
+                    "email_id": emails["data"][0]["id"],
                     "text": "Thanks, we are on it.",
                 }
             )

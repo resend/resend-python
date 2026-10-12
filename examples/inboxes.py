@@ -80,11 +80,11 @@ if threads["data"]:
     emails: resend.Inboxes.Threads.Emails.ListResponse = (
         resend.Inboxes.Threads.Emails.list(inbox_id, thread_id)
     )
-    email_id = emails["data"][-1]["id"]
+    email_id = emails["data"][0]["id"]
     email: resend.InboxThreadEmail = resend.Inboxes.Threads.Emails.get(
         inbox_id, thread_id, email_id
     )
-    print(f"Latest email from {email['from']}: {email['subject']}")
+    print(f"First email from {email['from']}: {email['subject']}")
 
     reply_params: resend.Inboxes.Threads.Emails.ReplyParams = {
         "inbox_id": inbox_id,
