@@ -448,3 +448,98 @@ class TestResendInboxDraftsAsync(AsyncResendBaseTest):
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
             _ = await resend.Inboxes.Drafts.send_async(INBOX_ID, DRAFT_ID)
+
+
+class TestInboxesAsyncPaths(AsyncResendBaseTest):
+    def last_url(self) -> str:
+        return str(self.mock.call_args.kwargs["url"])
+
+    async def test_every_async_method_calls_its_path(self) -> None:
+        self.set_mock_json({"object": "inbox", "id": INBOX_ID})
+        api = "https://api.resend.com"
+        inbox = f"{api}/inboxes/{INBOX_ID}"
+        thread = f"{inbox}/threads/{THREAD_ID}"
+        email = f"{thread}/emails/{EMAIL_ID}"
+        draft = f"{inbox}/drafts/{DRAFT_ID}"
+
+        await resend.Inboxes.create_async({"email_address": "support@acme.com"})
+        assert self.last_url() == f"{api}/inboxes"
+        await resend.Inboxes.list_async({"limit": 1})
+        assert self.last_url() == f"{api}/inboxes?limit=1"
+        await resend.Inboxes.get_async("support@acme.com")
+        assert self.last_url() == f"{api}/inboxes/support%40acme.com"
+        await resend.Inboxes.update_async({"id": INBOX_ID, "name": "Support"})
+        assert self.last_url() == inbox
+        await resend.Inboxes.remove_async(INBOX_ID)
+        assert self.last_url() == inbox
+
+        await resend.Inboxes.Agent.get_async(INBOX_ID)
+        assert self.last_url() == f"{inbox}/agent"
+        await resend.Inboxes.Agent.update_async({"inbox_id": INBOX_ID, "tone": None})
+        assert self.last_url() == f"{inbox}/agent"
+
+        await resend.Inboxes.Labels.list_async(INBOX_ID)
+        assert self.last_url() == f"{inbox}/labels"
+        await resend.Inboxes.Labels.create_async({"inbox_id": INBOX_ID, "name": "Urgent"})
+        assert self.last_url() == f"{inbox}/labels"
+        await resend.Inboxes.Labels.update_async(
+            {"inbox_id": INBOX_ID, "id": LABEL_ID, "name": "Billing"}
+        )
+        assert self.last_url() == f"{inbox}/labels/{LABEL_ID}"
+        await resend.Inboxes.Labels.remove_async(INBOX_ID, LABEL_ID)
+        assert self.last_url() == f"{inbox}/labels/{LABEL_ID}"
+
+        await resend.Inboxes.Threads.list_async(
+            INBOX_ID, {"folders": ["inbox", "sent"], "read": True}
+        )
+        assert self.last_url() == f"{inbox}/threads?folders=inbox%2Csent&read=true"
+        await resend.Inboxes.Threads.search_async(
+            INBOX_ID, {"to": ["a@example.com"], "has_attachment": False}
+        )
+        assert (
+            self.last_url()
+            == f"{inbox}/threads/search?to=a%40example.com&has_attachment=false"
+        )
+        await resend.Inboxes.Threads.get_async(INBOX_ID, THREAD_ID)
+        assert self.last_url() == thread
+        await resend.Inboxes.Threads.update_async(
+            {"inbox_id": INBOX_ID, "id": THREAD_ID, "read": True}
+        )
+        assert self.last_url() == thread
+        await resend.Inboxes.Threads.remove_async(INBOX_ID, THREAD_ID)
+        assert self.last_url() == thread
+
+        await resend.Inboxes.Threads.Emails.list_async(
+            INBOX_ID, THREAD_ID, {"after": EMAIL_ID}
+        )
+        assert self.last_url() == f"{thread}/emails?after={EMAIL_ID}"
+        await resend.Inboxes.Threads.Emails.get_async(INBOX_ID, THREAD_ID, EMAIL_ID)
+        assert self.last_url() == email
+        await resend.Inboxes.Threads.Emails.reply_async(
+            {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "email_id": EMAIL_ID, "text": "Hi"}
+        )
+        assert self.last_url() == f"{email}/reply"
+        await resend.Inboxes.Threads.Emails.forward_async(
+            {
+                "inbox_id": INBOX_ID,
+                "thread_id": THREAD_ID,
+                "email_id": EMAIL_ID,
+                "to": "colleague@example.org",
+            }
+        )
+        assert self.last_url() == f"{email}/forward"
+
+        await resend.Inboxes.Drafts.list_async(INBOX_ID, {"limit": 1})
+        assert self.last_url() == f"{inbox}/drafts?limit=1"
+        await resend.Inboxes.Drafts.create_async({"inbox_id": INBOX_ID, "text": "Hi"})
+        assert self.last_url() == f"{inbox}/drafts"
+        await resend.Inboxes.Drafts.get_async(INBOX_ID, DRAFT_ID)
+        assert self.last_url() == draft
+        await resend.Inboxes.Drafts.update_async(
+            {"inbox_id": INBOX_ID, "id": DRAFT_ID, "text": "Hello"}
+        )
+        assert self.last_url() == draft
+        await resend.Inboxes.Drafts.remove_async(INBOX_ID, DRAFT_ID)
+        assert self.last_url() == draft
+        await resend.Inboxes.Drafts.send_async(INBOX_ID, DRAFT_ID)
+        assert self.last_url() == f"{draft}/send"
