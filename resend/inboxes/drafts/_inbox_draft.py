@@ -11,6 +11,29 @@ InboxDraftType = Literal["standalone", "reply"]
 """
 
 
+class InboxDraftAttachment(TypedDict):
+    """
+    InboxDraftAttachment is a file stored on a draft.
+    """
+
+    id: str
+    """
+    The ID of the attachment.
+    """
+    filename: str
+    """
+    The filename of the attachment.
+    """
+    content_type: str
+    """
+    The MIME type of the attachment.
+    """
+    size: int
+    """
+    The size of the attachment in bytes.
+    """
+
+
 class InboxDraft(BaseResponse):
     """
     InboxDraft is an unsent or sent draft of an inbox.
@@ -74,6 +97,10 @@ class InboxDraft(BaseResponse):
     """
     Timestamp when the draft was last saved.
     """
+    attachments: List[InboxDraftAttachment]
+    """
+    The files stored on the draft.
+    """
 
 
 class InboxDraftListItem(TypedDict):
@@ -121,4 +148,8 @@ class InboxDraftListItem(TypedDict):
     updated_at: str
     """
     Timestamp when the draft was last saved.
+    """
+    attachments: List[InboxDraftAttachment]
+    """
+    The files stored on the draft.
     """

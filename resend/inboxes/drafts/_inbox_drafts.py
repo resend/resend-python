@@ -20,6 +20,31 @@ class InboxDrafts:
     InboxDrafts manages the drafts of an inbox.
     """
 
+    class AttachmentParams(TypedDict):
+        """
+        AttachmentParams is a file to store on a draft. Each one needs
+        ``content``, ``filename`` and ``content_type``. A ``path`` or
+        ``content_id`` returns a 422.
+
+        Attributes:
+            content (str): The content of the file, encoded in base64.
+            filename (str): The name of the file.
+            content_type (str): The MIME type of the file.
+        """
+
+        content: str
+        """
+        The content of the file, encoded in base64.
+        """
+        filename: str
+        """
+        The name of the file.
+        """
+        content_type: str
+        """
+        The MIME type of the file, for example ``application/pdf``.
+        """
+
     class ListParams(TypedDict):
         """
         ListParams are the pagination parameters for listing drafts.
@@ -72,7 +97,8 @@ class InboxDrafts:
     class CreateParams(TypedDict):
         """
         CreateParams are the parameters for creating a draft. At least one of
-        ``to``, ``cc``, ``bcc``, ``subject``, ``text`` or ``html`` must be non-empty.
+        ``to``, ``cc``, ``bcc``, ``subject``, ``text``, ``html`` or ``attachments``
+        must be non-empty.
         The combined recipients of ``to``, ``cc`` and ``bcc`` cannot exceed 50.
         ``thread_id`` and ``reply_to_email_id`` must be sent together or not at all.
 
@@ -84,6 +110,7 @@ class InboxDrafts:
             subject (NotRequired[Optional[str]]): The subject.
             html (NotRequired[Optional[str]]): The HTML body.
             text (NotRequired[Optional[str]]): The plain text body.
+            attachments (NotRequired[List[AttachmentParams]]): Files to store on the draft.
             thread_id (NotRequired[str]): The Thread ID to reply in.
             reply_to_email_id (NotRequired[str]): The Email ID to reply to.
         """
@@ -118,6 +145,12 @@ class InboxDrafts:
         """
         The plain text body.
         """
+        attachments: NotRequired[List["InboxDrafts.AttachmentParams"]]
+        """
+        Files to store on the draft. Each one needs ``content``, ``filename`` and
+        ``content_type``. A ``path`` or ``content_id`` returns a 422. A draft can
+        carry up to 10 files and 25 MB in total.
+        """
         thread_id: NotRequired[str]
         """
         The Thread ID to reply in. Must be sent with ``reply_to_email_id``.
@@ -149,8 +182,8 @@ class InboxDrafts:
     class UpdateParams(TypedDict):
         """
         UpdateParams are the parameters for updating a draft. Send at least one of
-        ``to``, ``cc``, ``bcc``, ``subject``, ``text`` or ``html``. Omitted fields
-        are left unchanged. Setting ``text`` or ``html`` replaces the whole body, so
+        ``to``, ``cc``, ``bcc``, ``subject``, ``text``, ``html`` or ``attachments``.
+        Omitted fields are left unchanged. Setting ``text`` or ``html`` replaces the whole body, so
         the body part you omit becomes None. The merged draft must contain at least
         one non-empty field, and its combined recipients cannot exceed 50.
 
@@ -163,6 +196,8 @@ class InboxDrafts:
             subject (NotRequired[Optional[str]]): The subject.
             html (NotRequired[Optional[str]]): The HTML body.
             text (NotRequired[Optional[str]]): The plain text body.
+            attachments (NotRequired[List[AttachmentParams]]): Files that replace
+                every attachment on the draft.
         """
 
         inbox_id: str
@@ -198,6 +233,13 @@ class InboxDrafts:
         text: NotRequired[Optional[str]]
         """
         The plain text body. Pass None to clear.
+        """
+        attachments: NotRequired[List["InboxDrafts.AttachmentParams"]]
+        """
+        Files to store on the draft. Each one needs ``content``, ``filename`` and
+        ``content_type``. A ``path`` or ``content_id`` returns a 422. A draft can
+        carry up to 10 files and 25 MB in total. Sending the field replaces every
+        attachment on the draft. Send ``[]`` to remove them all.
         """
 
     class RemoveResponse(BaseResponse):
@@ -267,9 +309,11 @@ class InboxDrafts:
         together for a reply draft in an existing thread. A reply draft without
         ``to`` is addressed to the sender of the email it replies to, or to its
         Reply-To when set. For an email the inbox sent, it defaults to that email's
-        ``to`` recipients. Send ``to: []`` to leave it empty. Only one unsent reply
-        draft can target an email, so a reply draft request for an email that
-        already has one returns the ID of the existing draft.
+        ``to`` recipients. Send ``to: []`` to leave it empty. Attachments are
+        stored on the draft, so each one needs ``content``, ``filename`` and
+        ``content_type``. Only one unsent reply draft can target an email, so a
+        reply draft request for an email that already has one returns the ID of
+        the existing draft.
         see more: https://resend.com/docs/api-reference/inboxes/create-draft
 
         Args:
@@ -307,9 +351,10 @@ class InboxDrafts:
     def update(cls, params: UpdateParams) -> InboxDraft:
         """
         Update the content of an unsent draft. Omitted fields are left unchanged.
-        A request that sets ``text`` or ``html`` replaces the whole body. The body
-        part you omit from that request becomes None. A draft that was already
-        sent, or that changed during the request, returns a 409.
+        Sending ``attachments`` replaces every attachment on the draft. A request
+        that sets ``text`` or ``html`` replaces the whole body. The body part you
+        omit from that request becomes None. A draft that was already sent, or
+        that changed during the request, returns a 409.
         see more: https://resend.com/docs/api-reference/inboxes/update-draft
 
         Args:
@@ -399,9 +444,11 @@ class InboxDrafts:
         together for a reply draft in an existing thread. A reply draft without
         ``to`` is addressed to the sender of the email it replies to, or to its
         Reply-To when set. For an email the inbox sent, it defaults to that email's
-        ``to`` recipients. Send ``to: []`` to leave it empty. Only one unsent reply
-        draft can target an email, so a reply draft request for an email that
-        already has one returns the ID of the existing draft.
+        ``to`` recipients. Send ``to: []`` to leave it empty. Attachments are
+        stored on the draft, so each one needs ``content``, ``filename`` and
+        ``content_type``. Only one unsent reply draft can target an email, so a
+        reply draft request for an email that already has one returns the ID of
+        the existing draft.
         see more: https://resend.com/docs/api-reference/inboxes/create-draft
 
         Args:
@@ -439,7 +486,8 @@ class InboxDrafts:
     async def update_async(cls, params: UpdateParams) -> InboxDraft:
         """
         Update the content of an unsent draft (async). Omitted fields are left
-        unchanged. A request that sets ``text`` or ``html`` replaces the whole body.
+        unchanged. Sending ``attachments`` replaces every attachment on the draft.
+        A request that sets ``text`` or ``html`` replaces the whole body.
         The body part you omit from that request becomes None. A draft that was
         already sent, or that changed during the request, returns a 409.
         see more: https://resend.com/docs/api-reference/inboxes/update-draft

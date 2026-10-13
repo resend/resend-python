@@ -80,6 +80,13 @@ THREAD_EMAIL: Dict[str, Any] = {
     "received_at": "2026-08-05T14:03:11.229Z",
 }
 
+DRAFT_ATTACHMENT: Dict[str, Any] = {
+    "id": "5c1e9d2a-7b3f-4e8a-9c6d-2f0a1b3c4d5e",
+    "filename": "receipt.pdf",
+    "content_type": "application/pdf",
+    "size": 20841,
+}
+
 DRAFT: Dict[str, Any] = {
     "object": "inbox_draft",
     "id": DRAFT_ID,
@@ -95,6 +102,7 @@ DRAFT: Dict[str, Any] = {
     "email_id": None,
     "created_at": "2026-08-05T14:12:04.110Z",
     "updated_at": "2026-08-05T14:12:04.110Z",
+    "attachments": [DRAFT_ATTACHMENT],
 }
 
 
@@ -532,6 +540,7 @@ class TestResendInboxDrafts(ResendBaseTest):
                         "thread_id": None,
                         "reply_to_email_id": None,
                         "updated_at": "2026-08-05T14:12:04.110Z",
+                        "attachments": [],
                     }
                 ],
             }
@@ -542,6 +551,7 @@ class TestResendInboxDrafts(ResendBaseTest):
         assert drafts["object"] == "list"
         assert drafts["data"][0]["id"] == DRAFT_ID
         assert drafts["data"][0]["snippet"] == "Refund issued for order 1041."
+        assert drafts["data"][0]["attachments"] == []
 
     def test_should_list_inbox_drafts_raise_exception_when_no_content(
         self,
@@ -557,6 +567,13 @@ class TestResendInboxDrafts(ResendBaseTest):
             "to": ["ada@example.org"],
             "subject": "Refund for order 1041",
             "text": "Refund issued for order 1041.",
+            "attachments": [
+                {
+                    "content": "aGVsbG8=",
+                    "filename": "note.txt",
+                    "content_type": "text/plain",
+                }
+            ],
         }
         draft: resend.Inboxes.Drafts.CreateResponse = resend.Inboxes.Drafts.create(
             params
@@ -578,6 +595,8 @@ class TestResendInboxDrafts(ResendBaseTest):
         assert draft["id"] == DRAFT_ID
         assert draft["type"] == "standalone"
         assert draft["email_id"] is None
+        assert draft["attachments"][0]["content_type"] == "application/pdf"
+        assert draft["attachments"][0]["size"] == 20841
 
     def test_should_get_inbox_drafts_raise_exception_when_no_content(
         self,
@@ -859,6 +878,24 @@ class TestInboxesRequest(TestCase):
             f"{base}/{DRAFT_ID}",
             {"to": None},
         )
+
+        attachment: resend.Inboxes.Drafts.AttachmentParams = {
+            "content": "aGVsbG8=",
+            "filename": "note.txt",
+            "content_type": "text/plain",
+        }
+        resend.Inboxes.Drafts.create(
+            {"inbox_id": INBOX_ID, "to": "ada@example.org", "attachments": [attachment]}
+        )
+        assert self.last_request()["json"] == {
+            "to": "ada@example.org",
+            "attachments": [attachment],
+        }
+
+        resend.Inboxes.Drafts.update(
+            {"inbox_id": INBOX_ID, "id": DRAFT_ID, "attachments": []}
+        )
+        assert self.last_request()["json"] == {"attachments": []}
 
         resend.Inboxes.Drafts.remove(INBOX_ID, DRAFT_ID)
         req = self.last_request()

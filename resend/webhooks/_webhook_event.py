@@ -3,6 +3,7 @@ from typing import Dict, List, Optional, Union
 from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend.inboxes._inbox import Inbox, MoveThreadFolder
+from resend.inboxes.drafts._inbox_draft import InboxDraftAttachment
 from resend.inboxes.threads._inbox_thread import (InboxThreadLabel,
                                                   InboxThreadSummary)
 from resend.suppressions._suppression import SuppressionListItem
@@ -562,6 +563,10 @@ class InboxEventDraft(TypedDict):
     updated_at: str
     """
     Timestamp when the draft was last saved.
+    """
+    attachments: List[InboxDraftAttachment]
+    """
+    The files stored on the draft.
     """
 
 

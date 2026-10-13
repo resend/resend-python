@@ -59,8 +59,8 @@ from .inboxes._inboxes import Inboxes
 from .inboxes.agent._inbox_agent import InboxAgent
 from .inboxes.agent._inbox_agent_settings import (InboxAgentAction,
                                                   InboxAgentSettings)
-from .inboxes.drafts._inbox_draft import (InboxDraft, InboxDraftListItem,
-                                          InboxDraftType)
+from .inboxes.drafts._inbox_draft import (InboxDraft, InboxDraftAttachment,
+                                          InboxDraftListItem, InboxDraftType)
 from .inboxes.drafts._inbox_drafts import InboxDrafts
 from .inboxes.labels._inbox_label import InboxLabel
 from .inboxes.labels._inbox_labels import InboxLabels
@@ -320,6 +320,7 @@ __all__ = [
     "InboxThreadEmail",
     "InboxThreadEmailAttachment",
     "InboxDraft",
+    "InboxDraftAttachment",
     "InboxDraftListItem",
     "InboxDraftType",
     "Topic",
