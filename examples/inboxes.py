@@ -143,8 +143,11 @@ print(f"Found {len(drafts['data'])} drafts")
 send_options: resend.Inboxes.Drafts.SendOptions = {
     "idempotency_key": f"send-draft-{draft['id']}",
 }
+send_params: resend.Inboxes.Drafts.SendParams = {
+    "headers": {"X-Ticket-Id": "4821"},
+}
 sent: resend.Inboxes.Drafts.SendResponse = resend.Inboxes.Drafts.send(
-    inbox_id, draft["id"], send_options
+    inbox_id, draft["id"], send_params, send_options
 )
 print(f"Sent draft as email: {sent['id']}")
 
