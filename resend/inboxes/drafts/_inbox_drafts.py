@@ -148,8 +148,9 @@ class InboxDrafts:
         attachments: NotRequired[List["InboxDrafts.AttachmentParams"]]
         """
         Files to store on the draft. Each one needs ``content``, ``filename`` and
-        ``content_type``. A ``path`` or ``content_id`` returns a 422. A draft can
-        carry up to 10 files and 25 MB in total.
+        ``content_type``. A ``path`` or ``content_id`` returns a 422. The files on
+        a draft can total at most 25 MB. An empty file or a blocked file type
+        returns a 422.
         """
         thread_id: NotRequired[str]
         """
@@ -237,9 +238,10 @@ class InboxDrafts:
         attachments: NotRequired[List["InboxDrafts.AttachmentParams"]]
         """
         Files to store on the draft. Each one needs ``content``, ``filename`` and
-        ``content_type``. A ``path`` or ``content_id`` returns a 422. A draft can
-        carry up to 10 files and 25 MB in total. Sending the field replaces every
-        attachment on the draft. Send ``[]`` to remove them all.
+        ``content_type``. A ``path`` or ``content_id`` returns a 422. The files on
+        a draft can total at most 25 MB. An empty file or a blocked file type
+        returns a 422. Sending the field replaces every attachment on the draft.
+        Send ``[]`` to remove them all.
         """
 
     class RemoveResponse(BaseResponse):
@@ -313,7 +315,10 @@ class InboxDrafts:
         stored on the draft, so each one needs ``content``, ``filename`` and
         ``content_type``. Only one unsent reply draft can target an email, so a
         reply draft request for an email that already has one returns the ID of
-        the existing draft.
+        the existing draft. That request ignores every other field, except
+        ``attachments``, which replaces the attachments of the existing draft. A
+        reply draft created without ``subject`` stores an empty subject and gets
+        no ``Re:`` prefix, so set one before you send it.
         see more: https://resend.com/docs/api-reference/inboxes/create-draft
 
         Args:
@@ -394,8 +399,8 @@ class InboxDrafts:
         """
         Send a draft from the inbox address. A reply draft is sent in its thread.
         A draft without a thread starts a new thread. The draft must have at least
-        one ``to`` recipient, or the request returns a 422. A draft that was
-        already sent returns a 409.
+        one ``to`` recipient, a non-empty ``subject``, and ``html`` or ``text``,
+        or the request returns a 422. A draft that was already sent returns a 409.
         see more: https://resend.com/docs/api-reference/inboxes/send-draft
 
         Args:
@@ -448,7 +453,10 @@ class InboxDrafts:
         stored on the draft, so each one needs ``content``, ``filename`` and
         ``content_type``. Only one unsent reply draft can target an email, so a
         reply draft request for an email that already has one returns the ID of
-        the existing draft.
+        the existing draft. That request ignores every other field, except
+        ``attachments``, which replaces the attachments of the existing draft. A
+        reply draft created without ``subject`` stores an empty subject and gets
+        no ``Re:`` prefix, so set one before you send it.
         see more: https://resend.com/docs/api-reference/inboxes/create-draft
 
         Args:
@@ -529,8 +537,9 @@ class InboxDrafts:
         """
         Send a draft from the inbox address (async). A reply draft is sent in its
         thread. A draft without a thread starts a new thread. The draft must have
-        at least one ``to`` recipient, or the request returns a 422. A draft that
-        was already sent returns a 409.
+        at least one ``to`` recipient, a non-empty ``subject``, and ``html`` or
+        ``text``, or the request returns a 422. A draft that was already sent
+        returns a 409.
         see more: https://resend.com/docs/api-reference/inboxes/send-draft
 
         Args:

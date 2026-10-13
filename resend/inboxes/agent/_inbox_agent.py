@@ -51,8 +51,8 @@ class InboxAgent:
         """
         enabled_actions: NotRequired[List[InboxAgentAction]]
         """
-        The actions the agent can take. Replaces the whole set.
-        Send an empty list to disable all actions.
+        The actions the agent can take. Replaces the whole set. Duplicates are
+        removed. Send an empty list to disable all actions.
         """
 
     class UpdateResponse(BaseResponse):

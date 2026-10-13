@@ -131,12 +131,14 @@ class InboxThreadEmails:
         """
         reply_all: NotRequired[bool]
         """
-        Reply to everyone on the original message. The reply goes to the author
-        of the message, or to its ``Reply-To`` addresses if it has any. The other
-        ``to`` and ``cc`` recipients of the message are copied in ``cc``. The inbox
-        address is always excluded. For a message the inbox sent, the reply goes
-        to that message's ``to`` recipients and copies its ``cc`` recipients.
-        Defaults to False.
+        Reply to everyone on the original message. For a message the inbox
+        received, the reply goes to its ``Reply-To`` addresses, or to its sender
+        when it has none, and copies the other addresses of its ``To`` header and
+        its ``cc`` recipients in ``cc``. For a message the inbox sent, the reply
+        goes to that message's ``Reply-To`` addresses when they are not the inbox
+        address, otherwise to its ``to`` recipients, and copies its ``cc``
+        recipients. The inbox address is always excluded, and duplicates are
+        removed. Defaults to False.
         """
         attachments: NotRequired[List[Union[Attachment, RemoteAttachment]]]
         """
@@ -246,7 +248,8 @@ class InboxThreadEmails:
     ) -> ListResponse:
         """
         Retrieve the messages of a thread, oldest first. You cannot combine
-        ``after`` and ``before``.
+        ``after`` and ``before``. A cursor that is not a message of the thread
+        returns a 404.
         see more: https://resend.com/docs/api-reference/inboxes/list-thread-emails
 
         Args:
@@ -324,6 +327,8 @@ class InboxThreadEmails:
         optional ``html`` or ``text`` note. The attachments of the original message
         are sent with the forward, together with any ``attachments`` you add.
         The request fails when they exceed 10 files or 25 MB of ``content`` in total.
+        An original attachment that was sent from a URL (``path``) cannot be
+        forwarded, and the request returns a 422.
         see more: https://resend.com/docs/api-reference/inboxes/forward-thread-email
 
         Args:
@@ -349,7 +354,8 @@ class InboxThreadEmails:
     ) -> ListResponse:
         """
         Retrieve the messages of a thread, oldest first (async). You cannot
-        combine ``after`` and ``before``.
+        combine ``after`` and ``before``. A cursor that is not a message of the
+        thread returns a 404.
         see more: https://resend.com/docs/api-reference/inboxes/list-thread-emails
 
         Args:
@@ -429,7 +435,8 @@ class InboxThreadEmails:
         banner, below the optional ``html`` or ``text`` note. The attachments of
         the original message are sent with the forward, together with any
         ``attachments`` you add. The request fails when they exceed 10 files or
-        25 MB of ``content`` in total.
+        25 MB of ``content`` in total. An original attachment that was sent from a
+        URL (``path``) cannot be forwarded, and the request returns a 422.
         see more: https://resend.com/docs/api-reference/inboxes/forward-thread-email
 
         Args:

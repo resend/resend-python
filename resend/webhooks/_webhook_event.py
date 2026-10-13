@@ -446,8 +446,7 @@ class InboxEventEmailAttachment(TypedDict):
 
     id: str
     """
-    The ID of the attachment. Not always a UUID. Outbound attachments are
-    identified by their position in the sent email.
+    The ID of the attachment.
     """
     filename: Optional[str]
     """

@@ -266,6 +266,7 @@ class InboxThreads:
         """
         Retrieve the threads in an inbox, most recently active first. The ``after``
         and ``before`` cursors take a thread ID, and only one of them can be passed.
+        A cursor thread that is not in the selected folders returns a 404.
         To find threads by text, sender, recipient, attachment, or date, use ``search``.
         see more: https://resend.com/docs/api-reference/inboxes/list-threads
 
@@ -293,9 +294,12 @@ class InboxThreads:
         Find threads by the text of their emails, who sent or received them,
         whether they have attachments, and their dates. Results are ordered by
         latest activity, newest first, and paginate like ``list``. Search can be
-        up to about a minute behind new emails. With a ``query``, ``folders=sent``
-        also requires the matching email to be one the inbox sent. When more than
-        10,000 threads match, search covers the 10,000 with the newest matching email.
+        up to about a minute behind new emails. When any email filter (``query``,
+        ``from``, ``to``, ``cc``, ``bcc``, ``has_attachment``, ``start_date`` or
+        ``end_date``) is set, the matching email must itself be in one of
+        ``folders``. For ``sent``, that means an email the inbox sent. When more
+        than 10,000 threads match, search covers the 10,000 with the newest
+        matching email.
         see more: https://resend.com/docs/api-reference/inboxes/search-threads
 
         Args:
@@ -342,7 +346,9 @@ class InboxThreads:
         ``remove_label_ids`` is required. A label ID cannot be both added and
         removed in the same request. Removing a label from a thread keeps the
         label itself. Moving a thread out of ``trash`` restores it and clears its
-        deletion deadline.
+        deletion deadline. The changes apply in this order: ``read``, ``folder``,
+        added labels, removed labels. They are not atomic, so a 404 for a label
+        leaves the earlier changes applied.
         see more: https://resend.com/docs/api-reference/inboxes/update-thread
 
         Args:
@@ -385,8 +391,9 @@ class InboxThreads:
         """
         Retrieve the threads in an inbox, most recently active first (async).
         The ``after`` and ``before`` cursors take a thread ID, and only one of them
-        can be passed. To find threads by text, sender, recipient, attachment, or
-        date, use ``search_async``.
+        can be passed. A cursor thread that is not in the selected folders returns
+        a 404. To find threads by text, sender, recipient, attachment, or date,
+        use ``search_async``.
         see more: https://resend.com/docs/api-reference/inboxes/list-threads
 
         Args:
@@ -413,10 +420,12 @@ class InboxThreads:
         Find threads by the text of their emails, who sent or received them,
         whether they have attachments, and their dates (async). Results are
         ordered by latest activity, newest first, and paginate like ``list``.
-        Search can be up to about a minute behind new emails. With a ``query``,
-        ``folders=sent`` also requires the matching email to be one the inbox
-        sent. When more than 10,000 threads match, search covers the 10,000 with
-        the newest matching email.
+        Search can be up to about a minute behind new emails. When any email
+        filter (``query``, ``from``, ``to``, ``cc``, ``bcc``, ``has_attachment``,
+        ``start_date`` or ``end_date``) is set, the matching email must itself be
+        in one of ``folders``. For ``sent``, that means an email the inbox sent.
+        When more than 10,000 threads match, search covers the 10,000 with the
+        newest matching email.
         see more: https://resend.com/docs/api-reference/inboxes/search-threads
 
         Args:
@@ -463,7 +472,9 @@ class InboxThreads:
         or ``remove_label_ids`` is required. A label ID cannot be both added and
         removed in the same request. Removing a label from a thread keeps the
         label itself. Moving a thread out of ``trash`` restores it and clears its
-        deletion deadline.
+        deletion deadline. The changes apply in this order: ``read``, ``folder``,
+        added labels, removed labels. They are not atomic, so a 404 for a label
+        leaves the earlier changes applied.
         see more: https://resend.com/docs/api-reference/inboxes/update-thread
 
         Args:

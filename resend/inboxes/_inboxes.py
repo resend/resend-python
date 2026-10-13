@@ -226,7 +226,8 @@ class Inboxes:
         ``receiving_address`` on the team inbound domain. A domain that does not
         meet these rules returns a 422 validation_error. An address or receiving
         address that is already in use returns a 409. A team that has reached the
-        inbox limit of its plan returns a 403 validation_error.
+        inbox limit of its plan returns a 403 validation_error. A blocked account
+        returns a 451.
         see more: https://resend.com/docs/api-reference/inboxes/create-inbox
 
         Args:
@@ -245,7 +246,9 @@ class Inboxes:
     def list(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve the inboxes of the team, newest first. The list items carry fewer
-        fields than a single inbox. Retrieve an inbox to get all its fields.
+        fields than a single inbox. Retrieve an inbox to get all its fields. The
+        ``after`` and ``before`` cursors take an inbox ID. A value that is not a
+        UUID returns a 422, and an unknown ID returns a 404.
         see more: https://resend.com/docs/api-reference/inboxes/list-inboxes
 
         Args:
@@ -331,7 +334,8 @@ class Inboxes:
         ``receiving_address`` on the team inbound domain. A domain that does not
         meet these rules returns a 422 validation_error. An address or receiving
         address that is already in use returns a 409. A team that has reached the
-        inbox limit of its plan returns a 403 validation_error.
+        inbox limit of its plan returns a 403 validation_error. A blocked account
+        returns a 451.
         see more: https://resend.com/docs/api-reference/inboxes/create-inbox
 
         Args:
@@ -350,7 +354,9 @@ class Inboxes:
     async def list_async(cls, params: Optional[ListParams] = None) -> ListResponse:
         """
         Retrieve the inboxes of the team, newest first (async). The list items
-        carry fewer fields than a single inbox. Retrieve an inbox to get all its fields.
+        carry fewer fields than a single inbox. Retrieve an inbox to get all its
+        fields. The ``after`` and ``before`` cursors take an inbox ID. A value that
+        is not a UUID returns a 422, and an unknown ID returns a 404.
         see more: https://resend.com/docs/api-reference/inboxes/list-inboxes
 
         Args:
