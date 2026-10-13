@@ -148,6 +148,27 @@ class InboxThreadEmails:
         fetched when the email is sent.
         """
 
+    class ReplyOptions(TypedDict):
+        """
+        ReplyOptions is the class that wraps the options for the reply method.
+
+        Attributes:
+            idempotency_key (NotRequired[str]): Unique key that ensures the same operation is not processed multiple times.
+            Allows for safe retries without duplicating operations.
+            If provided, will be sent as the `Idempotency-Key` header.
+        """
+
+        idempotency_key: NotRequired[str]
+        """
+        Unique key that ensures the same operation is not processed multiple times.
+        Allows for safe retries without duplicating operations.
+        If provided, will be sent as the `Idempotency-Key` header.
+        Between 1 and 256 characters, so the reply is sent only once. A retry with the
+        same key within 24 hours returns the first response, with the
+        ``idempotent-replayed: true`` header. Reusing the key with a different
+        body, or while the first request is still running, returns a 409.
+        """
+
     class ReplyResponse(BaseResponse):
         """
         ReplyResponse is the response of replying to a thread email.
@@ -229,6 +250,27 @@ class InboxThreadEmails:
         10 files only, because it is fetched when the email is sent.
         """
 
+    class ForwardOptions(TypedDict):
+        """
+        ForwardOptions is the class that wraps the options for the forward method.
+
+        Attributes:
+            idempotency_key (NotRequired[str]): Unique key that ensures the same operation is not processed multiple times.
+            Allows for safe retries without duplicating operations.
+            If provided, will be sent as the `Idempotency-Key` header.
+        """
+
+        idempotency_key: NotRequired[str]
+        """
+        Unique key that ensures the same operation is not processed multiple times.
+        Allows for safe retries without duplicating operations.
+        If provided, will be sent as the `Idempotency-Key` header.
+        Between 1 and 256 characters, so the forward is sent only once. A retry with the
+        same key within 24 hours returns the first response, with the
+        ``idempotent-replayed: true`` header. Reusing the key with a different
+        body, or while the first request is still running, returns a 409.
+        """
+
     class ForwardResponse(BaseResponse):
         """
         ForwardResponse is the response of forwarding a thread email.
@@ -291,7 +333,9 @@ class InboxThreadEmails:
         return resp
 
     @classmethod
-    def reply(cls, params: ReplyParams) -> ReplyResponse:
+    def reply(
+        cls, params: ReplyParams, options: Optional[ReplyOptions] = None
+    ) -> ReplyResponse:
         """
         Send a reply from the inbox address right away, with no stored draft.
         The ``to`` recipients come from the message you reply to. For a message
@@ -304,6 +348,7 @@ class InboxThreadEmails:
 
         Args:
             params (ReplyParams): The path IDs and the content of the reply
+            options (Optional[ReplyOptions]): The reply options, ie: idempotency_key
 
         Returns:
             ReplyResponse: The ID of the sent email
@@ -316,11 +361,14 @@ class InboxThreadEmails:
             path=path,
             params=without_keys(params, "inbox_id", "thread_id", "email_id"),
             verb="post",
+            options=cast(Dict[Any, Any], options),
         ).perform_with_content()
         return resp
 
     @classmethod
-    def forward(cls, params: ForwardParams) -> ForwardResponse:
+    def forward(
+        cls, params: ForwardParams, options: Optional[ForwardOptions] = None
+    ) -> ForwardResponse:
         """
         Forward a message from the inbox address right away, with no stored draft.
         The original message is quoted under a forwarded-message banner, below the
@@ -333,6 +381,7 @@ class InboxThreadEmails:
 
         Args:
             params (ForwardParams): The path IDs, the recipients and the note
+            options (Optional[ForwardOptions]): The forward options, ie: idempotency_key
 
         Returns:
             ForwardResponse: The ID of the sent email
@@ -345,6 +394,7 @@ class InboxThreadEmails:
             path=path,
             params=without_keys(params, "inbox_id", "thread_id", "email_id"),
             verb="post",
+            options=cast(Dict[Any, Any], options),
         ).perform_with_content()
         return resp
 
@@ -399,7 +449,9 @@ class InboxThreadEmails:
         return resp
 
     @classmethod
-    async def reply_async(cls, params: ReplyParams) -> ReplyResponse:
+    async def reply_async(
+        cls, params: ReplyParams, options: Optional[ReplyOptions] = None
+    ) -> ReplyResponse:
         """
         Send a reply from the inbox address right away, with no stored draft (async).
         The ``to`` recipients come from the message you reply to. For a message
@@ -412,6 +464,7 @@ class InboxThreadEmails:
 
         Args:
             params (ReplyParams): The path IDs and the content of the reply
+            options (Optional[ReplyOptions]): The reply options, ie: idempotency_key
 
         Returns:
             ReplyResponse: The ID of the sent email
@@ -424,11 +477,14 @@ class InboxThreadEmails:
             path=path,
             params=without_keys(params, "inbox_id", "thread_id", "email_id"),
             verb="post",
+            options=cast(Dict[Any, Any], options),
         ).perform_with_content()
         return resp
 
     @classmethod
-    async def forward_async(cls, params: ForwardParams) -> ForwardResponse:
+    async def forward_async(
+        cls, params: ForwardParams, options: Optional[ForwardOptions] = None
+    ) -> ForwardResponse:
         """
         Forward a message from the inbox address right away, with no stored
         draft (async). The original message is quoted under a forwarded-message
@@ -441,6 +497,7 @@ class InboxThreadEmails:
 
         Args:
             params (ForwardParams): The path IDs, the recipients and the note
+            options (Optional[ForwardOptions]): The forward options, ie: idempotency_key
 
         Returns:
             ForwardResponse: The ID of the sent email
@@ -453,5 +510,6 @@ class InboxThreadEmails:
             path=path,
             params=without_keys(params, "inbox_id", "thread_id", "email_id"),
             verb="post",
+            options=cast(Dict[Any, Any], options),
         ).perform_with_content()
         return resp

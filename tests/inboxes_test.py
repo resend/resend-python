@@ -904,3 +904,34 @@ class TestInboxesRequest(TestCase):
         resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID)
         req = self.last_request()
         assert (req["method"], req["url"]) == ("post", f"{base}/{DRAFT_ID}/send")
+
+    def test_sending_methods_send_the_idempotency_key(self) -> None:
+        resend.Inboxes.Threads.Emails.reply(
+            {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "email_id": EMAIL_ID, "text": "Hi"},
+            {"idempotency_key": "reply-1"},
+        )
+        assert self.last_request()["headers"]["Idempotency-Key"] == "reply-1"
+
+        resend.Inboxes.Threads.Emails.forward(
+            {
+                "inbox_id": INBOX_ID,
+                "thread_id": THREAD_ID,
+                "email_id": EMAIL_ID,
+                "to": "colleague@example.org",
+            },
+            {"idempotency_key": "forward-1"},
+        )
+        assert self.last_request()["headers"]["Idempotency-Key"] == "forward-1"
+
+        resend.Inboxes.Drafts.create(
+            {"inbox_id": INBOX_ID, "text": "Hi"}, {"idempotency_key": "create-1"}
+        )
+        req = self.last_request()
+        assert req["headers"]["Idempotency-Key"] == "create-1"
+        assert req["json"] == {"text": "Hi"}
+
+        resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID, {"idempotency_key": "send-1"})
+        assert self.last_request()["headers"]["Idempotency-Key"] == "send-1"
+
+        resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID)
+        assert "Idempotency-Key" not in self.last_request()["headers"]

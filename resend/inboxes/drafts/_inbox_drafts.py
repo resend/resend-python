@@ -162,6 +162,27 @@ class InboxDrafts:
         emails endpoint. Must be sent with ``thread_id``.
         """
 
+    class CreateOptions(TypedDict):
+        """
+        CreateOptions is the class that wraps the options for the create method.
+
+        Attributes:
+            idempotency_key (NotRequired[str]): Unique key that ensures the same operation is not processed multiple times.
+            Allows for safe retries without duplicating operations.
+            If provided, will be sent as the `Idempotency-Key` header.
+        """
+
+        idempotency_key: NotRequired[str]
+        """
+        Unique key that ensures the same operation is not processed multiple times.
+        Allows for safe retries without duplicating operations.
+        If provided, will be sent as the `Idempotency-Key` header.
+        Between 1 and 256 characters, so the draft is created only once. A retry with the
+        same key within 24 hours returns the first response, with the
+        ``idempotent-replayed: true`` header. Reusing the key with a different
+        body, or while the first request is still running, returns a 409.
+        """
+
     class CreateResponse(BaseResponse):
         """
         CreateResponse is the response of creating a draft.
@@ -267,6 +288,27 @@ class InboxDrafts:
         Indicates whether the draft was successfully deleted.
         """
 
+    class SendOptions(TypedDict):
+        """
+        SendOptions is the class that wraps the options for the send method.
+
+        Attributes:
+            idempotency_key (NotRequired[str]): Unique key that ensures the same operation is not processed multiple times.
+            Allows for safe retries without duplicating operations.
+            If provided, will be sent as the `Idempotency-Key` header.
+        """
+
+        idempotency_key: NotRequired[str]
+        """
+        Unique key that ensures the same operation is not processed multiple times.
+        Allows for safe retries without duplicating operations.
+        If provided, will be sent as the `Idempotency-Key` header.
+        Between 1 and 256 characters, so the draft is sent only once. A retry with the
+        same key within 24 hours returns the first response, with the
+        ``idempotent-replayed: true`` header. Reusing the key with a different
+        body, or while the first request is still running, returns a 409.
+        """
+
     class SendResponse(BaseResponse):
         """
         SendResponse is the response of sending a draft.
@@ -304,7 +346,9 @@ class InboxDrafts:
         return resp
 
     @classmethod
-    def create(cls, params: CreateParams) -> CreateResponse:
+    def create(
+        cls, params: CreateParams, options: Optional[CreateOptions] = None
+    ) -> CreateResponse:
         """
         Create an unsent draft on an inbox. Omit ``thread_id`` and
         ``reply_to_email_id`` for a draft that starts a new thread. Pass both
@@ -323,13 +367,17 @@ class InboxDrafts:
 
         Args:
             params (CreateParams): The inbox ID and the content of the draft
+            options (Optional[CreateOptions]): The create options, ie: idempotency_key
 
         Returns:
             CreateResponse: The object type and the ID of the draft
         """
         path = f"/inboxes/{params['inbox_id']}/drafts"
         resp = request.Request[InboxDrafts.CreateResponse](
-            path=path, params=without_keys(params, "inbox_id"), verb="post"
+            path=path,
+            params=without_keys(params, "inbox_id"),
+            verb="post",
+            options=cast(Dict[Any, Any], options),
         ).perform_with_content()
         return resp
 
@@ -395,7 +443,9 @@ class InboxDrafts:
         return resp
 
     @classmethod
-    def send(cls, inbox_id: str, draft_id: str) -> SendResponse:
+    def send(
+        cls, inbox_id: str, draft_id: str, options: Optional[SendOptions] = None
+    ) -> SendResponse:
         """
         Send a draft from the inbox address. A reply draft is sent in its thread.
         A draft without a thread starts a new thread. The draft must have at least
@@ -406,13 +456,14 @@ class InboxDrafts:
         Args:
             inbox_id (str): The Inbox ID. An email address is not accepted.
             draft_id (str): The Draft ID.
+            options (Optional[SendOptions]): The send options, ie: idempotency_key
 
         Returns:
             SendResponse: The ID of the sent email
         """
         path = f"/inboxes/{inbox_id}/drafts/{draft_id}/send"
         resp = request.Request[InboxDrafts.SendResponse](
-            path=path, params={}, verb="post"
+            path=path, params={}, verb="post", options=cast(Dict[Any, Any], options)
         ).perform_with_content()
         return resp
 
@@ -442,7 +493,9 @@ class InboxDrafts:
         return resp
 
     @classmethod
-    async def create_async(cls, params: CreateParams) -> CreateResponse:
+    async def create_async(
+        cls, params: CreateParams, options: Optional[CreateOptions] = None
+    ) -> CreateResponse:
         """
         Create an unsent draft on an inbox (async). Omit ``thread_id`` and
         ``reply_to_email_id`` for a draft that starts a new thread. Pass both
@@ -461,13 +514,17 @@ class InboxDrafts:
 
         Args:
             params (CreateParams): The inbox ID and the content of the draft
+            options (Optional[CreateOptions]): The create options, ie: idempotency_key
 
         Returns:
             CreateResponse: The object type and the ID of the draft
         """
         path = f"/inboxes/{params['inbox_id']}/drafts"
         resp = await AsyncRequest[InboxDrafts.CreateResponse](
-            path=path, params=without_keys(params, "inbox_id"), verb="post"
+            path=path,
+            params=without_keys(params, "inbox_id"),
+            verb="post",
+            options=cast(Dict[Any, Any], options),
         ).perform_with_content()
         return resp
 
@@ -533,7 +590,9 @@ class InboxDrafts:
         return resp
 
     @classmethod
-    async def send_async(cls, inbox_id: str, draft_id: str) -> SendResponse:
+    async def send_async(
+        cls, inbox_id: str, draft_id: str, options: Optional[SendOptions] = None
+    ) -> SendResponse:
         """
         Send a draft from the inbox address (async). A reply draft is sent in its
         thread. A draft without a thread starts a new thread. The draft must have
@@ -545,12 +604,13 @@ class InboxDrafts:
         Args:
             inbox_id (str): The Inbox ID. An email address is not accepted.
             draft_id (str): The Draft ID.
+            options (Optional[SendOptions]): The send options, ie: idempotency_key
 
         Returns:
             SendResponse: The ID of the sent email
         """
         path = f"/inboxes/{inbox_id}/drafts/{draft_id}/send"
         resp = await AsyncRequest[InboxDrafts.SendResponse](
-            path=path, params={}, verb="post"
+            path=path, params={}, verb="post", options=cast(Dict[Any, Any], options)
         ).perform_with_content()
         return resp

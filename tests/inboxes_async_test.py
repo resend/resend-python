@@ -314,6 +314,29 @@ class TestResendInboxThreadEmailsAsync(AsyncResendBaseTest):
             )
         )
         assert reply["id"] == SENT_EMAIL_ID
+        assert self.mock.call_count == 1
+
+    async def test_inbox_thread_emails_reply_async_with_options(self) -> None:
+        self.set_mock_json({"id": SENT_EMAIL_ID})
+        options: resend.Inboxes.Threads.Emails.ReplyOptions = {"idempotency_key": "k"}
+        reply = await resend.Inboxes.Threads.Emails.reply_async(
+            {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "email_id": EMAIL_ID, "text": "Hi"},
+            options,
+        )
+        assert reply["id"] == SENT_EMAIL_ID
+        forward = await resend.Inboxes.Threads.Emails.forward_async(
+            {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "email_id": EMAIL_ID, "to": "a@example.org"},
+            {"idempotency_key": "k"},
+        )
+        assert forward["id"] == SENT_EMAIL_ID
+        draft = await resend.Inboxes.Drafts.create_async(
+            {"inbox_id": INBOX_ID, "text": "Hi"}, {"idempotency_key": "k"}
+        )
+        assert draft["id"] == SENT_EMAIL_ID
+        sent = await resend.Inboxes.Drafts.send_async(
+            INBOX_ID, DRAFT_ID, {"idempotency_key": "k"}
+        )
+        assert sent["id"] == SENT_EMAIL_ID
 
     async def test_should_reply_inbox_thread_emails_async_raise_exception_when_no_content(
         self,
