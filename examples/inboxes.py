@@ -117,6 +117,13 @@ draft_params: resend.Inboxes.Drafts.CreateParams = {
     "to": ["ada@example.org"],
     "subject": "Refund for order 1041",
     "text": "Refund issued for order 1041.",
+    "attachments": [
+        {
+            "content": "UmVmdW5kIHJlY2VpcHQ=",
+            "filename": "receipt.txt",
+            "content_type": "text/plain",
+        }
+    ],
 }
 draft: resend.Inboxes.Drafts.CreateResponse = resend.Inboxes.Drafts.create(
     draft_params
@@ -128,6 +135,7 @@ draft_update: resend.Inboxes.Drafts.UpdateParams = {
 }
 updated_draft: resend.InboxDraft = resend.Inboxes.Drafts.update(draft_update)
 print(f"Draft {updated_draft['id']} is a {updated_draft['type']} draft")
+print(f"Draft attachments: {[a['filename'] for a in updated_draft['attachments']]}")
 
 drafts: resend.Inboxes.Drafts.ListResponse = resend.Inboxes.Drafts.list(inbox_id)
 print(f"Found {len(drafts['data'])} drafts")
