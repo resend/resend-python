@@ -196,15 +196,14 @@ class InboxThreads:
     class UpdateParams(TypedDict):
         """
         UpdateParams are the parameters for updating a thread. At least one of
-        ``read``, ``folder``, ``label_id``, ``add_label_ids``, or ``remove_label_ids``
-        is required. A label ID cannot be both added and removed in the same request.
+        ``read``, ``folder``, ``add_label_ids``, or ``remove_label_ids`` is required.
+        A label ID cannot be both added and removed in the same request.
 
         Attributes:
             inbox_id (str): The Inbox ID. An email address is not accepted.
             id (str): The Thread ID.
             read (NotRequired[bool]): Marks every email in the thread read or unread.
             folder (NotRequired[MoveThreadFolder]): Moves the thread to this folder.
-            label_id (NotRequired[str]): Deprecated. Use add_label_ids instead.
             add_label_ids (NotRequired[List[str]]): Label IDs to apply to the thread.
             remove_label_ids (NotRequired[List[str]]): Label IDs to remove from the thread.
         """
@@ -227,12 +226,6 @@ class InboxThreads:
         cannot be set. Moving a thread out of ``trash`` restores it and clears its
         deletion deadline.
         """
-        label_id: NotRequired[str]
-        """
-        Deprecated. Use ``add_label_ids`` instead. Applies this label to the
-        thread, the same as one entry in ``add_label_ids``. A label ID that does
-        not exist in the inbox returns a 404.
-        """
         add_label_ids: NotRequired[List[str]]
         """
         Label IDs to apply to the thread. Between 1 and 10 IDs.
@@ -240,8 +233,8 @@ class InboxThreads:
         """
         remove_label_ids: NotRequired[List[str]]
         """
-        Label IDs to remove from the thread. Between 1 and 10 IDs.
-        A label ID that does not exist in the inbox returns a 404.
+        Label IDs to remove from the thread. Between 1 and 10 IDs. The labels
+        themselves are kept. A label ID that does not exist in the inbox returns a 404.
         """
 
     class RemoveResponse(BaseResponse):
@@ -345,10 +338,11 @@ class InboxThreads:
     def update(cls, params: UpdateParams) -> InboxThreadSummary:
         """
         Mark a thread read or unread, move it to a folder, or add and remove labels.
-        At least one of ``read``, ``folder``, ``label_id``, ``add_label_ids``, or
+        At least one of ``read``, ``folder``, ``add_label_ids``, or
         ``remove_label_ids`` is required. A label ID cannot be both added and
-        removed in the same request. Moving a thread out of ``trash`` restores it
-        and clears its deletion deadline.
+        removed in the same request. Removing a label from a thread keeps the
+        label itself. Moving a thread out of ``trash`` restores it and clears its
+        deletion deadline.
         see more: https://resend.com/docs/api-reference/inboxes/update-thread
 
         Args:
@@ -465,10 +459,11 @@ class InboxThreads:
     async def update_async(cls, params: UpdateParams) -> InboxThreadSummary:
         """
         Mark a thread read or unread, move it to a folder, or add and remove
-        labels (async). At least one of ``read``, ``folder``, ``label_id``,
-        ``add_label_ids``, or ``remove_label_ids`` is required. A label ID cannot
-        be both added and removed in the same request. Moving a thread out of
-        ``trash`` restores it and clears its deletion deadline.
+        labels (async). At least one of ``read``, ``folder``, ``add_label_ids``,
+        or ``remove_label_ids`` is required. A label ID cannot be both added and
+        removed in the same request. Removing a label from a thread keeps the
+        label itself. Moving a thread out of ``trash`` restores it and clears its
+        deletion deadline.
         see more: https://resend.com/docs/api-reference/inboxes/update-thread
 
         Args:
