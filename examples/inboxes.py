@@ -140,8 +140,11 @@ print(f"Draft attachments: {[a['filename'] for a in updated_draft['attachments']
 drafts: resend.Inboxes.Drafts.ListResponse = resend.Inboxes.Drafts.list(inbox_id)
 print(f"Found {len(drafts['data'])} drafts")
 
+send_options: resend.Inboxes.Drafts.SendOptions = {
+    "idempotency_key": f"send-draft-{draft['id']}",
+}
 sent: resend.Inboxes.Drafts.SendResponse = resend.Inboxes.Drafts.send(
-    inbox_id, draft["id"]
+    inbox_id, draft["id"], send_options
 )
 print(f"Sent draft as email: {sent['id']}")
 
