@@ -897,6 +897,11 @@ class TestInboxesRequest(TestCase):
         )
         assert self.last_request()["json"] == {"attachments": []}
 
+        resend.Inboxes.Drafts.update(
+            {"inbox_id": INBOX_ID, "id": DRAFT_ID, "attachments": None}
+        )
+        assert self.last_request()["json"] == {"attachments": None}
+
         resend.Inboxes.Drafts.remove(INBOX_ID, DRAFT_ID)
         req = self.last_request()
         assert (req["method"], req["url"]) == ("delete", f"{base}/{DRAFT_ID}")

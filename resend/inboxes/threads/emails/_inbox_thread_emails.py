@@ -145,7 +145,9 @@ class InboxThreadEmails:
         """
         Custom headers to be added to the email. The ``In-Reply-To``,
         ``References`` and ``Reply-To`` headers are set by Resend and cannot be
-        set here. Sending one of them, in any letter case, returns a 422.
+        set here. Sending one of them, in any letter case, returns a 422. Header
+        names cannot be empty, and names and values cannot contain line breaks
+        or null characters, or the request returns a 422.
         """
         attachments: NotRequired[List[Union[Attachment, RemoteAttachment]]]
         """
@@ -153,6 +155,8 @@ class InboxThreadEmails:
         ``path``. Up to 10 files. The ``content`` of all files can total at most
         25 MB. A ``path`` file counts toward the 10 files only, because it is
         fetched when the email is sent.
+        An empty file, a blocked file type, or a ``path`` that is not an ``http``
+        or ``https`` URL or points to ``localhost`` returns a 422.
         """
 
     class ReplyOptions(TypedDict):
@@ -171,9 +175,10 @@ class InboxThreadEmails:
         Allows for safe retries without duplicating operations.
         If provided, will be sent as the `Idempotency-Key` header.
         Between 1 and 256 characters, so the reply is sent only once. A retry with the
-        same key within 24 hours returns the first response, with the
-        ``idempotent-replayed: true`` header. Reusing the key with a different
-        body, or while the first request is still running, returns a 409.
+        same key within 24 hours replays the first successful (2xx) response,
+        with the ``idempotent-replayed: true`` header. A failed request is not
+        stored, so you can retry it with the same key. Reusing the key with a
+        different body, or while the first request is still running, returns a 409.
         """
 
     class ReplyResponse(BaseResponse):
@@ -253,7 +258,9 @@ class InboxThreadEmails:
         """
         Custom headers to be added to the email. The ``In-Reply-To``,
         ``References`` and ``Reply-To`` headers are set by Resend and cannot be
-        set here. Sending one of them, in any letter case, returns a 422.
+        set here. Sending one of them, in any letter case, returns a 422. Header
+        names cannot be empty, and names and values cannot contain line breaks
+        or null characters, or the request returns a 422.
         """
         attachments: NotRequired[List[Union[Attachment, RemoteAttachment]]]
         """
@@ -262,6 +269,8 @@ class InboxThreadEmails:
         message, which the forward also sends. Together they can have up to 10
         files and at most 25 MB of ``content``. A ``path`` file counts toward the
         10 files only, because it is fetched when the email is sent.
+        An empty file, a blocked file type, or a ``path`` that is not an ``http``
+        or ``https`` URL or points to ``localhost`` returns a 422.
         """
 
     class ForwardOptions(TypedDict):
@@ -280,9 +289,10 @@ class InboxThreadEmails:
         Allows for safe retries without duplicating operations.
         If provided, will be sent as the `Idempotency-Key` header.
         Between 1 and 256 characters, so the forward is sent only once. A retry with the
-        same key within 24 hours returns the first response, with the
-        ``idempotent-replayed: true`` header. Reusing the key with a different
-        body, or while the first request is still running, returns a 409.
+        same key within 24 hours replays the first successful (2xx) response,
+        with the ``idempotent-replayed: true`` header. A failed request is not
+        stored, so you can retry it with the same key. Reusing the key with a
+        different body, or while the first request is still running, returns a 409.
         """
 
     class ForwardResponse(BaseResponse):

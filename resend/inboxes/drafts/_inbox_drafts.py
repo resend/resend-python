@@ -34,7 +34,7 @@ class InboxDrafts:
 
         content: str
         """
-        The content of the file, encoded in base64.
+        The content of the file, encoded in base64. It cannot be empty.
         """
         filename: str
         """
@@ -178,9 +178,10 @@ class InboxDrafts:
         Allows for safe retries without duplicating operations.
         If provided, will be sent as the `Idempotency-Key` header.
         Between 1 and 256 characters, so the draft is created only once. A retry with the
-        same key within 24 hours returns the first response, with the
-        ``idempotent-replayed: true`` header. Reusing the key with a different
-        body, or while the first request is still running, returns a 409.
+        same key within 24 hours replays the first successful (2xx) response,
+        with the ``idempotent-replayed: true`` header. A failed request is not
+        stored, so you can retry it with the same key. Reusing the key with a
+        different body, or while the first request is still running, returns a 409.
         """
 
     class CreateResponse(BaseResponse):
@@ -218,7 +219,7 @@ class InboxDrafts:
             subject (NotRequired[Optional[str]]): The subject.
             html (NotRequired[Optional[str]]): The HTML body.
             text (NotRequired[Optional[str]]): The plain text body.
-            attachments (NotRequired[List[AttachmentParams]]): Files that replace
+            attachments (NotRequired[Optional[List[AttachmentParams]]]): Files that replace
                 every attachment on the draft.
         """
 
@@ -256,13 +257,13 @@ class InboxDrafts:
         """
         The plain text body. Pass None to clear.
         """
-        attachments: NotRequired[List["InboxDrafts.AttachmentParams"]]
+        attachments: NotRequired[Optional[List["InboxDrafts.AttachmentParams"]]]
         """
         Files to store on the draft. Each one needs ``content``, ``filename`` and
         ``content_type``. A ``path`` or ``content_id`` returns a 422. The files on
         a draft can total at most 25 MB. An empty file or a blocked file type
         returns a 422. Sending the field replaces every attachment on the draft.
-        Send ``[]`` to remove them all.
+        Send ``[]`` or None to remove them all.
         """
 
     class RemoveResponse(BaseResponse):
@@ -300,7 +301,9 @@ class InboxDrafts:
         """
         Custom headers to be added to the email. The ``In-Reply-To``,
         ``References`` and ``Reply-To`` headers are set by Resend and cannot be
-        set here. Sending one of them, in any letter case, returns a 422.
+        set here. Sending one of them, in any letter case, returns a 422. Header
+        names cannot be empty, and names and values cannot contain line breaks
+        or null characters, or the request returns a 422.
         """
 
     class SendOptions(TypedDict):
@@ -319,9 +322,10 @@ class InboxDrafts:
         Allows for safe retries without duplicating operations.
         If provided, will be sent as the `Idempotency-Key` header.
         Between 1 and 256 characters, so the draft is sent only once. A retry with the
-        same key within 24 hours returns the first response, with the
-        ``idempotent-replayed: true`` header. Reusing the key with a different
-        body, or while the first request is still running, returns a 409.
+        same key within 24 hours replays the first successful (2xx) response,
+        with the ``idempotent-replayed: true`` header. A failed request is not
+        stored, so you can retry it with the same key. Reusing the key with a
+        different body, or while the first request is still running, returns a 409.
         """
 
     class SendResponse(BaseResponse):
