@@ -930,8 +930,45 @@ class TestInboxesRequest(TestCase):
         assert req["headers"]["Idempotency-Key"] == "create-1"
         assert req["json"] == {"text": "Hi"}
 
-        resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID, {"idempotency_key": "send-1"})
+        resend.Inboxes.Drafts.send(
+            INBOX_ID, DRAFT_ID, options={"idempotency_key": "send-1"}
+        )
         assert self.last_request()["headers"]["Idempotency-Key"] == "send-1"
 
         resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID)
         assert "Idempotency-Key" not in self.last_request()["headers"]
+
+    def test_sending_methods_send_custom_headers(self) -> None:
+        headers = {"X-Ticket-Id": "4821"}
+        resend.Inboxes.Threads.Emails.reply(
+            {
+                "inbox_id": INBOX_ID,
+                "thread_id": THREAD_ID,
+                "email_id": EMAIL_ID,
+                "text": "Hi",
+                "headers": headers,
+            }
+        )
+        assert self.last_request()["json"] == {"text": "Hi", "headers": headers}
+
+        resend.Inboxes.Threads.Emails.forward(
+            {
+                "inbox_id": INBOX_ID,
+                "thread_id": THREAD_ID,
+                "email_id": EMAIL_ID,
+                "to": "colleague@example.org",
+                "headers": headers,
+            }
+        )
+        assert self.last_request()["json"] == {
+            "to": "colleague@example.org",
+            "headers": headers,
+        }
+
+        resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID, {"headers": headers})
+        req = self.last_request()
+        assert req["url"] == f"https://api.resend.com/inboxes/{INBOX_ID}/drafts/{DRAFT_ID}/send"
+        assert req["json"] == {"headers": headers}
+
+        resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID)
+        assert self.last_request()["json"] == {}

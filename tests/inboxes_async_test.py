@@ -334,7 +334,10 @@ class TestResendInboxThreadEmailsAsync(AsyncResendBaseTest):
         )
         assert draft["id"] == SENT_EMAIL_ID
         sent = await resend.Inboxes.Drafts.send_async(
-            INBOX_ID, DRAFT_ID, {"idempotency_key": "k"}
+            INBOX_ID,
+            DRAFT_ID,
+            {"headers": {"X-Ticket-Id": "4821"}},
+            {"idempotency_key": "k"},
         )
         assert sent["id"] == SENT_EMAIL_ID
 

@@ -86,6 +86,7 @@ class InboxThreadEmails:
             bcc (NotRequired[Union[str, List[str]]]): BCC recipients.
             subject (NotRequired[str]): The subject of the reply.
             reply_all (NotRequired[bool]): Reply to everyone on the original message.
+            headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
             attachments (NotRequired[List[Union[Attachment, RemoteAttachment]]]): Files to attach.
         """
 
@@ -139,6 +140,12 @@ class InboxThreadEmails:
         address, otherwise to its ``to`` recipients, and copies its ``cc``
         recipients. The inbox address is always excluded, and duplicates are
         removed. Defaults to False.
+        """
+        headers: NotRequired[Dict[str, str]]
+        """
+        Custom headers to be added to the email. The ``In-Reply-To``,
+        ``References`` and ``Reply-To`` headers are set by Resend and cannot be
+        set here. Sending one of them, in any letter case, returns a 422.
         """
         attachments: NotRequired[List[Union[Attachment, RemoteAttachment]]]
         """
@@ -196,6 +203,7 @@ class InboxThreadEmails:
             html (NotRequired[str]): An HTML note sent above the quoted original.
             text (NotRequired[str]): A plain-text note sent above the quoted original.
             subject (NotRequired[str]): The subject of the forward.
+            headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
             attachments (NotRequired[List[Union[Attachment, RemoteAttachment]]]): Files to attach.
         """
 
@@ -240,6 +248,12 @@ class InboxThreadEmails:
         """
         The subject of the forward. Cannot contain a line break. When omitted, the
         thread subject is used, prefixed with ``Fwd:`` if it does not already start with it.
+        """
+        headers: NotRequired[Dict[str, str]]
+        """
+        Custom headers to be added to the email. The ``In-Reply-To``,
+        ``References`` and ``Reply-To`` headers are set by Resend and cannot be
+        set here. Sending one of them, in any letter case, returns a 422.
         """
         attachments: NotRequired[List[Union[Attachment, RemoteAttachment]]]
         """

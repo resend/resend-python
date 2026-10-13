@@ -288,6 +288,21 @@ class InboxDrafts:
         Indicates whether the draft was successfully deleted.
         """
 
+    class SendParams(TypedDict):
+        """
+        SendParams are the optional body parameters for sending a draft.
+
+        Attributes:
+            headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
+        """
+
+        headers: NotRequired[Dict[str, str]]
+        """
+        Custom headers to be added to the email. The ``In-Reply-To``,
+        ``References`` and ``Reply-To`` headers are set by Resend and cannot be
+        set here. Sending one of them, in any letter case, returns a 422.
+        """
+
     class SendOptions(TypedDict):
         """
         SendOptions is the class that wraps the options for the send method.
@@ -444,18 +459,24 @@ class InboxDrafts:
 
     @classmethod
     def send(
-        cls, inbox_id: str, draft_id: str, options: Optional[SendOptions] = None
+        cls,
+        inbox_id: str,
+        draft_id: str,
+        params: Optional[SendParams] = None,
+        options: Optional[SendOptions] = None,
     ) -> SendResponse:
         """
         Send a draft from the inbox address. A reply draft is sent in its thread.
         A draft without a thread starts a new thread. The draft must have at least
         one ``to`` recipient, a non-empty ``subject``, and ``html`` or ``text``,
         or the request returns a 422. A draft that was already sent returns a 409.
+        The request body is optional and takes only ``headers``.
         see more: https://resend.com/docs/api-reference/inboxes/send-draft
 
         Args:
             inbox_id (str): The Inbox ID. An email address is not accepted.
             draft_id (str): The Draft ID.
+            params (Optional[SendParams]): Optional body parameters, ie: headers
             options (Optional[SendOptions]): The send options, ie: idempotency_key
 
         Returns:
@@ -463,7 +484,10 @@ class InboxDrafts:
         """
         path = f"/inboxes/{inbox_id}/drafts/{draft_id}/send"
         resp = request.Request[InboxDrafts.SendResponse](
-            path=path, params={}, verb="post", options=cast(Dict[Any, Any], options)
+            path=path,
+            params=cast(Dict[Any, Any], params) if params else {},
+            verb="post",
+            options=cast(Dict[Any, Any], options),
         ).perform_with_content()
         return resp
 
@@ -591,19 +615,24 @@ class InboxDrafts:
 
     @classmethod
     async def send_async(
-        cls, inbox_id: str, draft_id: str, options: Optional[SendOptions] = None
+        cls,
+        inbox_id: str,
+        draft_id: str,
+        params: Optional[SendParams] = None,
+        options: Optional[SendOptions] = None,
     ) -> SendResponse:
         """
         Send a draft from the inbox address (async). A reply draft is sent in its
         thread. A draft without a thread starts a new thread. The draft must have
         at least one ``to`` recipient, a non-empty ``subject``, and ``html`` or
         ``text``, or the request returns a 422. A draft that was already sent
-        returns a 409.
+        returns a 409. The request body is optional and takes only ``headers``.
         see more: https://resend.com/docs/api-reference/inboxes/send-draft
 
         Args:
             inbox_id (str): The Inbox ID. An email address is not accepted.
             draft_id (str): The Draft ID.
+            params (Optional[SendParams]): Optional body parameters, ie: headers
             options (Optional[SendOptions]): The send options, ie: idempotency_key
 
         Returns:
@@ -611,6 +640,9 @@ class InboxDrafts:
         """
         path = f"/inboxes/{inbox_id}/drafts/{draft_id}/send"
         resp = await AsyncRequest[InboxDrafts.SendResponse](
-            path=path, params={}, verb="post", options=cast(Dict[Any, Any], options)
+            path=path,
+            params=cast(Dict[Any, Any], params) if params else {},
+            verb="post",
+            options=cast(Dict[Any, Any], options),
         ).perform_with_content()
         return resp
