@@ -65,7 +65,7 @@ class InboxThread(_InboxThreadFrom):
     """
     The labels attached to the thread.
     """
-    message_count: int
+    email_count: int
     """
     The number of emails in the thread.
     """

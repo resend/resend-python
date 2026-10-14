@@ -40,7 +40,7 @@ THREAD: Dict[str, Any] = {
     "cc": [],
     "bcc": [],
     "labels": [THREAD_LABEL],
-    "message_count": 2,
+    "email_count": 2,
     "has_attachment": True,
     "has_draft": False,
     "read": False,
