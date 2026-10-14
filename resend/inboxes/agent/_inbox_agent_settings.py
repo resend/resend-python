@@ -34,7 +34,10 @@ class InboxAgentSettings(BaseResponse):
     """
     tone: Optional[str]
     """
-    The tone the agent writes in, such as ``friendly and concise``.
+    The tone the agent writes in. One of the presets ``concise_professional``,
+    ``concise_casual``, ``expanded_professional``, or ``expanded_casual``, or
+    custom text in the owner's own words, such as ``friendly and concise``.
+    Older dashboard values such as ``Concise · Casual`` are custom text.
     None when no tone is set.
     """
     enabled_actions: List[InboxAgentAction]

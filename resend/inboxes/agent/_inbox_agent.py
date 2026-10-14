@@ -45,9 +45,12 @@ class InboxAgent:
         """
         tone: NotRequired[Optional[str]]
         """
-        The tone the agent writes in, such as ``friendly and concise``.
-        Max 64 characters. Leading and trailing whitespace is trimmed, and the
-        trimmed value must not be empty. Send None to clear the tone.
+        The tone the agent writes in. Use one of the presets
+        ``concise_professional``, ``concise_casual``, ``expanded_professional``,
+        or ``expanded_casual``, or describe the tone in your own words, such as
+        ``friendly and concise``. Custom text is max 64 characters. Leading and
+        trailing whitespace is trimmed, and the trimmed value must not be empty.
+        Send None to clear the tone.
         """
         enabled_actions: NotRequired[List[InboxAgentAction]]
         """
