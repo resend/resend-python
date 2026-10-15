@@ -51,6 +51,7 @@ class TestResendBroadcasts(ResendBaseTest):
                 "sent_at": None,
                 "html": "<p>Hello World</p>",
                 "text": "Hello World",
+                "topic_id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
             }
         )
 
@@ -68,6 +69,7 @@ class TestResendBroadcasts(ResendBaseTest):
         assert broadcast["sent_at"] is None
         assert broadcast["html"] == "<p>Hello World</p>"
         assert broadcast["text"] == "Hello World"
+        assert broadcast["topic_id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
 
     def test_broadcasts_send(self) -> None:
         self.set_mock_json({"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e791"})

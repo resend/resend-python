@@ -79,6 +79,7 @@ class TestResendBroadcastsAsync(AsyncResendBaseTest):
                 "created_at": "2024-12-01 19:32:22.98+00",
                 "scheduled_at": None,
                 "sent_at": None,
+                "topic_id": None,
             }
         )
 
@@ -96,6 +97,7 @@ class TestResendBroadcastsAsync(AsyncResendBaseTest):
         assert broadcast["created_at"] == "2024-12-01 19:32:22.98+00"
         assert broadcast["scheduled_at"] is None
         assert broadcast["sent_at"] is None
+        assert broadcast["topic_id"] is None
 
     async def test_should_get_broadcasts_async_raise_exception_when_no_content(
         self,
