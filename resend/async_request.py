@@ -101,13 +101,13 @@ class AsyncRequest(Generic[T]):
             json_params = None
 
         try:
-            # Priority 1: dedicated async client (auto-detected or explicitly set)
+            # An explicitly replaced dedicated client takes priority.
             async_client = resend.default_async_http_client
 
-            # Priority 2: user set an AsyncHTTPClient on default_http_client (legacy, still supported)
-            if async_client is None and isinstance(
-                resend.default_http_client, AsyncHTTPClient
-            ):
+            # Legacy custom clients take priority over the automatic default.
+            if (
+                async_client is None or async_client is resend._auto_async_http_client
+            ) and isinstance(resend.default_http_client, AsyncHTTPClient):
                 async_client = resend.default_http_client
 
             if async_client is None:
