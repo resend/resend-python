@@ -71,3 +71,7 @@ class Broadcast(_FromParam):
     """
     The plain text content of the broadcast.
     """
+    topic_id: Union[str, None]
+    """
+    The topic ID that the broadcast is scoped to.
+    """
