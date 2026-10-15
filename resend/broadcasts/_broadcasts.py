@@ -51,7 +51,7 @@ class Broadcasts:
             text (NotRequired[str]): The text version of the message.
             name (NotRequired[str]): The friendly name of the broadcast. Only used for internal reference.
             preview_text (NotRequired[str]): The preview text of the email.
-            topic_id (NotRequired[str]): The topic ID that the broadcast will be scoped to.
+            topic_id (NotRequired[Union[str, None]]): The topic ID that the broadcast will be scoped to.
             send (NotRequired[bool]): When true, the broadcast will be sent immediately after creation.
             scheduled_at (NotRequired[str]): Schedule the broadcast to be sent later. Only valid when send is true.
         """
@@ -91,7 +91,7 @@ class Broadcasts:
         """
         The preview text of the email.
         """
-        topic_id: NotRequired[str]
+        topic_id: NotRequired[Union[str, None]]
         """
         The topic ID that the broadcast will be scoped to.
         """
@@ -121,7 +121,7 @@ class Broadcasts:
             text (NotRequired[str]): The text version of the message.
             name (NotRequired[str]): The friendly name of the broadcast. Only used for internal reference.
             preview_text (NotRequired[str]): The preview text of the email.
-            topic_id (NotRequired[str]): The topic ID that the broadcast will be scoped to.
+            topic_id (NotRequired[Union[str, None]]): The topic ID that the broadcast will be scoped to.
         """
 
         broadcast_id: str
@@ -163,9 +163,10 @@ class Broadcasts:
         """
         The preview text of the email.
         """
-        topic_id: NotRequired[str]
+        topic_id: NotRequired[Union[str, None]]
         """
         The topic ID that the broadcast will be scoped to.
+        Set to None to remove the topic from the broadcast.
         """
 
     class SendParams(TypedDict):

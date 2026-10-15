@@ -528,3 +528,13 @@ class TestBroadcastsRequestBody(TestCase):
         _, kwargs = self.mock_client.request.call_args
         assert kwargs["json"]["preview_text"] == "Product updates for this month"
         assert kwargs["json"]["topic_id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
+
+    def test_update_sends_null_topic_id(self) -> None:
+        params: resend.Broadcasts.UpdateParams = {
+            "broadcast_id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794",
+            "topic_id": None,
+        }
+        resend.Broadcasts.update(params)
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["json"]["topic_id"] is None
