@@ -33,6 +33,21 @@ WebhookEvent = Literal[
     "topic.created",
     "topic.updated",
     "topic.deleted",
+    # Inbox events
+    "inbox.created",
+    "inbox.updated",
+    "inbox.deleted",
+    "inbox.thread.created",
+    "inbox.email.received",
+    "inbox.email.sent",
+    "inbox.thread.folder.updated",
+    "inbox.thread.assigned",
+    "inbox.thread.unassigned",
+    "inbox.thread.labels.updated",
+    "inbox.draft.created",
+    "inbox.draft.updated",
+    "inbox.draft.sent",
+    "inbox.draft.deleted",
 ]
 
 
