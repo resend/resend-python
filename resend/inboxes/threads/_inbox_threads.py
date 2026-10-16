@@ -5,11 +5,13 @@ from typing_extensions import NotRequired, TypedDict
 from resend import request
 from resend._base_response import BaseResponse
 from resend.inboxes._inbox import InboxMessageFolder, MoveThreadFolder
-from resend.inboxes._query import build_inbox_query_path, without_keys
+from resend.inboxes._query import (build_inbox_query_path, inbox_path,
+                                   without_keys)
 
 from ._inbox_thread import (InboxThread, InboxThreadSearchResult,
                             InboxThreadSummary)
 from .emails._inbox_thread_emails import InboxThreadEmails
+from .labels._inbox_thread_labels import InboxThreadLabels
 
 # Async imports (optional - only available with pip install resend[async])
 try:
@@ -108,6 +110,9 @@ class InboxThreads:
     class Emails(InboxThreadEmails):
         pass
 
+    class Labels(InboxThreadLabels):
+        pass
+
     class ListParams(_ListParams):
         """
         ListParams are the filter and pagination parameters for listing threads.
@@ -196,21 +201,19 @@ class InboxThreads:
     class UpdateParams(TypedDict):
         """
         UpdateParams are the parameters for updating a thread. At least one of
-        ``read``, ``folder``, ``add_label_ids``, or ``remove_label_ids`` is required.
-        A label ID cannot be both added and removed in the same request.
+        ``read`` or ``folder`` is required. To change the labels of a thread,
+        use ``Inboxes.Threads.Labels``.
 
         Attributes:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             id (str): The Thread ID.
             read (NotRequired[bool]): Marks every email in the thread read or unread.
             folder (NotRequired[MoveThreadFolder]): Moves the thread to this folder.
-            add_label_ids (NotRequired[List[str]]): Label IDs to apply to the thread.
-            remove_label_ids (NotRequired[List[str]]): Label IDs to remove from the thread.
         """
 
         inbox_id: str
         """
-        The Inbox ID. An email address is not accepted.
+        The Inbox ID or the inbox email address.
         """
         id: str
         """
@@ -225,16 +228,6 @@ class InboxThreads:
         Moves the thread to this folder. ``sent`` is assigned automatically and
         cannot be set. Moving a thread out of ``trash`` restores it and clears its
         deletion deadline.
-        """
-        add_label_ids: NotRequired[List[str]]
-        """
-        Label IDs to apply to the thread. Between 1 and 10 IDs.
-        A label ID that does not exist in the inbox returns a 404.
-        """
-        remove_label_ids: NotRequired[List[str]]
-        """
-        Label IDs to remove from the thread. Between 1 and 10 IDs. The labels
-        themselves are kept. A label ID that does not exist in the inbox returns a 404.
         """
 
     class RemoveResponse(BaseResponse):
@@ -271,14 +264,14 @@ class InboxThreads:
         see more: https://resend.com/docs/api-reference/inboxes/list-threads
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             params (Optional[ListParams]): Optional filter and pagination parameters
 
         Returns:
             ListResponse: A page of the threads of the inbox
         """
         path = build_inbox_query_path(
-            f"/inboxes/{inbox_id}/threads",
+            f"{inbox_path(inbox_id)}/threads",
             cast(Dict[Any, Any], params) if params else None,
         )
         resp = request.Request[InboxThreads.ListResponse](
@@ -303,14 +296,14 @@ class InboxThreads:
         see more: https://resend.com/docs/api-reference/inboxes/search-threads
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             params (Optional[SearchParams]): Optional search, filter and pagination parameters
 
         Returns:
             SearchResponse: A page of the matching threads
         """
         path = build_inbox_query_path(
-            f"/inboxes/{inbox_id}/threads/search",
+            f"{inbox_path(inbox_id)}/threads/search",
             cast(Dict[Any, Any], params) if params else None,
         )
         resp = request.Request[InboxThreads.SearchResponse](
@@ -326,13 +319,13 @@ class InboxThreads:
         see more: https://resend.com/docs/api-reference/inboxes/get-thread
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             thread_id (str): The Thread ID.
 
         Returns:
             InboxThreadSummary: The thread summary
         """
-        path = f"/inboxes/{inbox_id}/threads/{thread_id}"
+        path = f"{inbox_path(inbox_id)}/threads/{thread_id}"
         resp = request.Request[InboxThreadSummary](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -341,14 +334,11 @@ class InboxThreads:
     @classmethod
     def update(cls, params: UpdateParams) -> InboxThreadSummary:
         """
-        Mark a thread read or unread, move it to a folder, or add and remove labels.
-        At least one of ``read``, ``folder``, ``add_label_ids``, or
-        ``remove_label_ids`` is required. A label ID cannot be both added and
-        removed in the same request. Removing a label from a thread keeps the
-        label itself. Moving a thread out of ``trash`` restores it and clears its
-        deletion deadline. The changes apply in this order: ``read``, ``folder``,
-        added labels, removed labels. They are not atomic, so a 404 for a label
-        leaves the earlier changes applied.
+        Mark a thread read or unread, or move it to a folder. At least one of
+        ``read`` or ``folder`` is required. To change the labels of a thread, use
+        ``Inboxes.Threads.Labels``. Moving a thread out of ``trash`` restores it
+        and clears its deletion deadline. The changes apply in this order:
+        ``read``, then ``folder``. They are not atomic.
         see more: https://resend.com/docs/api-reference/inboxes/update-thread
 
         Args:
@@ -357,7 +347,7 @@ class InboxThreads:
         Returns:
             InboxThreadSummary: The updated thread summary
         """
-        path = f"/inboxes/{params['inbox_id']}/threads/{params['id']}"
+        path = f"{inbox_path(params['inbox_id'])}/threads/{params['id']}"
         resp = request.Request[InboxThreadSummary](
             path=path, params=without_keys(params, "inbox_id", "id"), verb="patch"
         ).perform_with_content()
@@ -372,13 +362,13 @@ class InboxThreads:
         see more: https://resend.com/docs/api-reference/inboxes/delete-thread
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             thread_id (str): The Thread ID.
 
         Returns:
             RemoveResponse: The thread ID and whether this call moved it to trash
         """
-        path = f"/inboxes/{inbox_id}/threads/{thread_id}"
+        path = f"{inbox_path(inbox_id)}/threads/{thread_id}"
         resp = request.Request[InboxThreads.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
@@ -397,14 +387,14 @@ class InboxThreads:
         see more: https://resend.com/docs/api-reference/inboxes/list-threads
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             params (Optional[ListParams]): Optional filter and pagination parameters
 
         Returns:
             ListResponse: A page of the threads of the inbox
         """
         path = build_inbox_query_path(
-            f"/inboxes/{inbox_id}/threads",
+            f"{inbox_path(inbox_id)}/threads",
             cast(Dict[Any, Any], params) if params else None,
         )
         resp = await AsyncRequest[InboxThreads.ListResponse](
@@ -429,14 +419,14 @@ class InboxThreads:
         see more: https://resend.com/docs/api-reference/inboxes/search-threads
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             params (Optional[SearchParams]): Optional search, filter and pagination parameters
 
         Returns:
             SearchResponse: A page of the matching threads
         """
         path = build_inbox_query_path(
-            f"/inboxes/{inbox_id}/threads/search",
+            f"{inbox_path(inbox_id)}/threads/search",
             cast(Dict[Any, Any], params) if params else None,
         )
         resp = await AsyncRequest[InboxThreads.SearchResponse](
@@ -452,13 +442,13 @@ class InboxThreads:
         see more: https://resend.com/docs/api-reference/inboxes/get-thread
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             thread_id (str): The Thread ID.
 
         Returns:
             InboxThreadSummary: The thread summary
         """
-        path = f"/inboxes/{inbox_id}/threads/{thread_id}"
+        path = f"{inbox_path(inbox_id)}/threads/{thread_id}"
         resp = await AsyncRequest[InboxThreadSummary](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -467,14 +457,11 @@ class InboxThreads:
     @classmethod
     async def update_async(cls, params: UpdateParams) -> InboxThreadSummary:
         """
-        Mark a thread read or unread, move it to a folder, or add and remove
-        labels (async). At least one of ``read``, ``folder``, ``add_label_ids``,
-        or ``remove_label_ids`` is required. A label ID cannot be both added and
-        removed in the same request. Removing a label from a thread keeps the
-        label itself. Moving a thread out of ``trash`` restores it and clears its
-        deletion deadline. The changes apply in this order: ``read``, ``folder``,
-        added labels, removed labels. They are not atomic, so a 404 for a label
-        leaves the earlier changes applied.
+        Mark a thread read or unread, or move it to a folder (async). At least
+        one of ``read`` or ``folder`` is required. To change the labels of a
+        thread, use ``Inboxes.Threads.Labels``. Moving a thread out of ``trash``
+        restores it and clears its deletion deadline. The changes apply in this
+        order: ``read``, then ``folder``. They are not atomic.
         see more: https://resend.com/docs/api-reference/inboxes/update-thread
 
         Args:
@@ -483,7 +470,7 @@ class InboxThreads:
         Returns:
             InboxThreadSummary: The updated thread summary
         """
-        path = f"/inboxes/{params['inbox_id']}/threads/{params['id']}"
+        path = f"{inbox_path(params['inbox_id'])}/threads/{params['id']}"
         resp = await AsyncRequest[InboxThreadSummary](
             path=path, params=without_keys(params, "inbox_id", "id"), verb="patch"
         ).perform_with_content()
@@ -498,13 +485,13 @@ class InboxThreads:
         see more: https://resend.com/docs/api-reference/inboxes/delete-thread
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             thread_id (str): The Thread ID.
 
         Returns:
             RemoveResponse: The thread ID and whether this call moved it to trash
         """
-        path = f"/inboxes/{inbox_id}/threads/{thread_id}"
+        path = f"{inbox_path(inbox_id)}/threads/{thread_id}"
         resp = await AsyncRequest[InboxThreads.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()

@@ -4,7 +4,7 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend._base_response import BaseResponse
-from resend.inboxes._query import without_keys
+from resend.inboxes._query import inbox_path, without_keys
 
 from ._inbox_label import InboxLabel
 
@@ -44,14 +44,14 @@ class InboxLabels:
         CreateParams are the parameters for creating a label on an inbox.
 
         Attributes:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             name (str): The name of the label.
             color (NotRequired[str]): The color of the label, as a #RRGGBB hex color.
         """
 
         inbox_id: str
         """
-        The Inbox ID. An email address is not accepted.
+        The Inbox ID or the inbox email address.
         """
         name: str
         """
@@ -88,7 +88,7 @@ class InboxLabels:
         Omitted fields keep their current value.
 
         Attributes:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             id (str): The Label ID.
             name (NotRequired[str]): A new name for the label.
             color (NotRequired[str]): A new color for the label, as a #RRGGBB hex color.
@@ -96,7 +96,7 @@ class InboxLabels:
 
         inbox_id: str
         """
-        The Inbox ID. An email address is not accepted.
+        The Inbox ID or the inbox email address.
         """
         id: str
         """
@@ -160,12 +160,12 @@ class InboxLabels:
         see more: https://resend.com/docs/api-reference/inboxes/list-labels
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
 
         Returns:
             ListResponse: The labels on the inbox
         """
-        path = f"/inboxes/{inbox_id}/labels"
+        path = f"{inbox_path(inbox_id)}/labels"
         resp = request.Request[InboxLabels.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -185,7 +185,7 @@ class InboxLabels:
         Returns:
             CreateResponse: The object type and the ID of the label
         """
-        path = f"/inboxes/{params['inbox_id']}/labels"
+        path = f"{inbox_path(params['inbox_id'])}/labels"
         resp = request.Request[InboxLabels.CreateResponse](
             path=path, params=without_keys(params, "inbox_id"), verb="post"
         ).perform_with_content()
@@ -205,7 +205,7 @@ class InboxLabels:
         Returns:
             UpdateResponse: The object type and the ID of the updated label
         """
-        path = f"/inboxes/{params['inbox_id']}/labels/{params['id']}"
+        path = f"{inbox_path(params['inbox_id'])}/labels/{params['id']}"
         resp = request.Request[InboxLabels.UpdateResponse](
             path=path, params=without_keys(params, "inbox_id", "id"), verb="patch"
         ).perform_with_content()
@@ -218,13 +218,13 @@ class InboxLabels:
         see more: https://resend.com/docs/api-reference/inboxes/delete-label
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             label_id (str): The Label ID.
 
         Returns:
             RemoveResponse: The removed label ID and its deleted status
         """
-        path = f"/inboxes/{inbox_id}/labels/{label_id}"
+        path = f"{inbox_path(inbox_id)}/labels/{label_id}"
         resp = request.Request[InboxLabels.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
@@ -238,12 +238,12 @@ class InboxLabels:
         see more: https://resend.com/docs/api-reference/inboxes/list-labels
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
 
         Returns:
             ListResponse: The labels on the inbox
         """
-        path = f"/inboxes/{inbox_id}/labels"
+        path = f"{inbox_path(inbox_id)}/labels"
         resp = await AsyncRequest[InboxLabels.ListResponse](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -263,7 +263,7 @@ class InboxLabels:
         Returns:
             CreateResponse: The object type and the ID of the label
         """
-        path = f"/inboxes/{params['inbox_id']}/labels"
+        path = f"{inbox_path(params['inbox_id'])}/labels"
         resp = await AsyncRequest[InboxLabels.CreateResponse](
             path=path, params=without_keys(params, "inbox_id"), verb="post"
         ).perform_with_content()
@@ -283,7 +283,7 @@ class InboxLabels:
         Returns:
             UpdateResponse: The object type and the ID of the updated label
         """
-        path = f"/inboxes/{params['inbox_id']}/labels/{params['id']}"
+        path = f"{inbox_path(params['inbox_id'])}/labels/{params['id']}"
         resp = await AsyncRequest[InboxLabels.UpdateResponse](
             path=path, params=without_keys(params, "inbox_id", "id"), verb="patch"
         ).perform_with_content()
@@ -296,13 +296,13 @@ class InboxLabels:
         see more: https://resend.com/docs/api-reference/inboxes/delete-label
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             label_id (str): The Label ID.
 
         Returns:
             RemoveResponse: The removed label ID and its deleted status
         """
-        path = f"/inboxes/{inbox_id}/labels/{label_id}"
+        path = f"{inbox_path(inbox_id)}/labels/{label_id}"
         resp = await AsyncRequest[InboxLabels.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()

@@ -1,4 +1,5 @@
 from typing import Any, Dict, Mapping, Optional
+from urllib.parse import quote
 
 from resend.pagination_helper import PaginationHelper
 
@@ -40,3 +41,11 @@ def without_keys(params: Mapping[str, Any], *keys: str) -> Dict[str, Any]:
     path IDs in the params dict, but the API takes them in the path only.
     """
     return {k: v for k, v in params.items() if k not in keys}
+
+
+def inbox_path(inbox_id: str) -> str:
+    """
+    Return the path of an inbox. The API takes the Inbox ID or the inbox email
+    address, and an address must be percent-encoded to fit in the path.
+    """
+    return f"/inboxes/{quote(inbox_id, safe='')}"

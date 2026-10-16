@@ -10,11 +10,21 @@ InboxAgentAction = Literal[
     "add_labels",
     "assign_thread",
     "mark_as_spam",
-    "archive_thread",
-    "delete_thread",
+    "archive",
+    "move_to_trash",
 ]
 """
 An action the inbox agent can take.
+"""
+
+InboxAgentTone = Literal[
+    "concise_professional",
+    "concise_casual",
+    "expanded_professional",
+    "expanded_casual",
+]
+"""
+A tone preset the inbox agent writes in.
 """
 
 
@@ -32,15 +42,11 @@ class InboxAgentSettings(BaseResponse):
     Instructions the agent follows when it handles the threads of the inbox.
     None when no instructions are set.
     """
-    tone: Optional[str]
+    tone: Optional[InboxAgentTone]
     """
-    The tone the agent writes in. One of the presets ``concise_professional``,
-    ``concise_casual``, ``expanded_professional``, or ``expanded_casual``, or
-    custom text in the owner's own words, such as ``friendly and concise``.
-    Older dashboard values such as ``Concise · Casual`` are custom text.
-    None when no tone is set.
+    The tone the agent writes in. None when no tone is set.
     """
-    enabled_actions: List[InboxAgentAction]
+    actions: List[InboxAgentAction]
     """
     The actions the agent can take. Empty when no actions are enabled.
     """

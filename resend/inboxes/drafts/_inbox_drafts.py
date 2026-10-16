@@ -4,7 +4,8 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend._base_response import BaseResponse
-from resend.inboxes._query import build_inbox_query_path, without_keys
+from resend.inboxes._query import (build_inbox_query_path, inbox_path,
+                                   without_keys)
 
 from ._inbox_draft import InboxDraft, InboxDraftListItem
 
@@ -103,7 +104,7 @@ class InboxDrafts:
         ``thread_id`` and ``reply_to_email_id`` must be sent together or not at all.
 
         Attributes:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             to (NotRequired[Optional[Union[str, List[str]]]]): The recipients.
             cc (NotRequired[Optional[Union[str, List[str]]]]): The CC recipients.
             bcc (NotRequired[Optional[Union[str, List[str]]]]): The BCC recipients.
@@ -117,7 +118,7 @@ class InboxDrafts:
 
         inbox_id: str
         """
-        The Inbox ID. An email address is not accepted.
+        The Inbox ID or the inbox email address.
         """
         to: NotRequired[Optional[Union[str, List[str]]]]
         """
@@ -211,7 +212,7 @@ class InboxDrafts:
         one non-empty field, and its combined recipients cannot exceed 50.
 
         Attributes:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             id (str): The Draft ID.
             to (NotRequired[Optional[Union[str, List[str]]]]): The recipients.
             cc (NotRequired[Optional[Union[str, List[str]]]]): The CC recipients.
@@ -225,7 +226,7 @@ class InboxDrafts:
 
         inbox_id: str
         """
-        The Inbox ID. An email address is not accepted.
+        The Inbox ID or the inbox email address.
         """
         id: str
         """
@@ -264,6 +265,24 @@ class InboxDrafts:
         a draft can total at most 25 MB. An empty file or a blocked file type
         returns a 422. Sending the field replaces every attachment on the draft.
         Send ``[]`` or None to remove them all.
+        """
+
+    class UpdateResponse(BaseResponse):
+        """
+        UpdateResponse is the response of updating a draft.
+
+        Attributes:
+            object (str): The object type, always "inbox_draft"
+            id (str): The ID of the draft
+        """
+
+        object: str
+        """
+        The object type, always "inbox_draft".
+        """
+        id: str
+        """
+        The ID of the draft.
         """
 
     class RemoveResponse(BaseResponse):
@@ -349,14 +368,14 @@ class InboxDrafts:
         see more: https://resend.com/docs/api-reference/inboxes/list-drafts
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             params (Optional[ListParams]): Optional pagination parameters
 
         Returns:
             ListResponse: A page of the unsent drafts
         """
         path = build_inbox_query_path(
-            f"/inboxes/{inbox_id}/drafts",
+            f"{inbox_path(inbox_id)}/drafts",
             cast(Dict[Any, Any], params) if params else None,
         )
         resp = request.Request[InboxDrafts.ListResponse](
@@ -391,7 +410,7 @@ class InboxDrafts:
         Returns:
             CreateResponse: The object type and the ID of the draft
         """
-        path = f"/inboxes/{params['inbox_id']}/drafts"
+        path = f"{inbox_path(params['inbox_id'])}/drafts"
         resp = request.Request[InboxDrafts.CreateResponse](
             path=path,
             params=without_keys(params, "inbox_id"),
@@ -407,20 +426,20 @@ class InboxDrafts:
         see more: https://resend.com/docs/api-reference/inboxes/get-draft
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             draft_id (str): The Draft ID.
 
         Returns:
             InboxDraft: The draft
         """
-        path = f"/inboxes/{inbox_id}/drafts/{draft_id}"
+        path = f"{inbox_path(inbox_id)}/drafts/{draft_id}"
         resp = request.Request[InboxDraft](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
 
     @classmethod
-    def update(cls, params: UpdateParams) -> InboxDraft:
+    def update(cls, params: UpdateParams) -> UpdateResponse:
         """
         Update the content of an unsent draft. Omitted fields are left unchanged.
         Sending ``attachments`` replaces every attachment on the draft. A request
@@ -433,10 +452,10 @@ class InboxDrafts:
             params (UpdateParams): The inbox ID, the draft ID and the fields to change
 
         Returns:
-            InboxDraft: The updated draft
+            UpdateResponse: The object type and the ID of the draft
         """
-        path = f"/inboxes/{params['inbox_id']}/drafts/{params['id']}"
-        resp = request.Request[InboxDraft](
+        path = f"{inbox_path(params['inbox_id'])}/drafts/{params['id']}"
+        resp = request.Request[InboxDrafts.UpdateResponse](
             path=path, params=without_keys(params, "inbox_id", "id"), verb="patch"
         ).perform_with_content()
         return resp
@@ -449,13 +468,13 @@ class InboxDrafts:
         see more: https://resend.com/docs/api-reference/inboxes/delete-draft
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             draft_id (str): The Draft ID.
 
         Returns:
             RemoveResponse: The draft ID and its deleted status
         """
-        path = f"/inboxes/{inbox_id}/drafts/{draft_id}"
+        path = f"{inbox_path(inbox_id)}/drafts/{draft_id}"
         resp = request.Request[InboxDrafts.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
@@ -478,7 +497,7 @@ class InboxDrafts:
         see more: https://resend.com/docs/api-reference/inboxes/send-draft
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             draft_id (str): The Draft ID.
             params (Optional[SendParams]): Optional body parameters, ie: headers
             options (Optional[SendOptions]): The send options, ie: idempotency_key
@@ -486,7 +505,7 @@ class InboxDrafts:
         Returns:
             SendResponse: The ID of the sent email
         """
-        path = f"/inboxes/{inbox_id}/drafts/{draft_id}/send"
+        path = f"{inbox_path(inbox_id)}/drafts/{draft_id}/send"
         resp = request.Request[InboxDrafts.SendResponse](
             path=path,
             params=cast(Dict[Any, Any], params) if params else {},
@@ -505,14 +524,14 @@ class InboxDrafts:
         see more: https://resend.com/docs/api-reference/inboxes/list-drafts
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             params (Optional[ListParams]): Optional pagination parameters
 
         Returns:
             ListResponse: A page of the unsent drafts
         """
         path = build_inbox_query_path(
-            f"/inboxes/{inbox_id}/drafts",
+            f"{inbox_path(inbox_id)}/drafts",
             cast(Dict[Any, Any], params) if params else None,
         )
         resp = await AsyncRequest[InboxDrafts.ListResponse](
@@ -547,7 +566,7 @@ class InboxDrafts:
         Returns:
             CreateResponse: The object type and the ID of the draft
         """
-        path = f"/inboxes/{params['inbox_id']}/drafts"
+        path = f"{inbox_path(params['inbox_id'])}/drafts"
         resp = await AsyncRequest[InboxDrafts.CreateResponse](
             path=path,
             params=without_keys(params, "inbox_id"),
@@ -563,20 +582,20 @@ class InboxDrafts:
         see more: https://resend.com/docs/api-reference/inboxes/get-draft
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             draft_id (str): The Draft ID.
 
         Returns:
             InboxDraft: The draft
         """
-        path = f"/inboxes/{inbox_id}/drafts/{draft_id}"
+        path = f"{inbox_path(inbox_id)}/drafts/{draft_id}"
         resp = await AsyncRequest[InboxDraft](
             path=path, params={}, verb="get"
         ).perform_with_content()
         return resp
 
     @classmethod
-    async def update_async(cls, params: UpdateParams) -> InboxDraft:
+    async def update_async(cls, params: UpdateParams) -> UpdateResponse:
         """
         Update the content of an unsent draft (async). Omitted fields are left
         unchanged. Sending ``attachments`` replaces every attachment on the draft.
@@ -589,10 +608,10 @@ class InboxDrafts:
             params (UpdateParams): The inbox ID, the draft ID and the fields to change
 
         Returns:
-            InboxDraft: The updated draft
+            UpdateResponse: The object type and the ID of the draft
         """
-        path = f"/inboxes/{params['inbox_id']}/drafts/{params['id']}"
-        resp = await AsyncRequest[InboxDraft](
+        path = f"{inbox_path(params['inbox_id'])}/drafts/{params['id']}"
+        resp = await AsyncRequest[InboxDrafts.UpdateResponse](
             path=path, params=without_keys(params, "inbox_id", "id"), verb="patch"
         ).perform_with_content()
         return resp
@@ -605,13 +624,13 @@ class InboxDrafts:
         see more: https://resend.com/docs/api-reference/inboxes/delete-draft
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             draft_id (str): The Draft ID.
 
         Returns:
             RemoveResponse: The draft ID and its deleted status
         """
-        path = f"/inboxes/{inbox_id}/drafts/{draft_id}"
+        path = f"{inbox_path(inbox_id)}/drafts/{draft_id}"
         resp = await AsyncRequest[InboxDrafts.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
@@ -634,7 +653,7 @@ class InboxDrafts:
         see more: https://resend.com/docs/api-reference/inboxes/send-draft
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             draft_id (str): The Draft ID.
             params (Optional[SendParams]): Optional body parameters, ie: headers
             options (Optional[SendOptions]): The send options, ie: idempotency_key
@@ -642,7 +661,7 @@ class InboxDrafts:
         Returns:
             SendResponse: The ID of the sent email
         """
-        path = f"/inboxes/{inbox_id}/drafts/{draft_id}/send"
+        path = f"{inbox_path(inbox_id)}/drafts/{draft_id}/send"
         resp = await AsyncRequest[InboxDrafts.SendResponse](
             path=path,
             params=cast(Dict[Any, Any], params) if params else {},

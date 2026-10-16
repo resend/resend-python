@@ -24,11 +24,11 @@ update_params: resend.Inboxes.UpdateParams = {"id": inbox_id, "name": "Support"}
 resend.Inboxes.update(update_params)
 
 agent: resend.InboxAgentSettings = resend.Inboxes.Agent.get(inbox_id)
-print(f"Agent actions: {agent['enabled_actions']}")
+print(f"Agent actions: {agent['actions']}")
 agent_params: resend.Inboxes.Agent.UpdateParams = {
     "inbox_id": inbox_id,
-    "tone": "friendly and concise",
-    "enabled_actions": ["draft_reply", "add_labels"],
+    "tone": "concise_casual",
+    "actions": ["draft_reply", "add_labels"],
 }
 resend.Inboxes.Agent.update(agent_params)
 
@@ -62,7 +62,7 @@ results: resend.Inboxes.Threads.SearchResponse = resend.Inboxes.Threads.search(
     inbox_id, search_params
 )
 for result in results["data"]:
-    print(f"{result['subject']}: {result['highlights']}")
+    print(f"{result['subject']}: matched email {result['matched_email_id']}")
 
 if threads["data"]:
     thread_id = threads["data"][0]["id"]
@@ -73,9 +73,19 @@ if threads["data"]:
         "inbox_id": inbox_id,
         "id": thread_id,
         "read": True,
-        "add_label_ids": [label["id"]],
     }
     resend.Inboxes.Threads.update(thread_update)
+
+    add_labels: resend.Inboxes.Threads.Labels.AddParams = {
+        "inbox_id": inbox_id,
+        "thread_id": thread_id,
+        "labels": [label["id"]],
+    }
+    thread_labels: resend.Inboxes.Threads.Labels.ListResponse = (
+        resend.Inboxes.Threads.Labels.add(add_labels)
+    )
+    print(f"Thread has {len(thread_labels['data'])} labels")
+    resend.Inboxes.Threads.Labels.remove(inbox_id, thread_id, label["id"])
 
     emails: resend.Inboxes.Threads.Emails.ListResponse = (
         resend.Inboxes.Threads.Emails.list(inbox_id, thread_id)
@@ -133,7 +143,10 @@ draft_update: resend.Inboxes.Drafts.UpdateParams = {
     "id": draft["id"],
     "html": "<p>Refund issued for order 1041.</p>",
 }
-updated_draft: resend.InboxDraft = resend.Inboxes.Drafts.update(draft_update)
+updated: resend.Inboxes.Drafts.UpdateResponse = resend.Inboxes.Drafts.update(
+    draft_update
+)
+updated_draft: resend.InboxDraft = resend.Inboxes.Drafts.get(inbox_id, updated["id"])
 print(f"Draft {updated_draft['id']} is a {updated_draft['type']} draft")
 print(f"Draft attachments: {[a['filename'] for a in updated_draft['attachments']]}")
 

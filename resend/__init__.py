@@ -58,20 +58,21 @@ from .inboxes._inbox import (Inbox, InboxListItem, InboxMessageFolder,
 from .inboxes._inboxes import Inboxes
 from .inboxes.agent._inbox_agent import InboxAgent
 from .inboxes.agent._inbox_agent_settings import (InboxAgentAction,
-                                                  InboxAgentSettings)
+                                                  InboxAgentSettings,
+                                                  InboxAgentTone)
 from .inboxes.drafts._inbox_draft import (InboxDraft, InboxDraftAttachment,
                                           InboxDraftListItem, InboxDraftType)
 from .inboxes.drafts._inbox_drafts import InboxDrafts
 from .inboxes.labels._inbox_label import InboxLabel
 from .inboxes.labels._inbox_labels import InboxLabels
 from .inboxes.threads._inbox_thread import (InboxThread, InboxThreadLabel,
-                                            InboxThreadSearchHighlights,
                                             InboxThreadSearchResult,
                                             InboxThreadSummary)
 from .inboxes.threads._inbox_threads import InboxThreads
 from .inboxes.threads.emails._inbox_thread_email import (
     InboxThreadEmail, InboxThreadEmailAttachment)
 from .inboxes.threads.emails._inbox_thread_emails import InboxThreadEmails
+from .inboxes.threads.labels._inbox_thread_labels import InboxThreadLabels
 from .logs._log import Log
 from .logs._logs import Logs
 from .oauth_grants._oauth_grant import OAuthGrant, OAuthGrantClient
@@ -114,8 +115,7 @@ from .webhooks._webhook_event import (BaseEmailEventData, ContactCreatedEvent,
                                       InboxDeletedEventData,
                                       InboxDraftCreatedEvent,
                                       InboxDraftDeletedEvent,
-                                      InboxDraftEventData,
-                                      InboxDraftSentEvent,
+                                      InboxDraftEventData, InboxDraftSentEvent,
                                       InboxDraftSentEventData,
                                       InboxDraftUpdatedEvent,
                                       InboxEmailReceivedEvent,
@@ -189,6 +189,7 @@ __all__ = [
     "InboxLabels",
     "InboxThreads",
     "InboxThreadEmails",
+    "InboxThreadLabels",
     "InboxDrafts",
     # Types
     "Audience",
@@ -311,10 +312,10 @@ __all__ = [
     "MoveThreadFolder",
     "InboxAgentAction",
     "InboxAgentSettings",
+    "InboxAgentTone",
     "InboxLabel",
     "InboxThread",
     "InboxThreadLabel",
-    "InboxThreadSearchHighlights",
     "InboxThreadSearchResult",
     "InboxThreadSummary",
     "InboxThreadEmail",

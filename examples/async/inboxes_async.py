@@ -32,8 +32,8 @@ async def main() -> None:
 
     if threads["data"]:
         thread_id = threads["data"][0]["id"]
-        await resend.Inboxes.Threads.update_async(
-            {"inbox_id": inbox_id, "id": thread_id, "add_label_ids": [label["id"]]}
+        await resend.Inboxes.Threads.Labels.add_async(
+            {"inbox_id": inbox_id, "thread_id": thread_id, "labels": [label["id"]]}
         )
         emails: resend.Inboxes.Threads.Emails.ListResponse = (
             await resend.Inboxes.Threads.Emails.list_async(inbox_id, thread_id)

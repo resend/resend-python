@@ -4,9 +4,10 @@ from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend._base_response import BaseResponse
-from resend.inboxes._query import without_keys
+from resend.inboxes._query import inbox_path, without_keys
 
-from ._inbox_agent_settings import InboxAgentAction, InboxAgentSettings
+from ._inbox_agent_settings import (InboxAgentAction, InboxAgentSettings,
+                                    InboxAgentTone)
 
 # Async imports (optional - only available with pip install resend[async])
 try:
@@ -23,19 +24,19 @@ class InboxAgent:
     class UpdateParams(TypedDict):
         """
         UpdateParams are the parameters for updating the agent settings of an inbox.
-        At least one of ``instructions``, ``tone``, or ``enabled_actions`` must be
+        At least one of ``instructions``, ``tone``, or ``actions`` must be
         provided. Omitted fields keep their current value.
 
         Attributes:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             instructions (NotRequired[Optional[str]]): Instructions for the agent.
-            tone (NotRequired[Optional[str]]): The tone the agent writes in.
-            enabled_actions (NotRequired[List[InboxAgentAction]]): The actions the agent can take.
+            tone (NotRequired[Optional[InboxAgentTone]]): The tone the agent writes in.
+            actions (NotRequired[List[InboxAgentAction]]): The actions the agent can take.
         """
 
         inbox_id: str
         """
-        The Inbox ID. An email address is not accepted.
+        The Inbox ID or the inbox email address.
         """
         instructions: NotRequired[Optional[str]]
         """
@@ -43,16 +44,11 @@ class InboxAgent:
         Max 4000 characters. Leading and trailing whitespace is trimmed, and the
         trimmed value must not be empty. Send None to clear the instructions.
         """
-        tone: NotRequired[Optional[str]]
+        tone: NotRequired[Optional[InboxAgentTone]]
         """
-        The tone the agent writes in. Use one of the presets
-        ``concise_professional``, ``concise_casual``, ``expanded_professional``,
-        or ``expanded_casual``, or describe the tone in your own words, such as
-        ``friendly and concise``. Custom text is max 64 characters. Leading and
-        trailing whitespace is trimmed, and the trimmed value must not be empty.
-        Send None to clear the tone.
+        The tone the agent writes in. Send None to clear the tone.
         """
-        enabled_actions: NotRequired[List[InboxAgentAction]]
+        actions: NotRequired[List[InboxAgentAction]]
         """
         The actions the agent can take. Replaces the whole set. Duplicates are
         removed. Send an empty list to disable all actions.
@@ -81,16 +77,16 @@ class InboxAgent:
         """
         Retrieve the agent settings of an inbox. An inbox without a configured
         agent returns empty settings: ``instructions`` and ``tone`` are None and
-        ``enabled_actions`` is an empty list.
+        ``actions`` is an empty list.
         see more: https://resend.com/docs/api-reference/inboxes/get-agent
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
 
         Returns:
             InboxAgentSettings: The agent settings of the inbox
         """
-        path = f"/inboxes/{inbox_id}/agent"
+        path = f"{inbox_path(inbox_id)}/agent"
         resp = request.Request[InboxAgentSettings](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -109,7 +105,7 @@ class InboxAgent:
         Returns:
             UpdateResponse: The object type and the ID of the inbox agent
         """
-        path = f"/inboxes/{params['inbox_id']}/agent"
+        path = f"{inbox_path(params['inbox_id'])}/agent"
         resp = request.Request[InboxAgent.UpdateResponse](
             path=path, params=without_keys(params, "inbox_id"), verb="patch"
         ).perform_with_content()
@@ -120,16 +116,16 @@ class InboxAgent:
         """
         Retrieve the agent settings of an inbox (async). An inbox without a
         configured agent returns empty settings: ``instructions`` and ``tone``
-        are None and ``enabled_actions`` is an empty list.
+        are None and ``actions`` is an empty list.
         see more: https://resend.com/docs/api-reference/inboxes/get-agent
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
 
         Returns:
             InboxAgentSettings: The agent settings of the inbox
         """
-        path = f"/inboxes/{inbox_id}/agent"
+        path = f"{inbox_path(inbox_id)}/agent"
         resp = await AsyncRequest[InboxAgentSettings](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -148,7 +144,7 @@ class InboxAgent:
         Returns:
             UpdateResponse: The object type and the ID of the inbox agent
         """
-        path = f"/inboxes/{params['inbox_id']}/agent"
+        path = f"{inbox_path(params['inbox_id'])}/agent"
         resp = await AsyncRequest[InboxAgent.UpdateResponse](
             path=path, params=without_keys(params, "inbox_id"), verb="patch"
         ).perform_with_content()

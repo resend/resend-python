@@ -1,12 +1,11 @@
 from typing import Any, Dict, List, Optional, cast
-from urllib.parse import quote
 
 from typing_extensions import NotRequired, TypedDict
 
 from resend import request
 from resend._base_response import BaseResponse
 from resend.inboxes._inbox import Inbox, InboxListItem
-from resend.inboxes._query import without_keys
+from resend.inboxes._query import inbox_path, without_keys
 from resend.pagination_helper import PaginationHelper
 
 from .agent._inbox_agent import InboxAgent
@@ -151,14 +150,14 @@ class Inboxes:
         Provide at least one of ``name`` or ``from_name``.
 
         Attributes:
-            id (str): The Inbox ID. An email address is not accepted.
+            id (str): The Inbox ID or the inbox email address.
             name (NotRequired[str]): New internal name for the inbox.
             from_name (NotRequired[str]): The name recipients see when mail is sent from this inbox.
         """
 
         id: str
         """
-        The Inbox ID. An email address is not accepted.
+        The Inbox ID or the inbox email address.
         """
         name: NotRequired[str]
         """
@@ -279,7 +278,7 @@ class Inboxes:
         Returns:
             Inbox: The inbox object
         """
-        path = f"/inboxes/{quote(inbox_id, safe='')}"
+        path = inbox_path(inbox_id)
         resp = request.Request[Inbox](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -298,7 +297,7 @@ class Inboxes:
         Returns:
             UpdateResponse: The object type and the ID of the inbox
         """
-        path = f"/inboxes/{params['id']}"
+        path = inbox_path(params["id"])
         resp = request.Request[Inboxes.UpdateResponse](
             path=path, params=without_keys(params, "id"), verb="patch"
         ).perform_with_content()
@@ -312,12 +311,12 @@ class Inboxes:
         see more: https://resend.com/docs/api-reference/inboxes/delete-inbox
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
 
         Returns:
             RemoveResponse: The inbox ID and its deleted status
         """
-        path = f"/inboxes/{inbox_id}"
+        path = inbox_path(inbox_id)
         resp = request.Request[Inboxes.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
@@ -387,7 +386,7 @@ class Inboxes:
         Returns:
             Inbox: The inbox object
         """
-        path = f"/inboxes/{quote(inbox_id, safe='')}"
+        path = inbox_path(inbox_id)
         resp = await AsyncRequest[Inbox](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -406,7 +405,7 @@ class Inboxes:
         Returns:
             UpdateResponse: The object type and the ID of the inbox
         """
-        path = f"/inboxes/{params['id']}"
+        path = inbox_path(params["id"])
         resp = await AsyncRequest[Inboxes.UpdateResponse](
             path=path, params=without_keys(params, "id"), verb="patch"
         ).perform_with_content()
@@ -420,12 +419,12 @@ class Inboxes:
         see more: https://resend.com/docs/api-reference/inboxes/delete-inbox
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
 
         Returns:
             RemoveResponse: The inbox ID and its deleted status
         """
-        path = f"/inboxes/{inbox_id}"
+        path = inbox_path(inbox_id)
         resp = await AsyncRequest[Inboxes.RemoveResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()

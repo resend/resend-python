@@ -5,7 +5,7 @@ from resend.exceptions import NoContentError
 from tests.conftest import AsyncResendBaseTest
 from tests.inboxes_test import (DRAFT, DRAFT_ID, EMAIL_ID, INBOX, INBOX_ID,
                                 LABEL_ID, SENT_EMAIL_ID, THREAD, THREAD_EMAIL,
-                                THREAD_ID, THREAD_SUMMARY)
+                                THREAD_ID, THREAD_LABEL, THREAD_SUMMARY)
 
 # flake8: noqa
 
@@ -88,13 +88,13 @@ class TestResendInboxAgentAsync(AsyncResendBaseTest):
                 "object": "inbox_agent",
                 "instructions": "Escalate legal threats.",
                 "tone": None,
-                "enabled_actions": ["draft_reply"],
+                "actions": ["draft_reply"],
             }
         )
         agent: resend.InboxAgentSettings = await resend.Inboxes.Agent.get_async(
             INBOX_ID
         )
-        assert agent["enabled_actions"] == ["draft_reply"]
+        assert agent["actions"] == ["draft_reply"]
 
     async def test_should_get_inbox_agent_async_raise_exception_when_no_content(
         self,
@@ -109,7 +109,7 @@ class TestResendInboxAgentAsync(AsyncResendBaseTest):
         )
         agent: resend.Inboxes.Agent.UpdateResponse = (
             await resend.Inboxes.Agent.update_async(
-                {"inbox_id": INBOX_ID, "enabled_actions": []}
+                {"inbox_id": INBOX_ID, "actions": []}
             )
         )
         assert agent["object"] == "inbox_agent"
@@ -208,13 +208,11 @@ class TestResendInboxThreadsAsync(AsyncResendBaseTest):
     async def test_inbox_threads_search_async(self) -> None:
         result = dict(THREAD)
         result["matched_email_id"] = None
-        result["highlights"] = {}
         self.set_mock_json({"object": "list", "has_more": False, "data": [result]})
         threads: resend.Inboxes.Threads.SearchResponse = (
             await resend.Inboxes.Threads.search_async(INBOX_ID, {"query": "refund"})
         )
         assert threads["data"][0]["matched_email_id"] is None
-        assert threads["data"][0]["highlights"] == {}
 
     async def test_should_search_inbox_threads_async_raise_exception_when_no_content(
         self,
@@ -240,7 +238,7 @@ class TestResendInboxThreadsAsync(AsyncResendBaseTest):
     async def test_inbox_threads_update_async(self) -> None:
         self.set_mock_json(THREAD_SUMMARY)
         thread: resend.InboxThreadSummary = await resend.Inboxes.Threads.update_async(
-            {"inbox_id": INBOX_ID, "id": THREAD_ID, "remove_label_ids": [LABEL_ID]}
+            {"inbox_id": INBOX_ID, "id": THREAD_ID, "folder": "spam"}
         )
         assert thread["id"] == THREAD_ID
 
@@ -268,6 +266,62 @@ class TestResendInboxThreadsAsync(AsyncResendBaseTest):
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
             _ = await resend.Inboxes.Threads.remove_async(INBOX_ID, THREAD_ID)
+
+
+class TestResendInboxThreadLabelsAsync(AsyncResendBaseTest):
+    async def test_inbox_thread_labels_add_async(self) -> None:
+        self.set_mock_json({"object": "list", "data": [THREAD_LABEL]})
+        labels: resend.Inboxes.Threads.Labels.ListResponse = (
+            await resend.Inboxes.Threads.Labels.add_async(
+                {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "labels": [LABEL_ID]}
+            )
+        )
+        assert labels["data"] == [THREAD_LABEL]
+
+    async def test_should_add_inbox_thread_labels_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = await resend.Inboxes.Threads.Labels.add_async(
+                {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "labels": [LABEL_ID]}
+            )
+
+    async def test_inbox_thread_labels_set_async(self) -> None:
+        self.set_mock_json({"object": "list", "data": [THREAD_LABEL]})
+        labels: resend.Inboxes.Threads.Labels.ListResponse = (
+            await resend.Inboxes.Threads.Labels.set_async(
+                {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "labels": [LABEL_ID]}
+            )
+        )
+        assert labels["object"] == "list"
+
+    async def test_should_set_inbox_thread_labels_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = await resend.Inboxes.Threads.Labels.set_async(
+                {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "labels": []}
+            )
+
+    async def test_inbox_thread_labels_remove_async(self) -> None:
+        self.set_mock_json({"object": "list", "data": []})
+        labels: resend.Inboxes.Threads.Labels.ListResponse = (
+            await resend.Inboxes.Threads.Labels.remove_async(
+                INBOX_ID, THREAD_ID, LABEL_ID
+            )
+        )
+        assert labels["data"] == []
+
+    async def test_should_remove_inbox_thread_labels_async_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with pytest.raises(NoContentError):
+            _ = await resend.Inboxes.Threads.Labels.remove_async(
+                INBOX_ID, THREAD_ID, LABEL_ID
+            )
 
 
 class TestResendInboxThreadEmailsAsync(AsyncResendBaseTest):
@@ -432,11 +486,13 @@ class TestResendInboxDraftsAsync(AsyncResendBaseTest):
             _ = await resend.Inboxes.Drafts.get_async(INBOX_ID, DRAFT_ID)
 
     async def test_inbox_drafts_update_async(self) -> None:
-        self.set_mock_json(DRAFT)
-        draft: resend.InboxDraft = await resend.Inboxes.Drafts.update_async(
-            {"inbox_id": INBOX_ID, "id": DRAFT_ID, "subject": "Refund for order 1041"}
+        self.set_mock_json({"object": "inbox_draft", "id": DRAFT_ID})
+        draft: resend.Inboxes.Drafts.UpdateResponse = (
+            await resend.Inboxes.Drafts.update_async(
+                {"inbox_id": INBOX_ID, "id": DRAFT_ID, "subject": "Refund for order 1041"}
+            )
         )
-        assert draft["subject"] == "Refund for order 1041"
+        assert draft == {"object": "inbox_draft", "id": DRAFT_ID}
 
     async def test_should_update_inbox_drafts_async_raise_exception_when_no_content(
         self,

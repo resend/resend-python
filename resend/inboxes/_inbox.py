@@ -70,6 +70,10 @@ class Inbox(BaseResponse):
     """
     ISO 8601 timestamp when the inbox was created.
     """
+    updated_at: str
+    """
+    ISO 8601 timestamp when the inbox was last updated.
+    """
 
 
 class InboxListItem(TypedDict):
@@ -102,4 +106,12 @@ class InboxListItem(TypedDict):
     """
     ISO 8601 timestamp of the newest received email in the Inbox folder.
     None when the folder has no received email.
+    """
+    created_at: str
+    """
+    ISO 8601 timestamp when the inbox was created.
+    """
+    updated_at: str
+    """
+    ISO 8601 timestamp when the inbox was last updated.
     """

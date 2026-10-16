@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import TypedDict
 
 from resend._base_response import BaseResponse
 from resend.inboxes._inbox import InboxMessageFolder
@@ -91,25 +91,6 @@ class InboxThread(_InboxThreadFrom):
     """
 
 
-# Functional syntax required because ``from`` is a reserved keyword.
-InboxThreadSearchHighlights = TypedDict(
-    "InboxThreadSearchHighlights",
-    {
-        "subject": NotRequired[List[str]],
-        "body": NotRequired[List[str]],
-        "from": NotRequired[List[str]],
-        "to": NotRequired[List[str]],
-        "cc": NotRequired[List[str]],
-        "bcc": NotRequired[List[str]],
-        "attachments": NotRequired[List[str]],
-    },
-)
-"""
-Where ``query`` matched the email in ``matched_email_id``, as text fragments
-with each match wrapped in ``**``. Only keys with a match are present.
-"""
-
-
 class InboxThreadSearchResult(InboxThread):
     """
     InboxThreadSearchResult is a thread returned by the search threads endpoint.
@@ -117,17 +98,11 @@ class InboxThreadSearchResult(InboxThread):
 
     matched_email_id: Optional[str]
     """
-    Identifies the email in the thread that matched the search. When ``query``
+    The ID of the email in the thread that matched the search. When ``query``
     has words or phrases, it is the most relevant match. Otherwise, it is the
-    newest. The get, reply and forward thread email endpoints accept it as
-    ``email_id``, but it is not equal to the ``id`` those endpoints return.
+    newest. It is the same ``id`` that the list thread emails endpoint returns,
+    so use it as ``email_id`` with the get, reply and forward endpoints.
     None when the search index returns no matched email for the thread.
-    """
-    highlights: InboxThreadSearchHighlights
-    """
-    Where ``query`` matched the email in ``matched_email_id``, as text fragments
-    with each match wrapped in ``**``. Only keys with a match are present.
-    An empty dict when there is no ``query``.
     """
 
 

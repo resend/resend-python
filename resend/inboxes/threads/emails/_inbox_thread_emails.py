@@ -5,7 +5,8 @@ from typing_extensions import NotRequired, TypedDict
 from resend import request
 from resend._base_response import BaseResponse
 from resend.emails._attachment import Attachment, RemoteAttachment
-from resend.inboxes._query import build_inbox_query_path, without_keys
+from resend.inboxes._query import (build_inbox_query_path, inbox_path,
+                                   without_keys)
 
 from ._inbox_thread_email import InboxThreadEmail
 
@@ -77,7 +78,7 @@ class InboxThreadEmails:
         At least one of ``html`` or ``text`` must contain more than whitespace.
 
         Attributes:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             thread_id (str): The Thread ID.
             email_id (str): The Email ID of the message to reply to.
             html (NotRequired[str]): The HTML body of the reply.
@@ -92,7 +93,7 @@ class InboxThreadEmails:
 
         inbox_id: str
         """
-        The Inbox ID. An email address is not accepted.
+        The Inbox ID or the inbox email address.
         """
         thread_id: str
         """
@@ -152,9 +153,9 @@ class InboxThreadEmails:
         attachments: NotRequired[List[Union[Attachment, RemoteAttachment]]]
         """
         Files to attach, as on ``Emails.send``. Each one needs ``content`` or
-        ``path``. Up to 10 files. The ``content`` of all files can total at most
-        25 MB. A ``path`` file counts toward the 10 files only, because it is
-        fetched when the email is sent.
+        ``path``. The ``content`` of all files can total at most 25 MB. A
+        ``path`` file does not count toward the 25 MB, because it is fetched when
+        the email is sent.
         An empty file, a blocked file type, or a ``path`` that is not an ``http``
         or ``https`` URL or points to ``localhost`` returns a 422.
         """
@@ -199,7 +200,7 @@ class InboxThreadEmails:
         ForwardParams are the parameters for forwarding a thread email.
 
         Attributes:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             thread_id (str): The Thread ID.
             email_id (str): The Email ID of the message to forward.
             to (Union[str, List[str]]): The recipients.
@@ -214,7 +215,7 @@ class InboxThreadEmails:
 
         inbox_id: str
         """
-        The Inbox ID. An email address is not accepted.
+        The Inbox ID or the inbox email address.
         """
         thread_id: str
         """
@@ -266,9 +267,9 @@ class InboxThreadEmails:
         """
         Files to attach, as on ``Emails.send``. Each one needs ``content`` or
         ``path``. They share one limit with the attachments of the original
-        message, which the forward also sends. Together they can have up to 10
-        files and at most 25 MB of ``content``. A ``path`` file counts toward the
-        10 files only, because it is fetched when the email is sent.
+        message, which the forward also sends. Together they can have at most
+        25 MB of ``content``. A ``path`` file does not count toward the 25 MB,
+        because it is fetched when the email is sent.
         An empty file, a blocked file type, or a ``path`` that is not an ``http``
         or ``https`` URL or points to ``localhost`` returns a 422.
         """
@@ -319,7 +320,7 @@ class InboxThreadEmails:
         see more: https://resend.com/docs/api-reference/inboxes/list-thread-emails
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             thread_id (str): The Thread ID.
             params (Optional[ListParams]): Optional pagination parameters
 
@@ -327,7 +328,7 @@ class InboxThreadEmails:
             ListResponse: A page of the messages of the thread
         """
         path = build_inbox_query_path(
-            f"/inboxes/{inbox_id}/threads/{thread_id}/emails",
+            f"{inbox_path(inbox_id)}/threads/{thread_id}/emails",
             cast(Dict[Any, Any], params) if params else None,
         )
         resp = request.Request[InboxThreadEmails.ListResponse](
@@ -342,7 +343,7 @@ class InboxThreadEmails:
         see more: https://resend.com/docs/api-reference/inboxes/get-thread-email
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             thread_id (str): The Thread ID.
             email_id (str): The Email ID, as returned in ``data[].id`` by the list
                 thread emails endpoint.
@@ -350,7 +351,7 @@ class InboxThreadEmails:
         Returns:
             InboxThreadEmail: The thread email
         """
-        path = f"/inboxes/{inbox_id}/threads/{thread_id}/emails/{email_id}"
+        path = f"{inbox_path(inbox_id)}/threads/{thread_id}/emails/{email_id}"
         resp = request.Request[InboxThreadEmail](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -378,7 +379,7 @@ class InboxThreadEmails:
             ReplyResponse: The ID of the sent email
         """
         path = (
-            f"/inboxes/{params['inbox_id']}/threads/{params['thread_id']}"
+            f"{inbox_path(params['inbox_id'])}/threads/{params['thread_id']}"
             f"/emails/{params['email_id']}/reply"
         )
         resp = request.Request[InboxThreadEmails.ReplyResponse](
@@ -398,7 +399,7 @@ class InboxThreadEmails:
         The original message is quoted under a forwarded-message banner, below the
         optional ``html`` or ``text`` note. The attachments of the original message
         are sent with the forward, together with any ``attachments`` you add.
-        The request fails when they exceed 10 files or 25 MB of ``content`` in total.
+        The request fails when they exceed 25 MB of ``content`` in total.
         An original attachment that was sent from a URL (``path``) cannot be
         forwarded, and the request returns a 422.
         see more: https://resend.com/docs/api-reference/inboxes/forward-thread-email
@@ -411,7 +412,7 @@ class InboxThreadEmails:
             ForwardResponse: The ID of the sent email
         """
         path = (
-            f"/inboxes/{params['inbox_id']}/threads/{params['thread_id']}"
+            f"{inbox_path(params['inbox_id'])}/threads/{params['thread_id']}"
             f"/emails/{params['email_id']}/forward"
         )
         resp = request.Request[InboxThreadEmails.ForwardResponse](
@@ -433,7 +434,7 @@ class InboxThreadEmails:
         see more: https://resend.com/docs/api-reference/inboxes/list-thread-emails
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             thread_id (str): The Thread ID.
             params (Optional[ListParams]): Optional pagination parameters
 
@@ -441,7 +442,7 @@ class InboxThreadEmails:
             ListResponse: A page of the messages of the thread
         """
         path = build_inbox_query_path(
-            f"/inboxes/{inbox_id}/threads/{thread_id}/emails",
+            f"{inbox_path(inbox_id)}/threads/{thread_id}/emails",
             cast(Dict[Any, Any], params) if params else None,
         )
         resp = await AsyncRequest[InboxThreadEmails.ListResponse](
@@ -458,7 +459,7 @@ class InboxThreadEmails:
         see more: https://resend.com/docs/api-reference/inboxes/get-thread-email
 
         Args:
-            inbox_id (str): The Inbox ID. An email address is not accepted.
+            inbox_id (str): The Inbox ID or the inbox email address.
             thread_id (str): The Thread ID.
             email_id (str): The Email ID, as returned in ``data[].id`` by the list
                 thread emails endpoint.
@@ -466,7 +467,7 @@ class InboxThreadEmails:
         Returns:
             InboxThreadEmail: The thread email
         """
-        path = f"/inboxes/{inbox_id}/threads/{thread_id}/emails/{email_id}"
+        path = f"{inbox_path(inbox_id)}/threads/{thread_id}/emails/{email_id}"
         resp = await AsyncRequest[InboxThreadEmail](
             path=path, params={}, verb="get"
         ).perform_with_content()
@@ -494,7 +495,7 @@ class InboxThreadEmails:
             ReplyResponse: The ID of the sent email
         """
         path = (
-            f"/inboxes/{params['inbox_id']}/threads/{params['thread_id']}"
+            f"{inbox_path(params['inbox_id'])}/threads/{params['thread_id']}"
             f"/emails/{params['email_id']}/reply"
         )
         resp = await AsyncRequest[InboxThreadEmails.ReplyResponse](
@@ -514,9 +515,9 @@ class InboxThreadEmails:
         draft (async). The original message is quoted under a forwarded-message
         banner, below the optional ``html`` or ``text`` note. The attachments of
         the original message are sent with the forward, together with any
-        ``attachments`` you add. The request fails when they exceed 10 files or
-        25 MB of ``content`` in total. An original attachment that was sent from a
-        URL (``path``) cannot be forwarded, and the request returns a 422.
+        ``attachments`` you add. The request fails when they exceed 25 MB of
+        ``content`` in total. An original attachment that was sent from a URL
+        (``path``) cannot be forwarded, and the request returns a 422.
         see more: https://resend.com/docs/api-reference/inboxes/forward-thread-email
 
         Args:
@@ -527,7 +528,7 @@ class InboxThreadEmails:
             ForwardResponse: The ID of the sent email
         """
         path = (
-            f"/inboxes/{params['inbox_id']}/threads/{params['thread_id']}"
+            f"{inbox_path(params['inbox_id'])}/threads/{params['thread_id']}"
             f"/emails/{params['email_id']}/forward"
         )
         resp = await AsyncRequest[InboxThreadEmails.ForwardResponse](

@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Callable, Dict, List, Tuple
 from unittest import TestCase
 from unittest.mock import create_autospec
 
@@ -28,6 +28,7 @@ INBOX: Dict[str, Any] = {
     "drafts": 2,
     "last_received": "2026-08-05T14:03:11.229Z",
     "created_at": "2026-08-01T09:12:44.512Z",
+    "updated_at": "2026-08-02T10:00:00.000Z",
 }
 
 THREAD_LABEL: Dict[str, Any] = {"id": LABEL_ID, "name": "Urgent", "color": "#E93D82"}
@@ -137,6 +138,8 @@ class TestResendInboxes(ResendBaseTest):
                         "from_name": None,
                         "unread": 3,
                         "last_received": None,
+                        "created_at": "2026-08-01T09:12:44.512Z",
+                        "updated_at": "2026-08-02T10:00:00.000Z",
                     }
                 ],
             }
@@ -147,6 +150,7 @@ class TestResendInboxes(ResendBaseTest):
         assert inboxes["data"][0]["id"] == INBOX_ID
         assert inboxes["data"][0]["email_address"] == "support@acme.com"
         assert inboxes["data"][0]["from_name"] is None
+        assert inboxes["data"][0]["updated_at"] == "2026-08-02T10:00:00.000Z"
 
     def test_should_list_inboxes_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
@@ -161,6 +165,7 @@ class TestResendInboxes(ResendBaseTest):
         assert inbox["receiving_address"] is None
         assert inbox["unread"] == 3
         assert inbox["drafts"] == 2
+        assert inbox["updated_at"] == "2026-08-02T10:00:00.000Z"
 
     def test_should_get_inboxes_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
@@ -198,13 +203,13 @@ class TestResendInboxAgent(ResendBaseTest):
                 "object": "inbox_agent",
                 "instructions": None,
                 "tone": None,
-                "enabled_actions": [],
+                "actions": [],
             }
         )
         agent: resend.InboxAgentSettings = resend.Inboxes.Agent.get(INBOX_ID)
         assert agent["object"] == "inbox_agent"
         assert agent["instructions"] is None
-        assert agent["enabled_actions"] == []
+        assert agent["actions"] == []
 
     def test_should_get_inbox_agent_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
@@ -217,8 +222,8 @@ class TestResendInboxAgent(ResendBaseTest):
         )
         params: resend.Inboxes.Agent.UpdateParams = {
             "inbox_id": INBOX_ID,
-            "tone": "friendly and concise",
-            "enabled_actions": ["draft_reply", "add_labels"],
+            "tone": "concise_casual",
+            "actions": ["draft_reply", "archive", "move_to_trash"],
         }
         agent: resend.Inboxes.Agent.UpdateResponse = resend.Inboxes.Agent.update(
             params
@@ -350,8 +355,7 @@ class TestResendInboxThreads(ResendBaseTest):
 
     def test_inbox_threads_search(self) -> None:
         result = dict(THREAD)
-        result["matched_email_id"] = "e8a3f1c6-2b9d-4e5a-a7c4-9d1b6f3e2a80"
-        result["highlights"] = {"subject": ["September **invoice**"]}
+        result["matched_email_id"] = EMAIL_ID
         self.set_mock_json({"object": "list", "has_more": False, "data": [result]})
         params: resend.Inboxes.Threads.SearchParams = {
             "query": "invoice -draft",
@@ -362,8 +366,8 @@ class TestResendInboxThreads(ResendBaseTest):
         )
         assert threads["object"] == "list"
         match = threads["data"][0]
-        assert match["matched_email_id"] == "e8a3f1c6-2b9d-4e5a-a7c4-9d1b6f3e2a80"
-        assert match["highlights"]["subject"] == ["September **invoice**"]
+        assert match["matched_email_id"] == EMAIL_ID
+        assert "highlights" not in match
 
     def test_should_search_inbox_threads_raise_exception_when_no_content(
         self,
@@ -398,7 +402,6 @@ class TestResendInboxThreads(ResendBaseTest):
             "id": THREAD_ID,
             "read": True,
             "folder": "archive",
-            "add_label_ids": [LABEL_ID],
         }
         thread: resend.InboxThreadSummary = resend.Inboxes.Threads.update(params)
         assert thread["folder"] == "archive"
@@ -427,6 +430,66 @@ class TestResendInboxThreads(ResendBaseTest):
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):
             _ = resend.Inboxes.Threads.remove(INBOX_ID, THREAD_ID)
+
+
+class TestResendInboxThreadLabels(ResendBaseTest):
+    def test_inbox_thread_labels_add(self) -> None:
+        self.set_mock_json({"object": "list", "data": [THREAD_LABEL]})
+        params: resend.Inboxes.Threads.Labels.AddParams = {
+            "inbox_id": INBOX_ID,
+            "thread_id": THREAD_ID,
+            "labels": [LABEL_ID],
+        }
+        labels: resend.Inboxes.Threads.Labels.ListResponse = (
+            resend.Inboxes.Threads.Labels.add(params)
+        )
+        assert labels["object"] == "list"
+        assert labels["data"] == [THREAD_LABEL]
+
+    def test_should_add_inbox_thread_labels_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Inboxes.Threads.Labels.add(
+                {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "labels": [LABEL_ID]}
+            )
+
+    def test_inbox_thread_labels_set(self) -> None:
+        self.set_mock_json({"object": "list", "data": []})
+        params: resend.Inboxes.Threads.Labels.SetParams = {
+            "inbox_id": INBOX_ID,
+            "thread_id": THREAD_ID,
+            "labels": [],
+        }
+        labels: resend.Inboxes.Threads.Labels.ListResponse = (
+            resend.Inboxes.Threads.Labels.set(params)
+        )
+        assert labels["data"] == []
+
+    def test_should_set_inbox_thread_labels_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Inboxes.Threads.Labels.set(
+                {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "labels": []}
+            )
+
+    def test_inbox_thread_labels_remove(self) -> None:
+        self.set_mock_json({"object": "list", "data": []})
+        labels: resend.Inboxes.Threads.Labels.ListResponse = (
+            resend.Inboxes.Threads.Labels.remove(INBOX_ID, THREAD_ID, LABEL_ID)
+        )
+        assert labels["object"] == "list"
+        assert labels["data"] == []
+
+    def test_should_remove_inbox_thread_labels_raise_exception_when_no_content(
+        self,
+    ) -> None:
+        self.set_mock_json(None)
+        with self.assertRaises(NoContentError):
+            _ = resend.Inboxes.Threads.Labels.remove(INBOX_ID, THREAD_ID, LABEL_ID)
 
 
 class TestResendInboxThreadEmails(ResendBaseTest):
@@ -606,18 +669,17 @@ class TestResendInboxDrafts(ResendBaseTest):
             _ = resend.Inboxes.Drafts.get(INBOX_ID, DRAFT_ID)
 
     def test_inbox_drafts_update(self) -> None:
-        draft_json = dict(DRAFT)
-        draft_json["html"] = None
-        self.set_mock_json(draft_json)
+        self.set_mock_json({"object": "inbox_draft", "id": DRAFT_ID})
         params: resend.Inboxes.Drafts.UpdateParams = {
             "inbox_id": INBOX_ID,
             "id": DRAFT_ID,
             "text": "Refund issued for order 1041.",
             "cc": None,
         }
-        draft: resend.InboxDraft = resend.Inboxes.Drafts.update(params)
-        assert draft["id"] == DRAFT_ID
-        assert draft["html"] is None
+        draft: resend.Inboxes.Drafts.UpdateResponse = resend.Inboxes.Drafts.update(
+            params
+        )
+        assert draft == {"object": "inbox_draft", "id": DRAFT_ID}
 
     def test_should_update_inbox_drafts_raise_exception_when_no_content(
         self,
@@ -716,12 +778,103 @@ class TestInboxesRequest(TestCase):
         assert self.last_request()["url"] == f"https://api.resend.com/inboxes/{INBOX_ID}/agent"
 
         resend.Inboxes.Agent.update(
-            {"inbox_id": INBOX_ID, "instructions": None, "enabled_actions": []}
+            {"inbox_id": INBOX_ID, "instructions": None, "actions": []}
         )
         req = self.last_request()
         assert req["method"] == "patch"
         assert req["url"] == f"https://api.resend.com/inboxes/{INBOX_ID}/agent"
-        assert req["json"] == {"instructions": None, "enabled_actions": []}
+        assert req["json"] == {"instructions": None, "actions": []}
+
+    def test_every_inbox_route_encodes_an_email_address(self) -> None:
+        base = "https://api.resend.com/inboxes/support%40acme.com"
+        calls: List[Tuple[Callable[[], Any], str]] = [
+            (lambda: resend.Inboxes.update({"id": "support@acme.com", "name": "S"}), ""),
+            (lambda: resend.Inboxes.remove("support@acme.com"), ""),
+            (lambda: resend.Inboxes.Agent.get("support@acme.com"), "/agent"),
+            (
+                lambda: resend.Inboxes.Agent.update(
+                    {"inbox_id": "support@acme.com", "tone": None}
+                ),
+                "/agent",
+            ),
+            (lambda: resend.Inboxes.Labels.list("support@acme.com"), "/labels"),
+            (
+                lambda: resend.Inboxes.Labels.create(
+                    {"inbox_id": "support@acme.com", "name": "Urgent"}
+                ),
+                "/labels",
+            ),
+            (
+                lambda: resend.Inboxes.Labels.update(
+                    {"inbox_id": "support@acme.com", "id": LABEL_ID, "name": "U"}
+                ),
+                f"/labels/{LABEL_ID}",
+            ),
+            (
+                lambda: resend.Inboxes.Labels.remove("support@acme.com", LABEL_ID),
+                f"/labels/{LABEL_ID}",
+            ),
+            (lambda: resend.Inboxes.Threads.list("support@acme.com"), "/threads"),
+            (
+                lambda: resend.Inboxes.Threads.search("support@acme.com"),
+                "/threads/search",
+            ),
+            (
+                lambda: resend.Inboxes.Threads.get("support@acme.com", THREAD_ID),
+                f"/threads/{THREAD_ID}",
+            ),
+            (
+                lambda: resend.Inboxes.Threads.update(
+                    {"inbox_id": "support@acme.com", "id": THREAD_ID, "read": True}
+                ),
+                f"/threads/{THREAD_ID}",
+            ),
+            (
+                lambda: resend.Inboxes.Threads.remove("support@acme.com", THREAD_ID),
+                f"/threads/{THREAD_ID}",
+            ),
+            (
+                lambda: resend.Inboxes.Threads.Labels.add(
+                    {
+                        "inbox_id": "support@acme.com",
+                        "thread_id": THREAD_ID,
+                        "labels": [LABEL_ID],
+                    }
+                ),
+                f"/threads/{THREAD_ID}/labels",
+            ),
+            (
+                lambda: resend.Inboxes.Threads.Emails.list(
+                    "support@acme.com", THREAD_ID
+                ),
+                f"/threads/{THREAD_ID}/emails",
+            ),
+            (
+                lambda: resend.Inboxes.Threads.Emails.reply(
+                    {
+                        "inbox_id": "support@acme.com",
+                        "thread_id": THREAD_ID,
+                        "email_id": EMAIL_ID,
+                        "text": "Hi",
+                    }
+                ),
+                f"/threads/{THREAD_ID}/emails/{EMAIL_ID}/reply",
+            ),
+            (lambda: resend.Inboxes.Drafts.list("support@acme.com"), "/drafts"),
+            (
+                lambda: resend.Inboxes.Drafts.create(
+                    {"inbox_id": "support@acme.com", "text": "Hi"}
+                ),
+                "/drafts",
+            ),
+            (
+                lambda: resend.Inboxes.Drafts.send("support@acme.com", DRAFT_ID),
+                f"/drafts/{DRAFT_ID}/send",
+            ),
+        ]
+        for call, suffix in calls:
+            call()
+            assert self.last_request()["url"] == f"{base}{suffix}"
 
     def test_labels_paths_and_bodies(self) -> None:
         base = f"https://api.resend.com/inboxes/{INBOX_ID}/labels"
@@ -788,25 +941,37 @@ class TestInboxesRequest(TestCase):
         assert self.last_request()["url"] == url
 
         resend.Inboxes.Threads.update(
-            {
-                "inbox_id": INBOX_ID,
-                "id": THREAD_ID,
-                "folder": "archive",
-                "add_label_ids": [LABEL_ID],
-                "remove_label_ids": ["2b6d0f4e-8a1c-4e3b-9d57-1c0e8a6f4b21"],
-            }
+            {"inbox_id": INBOX_ID, "id": THREAD_ID, "folder": "archive"}
         )
         req = self.last_request()
         assert (req["method"], req["url"]) == ("patch", url)
-        assert req["json"] == {
-            "folder": "archive",
-            "add_label_ids": [LABEL_ID],
-            "remove_label_ids": ["2b6d0f4e-8a1c-4e3b-9d57-1c0e8a6f4b21"],
-        }
+        assert req["json"] == {"folder": "archive"}
 
         resend.Inboxes.Threads.remove(INBOX_ID, THREAD_ID)
         req = self.last_request()
         assert (req["method"], req["url"]) == ("delete", url)
+
+    def test_thread_labels_paths_and_bodies(self) -> None:
+        base = f"https://api.resend.com/inboxes/{INBOX_ID}/threads/{THREAD_ID}/labels"
+        resend.Inboxes.Threads.Labels.add(
+            {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "labels": [LABEL_ID]}
+        )
+        req = self.last_request()
+        assert (req["method"], req["url"], req["json"]) == (
+            "post",
+            base,
+            {"labels": [LABEL_ID]},
+        )
+
+        resend.Inboxes.Threads.Labels.set(
+            {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "labels": []}
+        )
+        req = self.last_request()
+        assert (req["method"], req["url"], req["json"]) == ("put", base, {"labels": []})
+
+        resend.Inboxes.Threads.Labels.remove(INBOX_ID, THREAD_ID, LABEL_ID)
+        req = self.last_request()
+        assert (req["method"], req["url"]) == ("delete", f"{base}/{LABEL_ID}")
 
     def test_thread_emails_paths_and_bodies(self) -> None:
         base = f"https://api.resend.com/inboxes/{INBOX_ID}/threads/{THREAD_ID}/emails"
