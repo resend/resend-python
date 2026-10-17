@@ -111,7 +111,7 @@ class InboxDrafts:
             subject (NotRequired[Optional[str]]): The subject.
             html (NotRequired[Optional[str]]): The HTML body.
             text (NotRequired[Optional[str]]): The plain text body.
-            attachments (NotRequired[List[AttachmentParams]]): Files to store on the draft.
+            attachments (NotRequired[Optional[List[AttachmentParams]]]): Files to store on the draft.
             thread_id (NotRequired[str]): The Thread ID to reply in.
             reply_to_email_id (NotRequired[str]): The Email ID to reply to.
         """
@@ -146,7 +146,7 @@ class InboxDrafts:
         """
         The plain text body.
         """
-        attachments: NotRequired[List["InboxDrafts.AttachmentParams"]]
+        attachments: NotRequired[Optional[List["InboxDrafts.AttachmentParams"]]]
         """
         Files to store on the draft. Each one needs ``content``, ``filename`` and
         ``content_type``. A ``path`` or ``content_id`` returns a 422. The files on
@@ -313,10 +313,10 @@ class InboxDrafts:
         SendParams are the optional body parameters for sending a draft.
 
         Attributes:
-            headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
+            headers (NotRequired[Optional[Dict[str, str]]]): Custom headers to be added to the email.
         """
 
-        headers: NotRequired[Dict[str, str]]
+        headers: NotRequired[Optional[Dict[str, str]]]
         """
         Custom headers to be added to the email. The ``In-Reply-To``,
         ``References`` and ``Reply-To`` headers are set by Resend and cannot be
