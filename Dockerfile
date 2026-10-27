@@ -1,4 +1,4 @@
-FROM python:3.15.0
+FROM python:3.15.2
 
 RUN pip install --upgrade pip
 
