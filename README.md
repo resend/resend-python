@@ -98,6 +98,19 @@ resend.api_key = "re_yourkey"
 resend.default_async_http_client = resend.HTTPXClient(timeout=60)
 ```
 
+By default, `HTTPXClient` opens a new connection for every request. To reuse
+connections, pass your own `httpx.AsyncClient`. You own its lifecycle, so close
+it when you're done:
+
+```py
+import httpx
+import resend
+
+async with httpx.AsyncClient(timeout=60) as client:
+    resend.default_async_http_client = resend.HTTPXClient(client=client)
+    ...
+```
+
 Legacy configurations that assign an `AsyncHTTPClient` to
 `resend.default_http_client` are also supported. Async requests select a client
 in this order:
