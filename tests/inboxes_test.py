@@ -1075,6 +1075,42 @@ class TestInboxesRequest(TestCase):
         req = self.last_request()
         assert (req["method"], req["url"]) == ("post", f"{base}/{DRAFT_ID}/send")
 
+    def test_nullable_params_are_sent_as_null(self) -> None:
+        nulls = {"cc": None, "bcc": None, "headers": None, "attachments": None}
+        resend.Inboxes.Threads.Emails.reply(
+            {
+                "inbox_id": INBOX_ID,
+                "thread_id": THREAD_ID,
+                "email_id": EMAIL_ID,
+                "text": "Hi",
+                "cc": None,
+                "bcc": None,
+                "headers": None,
+                "attachments": None,
+            }
+        )
+        assert self.last_request()["json"] == {"text": "Hi", **nulls}
+
+        resend.Inboxes.Threads.Emails.forward(
+            {
+                "inbox_id": INBOX_ID,
+                "thread_id": THREAD_ID,
+                "email_id": EMAIL_ID,
+                "to": "colleague@example.org",
+                "cc": None,
+                "bcc": None,
+                "headers": None,
+                "attachments": None,
+            }
+        )
+        assert self.last_request()["json"] == {"to": "colleague@example.org", **nulls}
+
+        resend.Inboxes.Drafts.create({"inbox_id": INBOX_ID, "attachments": None})
+        assert self.last_request()["json"] == {"attachments": None}
+
+        resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID, {"headers": None})
+        assert self.last_request()["json"] == {"headers": None}
+
     def test_sending_methods_send_the_idempotency_key(self) -> None:
         resend.Inboxes.Threads.Emails.reply(
             {"inbox_id": INBOX_ID, "thread_id": THREAD_ID, "email_id": EMAIL_ID, "text": "Hi"},
