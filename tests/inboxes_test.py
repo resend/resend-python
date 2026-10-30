@@ -727,7 +727,7 @@ def _invalid_draft_attachments() -> List[resend.Inboxes.Drafts.AttachmentParams]
         {"content": "aGVsbG8=", "filename": "note.txt"},  # type: ignore[list-item]
         {  # type: ignore[list-item]
             "content": "aGVsbG8=",
-            "path": "https://resend.com/static/sample/invoice.pdf",
+            "path": "https://example.com/invoice.pdf",
             "filename": "note.txt",
             "content_type": "text/plain",
         },
@@ -1072,7 +1072,7 @@ class TestInboxesRequest(TestCase):
         }
 
         path_attachment: resend.Inboxes.Drafts.AttachmentParams = {
-            "path": "https://resend.com/static/sample/invoice.pdf",
+            "path": "https://example.com/invoice.pdf",
             "filename": "invoice.pdf",
         }
         resend.Inboxes.Drafts.create(
@@ -1081,7 +1081,7 @@ class TestInboxesRequest(TestCase):
         assert self.last_request()["json"] == {"attachments": [path_attachment]}
 
         typed_path_attachment: resend.Inboxes.Drafts.AttachmentParams = {
-            "path": "https://resend.com/static/sample/invoice.pdf",
+            "path": "https://example.com/invoice.pdf",
             "filename": "invoice.pdf",
             "content_type": "application/pdf",
         }
