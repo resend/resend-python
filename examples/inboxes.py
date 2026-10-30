@@ -132,7 +132,11 @@ draft_params: resend.Inboxes.Drafts.CreateParams = {
             "content": "UmVmdW5kIHJlY2VpcHQ=",
             "filename": "receipt.txt",
             "content_type": "text/plain",
-        }
+        },
+        {
+            "path": "https://example.com/invoice.pdf",
+            "filename": "invoice.pdf",
+        },
     ],
 }
 draft: resend.Inboxes.Drafts.CreateResponse = resend.Inboxes.Drafts.create(
