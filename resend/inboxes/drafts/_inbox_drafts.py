@@ -422,8 +422,8 @@ class InboxDrafts:
         ``to`` is addressed to the sender of the email it replies to, or to its
         Reply-To when set. For an email the inbox sent, it defaults to that email's
         ``to`` recipients. Send ``to: []`` to leave it empty. Attachments are
-        stored on the draft, so each one needs ``content``, ``filename`` and
-        ``content_type``. Only one unsent reply draft can target an email, so a
+        stored on the draft, so a ``path`` file is downloaded when the request
+        is made. Only one unsent reply draft can target an email, so a
         reply draft request for an email that already has one returns the ID of
         the existing draft. That request ignores every other field, except
         ``attachments``, which replaces the attachments of the existing draft. A
@@ -578,8 +578,8 @@ class InboxDrafts:
         ``to`` is addressed to the sender of the email it replies to, or to its
         Reply-To when set. For an email the inbox sent, it defaults to that email's
         ``to`` recipients. Send ``to: []`` to leave it empty. Attachments are
-        stored on the draft, so each one needs ``content``, ``filename`` and
-        ``content_type``. Only one unsent reply draft can target an email, so a
+        stored on the draft, so a ``path`` file is downloaded when the request
+        is made. Only one unsent reply draft can target an email, so a
         reply draft request for an email that already has one returns the ID of
         the existing draft. That request ignores every other field, except
         ``attachments``, which replaces the attachments of the existing draft. A
