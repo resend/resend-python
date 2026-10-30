@@ -720,7 +720,7 @@ class TestResendInboxDrafts(ResendBaseTest):
             _ = resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID)
 
 
-def _invalid_draft_attachments() -> List[resend.Inboxes.Drafts.AttachmentParams]:
+def _invalid_draft_attachments() -> List[resend.Inboxes.Drafts.DraftAttachmentParams]:
     """Checked by mypy: each entry must stay a type error."""
     return [
         {"filename": "note.txt"},  # type: ignore[list-item]
@@ -1058,11 +1058,11 @@ class TestInboxesRequest(TestCase):
             {"to": None},
         )
 
-        attachment: resend.Inboxes.Drafts.AttachmentParams = {
-            "content": "aGVsbG8=",
-            "filename": "note.txt",
-            "content_type": "text/plain",
-        }
+        attachment = resend.Inboxes.Drafts.AttachmentParams(
+            content="aGVsbG8=",
+            filename="note.txt",
+            content_type="text/plain",
+        )
         resend.Inboxes.Drafts.create(
             {"inbox_id": INBOX_ID, "to": "ada@example.org", "attachments": [attachment]}
         )
@@ -1071,7 +1071,7 @@ class TestInboxesRequest(TestCase):
             "attachments": [attachment],
         }
 
-        path_attachment: resend.Inboxes.Drafts.AttachmentParams = {
+        path_attachment: resend.Inboxes.Drafts.DraftAttachmentParams = {
             "path": "https://example.com/invoice.pdf",
             "filename": "invoice.pdf",
         }
@@ -1080,7 +1080,7 @@ class TestInboxesRequest(TestCase):
         )
         assert self.last_request()["json"] == {"attachments": [path_attachment]}
 
-        typed_path_attachment: resend.Inboxes.Drafts.AttachmentParams = {
+        typed_path_attachment: resend.Inboxes.Drafts.DraftAttachmentParams = {
             "path": "https://example.com/invoice.pdf",
             "filename": "invoice.pdf",
             "content_type": "application/pdf",

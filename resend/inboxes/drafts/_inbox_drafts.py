@@ -21,9 +21,9 @@ class InboxDrafts:
     InboxDrafts manages the drafts of an inbox.
     """
 
-    class ContentAttachmentParams(TypedDict):
+    class AttachmentParams(TypedDict):
         """
-        ContentAttachmentParams is a file to store on a draft, sent inline.
+        AttachmentParams is a file to store on a draft, sent inline.
 
         Attributes:
             content (str): The content of the file, encoded in base64.
@@ -70,7 +70,7 @@ class InboxDrafts:
         downloaded file.
         """
 
-    AttachmentParams = Union[ContentAttachmentParams, PathAttachmentParams]
+    DraftAttachmentParams = Union[AttachmentParams, PathAttachmentParams]
 
     class ListParams(TypedDict):
         """
@@ -137,7 +137,7 @@ class InboxDrafts:
             subject (NotRequired[Optional[str]]): The subject.
             html (NotRequired[Optional[str]]): The HTML body.
             text (NotRequired[Optional[str]]): The plain text body.
-            attachments (NotRequired[Optional[List[AttachmentParams]]]): Files to store on the draft.
+            attachments (NotRequired[Optional[List[DraftAttachmentParams]]]): Files to store on the draft.
             thread_id (NotRequired[str]): The Thread ID to reply in.
             reply_to_email_id (NotRequired[str]): The Email ID to reply to.
         """
@@ -172,7 +172,7 @@ class InboxDrafts:
         """
         The plain text body.
         """
-        attachments: NotRequired[Optional[List["InboxDrafts.AttachmentParams"]]]
+        attachments: NotRequired[Optional[List["InboxDrafts.DraftAttachmentParams"]]]
         """
         Files to store on the draft. Each one needs a ``filename`` and either
         ``content`` with a ``content_type``, or a ``path`` URL that is downloaded
@@ -247,7 +247,7 @@ class InboxDrafts:
             subject (NotRequired[Optional[str]]): The subject.
             html (NotRequired[Optional[str]]): The HTML body.
             text (NotRequired[Optional[str]]): The plain text body.
-            attachments (NotRequired[Optional[List[AttachmentParams]]]): Files that replace
+            attachments (NotRequired[Optional[List[DraftAttachmentParams]]]): Files that replace
                 every attachment on the draft.
         """
 
@@ -285,7 +285,7 @@ class InboxDrafts:
         """
         The plain text body. Pass None to clear.
         """
-        attachments: NotRequired[Optional[List["InboxDrafts.AttachmentParams"]]]
+        attachments: NotRequired[Optional[List["InboxDrafts.DraftAttachmentParams"]]]
         """
         Files to store on the draft. Each one needs a ``filename`` and either
         ``content`` with a ``content_type``, or a ``path`` URL that is downloaded
