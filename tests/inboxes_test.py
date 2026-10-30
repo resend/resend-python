@@ -1058,7 +1058,7 @@ class TestInboxesRequest(TestCase):
             {"to": None},
         )
 
-        attachment = resend.Inboxes.Drafts.AttachmentParams(
+        attachment = resend.InboxDrafts.AttachmentParams(
             content="aGVsbG8=",
             filename="note.txt",
             content_type="text/plain",
