@@ -134,8 +134,8 @@ draft_params: resend.Inboxes.Drafts.CreateParams = {
             "content_type": "text/plain",
         },
         {
-            "path": "https://resend.com/static/brand/resend-wordmark-black.png",
-            "filename": "resend-wordmark-black.png",
+            "path": "https://example.com/invoice.pdf",
+            "filename": "invoice.pdf",
         },
     ],
 }
