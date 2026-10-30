@@ -720,6 +720,20 @@ class TestResendInboxDrafts(ResendBaseTest):
             _ = resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID)
 
 
+def _invalid_draft_attachments() -> List[resend.Inboxes.Drafts.AttachmentParams]:
+    """Checked by mypy: each entry must stay a type error."""
+    return [
+        {"filename": "note.txt"},  # type: ignore[list-item]
+        {"content": "aGVsbG8=", "filename": "note.txt"},  # type: ignore[list-item]
+        {  # type: ignore[list-item]
+            "content": "aGVsbG8=",
+            "path": "https://resend.com/static/sample/invoice.pdf",
+            "filename": "note.txt",
+            "content_type": "text/plain",
+        },
+    ]
+
+
 class TestInboxesRequest(TestCase):
     def setUp(self) -> None:
         resend.api_key = "re_123"
@@ -1056,6 +1070,29 @@ class TestInboxesRequest(TestCase):
             "to": "ada@example.org",
             "attachments": [attachment],
         }
+
+        path_attachment: resend.Inboxes.Drafts.AttachmentParams = {
+            "path": "https://resend.com/static/sample/invoice.pdf",
+            "filename": "invoice.pdf",
+        }
+        resend.Inboxes.Drafts.create(
+            {"inbox_id": INBOX_ID, "attachments": [path_attachment]}
+        )
+        assert self.last_request()["json"] == {"attachments": [path_attachment]}
+
+        typed_path_attachment: resend.Inboxes.Drafts.AttachmentParams = {
+            "path": "https://resend.com/static/sample/invoice.pdf",
+            "filename": "invoice.pdf",
+            "content_type": "application/pdf",
+        }
+        resend.Inboxes.Drafts.update(
+            {
+                "inbox_id": INBOX_ID,
+                "id": DRAFT_ID,
+                "attachments": [typed_path_attachment],
+            }
+        )
+        assert self.last_request()["json"] == {"attachments": [typed_path_attachment]}
 
         resend.Inboxes.Drafts.update(
             {"inbox_id": INBOX_ID, "id": DRAFT_ID, "attachments": []}

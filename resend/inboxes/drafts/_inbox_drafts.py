@@ -21,11 +21,9 @@ class InboxDrafts:
     InboxDrafts manages the drafts of an inbox.
     """
 
-    class AttachmentParams(TypedDict):
+    class ContentAttachmentParams(TypedDict):
         """
-        AttachmentParams is a file to store on a draft. Each one needs
-        ``content``, ``filename`` and ``content_type``. A ``path`` or
-        ``content_id`` returns a 422.
+        ContentAttachmentParams is a file to store on a draft, sent inline.
 
         Attributes:
             content (str): The content of the file, encoded in base64.
@@ -45,6 +43,34 @@ class InboxDrafts:
         """
         The MIME type of the file, for example ``application/pdf``.
         """
+
+    class PathAttachmentParams(TypedDict):
+        """
+        PathAttachmentParams is a file to store on a draft, downloaded from a URL
+        when the request is made.
+
+        Attributes:
+            path (str): The URL to download the file from.
+            filename (str): The name of the file.
+            content_type (NotRequired[str]): The MIME type of the file.
+        """
+
+        path: str
+        """
+        The URL to download the file from, starting with ``http`` or ``https``.
+        A file that cannot be downloaded returns a 422.
+        """
+        filename: str
+        """
+        The name of the file.
+        """
+        content_type: NotRequired[str]
+        """
+        The MIME type of the file. Defaults to the content type of the
+        downloaded file.
+        """
+
+    AttachmentParams = Union[ContentAttachmentParams, PathAttachmentParams]
 
     class ListParams(TypedDict):
         """
@@ -148,10 +174,11 @@ class InboxDrafts:
         """
         attachments: NotRequired[Optional[List["InboxDrafts.AttachmentParams"]]]
         """
-        Files to store on the draft. Each one needs ``content``, ``filename`` and
-        ``content_type``. A ``path`` or ``content_id`` returns a 422. The files on
-        a draft can total at most 25 MB. An empty file or a blocked file type
-        returns a 422.
+        Files to store on the draft. Each one needs a ``filename`` and either
+        ``content`` with a ``content_type``, or a ``path`` URL that is downloaded
+        when the request is made. The files on a draft, downloaded ones included,
+        can total at most 25 MB. An empty file, a blocked file type, or a ``path``
+        that cannot be downloaded returns a 422.
         """
         thread_id: NotRequired[str]
         """
@@ -260,11 +287,12 @@ class InboxDrafts:
         """
         attachments: NotRequired[Optional[List["InboxDrafts.AttachmentParams"]]]
         """
-        Files to store on the draft. Each one needs ``content``, ``filename`` and
-        ``content_type``. A ``path`` or ``content_id`` returns a 422. The files on
-        a draft can total at most 25 MB. An empty file or a blocked file type
-        returns a 422. Sending the field replaces every attachment on the draft.
-        Send ``[]`` or None to remove them all.
+        Files to store on the draft. Each one needs a ``filename`` and either
+        ``content`` with a ``content_type``, or a ``path`` URL that is downloaded
+        when the request is made. The files on a draft, downloaded ones included,
+        can total at most 25 MB. An empty file, a blocked file type, or a ``path``
+        that cannot be downloaded returns a 422. Sending the field replaces every
+        attachment on the draft. Send ``[]`` or None to remove them all.
         """
 
     class UpdateResponse(BaseResponse):
