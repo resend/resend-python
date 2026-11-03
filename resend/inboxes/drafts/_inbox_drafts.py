@@ -23,9 +23,7 @@ class InboxDrafts:
 
     class AttachmentParams(TypedDict):
         """
-        AttachmentParams is a file to store on a draft. Each one needs
-        ``content``, ``filename`` and ``content_type``. A ``path`` or
-        ``content_id`` returns a 422.
+        AttachmentParams is a file to store on a draft, sent inline.
 
         Attributes:
             content (str): The content of the file, encoded in base64.
@@ -45,6 +43,34 @@ class InboxDrafts:
         """
         The MIME type of the file, for example ``application/pdf``.
         """
+
+    class PathAttachmentParams(TypedDict):
+        """
+        PathAttachmentParams is a file to store on a draft, downloaded from a URL
+        when the request is made.
+
+        Attributes:
+            path (str): The URL to download the file from.
+            filename (str): The name of the file.
+            content_type (NotRequired[str]): The MIME type of the file.
+        """
+
+        path: str
+        """
+        The URL to download the file from, starting with ``http`` or ``https``.
+        A file that cannot be downloaded returns a 422.
+        """
+        filename: str
+        """
+        The name of the file.
+        """
+        content_type: NotRequired[str]
+        """
+        The MIME type of the file. Defaults to the content type of the
+        downloaded file.
+        """
+
+    DraftAttachmentParams = Union[AttachmentParams, PathAttachmentParams]
 
     class ListParams(TypedDict):
         """
@@ -111,7 +137,7 @@ class InboxDrafts:
             subject (NotRequired[Optional[str]]): The subject.
             html (NotRequired[Optional[str]]): The HTML body.
             text (NotRequired[Optional[str]]): The plain text body.
-            attachments (NotRequired[Optional[List[AttachmentParams]]]): Files to store on the draft.
+            attachments (NotRequired[Optional[List[DraftAttachmentParams]]]): Files to store on the draft.
             thread_id (NotRequired[str]): The Thread ID to reply in.
             reply_to_email_id (NotRequired[str]): The Email ID to reply to.
         """
@@ -146,12 +172,13 @@ class InboxDrafts:
         """
         The plain text body.
         """
-        attachments: NotRequired[Optional[List["InboxDrafts.AttachmentParams"]]]
+        attachments: NotRequired[Optional[List["InboxDrafts.DraftAttachmentParams"]]]
         """
-        Files to store on the draft. Each one needs ``content``, ``filename`` and
-        ``content_type``. A ``path`` or ``content_id`` returns a 422. The files on
-        a draft can total at most 25 MB. An empty file or a blocked file type
-        returns a 422.
+        Files to store on the draft. Each one needs a ``filename`` and either
+        ``content`` with a ``content_type``, or a ``path`` URL that is downloaded
+        when the request is made. The files on a draft, downloaded ones included,
+        can total at most 25 MB. An empty file, a blocked file type, or a ``path``
+        that cannot be downloaded returns a 422.
         """
         thread_id: NotRequired[str]
         """
@@ -220,7 +247,7 @@ class InboxDrafts:
             subject (NotRequired[Optional[str]]): The subject.
             html (NotRequired[Optional[str]]): The HTML body.
             text (NotRequired[Optional[str]]): The plain text body.
-            attachments (NotRequired[Optional[List[AttachmentParams]]]): Files that replace
+            attachments (NotRequired[Optional[List[DraftAttachmentParams]]]): Files that replace
                 every attachment on the draft.
         """
 
@@ -258,13 +285,14 @@ class InboxDrafts:
         """
         The plain text body. Pass None to clear.
         """
-        attachments: NotRequired[Optional[List["InboxDrafts.AttachmentParams"]]]
+        attachments: NotRequired[Optional[List["InboxDrafts.DraftAttachmentParams"]]]
         """
-        Files to store on the draft. Each one needs ``content``, ``filename`` and
-        ``content_type``. A ``path`` or ``content_id`` returns a 422. The files on
-        a draft can total at most 25 MB. An empty file or a blocked file type
-        returns a 422. Sending the field replaces every attachment on the draft.
-        Send ``[]`` or None to remove them all.
+        Files to store on the draft. Each one needs a ``filename`` and either
+        ``content`` with a ``content_type``, or a ``path`` URL that is downloaded
+        when the request is made. The files on a draft, downloaded ones included,
+        can total at most 25 MB. An empty file, a blocked file type, or a ``path``
+        that cannot be downloaded returns a 422. Sending the field replaces every
+        attachment on the draft. Send ``[]`` or None to remove them all.
         """
 
     class UpdateResponse(BaseResponse):
@@ -394,8 +422,8 @@ class InboxDrafts:
         ``to`` is addressed to the sender of the email it replies to, or to its
         Reply-To when set. For an email the inbox sent, it defaults to that email's
         ``to`` recipients. Send ``to: []`` to leave it empty. Attachments are
-        stored on the draft, so each one needs ``content``, ``filename`` and
-        ``content_type``. Only one unsent reply draft can target an email, so a
+        stored on the draft, so a ``path`` file is downloaded when the request
+        is made. Only one unsent reply draft can target an email, so a
         reply draft request for an email that already has one returns the ID of
         the existing draft. That request ignores every other field, except
         ``attachments``, which replaces the attachments of the existing draft. A
@@ -550,8 +578,8 @@ class InboxDrafts:
         ``to`` is addressed to the sender of the email it replies to, or to its
         Reply-To when set. For an email the inbox sent, it defaults to that email's
         ``to`` recipients. Send ``to: []`` to leave it empty. Attachments are
-        stored on the draft, so each one needs ``content``, ``filename`` and
-        ``content_type``. Only one unsent reply draft can target an email, so a
+        stored on the draft, so a ``path`` file is downloaded when the request
+        is made. Only one unsent reply draft can target an email, so a
         reply draft request for an email that already has one returns the ID of
         the existing draft. That request ignores every other field, except
         ``attachments``, which replaces the attachments of the existing draft. A
