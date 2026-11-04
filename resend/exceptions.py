@@ -208,8 +208,14 @@ ERRORS: Dict[str, Dict[str, Any]] = {
         "missing_required_fields": MissingRequiredFieldsError,
         "validation_error": ValidationError,
     },
-    "401": {"missing_api_key": MissingApiKeyError},
-    "403": {"invalid_api_key": InvalidApiKeyError},
+    "401": {
+        "missing_api_key": MissingApiKeyError,
+        "validation_error": ValidationError,
+    },
+    "403": {
+        "invalid_api_key": InvalidApiKeyError,
+        "validation_error": ValidationError,
+    },
     "429": {
         "rate_limit_exceeded": RateLimitError,
         "daily_quota_exceeded": RateLimitError,

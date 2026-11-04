@@ -47,6 +47,23 @@ class TestResendError(unittest.TestCase):
             raise_for_code_and_type(400, "validation_error", "err")
         assert e.type is ValidationError
 
+    def test_validation_error_from_401(self) -> None:
+        # Sending endpoints answer an invalid API key with 401 validation_error.
+        with pytest.raises(ValidationError) as e:
+            raise_for_code_and_type(401, "validation_error", "API key is invalid")
+        assert e.type is ValidationError
+        assert e.value.code == 401
+
+    def test_validation_error_from_403(self) -> None:
+        # An unverified sending domain is a 403 validation_error.
+        with pytest.raises(ValidationError) as e:
+            raise_for_code_and_type(
+                403, "validation_error", "The example.com domain is not verified."
+            )
+        assert e.type is ValidationError
+        assert e.value.code == 403
+        assert e.value.message == "The example.com domain is not verified."
+
     def test_error_500(self) -> None:
         with pytest.raises(ApplicationError) as e:
             raise_for_code_and_type(500, "application_error", "err")
