@@ -27,7 +27,7 @@ setup(
     package_data={"resend": ["py.typed"]},
     install_requires=install_requires,
     extras_require={
-        "async": ["httpx>=0.24.0"],
+        "async": ["httpx>=0.25.1", "h11>=0.16.0"],
     },
     zip_safe=False,
     python_requires=">=3.7",
