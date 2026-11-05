@@ -12,7 +12,7 @@ with open("resend/version.py", encoding="utf8") as f:
 if os.path.exists("requirements.txt"):
     install_requires = open("requirements.txt").readlines()
 else:
-    install_requires = ["requests>=2.31.0", "typing_extensions>=4.4.0"]
+    install_requires = ["requests>=2.33.0", "typing_extensions>=4.4.0"]
 
 setup(
     name="resend",
