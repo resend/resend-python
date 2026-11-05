@@ -90,8 +90,11 @@ class Request(Generic[T]):
     def make_request(self, url: str) -> Union[Dict[str, Any], List[Any]]:
         headers = self.__get_headers()
 
-        if isinstance(self.params, dict):
-            json_params: Optional[Union[Dict[str, Any], List[Any]]] = {
+        json_params: Optional[Union[Dict[str, Any], List[Any]]]
+        if self.verb == "get":
+            json_params = None
+        elif isinstance(self.params, dict):
+            json_params = {
                 str(k): v for k, v in self.params.items()
             }
         elif isinstance(self.params, list):
