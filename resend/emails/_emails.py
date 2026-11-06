@@ -272,6 +272,11 @@ class _SendParamsDefault(_SendParamsFrom):
     """
     Template configuration for sending emails using predefined templates.
     """
+    topic_id: NotRequired[str]
+    """
+    The topic ID to scope the email to. A contact that opted out of the topic
+    does not receive the email.
+    """
 
 
 def _validate_metrics_params(params: Optional["Emails.MetricsParams"]) -> None:
@@ -408,6 +413,7 @@ class Emails:
             attachments (NotRequired[List[Union[Attachment, RemoteAttachment]]]): List of attachments to be added to the email.
             tags (NotRequired[List[Tag]]): List of tags to be added to the email.
             template (NotRequired[EmailTemplate]): Template configuration for sending emails using predefined templates.
+            topic_id (NotRequired[str]): The topic ID to scope the email to.
         """
 
     class SendOptions(TypedDict):
