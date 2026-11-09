@@ -64,6 +64,22 @@ class TestResendError(unittest.TestCase):
         assert e.value.code == 403
         assert e.value.message == "The example.com domain is not verified."
 
+    def test_validation_error_suggested_action_is_not_about_missing_fields(
+        self,
+    ) -> None:
+        # validation_error also covers auth and domain problems, so the
+        # suggested action must not point users at missing fields.
+        for code, message in [
+            (400, "Invalid `to` field"),
+            (401, "API key is invalid"),
+            (403, "The example.com domain is not verified."),
+        ]:
+            with pytest.raises(ValidationError) as e:
+                raise_for_code_and_type(code, "validation_error", message)
+            assert e.value.suggested_action == (
+                "Check the error message for details on what needs to be fixed."
+            )
+
     def test_error_500(self) -> None:
         with pytest.raises(ApplicationError) as e:
             raise_for_code_and_type(500, "application_error", "err")

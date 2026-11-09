@@ -103,8 +103,9 @@ class ValidationError(ResendError):
         default_message = """
         The request body is missing one or more required fields."""
 
-        suggested_action = """Check the error message
-        to see the list of missing fields."""
+        suggested_action = (
+            "Check the error message for details on what needs to be fixed."
+        )
 
         if message == "":
             message = default_message
