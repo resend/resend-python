@@ -83,12 +83,12 @@ class InboxThreadEmails:
             email_id (str): The Email ID of the message to reply to.
             html (NotRequired[str]): The HTML body of the reply.
             text (NotRequired[str]): The plain-text body of the reply.
-            cc (NotRequired[Union[str, List[str]]]): CC recipients.
-            bcc (NotRequired[Union[str, List[str]]]): BCC recipients.
+            cc (NotRequired[Optional[Union[str, List[str]]]]): CC recipients.
+            bcc (NotRequired[Optional[Union[str, List[str]]]]): BCC recipients.
             subject (NotRequired[str]): The subject of the reply.
             reply_all (NotRequired[bool]): Reply to everyone on the original message.
-            headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
-            attachments (NotRequired[List[Union[Attachment, RemoteAttachment]]]): Files to attach.
+            headers (NotRequired[Optional[Dict[str, str]]]): Custom headers to be added to the email.
+            attachments (NotRequired[Optional[List[Union[Attachment, RemoteAttachment]]]]): Files to attach.
         """
 
         inbox_id: str
@@ -112,7 +112,7 @@ class InboxThreadEmails:
         """
         The plain-text body of the reply.
         """
-        cc: NotRequired[Union[str, List[str]]]
+        cc: NotRequired[Optional[Union[str, List[str]]]]
         """
         CC recipient email address. For multiple addresses, send a list of strings.
         Without ``reply_all``, the reply copies only these addresses. With
@@ -121,7 +121,7 @@ class InboxThreadEmails:
         addresses. After the ``to`` recipients are added, the reply cannot exceed
         50 recipients.
         """
-        bcc: NotRequired[Union[str, List[str]]]
+        bcc: NotRequired[Optional[Union[str, List[str]]]]
         """
         BCC recipient email address. For multiple addresses, send a list of strings.
         BCC recipients of the original message are never copied.
@@ -142,7 +142,7 @@ class InboxThreadEmails:
         recipients. The inbox address is always excluded, and duplicates are
         removed. Defaults to False.
         """
-        headers: NotRequired[Dict[str, str]]
+        headers: NotRequired[Optional[Dict[str, str]]]
         """
         Custom headers to be added to the email. The ``In-Reply-To``,
         ``References`` and ``Reply-To`` headers are set by Resend and cannot be
@@ -150,7 +150,7 @@ class InboxThreadEmails:
         names cannot be empty, and names and values cannot contain line breaks
         or null characters, or the request returns a 422.
         """
-        attachments: NotRequired[List[Union[Attachment, RemoteAttachment]]]
+        attachments: NotRequired[Optional[List[Union[Attachment, RemoteAttachment]]]]
         """
         Files to attach, as on ``Emails.send``. Each one needs ``content`` or
         ``path``. The ``content`` of all files can total at most 25 MB. A
@@ -204,13 +204,13 @@ class InboxThreadEmails:
             thread_id (str): The Thread ID.
             email_id (str): The Email ID of the message to forward.
             to (Union[str, List[str]]): The recipients.
-            cc (NotRequired[Union[str, List[str]]]): CC recipients.
-            bcc (NotRequired[Union[str, List[str]]]): BCC recipients.
+            cc (NotRequired[Optional[Union[str, List[str]]]]): CC recipients.
+            bcc (NotRequired[Optional[Union[str, List[str]]]]): BCC recipients.
             html (NotRequired[str]): An HTML note sent above the quoted original.
             text (NotRequired[str]): A plain-text note sent above the quoted original.
             subject (NotRequired[str]): The subject of the forward.
-            headers (NotRequired[Dict[str, str]]): Custom headers to be added to the email.
-            attachments (NotRequired[List[Union[Attachment, RemoteAttachment]]]): Files to attach.
+            headers (NotRequired[Optional[Dict[str, str]]]): Custom headers to be added to the email.
+            attachments (NotRequired[Optional[List[Union[Attachment, RemoteAttachment]]]]): Files to attach.
         """
 
         inbox_id: str
@@ -232,12 +232,12 @@ class InboxThreadEmails:
         Must name at least one address. ``to``, ``cc`` and ``bcc`` combined cannot
         exceed 50 recipients.
         """
-        cc: NotRequired[Union[str, List[str]]]
+        cc: NotRequired[Optional[Union[str, List[str]]]]
         """
         CC recipient email address. For multiple addresses, send a list of strings.
         Counts toward the 50-recipient limit.
         """
-        bcc: NotRequired[Union[str, List[str]]]
+        bcc: NotRequired[Optional[Union[str, List[str]]]]
         """
         BCC recipient email address. For multiple addresses, send a list of strings.
         Counts toward the 50-recipient limit.
@@ -255,7 +255,7 @@ class InboxThreadEmails:
         The subject of the forward. Cannot contain a line break. When omitted, the
         thread subject is used, prefixed with ``Fwd:`` if it does not already start with it.
         """
-        headers: NotRequired[Dict[str, str]]
+        headers: NotRequired[Optional[Dict[str, str]]]
         """
         Custom headers to be added to the email. The ``In-Reply-To``,
         ``References`` and ``Reply-To`` headers are set by Resend and cannot be
@@ -263,7 +263,7 @@ class InboxThreadEmails:
         names cannot be empty, and names and values cannot contain line breaks
         or null characters, or the request returns a 422.
         """
-        attachments: NotRequired[List[Union[Attachment, RemoteAttachment]]]
+        attachments: NotRequired[Optional[List[Union[Attachment, RemoteAttachment]]]]
         """
         Files to attach, as on ``Emails.send``. Each one needs ``content`` or
         ``path``. They share one limit with the attachments of the original

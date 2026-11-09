@@ -12,7 +12,7 @@ with open("resend/version.py", encoding="utf8") as f:
 if os.path.exists("requirements.txt"):
     install_requires = open("requirements.txt").readlines()
 else:
-    install_requires = ["requests>=2.31.0", "typing_extensions>=4.4.0"]
+    install_requires = ["requests>=2.33.0", "typing_extensions>=4.4.0"]
 
 setup(
     name="resend",
@@ -27,19 +27,16 @@ setup(
     package_data={"resend": ["py.typed"]},
     install_requires=install_requires,
     extras_require={
-        "async": ["httpx>=0.24.0"],
+        "async": ["httpx>=0.25.1"],
     },
     zip_safe=False,
-    python_requires=">=3.7",
+    python_requires=">=3.10",
     keywords=["email", "email platform"],
     classifiers=[
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
