@@ -1,8 +1,10 @@
-from unittest.mock import Mock
+from unittest import TestCase
+from unittest.mock import Mock, create_autospec
 
 import resend
 from resend import EmailsReceiving
 from resend.exceptions import NoContentError, ResendError, ValidationError
+from resend.http_client import HTTPClient
 from tests.conftest import ResendBaseTest
 
 # flake8: noqa
@@ -1098,3 +1100,32 @@ class TestEmailHeadersRegression(_unittest.TestCase):
             assert email["http_headers"]["x-request-id"] == "req_abc123"
         finally:
             resend.default_http_client = original_client
+
+
+class TestEmailsRequestBody(TestCase):
+    def setUp(self) -> None:
+        resend.api_key = "re_123"
+        self.mock_client = create_autospec(HTTPClient, instance=True)
+        self.previous_http_client = resend.default_http_client
+        resend.default_http_client = self.mock_client
+
+    def tearDown(self) -> None:
+        resend.default_http_client = self.previous_http_client
+
+    def test_send_sends_topic_id(self) -> None:
+        self.mock_client.request.return_value = (
+            b'{"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"}',
+            200,
+            {"Content-Type": "application/json"},
+        )
+        params: resend.Emails.SendParams = {
+            "from": "from@email.com",
+            "to": "to@email.com",
+            "subject": "subject",
+            "html": "html",
+            "topic_id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
+        }
+        resend.Emails.send(params)
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["json"]["topic_id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
