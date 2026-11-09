@@ -1,4 +1,3 @@
-from typing import List
 from unittest import TestCase
 from unittest.mock import Mock, create_autospec
 
@@ -1130,23 +1129,3 @@ class TestEmailsRequestBody(TestCase):
 
         _, kwargs = self.mock_client.request.call_args
         assert kwargs["json"]["topic_id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
-
-    def test_batch_send_sends_topic_id(self) -> None:
-        self.mock_client.request.return_value = (
-            b'{"data": [{"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"}]}',
-            200,
-            {"Content-Type": "application/json"},
-        )
-        params: List[resend.Emails.SendParams] = [
-            {
-                "from": "from@email.com",
-                "to": "to@email.com",
-                "subject": "subject",
-                "html": "html",
-                "topic_id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
-            }
-        ]
-        resend.Batch.send(params)
-
-        _, kwargs = self.mock_client.request.call_args
-        assert kwargs["json"][0]["topic_id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"

@@ -274,8 +274,10 @@ class _SendParamsDefault(_SendParamsFrom):
     """
     topic_id: NotRequired[str]
     """
-    The topic ID to scope the email to. A contact that opted out of the topic
-    does not receive the email.
+    The topic ID to scope the email to. If the recipient is a contact and
+    opted-in to the topic, the email is sent. If opted-out, the email is not
+    sent. If the recipient is not a contact, the email is sent if the topic's
+    default subscription is opt_in.
     """
 
 

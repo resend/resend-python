@@ -1,7 +1,10 @@
 from typing import List
+from unittest import TestCase
+from unittest.mock import create_autospec
 
 import resend
 from resend.exceptions import NoContentError
+from resend.http_client import HTTPClient
 from tests.conftest import ResendBaseTest
 
 # flake8: noqa
@@ -167,3 +170,34 @@ class TestResendBatchSend(ResendBaseTest):
         assert len(emails["errors"]) == 1
         assert emails["errors"][0]["index"] == 1
         assert emails["errors"][0]["message"] == "The `to` field is missing."
+
+
+class TestBatchRequestBody(TestCase):
+    def setUp(self) -> None:
+        resend.api_key = "re_123"
+        self.mock_client = create_autospec(HTTPClient, instance=True)
+        self.previous_http_client = resend.default_http_client
+        resend.default_http_client = self.mock_client
+
+    def tearDown(self) -> None:
+        resend.default_http_client = self.previous_http_client
+
+    def test_batch_send_sends_topic_id(self) -> None:
+        self.mock_client.request.return_value = (
+            b'{"data": [{"id": "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794"}]}',
+            200,
+            {"Content-Type": "application/json"},
+        )
+        params: List[resend.Emails.SendParams] = [
+            {
+                "from": "from@email.com",
+                "to": "to@email.com",
+                "subject": "subject",
+                "html": "html",
+                "topic_id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
+            }
+        ]
+        resend.Batch.send(params)
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["json"][0]["topic_id"] == "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
