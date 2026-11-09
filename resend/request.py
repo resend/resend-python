@@ -4,6 +4,7 @@ from typing import Any, Dict, Generic, List, Optional, Union, cast
 from typing_extensions import Literal, TypeVar
 
 import resend
+from resend._path import ensure_no_dot_segments
 from resend.exceptions import (NoContentError, ResendError,
                                raise_for_code_and_type)
 from resend.response import ResponseDict
@@ -36,6 +37,7 @@ class Request(Generic[T]):
         self._response_status_code: Optional[int] = None
 
     def perform(self) -> Union[T, None]:
+        ensure_no_dot_segments(self.path)
         data = self.make_request(url=f"{resend.api_url}{self.path}")
 
         body_status_code = data.get("statusCode") if isinstance(data, dict) else None
