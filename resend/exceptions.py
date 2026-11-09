@@ -103,8 +103,9 @@ class ValidationError(ResendError):
         default_message = """
         The request body is missing one or more required fields."""
 
-        suggested_action = """Check the error message
-        to see the list of missing fields."""
+        suggested_action = (
+            "Check the error message for details on what needs to be fixed."
+        )
 
         if message == "":
             message = default_message
@@ -208,8 +209,14 @@ ERRORS: Dict[str, Dict[str, Any]] = {
         "missing_required_fields": MissingRequiredFieldsError,
         "validation_error": ValidationError,
     },
-    "401": {"missing_api_key": MissingApiKeyError},
-    "403": {"invalid_api_key": InvalidApiKeyError},
+    "401": {
+        "missing_api_key": MissingApiKeyError,
+        "validation_error": ValidationError,
+    },
+    "403": {
+        "invalid_api_key": InvalidApiKeyError,
+        "validation_error": ValidationError,
+    },
     "429": {
         "rate_limit_exceeded": RateLimitError,
         "daily_quota_exceeded": RateLimitError,
