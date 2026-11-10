@@ -1,4 +1,5 @@
 import pytest
+from typing_extensions import assert_type
 
 import resend
 from resend.exceptions import NoContentError
@@ -265,10 +266,6 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
             {
                 "object": "domain",
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-                "name": "example.com",
-                "status": "not_started",
-                "created_at": "2023-04-26 20:21:26.347412+00",
-                "region": "us-east-1",
             }
         )
 
@@ -279,11 +276,9 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
             "tls": "enforced",
         }
         domain = await resend.Domains.update_async(params=update_params)
+        assert_type(domain, resend.Domains.UpdateDomainResponse)
+        assert domain["object"] == "domain"
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
-        assert domain["name"] == "example.com"
-        assert domain["status"] == "not_started"
-        assert domain["created_at"] == "2023-04-26 20:21:26.347412+00"
-        assert domain["region"] == "us-east-1"
 
     async def test_domains_update_async_with_tracking_subdomain(self) -> None:
         self.set_mock_json(
@@ -315,22 +310,18 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
         self.set_mock_json(
             {
                 "object": "domain",
+                "deleted": True,
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-                "name": "example.com",
-                "status": "not_started",
-                "created_at": "2023-04-26 20:21:26.347412+00",
-                "region": "us-east-1",
             }
         )
 
         domain = await resend.Domains.remove_async(
             domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
         )
+        assert_type(domain, resend.Domains.RemoveDomainResponse)
+        assert domain["object"] == "domain"
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
-        assert domain["name"] == "example.com"
-        assert domain["status"] == "not_started"
-        assert domain["created_at"] == "2023-04-26 20:21:26.347412+00"
-        assert domain["region"] == "us-east-1"
+        assert domain["deleted"] is True
 
     async def test_should_remove_domains_async_raise_exception_when_no_content(
         self,
@@ -346,21 +337,15 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
             {
                 "object": "domain",
                 "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-                "name": "example.com",
-                "status": "verified",
-                "created_at": "2023-04-26 20:21:26.347412+00",
-                "region": "us-east-1",
             }
         )
 
         domain = await resend.Domains.verify_async(
             domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
         )
+        assert_type(domain, resend.Domains.VerifyDomainResponse)
+        assert domain["object"] == "domain"
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
-        assert domain["name"] == "example.com"
-        assert domain["status"] == "verified"
-        assert domain["created_at"] == "2023-04-26 20:21:26.347412+00"
-        assert domain["region"] == "us-east-1"
 
     async def test_should_verify_domains_async_raise_exception_when_no_content(
         self,

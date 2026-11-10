@@ -32,7 +32,9 @@ async def main() -> None:
         "tls": "enforced",
     }
 
-    updated_domain: resend.Domain = await resend.Domains.update_async(update_params)
+    updated_domain: resend.Domains.UpdateDomainResponse = (
+        await resend.Domains.update_async(update_params)
+    )
     print(f"Updated domain: {updated_domain['id']}")
 
     domains: resend.Domains.ListResponse = await resend.Domains.list_async()
@@ -41,13 +43,15 @@ async def main() -> None:
     for d in domains["data"]:
         print(d)
 
-    verified_domain: resend.Domain = await resend.Domains.verify_async(
-        domain_id=domain["id"]
+    verified_domain: resend.Domains.VerifyDomainResponse = (
+        await resend.Domains.verify_async(domain_id=domain["id"])
     )
-    print("Verified")
+    print("Verification requested")
     print(verified_domain)
 
-    rm_domain: resend.Domain = await resend.Domains.remove_async(domain_id=domain["id"])
+    rm_domain: resend.Domains.RemoveDomainResponse = await resend.Domains.remove_async(
+        domain_id=domain["id"]
+    )
     print(rm_domain)
 
 
