@@ -121,6 +121,8 @@ class Request(Generic[T]):
             content, status_code, resp_headers = sync_client.request(**kwargs)
 
         # Safety net around the HTTP Client
+        except ResendError:
+            raise
         except Exception as e:
             raise ResendError(
                 code=500,

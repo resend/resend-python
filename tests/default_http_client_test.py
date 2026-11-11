@@ -6,6 +6,7 @@ import pytest
 
 import resend
 import resend.exceptions
+from resend.exceptions import RateLimitError, ResendError
 from resend.http_client import HTTPClient
 
 
@@ -62,3 +63,60 @@ class TestDefaultHttpClientUsage(TestCase):
 
         assert "Connection broken" in str(exc.value)
         assert exc.value.error_type == "HttpClientError"
+
+
+class RaisesClient(HTTPClient):
+    def __init__(self, error: Exception) -> None:
+        self.error = error
+
+    def request(
+        self, *args: object, **kwargs: object
+    ) -> Tuple[bytes, int, Mapping[str, str]]:
+        raise self.error
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "error",
+    [
+        ResendError(
+            code=403,
+            error_type="restricted_api_key",
+            message="This API key is restricted to only send emails.",
+            suggested_action="Use a full-access API key.",
+            headers={"x-request-id": "req_test"},
+        ),
+        RateLimitError(
+            code=429,
+            error_type="rate_limit_exceeded",
+            message="Too many requests",
+            headers={"retry-after": "30", "x-request-id": "req_test"},
+        ),
+    ],
+)
+def test_public_sync_call_preserves_custom_client_sdk_error(
+    monkeypatch: pytest.MonkeyPatch, error: ResendError
+) -> None:
+    monkeypatch.setattr(resend, "default_http_client", RaisesClient(error))
+
+    with pytest.raises(type(error)) as caught:
+        resend.Emails.get("email_test")
+
+    assert caught.value is error
+    assert caught.value.code == error.code
+    assert caught.value.error_type == error.error_type
+    assert caught.value.headers == error.headers
+
+
+def test_public_sync_call_wraps_custom_client_runtime_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        resend, "default_http_client", RaisesClient(RuntimeError("Connection broken"))
+    )
+
+    with pytest.raises(ResendError) as caught:
+        resend.Emails.get("email_test")
+
+    assert caught.value.code == 500
+    assert caught.value.error_type == "HttpClientError"
+    assert caught.value.message == "Connection broken"
