@@ -7,6 +7,7 @@ from resend._base_response import BaseResponse
 from resend.domains._domain import Domain
 from resend.domains._record import Record
 from resend.domains.claims._domain_claims import DomainClaims
+from resend.domains.forge._domain_forge import DomainForge
 from resend.pagination_helper import PaginationHelper
 
 # Async imports (optional - only available with pip install resend[async])
@@ -21,6 +22,9 @@ TlsOptions = Literal["enforced", "opportunistic"]
 class Domains:
 
     class Claims(DomainClaims):
+        pass
+
+    class Forge(DomainForge):
         pass
 
     class ListParams(TypedDict):
