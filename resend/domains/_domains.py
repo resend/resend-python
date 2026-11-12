@@ -7,6 +7,7 @@ from resend._base_response import BaseResponse
 from resend.domains._domain import Domain
 from resend.domains._record import Record
 from resend.domains.claims._domain_claims import DomainClaims
+from resend.domains.forge._domain_forge import DomainForge
 from resend.pagination_helper import PaginationHelper
 
 # Async imports (optional - only available with pip install resend[async])
@@ -17,10 +18,15 @@ except ImportError:
 
 TlsOptions = Literal["enforced", "opportunistic"]
 
+VerifyDomainScope = Literal["forge"]
+
 
 class Domains:
 
     class Claims(DomainClaims):
+        pass
+
+    class Forge(DomainForge):
         pass
 
     class ListParams(TypedDict):
@@ -144,6 +150,21 @@ class Domains:
         tracking_subdomain: NotRequired[str]
         """
         The custom subdomain used for click and open tracking links (e.g., "links").
+        """
+        forge_return_path: NotRequired[str]
+        """
+        Move the domain's Forge return path to another host. Only possible
+        while the Forge record is still verifying. Moving the path does not
+        start verification: fetch the new record with `Domains.get`, add it to
+        your DNS, then call `Domains.verify` with `scope=["forge"]`.
+        """
+
+    class VerifyParams(TypedDict):
+        scope: NotRequired[List[VerifyDomainScope]]
+        """
+        Limit the check to specific records. Pass `["forge"]` to verify only
+        the Forge record and leave the other records untouched. Requires Forge
+        to be enabled on the domain. When omitted, all records are checked.
         """
 
     class CreateParams(TypedDict):
@@ -272,20 +293,24 @@ class Domains:
         return resp
 
     @classmethod
-    def verify(cls, domain_id: str) -> Domain:
+    def verify(cls, domain_id: str, params: Optional[VerifyParams] = None) -> Domain:
         """
         Verify an existing domain.
         see more: https://resend.com/docs/api-reference/domains/verify-domain
 
         Args:
             domain_id (str): The domain ID
+            params (Optional[VerifyParams]): Optional verification parameters
+                - scope: Pass ["forge"] to re-check only the Forge record
 
         Returns:
             Domain: The verified domain object
         """
         path = f"/domains/{domain_id}/verify"
         resp = request.Request[Domain](
-            path=path, params={}, verb="post"
+            path=path,
+            params=cast(Dict[Any, Any], params) if params else {},
+            verb="post",
         ).perform_with_content()
         return resp
 
@@ -382,19 +407,25 @@ class Domains:
         return resp
 
     @classmethod
-    async def verify_async(cls, domain_id: str) -> Domain:
+    async def verify_async(
+        cls, domain_id: str, params: Optional[VerifyParams] = None
+    ) -> Domain:
         """
         Verify an existing domain (async).
         see more: https://resend.com/docs/api-reference/domains/verify-domain
 
         Args:
             domain_id (str): The domain ID
+            params (Optional[VerifyParams]): Optional verification parameters
+                - scope: Pass ["forge"] to re-check only the Forge record
 
         Returns:
             Domain: The verified domain object
         """
         path = f"/domains/{domain_id}/verify"
         resp = await AsyncRequest[Domain](
-            path=path, params={}, verb="post"
+            path=path,
+            params=cast(Dict[Any, Any], params) if params else {},
+            verb="post",
         ).perform_with_content()
         return resp
