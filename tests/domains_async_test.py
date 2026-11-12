@@ -370,3 +370,15 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
             _ = await resend.Domains.verify_async(
                 domain_id="d91cd9bd-1176-453e-8fc1-35364d380206"
             )
+
+    async def test_domains_verify_async_with_forge_scope(self) -> None:
+        self.set_mock_json(
+            {"object": "domain", "id": "d91cd9bd-1176-453e-8fc1-35364d380206"}
+        )
+
+        params: resend.Domains.VerifyParams = {"scope": ["forge"]}
+        domain = await resend.Domains.verify_async(
+            domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
+            params=params,
+        )
+        assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"

@@ -36,7 +36,7 @@ from .domains._domain import Domain
 from .domains._domains import Domains
 from .domains.claims._domain_claim import DomainClaim, DomainClaimRecord
 from .domains.claims._domain_claims import DomainClaims
-from .domains.forge._domain_forge import DomainForge, ForgeVerifyResponse
+from .domains.forge._domain_forge import DomainForge
 from .emails._attachment import Attachment, RemoteAttachment
 from .emails._attachments import Attachments as EmailAttachments
 from .emails._batch import Batch, BatchValidationError
@@ -222,7 +222,6 @@ __all__ = [
     "Domain",
     "DomainClaim",
     "DomainClaimRecord",
-    "ForgeVerifyResponse",
     "ApiKey",
     "Log",
     "Email",

@@ -76,55 +76,6 @@ class TestDomainForge(ResendBaseTest):
         with self.assertRaises(NoContentError):
             _ = resend.Domains.Forge.enable(params)
 
-    def test_domain_forge_update(self) -> None:
-        self.set_mock_json(forge_domain_json())
-
-        params: resend.Domains.Forge.UpdateParams = {
-            "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-            "return_path": "outbound",
-        }
-        domain: resend.Domain = resend.Domains.Forge.update(params)
-        assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
-        assert domain["name"] == "example.com"
-        assert (
-            self.mock.call_args.kwargs["url"]
-            == "https://api.resend.com/domains/d91cd9bd-1176-453e-8fc1-35364d380206/forge"
-        )
-
-    def test_should_update_forge_raise_exception_when_no_content(self) -> None:
-        self.set_mock_json(None)
-        params: resend.Domains.Forge.UpdateParams = {
-            "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-            "return_path": "outbound",
-        }
-        with self.assertRaises(NoContentError):
-            _ = resend.Domains.Forge.update(params)
-
-    def test_domain_forge_verify(self) -> None:
-        self.set_mock_json(
-            {
-                "object": "domain",
-                "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-            }
-        )
-
-        verified: resend.ForgeVerifyResponse = resend.Domains.Forge.verify(
-            domain_id="d91cd9bd-1176-453e-8fc1-35364d380206"
-        )
-        assert verified["object"] == "domain"
-        assert verified["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
-        assert (
-            self.mock.call_args.kwargs["url"]
-            == "https://api.resend.com/domains/d91cd9bd-1176-453e-8fc1-35364d380206/forge/verify"
-        )
-
-    def test_should_verify_forge_raise_exception_when_no_content(self) -> None:
-        self.set_mock_json(None)
-        with self.assertRaises(NoContentError):
-            _ = resend.Domains.Forge.verify(
-                domain_id="d91cd9bd-1176-453e-8fc1-35364d380206"
-            )
-
 
 class TestDomainForgeRequestBody(TestCase):
     def setUp(self) -> None:
@@ -161,14 +112,3 @@ class TestDomainForgeRequestBody(TestCase):
         _, kwargs = self.mock_client.request.call_args
         assert kwargs["method"] == "post"
         assert kwargs["json"] == {}
-
-    def test_update_sends_return_path_with_patch(self) -> None:
-        params: resend.Domains.Forge.UpdateParams = {
-            "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-            "return_path": "outbound",
-        }
-        resend.Domains.Forge.update(params)
-
-        _, kwargs = self.mock_client.request.call_args
-        assert kwargs["method"] == "patch"
-        assert kwargs["json"] == {"return_path": "outbound"}

@@ -1,3 +1,3 @@
-from ._domain_forge import DomainForge, ForgeVerifyResponse
+from ._domain_forge import DomainForge
 
-__all__ = ["DomainForge", "ForgeVerifyResponse"]
+__all__ = ["DomainForge"]
