@@ -117,6 +117,25 @@ class Domains:
         The custom subdomain used for click and open tracking links (e.g., "links")
         """
 
+    class UpdateDomainResponse(BaseResponse):
+        """Response from updating a domain."""
+
+        object: str
+        id: str
+
+    class VerifyDomainResponse(BaseResponse):
+        """Response from requesting verification of a domain."""
+
+        object: str
+        id: str
+
+    class RemoveDomainResponse(BaseResponse):
+        """Response from removing a domain."""
+
+        object: str
+        id: str
+        deleted: bool
+
     class UpdateParams(TypedDict):
         id: str
         """
@@ -194,7 +213,7 @@ class Domains:
         return resp
 
     @classmethod
-    def update(cls, params: UpdateParams) -> Domain:
+    def update(cls, params: UpdateParams) -> UpdateDomainResponse:
         """
         Update an existing domain.
         see more: https://resend.com/docs/api-reference/domains/update-domain
@@ -203,10 +222,10 @@ class Domains:
             params (UpdateParams): The domain update parameters
 
         Returns:
-            Domain: The updated domain object
+            UpdateDomainResponse: The domain update acknowledgment
         """
         path = f"/domains/{params['id']}"
-        resp = request.Request[Domain](
+        resp = request.Request[Domains.UpdateDomainResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
@@ -254,7 +273,7 @@ class Domains:
         return resp
 
     @classmethod
-    def remove(cls, domain_id: str) -> Domain:
+    def remove(cls, domain_id: str) -> RemoveDomainResponse:
         """
         Remove an existing domain.
         see more: https://resend.com/docs/api-reference/domains/delete-domain
@@ -263,28 +282,28 @@ class Domains:
             domain_id (str): The domain ID
 
         Returns:
-            Domain: The removed domain object
+            RemoveDomainResponse: The domain ID and deletion result
         """
         path = f"/domains/{domain_id}"
-        resp = request.Request[Domain](
+        resp = request.Request[Domains.RemoveDomainResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp
 
     @classmethod
-    def verify(cls, domain_id: str) -> Domain:
+    def verify(cls, domain_id: str) -> VerifyDomainResponse:
         """
-        Verify an existing domain.
+        Request verification of an existing domain.
         see more: https://resend.com/docs/api-reference/domains/verify-domain
 
         Args:
             domain_id (str): The domain ID
 
         Returns:
-            Domain: The verified domain object
+            VerifyDomainResponse: The domain verification acknowledgment
         """
         path = f"/domains/{domain_id}/verify"
-        resp = request.Request[Domain](
+        resp = request.Request[Domains.VerifyDomainResponse](
             path=path, params={}, verb="post"
         ).perform_with_content()
         return resp
@@ -308,7 +327,7 @@ class Domains:
         return resp
 
     @classmethod
-    async def update_async(cls, params: UpdateParams) -> Domain:
+    async def update_async(cls, params: UpdateParams) -> UpdateDomainResponse:
         """
         Update an existing domain (async).
         see more: https://resend.com/docs/api-reference/domains/update-domain
@@ -317,10 +336,10 @@ class Domains:
             params (UpdateParams): The domain update parameters
 
         Returns:
-            Domain: The updated domain object
+            UpdateDomainResponse: The domain update acknowledgment
         """
         path = f"/domains/{params['id']}"
-        resp = await AsyncRequest[Domain](
+        resp = await AsyncRequest[Domains.UpdateDomainResponse](
             path=path, params=cast(Dict[Any, Any], params), verb="patch"
         ).perform_with_content()
         return resp
@@ -364,7 +383,7 @@ class Domains:
         return resp
 
     @classmethod
-    async def remove_async(cls, domain_id: str) -> Domain:
+    async def remove_async(cls, domain_id: str) -> RemoveDomainResponse:
         """
         Remove an existing domain (async).
         see more: https://resend.com/docs/api-reference/domains/delete-domain
@@ -373,28 +392,28 @@ class Domains:
             domain_id (str): The domain ID
 
         Returns:
-            Domain: The removed domain object
+            RemoveDomainResponse: The domain ID and deletion result
         """
         path = f"/domains/{domain_id}"
-        resp = await AsyncRequest[Domain](
+        resp = await AsyncRequest[Domains.RemoveDomainResponse](
             path=path, params={}, verb="delete"
         ).perform_with_content()
         return resp
 
     @classmethod
-    async def verify_async(cls, domain_id: str) -> Domain:
+    async def verify_async(cls, domain_id: str) -> VerifyDomainResponse:
         """
-        Verify an existing domain (async).
+        Request verification of an existing domain (async).
         see more: https://resend.com/docs/api-reference/domains/verify-domain
 
         Args:
             domain_id (str): The domain ID
 
         Returns:
-            Domain: The verified domain object
+            VerifyDomainResponse: The domain verification acknowledgment
         """
         path = f"/domains/{domain_id}/verify"
-        resp = await AsyncRequest[Domain](
+        resp = await AsyncRequest[Domains.VerifyDomainResponse](
             path=path, params={}, verb="post"
         ).perform_with_content()
         return resp
