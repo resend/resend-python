@@ -29,7 +29,9 @@ update_params: resend.Domains.UpdateParams = {
     "tls": "enforced",
 }
 
-updated_domain: resend.Domain = resend.Domains.update(update_params)
+updated_domain: resend.Domains.UpdateDomainResponse = resend.Domains.update(
+    update_params
+)
 print(f"Updated domain: {updated_domain['id']}")
 
 domains: resend.Domains.ListResponse = resend.Domains.list()
@@ -54,9 +56,13 @@ if domains["data"]:
 else:
     print("No domains available for pagination example")
 
-verified_domain: resend.Domain = resend.Domains.verify(domain_id=domain["id"])
-print(f"Verified")
+verified_domain: resend.Domains.VerifyDomainResponse = resend.Domains.verify(
+    domain_id=domain["id"]
+)
+print("Verification requested")
 print(verified_domain)
 
-rm_domain: resend.Domain = resend.Domains.remove(domain_id=domain["id"])
+rm_domain: resend.Domains.RemoveDomainResponse = resend.Domains.remove(
+    domain_id=domain["id"]
+)
 print(rm_domain)

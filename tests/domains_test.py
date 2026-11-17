@@ -1,6 +1,8 @@
 from unittest import TestCase
 from unittest.mock import create_autospec
 
+from typing_extensions import assert_type
+
 import resend
 from resend.exceptions import NoContentError
 from resend.http_client import HTTPClient
@@ -158,6 +160,8 @@ class TestResendDomains(ResendBaseTest):
             domain_id="4ef9a417-02e9-4d39-ad75-9611e0fcc33c",
         )
         assert domain["deleted"] is True
+        assert_type(domain, resend.Domains.RemoveDomainResponse)
+        assert domain["object"] == "domain"
         assert domain["id"] == "4ef9a417-02e9-4d39-ad75-9611e0fcc33c"
 
     def test_should_remove_domains_raise_exception_when_no_content(self) -> None:
@@ -175,6 +179,8 @@ class TestResendDomains(ResendBaseTest):
         domain = resend.Domains.verify(
             domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
         )
+        assert_type(domain, resend.Domains.VerifyDomainResponse)
+        assert domain["object"] == "domain"
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
 
     def test_should_verify_domains_raise_exception_when_no_content(self) -> None:
@@ -331,6 +337,8 @@ class TestResendDomains(ResendBaseTest):
             "tls": "opportunistic",
         }
         domain = resend.Domains.update(params)
+        assert_type(domain, resend.Domains.UpdateDomainResponse)
+        assert domain["object"] == "domain"
         assert domain["id"] == "479e3145-dd38-476b-932c-529ceb705947"
 
     def test_domains_update_with_tracking_subdomain(self) -> None:
