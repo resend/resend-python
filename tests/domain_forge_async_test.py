@@ -16,13 +16,17 @@ class TestDomainForgeAsync(AsyncResendBaseTest):
 
         params: resend.Domains.Forge.EnableParams = {
             "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-            "return_path": "send",
+            "custom_return_path": "send",
         }
         domain = await resend.Domains.Forge.enable_async(params)
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
         assert domain["name"] == "example.com"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/domains/d91cd9bd-1176-453e-8fc1-35364d380206/forge"
+        )
 
-    async def test_domain_forge_enable_async_without_return_path(self) -> None:
+    async def test_domain_forge_enable_async_without_custom_return_path(self) -> None:
         self.set_mock_json(forge_domain_json())
 
         params: resend.Domains.Forge.EnableParams = {

@@ -47,7 +47,7 @@ class TestDomainForge(ResendBaseTest):
 
         params: resend.Domains.Forge.EnableParams = {
             "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-            "return_path": "send",
+            "custom_return_path": "send",
         }
         domain: resend.Domain = resend.Domains.Forge.enable(params)
         assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
@@ -58,7 +58,7 @@ class TestDomainForge(ResendBaseTest):
             == "https://api.resend.com/domains/d91cd9bd-1176-453e-8fc1-35364d380206/forge"
         )
 
-    def test_domain_forge_enable_without_return_path(self) -> None:
+    def test_domain_forge_enable_without_custom_return_path(self) -> None:
         self.set_mock_json(forge_domain_json())
 
         params: resend.Domains.Forge.EnableParams = {
@@ -92,18 +92,18 @@ class TestDomainForgeRequestBody(TestCase):
     def tearDown(self) -> None:
         resend.default_http_client = self.previous_http_client
 
-    def test_enable_sends_snake_case_return_path_and_no_id(self) -> None:
+    def test_enable_sends_custom_return_path_and_no_id(self) -> None:
         params: resend.Domains.Forge.EnableParams = {
             "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-            "return_path": "send",
+            "custom_return_path": "send",
         }
         resend.Domains.Forge.enable(params)
 
         _, kwargs = self.mock_client.request.call_args
         assert kwargs["method"] == "post"
-        assert kwargs["json"] == {"return_path": "send"}
+        assert kwargs["json"] == {"custom_return_path": "send"}
 
-    def test_enable_sends_empty_body_without_return_path(self) -> None:
+    def test_enable_sends_empty_body_without_custom_return_path(self) -> None:
         params: resend.Domains.Forge.EnableParams = {
             "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
         }

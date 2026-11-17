@@ -151,13 +151,6 @@ class Domains:
         """
         The custom subdomain used for click and open tracking links (e.g., "links").
         """
-        forge_return_path: NotRequired[str]
-        """
-        Move the domain's Forge return path to another host. Only possible
-        while the Forge record is still verifying. Moving the path does not
-        start verification: fetch the new record with `Domains.get`, add it to
-        your DNS, then call `Domains.verify` with `scope=["forge"]`.
-        """
 
     class VerifyParams(TypedDict):
         scope: NotRequired[List[VerifyDomainScope]]

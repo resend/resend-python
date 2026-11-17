@@ -446,14 +446,3 @@ class TestDomainsRequestBody(TestCase):
         _, kwargs = self.mock_client.request.call_args
         assert kwargs["method"] == "post"
         assert kwargs["json"] == {}
-
-    def test_update_sends_forge_return_path(self) -> None:
-        params: resend.Domains.UpdateParams = {
-            "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
-            "forge_return_path": "outbound",
-        }
-        resend.Domains.update(params)
-
-        _, kwargs = self.mock_client.request.call_args
-        assert kwargs["method"] == "patch"
-        assert kwargs["json"]["forge_return_path"] == "outbound"
