@@ -720,6 +720,20 @@ class TestResendInboxDrafts(ResendBaseTest):
             _ = resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID)
 
 
+def _invalid_draft_attachments() -> List[resend.Inboxes.Drafts.DraftAttachmentParams]:
+    """Checked by mypy: each entry must stay a type error."""
+    return [
+        {"filename": "note.txt"},  # type: ignore[list-item]
+        {"content": "aGVsbG8=", "filename": "note.txt"},  # type: ignore[list-item]
+        {  # type: ignore[list-item]
+            "content": "aGVsbG8=",
+            "path": "https://example.com/invoice.pdf",
+            "filename": "note.txt",
+            "content_type": "text/plain",
+        },
+    ]
+
+
 class TestInboxesRequest(TestCase):
     def setUp(self) -> None:
         resend.api_key = "re_123"
@@ -1044,11 +1058,11 @@ class TestInboxesRequest(TestCase):
             {"to": None},
         )
 
-        attachment: resend.Inboxes.Drafts.AttachmentParams = {
-            "content": "aGVsbG8=",
-            "filename": "note.txt",
-            "content_type": "text/plain",
-        }
+        attachment = resend.InboxDrafts.AttachmentParams(
+            content="aGVsbG8=",
+            filename="note.txt",
+            content_type="text/plain",
+        )
         resend.Inboxes.Drafts.create(
             {"inbox_id": INBOX_ID, "to": "ada@example.org", "attachments": [attachment]}
         )
@@ -1056,6 +1070,29 @@ class TestInboxesRequest(TestCase):
             "to": "ada@example.org",
             "attachments": [attachment],
         }
+
+        path_attachment: resend.Inboxes.Drafts.DraftAttachmentParams = {
+            "path": "https://example.com/invoice.pdf",
+            "filename": "invoice.pdf",
+        }
+        resend.Inboxes.Drafts.create(
+            {"inbox_id": INBOX_ID, "attachments": [path_attachment]}
+        )
+        assert self.last_request()["json"] == {"attachments": [path_attachment]}
+
+        typed_path_attachment: resend.Inboxes.Drafts.DraftAttachmentParams = {
+            "path": "https://example.com/invoice.pdf",
+            "filename": "invoice.pdf",
+            "content_type": "application/pdf",
+        }
+        resend.Inboxes.Drafts.update(
+            {
+                "inbox_id": INBOX_ID,
+                "id": DRAFT_ID,
+                "attachments": [typed_path_attachment],
+            }
+        )
+        assert self.last_request()["json"] == {"attachments": [typed_path_attachment]}
 
         resend.Inboxes.Drafts.update(
             {"inbox_id": INBOX_ID, "id": DRAFT_ID, "attachments": []}
@@ -1074,6 +1111,42 @@ class TestInboxesRequest(TestCase):
         resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID)
         req = self.last_request()
         assert (req["method"], req["url"]) == ("post", f"{base}/{DRAFT_ID}/send")
+
+    def test_nullable_params_are_sent_as_null(self) -> None:
+        nulls = {"cc": None, "bcc": None, "headers": None, "attachments": None}
+        resend.Inboxes.Threads.Emails.reply(
+            {
+                "inbox_id": INBOX_ID,
+                "thread_id": THREAD_ID,
+                "email_id": EMAIL_ID,
+                "text": "Hi",
+                "cc": None,
+                "bcc": None,
+                "headers": None,
+                "attachments": None,
+            }
+        )
+        assert self.last_request()["json"] == {"text": "Hi", **nulls}
+
+        resend.Inboxes.Threads.Emails.forward(
+            {
+                "inbox_id": INBOX_ID,
+                "thread_id": THREAD_ID,
+                "email_id": EMAIL_ID,
+                "to": "colleague@example.org",
+                "cc": None,
+                "bcc": None,
+                "headers": None,
+                "attachments": None,
+            }
+        )
+        assert self.last_request()["json"] == {"to": "colleague@example.org", **nulls}
+
+        resend.Inboxes.Drafts.create({"inbox_id": INBOX_ID, "attachments": None})
+        assert self.last_request()["json"] == {"attachments": None}
+
+        resend.Inboxes.Drafts.send(INBOX_ID, DRAFT_ID, {"headers": None})
+        assert self.last_request()["json"] == {"headers": None}
 
     def test_sending_methods_send_the_idempotency_key(self) -> None:
         resend.Inboxes.Threads.Emails.reply(

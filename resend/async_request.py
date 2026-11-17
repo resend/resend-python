@@ -4,6 +4,7 @@ from typing import Any, Dict, Generic, List, Optional, Union, cast
 from typing_extensions import Literal, TypeVar
 
 import resend
+from resend._path import ensure_no_dot_segments
 from resend.exceptions import (NoContentError, ResendError,
                                raise_for_code_and_type)
 from resend.http_client_async import AsyncHTTPClient
@@ -37,6 +38,7 @@ class AsyncRequest(Generic[T]):
         self._response_status_code: Optional[int] = None
 
     async def perform(self) -> Union[T, None]:
+        ensure_no_dot_segments(self.path)
         data = await self.make_request(url=f"{resend.api_url}{self.path}")
 
         body_status_code = data.get("statusCode") if isinstance(data, dict) else None
