@@ -53,6 +53,8 @@ class Template(_FromParam):
         created_at (str): The timestamp when the template was created.
         updated_at (str): The timestamp when the template was last updated.
         published_at (str): The timestamp when the template was published.
+        current_version_id (str): The ID of the current version of the template.
+        has_unpublished_versions (bool): Whether the template has unpublished versions.
     """
 
     id: str
@@ -93,6 +95,10 @@ class Template(_FromParam):
 
     published_at: NotRequired[str]
     """The timestamp when the template was published."""
+    current_version_id: NotRequired[str]
+    """The ID of the current version of the template."""
+    has_unpublished_versions: NotRequired[bool]
+    """Whether the template has unpublished versions."""
 
 
 class TemplateListItem(TypedDict):
