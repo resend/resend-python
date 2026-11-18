@@ -1,4 +1,7 @@
+from unittest.mock import AsyncMock
+
 import pytest
+from typing_extensions import assert_type
 
 import resend
 from resend.exceptions import NoContentError
@@ -138,3 +141,91 @@ class TestResendTopicsAsync(AsyncResendBaseTest):
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
             _ = await resend.Topics.list_async()
+
+    async def test_topics_get_async_returns_visibility(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "topic",
+                "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
+                "name": "Weekly Newsletter",
+                "description": "Weekly newsletter for our subscribers",
+                "default_subscription": "opt_in",
+                "visibility": "public",
+                "created_at": "2026-04-08 00:11:13.110779+00",
+            }
+        )
+
+        topic = await resend.Topics.get_async(id="b6d24b8e-af0b-4c3c-be0c-359bbd97381e")
+        assert_type(topic["visibility"], resend.TopicVisibility)
+        assert topic["visibility"] == "public"
+
+    async def test_topics_list_async_returns_visibility(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
+                        "name": "Weekly Newsletter",
+                        "description": "Weekly newsletter for our subscribers",
+                        "default_subscription": "opt_in",
+                        "visibility": "public",
+                        "created_at": "2026-04-08 00:11:13.110779+00",
+                    }
+                ],
+            }
+        )
+
+        topics = await resend.Topics.list_async()
+        assert_type(topics["data"][0]["visibility"], resend.TopicVisibility)
+        assert topics["data"][0]["visibility"] == "public"
+
+
+class TestTopicsRequestBodyAsync:
+    def setup_method(self) -> None:
+        self.previous_api_key = resend.api_key
+        resend.api_key = "re_123"
+        self.mock_client = AsyncMock()
+        self.mock_client.request.return_value = (
+            b'{"object": "topic", "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"}',
+            200,
+            {"content-type": "application/json"},
+        )
+        self.previous_async_http_client = resend.default_async_http_client
+        resend.default_async_http_client = self.mock_client
+
+    def teardown_method(self) -> None:
+        resend.default_async_http_client = self.previous_async_http_client
+        resend.api_key = self.previous_api_key
+
+    async def test_create_async_sends_visibility(self) -> None:
+        params: resend.Topics.CreateParams = {
+            "name": "Weekly Newsletter",
+            "default_subscription": "opt_in",
+            "visibility": "public",
+        }
+        await resend.Topics.create_async(params)
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "post"
+        assert kwargs["url"] == f"{resend.api_url}/topics"
+        assert kwargs["json"] == {
+            "name": "Weekly Newsletter",
+            "default_subscription": "opt_in",
+            "visibility": "public",
+        }
+
+    async def test_update_async_sends_visibility(self) -> None:
+        params: resend.Topics.UpdateParams = {"visibility": "private"}
+        await resend.Topics.update_async(
+            id="b6d24b8e-af0b-4c3c-be0c-359bbd97381e", params=params
+        )
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "patch"
+        assert (
+            kwargs["url"]
+            == f"{resend.api_url}/topics/b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
+        )
+        assert kwargs["json"] == {"visibility": "private"}

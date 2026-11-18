@@ -89,7 +89,7 @@ from .suppressions.batch._suppressions_batch import (BatchRemovedSuppression,
                                                      SuppressionsBatch)
 from .templates._template import Template, TemplateListItem, Variable
 from .templates._templates import Templates
-from .topics._topic import Topic
+from .topics._topic import Topic, TopicVisibility
 from .topics._topics import Topics
 from .usage._usage import (AiCreditsUsage, AutomationRunsUsage,
                            BroadcastsUsage, ContactsUsage, DomainsUsage,
@@ -327,6 +327,7 @@ __all__ = [
     "InboxDraftListItem",
     "InboxDraftType",
     "Topic",
+    "TopicVisibility",
     "OAuthGrant",
     "OAuthGrantClient",
     "BatchValidationError",
