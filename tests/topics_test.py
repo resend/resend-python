@@ -1,5 +1,11 @@
+from unittest import TestCase
+from unittest.mock import create_autospec
+
+from typing_extensions import assert_type
+
 import resend
 from resend.exceptions import NoContentError
+from resend.http_client import HTTPClient
 from tests.conftest import ResendBaseTest
 
 # flake8: noqa
@@ -237,3 +243,89 @@ class TestResendTopics(ResendBaseTest):
         assert topics["has_more"] is False
         assert len(topics["data"]) == 1
         assert topics["data"][0]["id"] == "topic-3"
+
+    def test_topics_get_returns_visibility(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "topic",
+                "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
+                "name": "Weekly Newsletter",
+                "description": "Weekly newsletter for our subscribers",
+                "default_subscription": "opt_in",
+                "visibility": "public",
+                "created_at": "2026-04-08 00:11:13.110779+00",
+            }
+        )
+
+        topic = resend.Topics.get(id="b6d24b8e-af0b-4c3c-be0c-359bbd97381e")
+        assert_type(topic["visibility"], resend.TopicVisibility)
+        assert topic["visibility"] == "public"
+
+    def test_topics_list_returns_visibility(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e",
+                        "name": "Weekly Newsletter",
+                        "description": "Weekly newsletter for our subscribers",
+                        "default_subscription": "opt_in",
+                        "visibility": "public",
+                        "created_at": "2026-04-08 00:11:13.110779+00",
+                    }
+                ],
+            }
+        )
+
+        topics = resend.Topics.list()
+        assert_type(topics["data"][0]["visibility"], resend.TopicVisibility)
+        assert topics["data"][0]["visibility"] == "public"
+
+
+class TestTopicsRequestBody(TestCase):
+    def setUp(self) -> None:
+        self.previous_api_key = resend.api_key
+        resend.api_key = "re_123"
+        self.mock_client = create_autospec(HTTPClient, instance=True)
+        self.mock_client.request.return_value = (
+            b'{"object": "topic", "id": "b6d24b8e-af0b-4c3c-be0c-359bbd97381e"}',
+            200,
+            {"Content-Type": "application/json"},
+        )
+        self.previous_http_client = resend.default_http_client
+        resend.default_http_client = self.mock_client
+
+    def tearDown(self) -> None:
+        resend.default_http_client = self.previous_http_client
+        resend.api_key = self.previous_api_key
+
+    def test_create_sends_visibility(self) -> None:
+        params: resend.Topics.CreateParams = {
+            "name": "Weekly Newsletter",
+            "default_subscription": "opt_in",
+            "visibility": "public",
+        }
+        resend.Topics.create(params)
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "post"
+        assert kwargs["url"] == f"{resend.api_url}/topics"
+        assert kwargs["json"] == {
+            "name": "Weekly Newsletter",
+            "default_subscription": "opt_in",
+            "visibility": "public",
+        }
+
+    def test_update_sends_visibility(self) -> None:
+        params: resend.Topics.UpdateParams = {"visibility": "private"}
+        resend.Topics.update(id="b6d24b8e-af0b-4c3c-be0c-359bbd97381e", params=params)
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "patch"
+        assert (
+            kwargs["url"]
+            == f"{resend.api_url}/topics/b6d24b8e-af0b-4c3c-be0c-359bbd97381e"
+        )
+        assert kwargs["json"] == {"visibility": "private"}

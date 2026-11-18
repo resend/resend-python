@@ -11,6 +11,7 @@ create_params: resend.Topics.CreateParams = {
     "name": "Weekly Newsletter",
     "default_subscription": "opt_in",
     "description": "Subscribe to our weekly newsletter for updates",
+    "visibility": "public",
 }
 
 topic: resend.Topics.CreateTopicResponse = resend.Topics.create(create_params)
