@@ -1,8 +1,21 @@
 from typing import List, Union
 
-from typing_extensions import NotRequired, TypedDict
+from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend.domains._record import Record
+
+DomainCapabilityStatus = Literal["enabled", "disabled"]
+
+
+class DomainCapabilities(TypedDict):
+    sending: DomainCapabilityStatus
+    """
+    Whether the domain can send emails.
+    """
+    receiving: DomainCapabilityStatus
+    """
+    Whether the domain can receive emails.
+    """
 
 
 class Domain(TypedDict):
@@ -45,4 +58,8 @@ class Domain(TypedDict):
     tracking_subdomain: NotRequired[str]
     """
     The custom subdomain used for click and open tracking links (e.g., "links").
+    """
+    capabilities: NotRequired[DomainCapabilities]
+    """
+    The sending and receiving capabilities of the domain.
     """
