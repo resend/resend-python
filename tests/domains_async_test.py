@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock
+
 import pytest
 from typing_extensions import assert_type
 
@@ -371,3 +373,131 @@ class TestResendDomainsAsync(AsyncResendBaseTest):
             self.mock.call_args.kwargs["url"]
             == "https://api.resend.com/domains/d91cd9bd-1176-453e-8fc1-35364d380206/verify"
         )
+
+    async def test_domains_create_async_returns_capabilities(self) -> None:
+        self.set_mock_json(
+            {
+                "id": "4dd369bc-aa82-4ff3-97de-514ae3000ee0",
+                "name": "example.com",
+                "created_at": "2026-03-28 17:12:02.059593+00",
+                "status": "not_started",
+                "capabilities": {"sending": "enabled", "receiving": "enabled"},
+                "records": [],
+                "region": "us-east-1",
+            }
+        )
+
+        params: resend.Domains.CreateParams = {
+            "name": "example.com",
+            "capabilities": {"receiving": "enabled"},
+        }
+        domain = await resend.Domains.create_async(params)
+        assert_type(domain["capabilities"], resend.DomainCapabilities)
+        assert domain["capabilities"]["sending"] == "enabled"
+        assert domain["capabilities"]["receiving"] == "enabled"
+
+    async def test_domains_get_async_returns_capabilities(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "domain",
+                "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
+                "name": "example.com",
+                "status": "not_started",
+                "created_at": "2026-04-26 20:21:26.347412+00",
+                "region": "us-east-1",
+                "capabilities": {"sending": "enabled", "receiving": "disabled"},
+                "records": [],
+            }
+        )
+
+        domain = await resend.Domains.get_async(
+            domain_id="d91cd9bd-1176-453e-8fc1-35364d380206"
+        )
+        assert_type(domain["capabilities"], resend.DomainCapabilities)
+        assert domain["capabilities"]["sending"] == "enabled"
+        assert domain["capabilities"]["receiving"] == "disabled"
+
+    async def test_domains_list_async_returns_capabilities(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "list",
+                "has_more": False,
+                "data": [
+                    {
+                        "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
+                        "name": "example.com",
+                        "status": "not_started",
+                        "created_at": "2026-04-26 20:21:26.347412+00",
+                        "region": "us-east-1",
+                        "capabilities": {
+                            "sending": "enabled",
+                            "receiving": "disabled",
+                        },
+                    }
+                ],
+            }
+        )
+
+        domains = await resend.Domains.list_async()
+        assert_type(domains["data"][0]["capabilities"], resend.DomainCapabilities)
+        assert domains["data"][0]["capabilities"]["sending"] == "enabled"
+        assert domains["data"][0]["capabilities"]["receiving"] == "disabled"
+
+
+class TestDomainsRequestBodyAsync:
+    def setup_method(self) -> None:
+        self.previous_api_key = resend.api_key
+        resend.api_key = "re_123"
+        self.mock_client = AsyncMock()
+        self.mock_client.request.return_value = (
+            b'{"object": "domain", "id": "479e3145-dd38-476b-932c-529ceb705947"}',
+            200,
+            {"content-type": "application/json"},
+        )
+        self.previous_async_http_client = resend.default_async_http_client
+        resend.default_async_http_client = self.mock_client
+
+    def teardown_method(self) -> None:
+        resend.default_async_http_client = self.previous_async_http_client
+        resend.api_key = self.previous_api_key
+
+    async def test_create_async_sends_tls_and_capabilities(self) -> None:
+        params: resend.Domains.CreateParams = {
+            "name": "example.com",
+            "tls": "enforced",
+            "capabilities": {"sending": "enabled", "receiving": "enabled"},
+        }
+        self.mock_client.request.return_value = (
+            b'{"id": "4dd369bc-aa82-4ff3-97de-514ae3000ee0", "name": "example.com",'
+            b' "created_at": "2026-03-28 17:12:02.059593+00", "status": "not_started",'
+            b' "region": "us-east-1", "records": [],'
+            b' "capabilities": {"sending": "enabled", "receiving": "enabled"}}',
+            200,
+            {"content-type": "application/json"},
+        )
+        domain = await resend.Domains.create_async(params)
+        assert domain["capabilities"]["receiving"] == "enabled"
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "post"
+        assert kwargs["url"] == f"{resend.api_url}/domains"
+        assert kwargs["json"] == {
+            "name": "example.com",
+            "tls": "enforced",
+            "capabilities": {"sending": "enabled", "receiving": "enabled"},
+        }
+
+    async def test_update_async_sends_a_single_capability(self) -> None:
+        params: resend.Domains.UpdateParams = {
+            "id": "479e3145-dd38-476b-932c-529ceb705947",
+            "capabilities": {"receiving": "enabled"},
+        }
+        await resend.Domains.update_async(params)
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "patch"
+        assert (
+            kwargs["url"]
+            == f"{resend.api_url}/domains/479e3145-dd38-476b-932c-529ceb705947"
+        )
+        assert kwargs["json"]["capabilities"] == {"receiving": "enabled"}

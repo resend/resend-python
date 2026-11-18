@@ -32,7 +32,7 @@ from .contacts.imports._contact_import import (ContactImport,
 from .contacts.imports._contact_imports import ContactImports
 from .contacts.segments._contact_segment import ContactSegment
 from .contacts.segments._contact_segments import ContactSegments
-from .domains._domain import Domain
+from .domains._domain import Domain, DomainCapabilities, DomainCapabilityStatus
 from .domains._domains import Domains
 from .domains.claims._domain_claim import DomainClaim, DomainClaimRecord
 from .domains.claims._domain_claims import DomainClaims
@@ -220,6 +220,8 @@ __all__ = [
     "ContactTopic",
     "TopicSubscriptionUpdate",
     "Domain",
+    "DomainCapabilities",
+    "DomainCapabilityStatus",
     "DomainClaim",
     "DomainClaimRecord",
     "ApiKey",
