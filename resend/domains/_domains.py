@@ -4,7 +4,8 @@ from typing_extensions import Literal, NotRequired, TypedDict
 
 from resend import request
 from resend._base_response import BaseResponse
-from resend.domains._domain import Domain
+from resend.domains._domain import (Domain, DomainCapabilities,
+                                    DomainCapabilityStatus)
 from resend.domains._record import Record
 from resend.domains.claims._domain_claims import DomainClaims
 from resend.pagination_helper import PaginationHelper
@@ -78,6 +79,7 @@ class Domains:
             open_tracking (bool): Whether open tracking is enabled
             click_tracking (bool): Whether click tracking is enabled
             tracking_subdomain (str): The custom subdomain for tracking links
+            capabilities (DomainCapabilities): The sending and receiving capabilities of the domain
         """
 
         id: str
@@ -116,6 +118,10 @@ class Domains:
         """
         The custom subdomain used for click and open tracking links (e.g., "links")
         """
+        capabilities: NotRequired[DomainCapabilities]
+        """
+        The sending and receiving capabilities of the domain
+        """
 
     class UpdateDomainResponse(BaseResponse):
         """Response from updating a domain."""
@@ -135,6 +141,23 @@ class Domains:
         object: str
         id: str
         deleted: bool
+
+    class CapabilitiesParams(TypedDict, total=False):
+        """
+        CapabilitiesParams sets which capabilities of a domain are enabled.
+        At least one capability must stay enabled.
+        """
+
+        sending: DomainCapabilityStatus
+        """
+        Enable or disable sending emails from this domain.
+        On create, the default is "enabled".
+        """
+        receiving: DomainCapabilityStatus
+        """
+        Enable or disable receiving emails to this domain.
+        On create, the default is "disabled".
+        """
 
     class UpdateParams(TypedDict):
         id: str
@@ -164,6 +187,10 @@ class Domains:
         """
         The custom subdomain used for click and open tracking links (e.g., "links").
         """
+        capabilities: NotRequired["Domains.CapabilitiesParams"]
+        """
+        The capabilities to change. A capability that is left out keeps its current value.
+        """
 
     class CreateParams(TypedDict):
         name: str
@@ -192,6 +219,21 @@ class Domains:
         open_tracking: NotRequired[bool]
         """
         Track the open rate of each email.
+        """
+        tls: NotRequired[TlsOptions]
+        """
+        default: "opportunistic"
+        opportunistic: Opportunistic TLS means that it always attempts to make a
+        secure connection to the receiving mail server.
+        If it can't establish a secure connection, it sends the message unencrypted.
+
+        enforced: Enforced TLS on the other hand, requires that the email
+        communication must use TLS no matter what.
+        If the receiving server does not support TLS, the email will not be sent.
+        """
+        capabilities: NotRequired["Domains.CapabilitiesParams"]
+        """
+        The capabilities to enable for the domain.
         """
 
     @classmethod

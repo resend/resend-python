@@ -14,11 +14,14 @@ async def main() -> None:
         "name": "example.com",
         "region": "us-east-1",
         "custom_return_path": "outbound",
+        "tls": "enforced",
+        "capabilities": {"sending": "enabled", "receiving": "enabled"},
     }
     domain: resend.Domains.CreateDomainResponse = await resend.Domains.create_async(
         params=create_params
     )
     print(domain)
+    print(f"Capabilities: {domain['capabilities']}")
 
     retrieved: resend.Domain = await resend.Domains.get_async(domain_id=domain["id"])
     if retrieved["records"] is not None:

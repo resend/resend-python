@@ -11,11 +11,14 @@ create_params: resend.Domains.CreateParams = {
     "name": "example.com",
     "region": "us-east-1",
     "custom_return_path": "outbound",
+    "tls": "enforced",
+    "capabilities": {"sending": "enabled", "receiving": "enabled"},
 }
 domain: resend.Domains.CreateDomainResponse = resend.Domains.create(
     params=create_params
 )
 print(domain)
+print(f"Capabilities: {domain['capabilities']}")
 
 retrieved: resend.Domain = resend.Domains.get(domain_id=domain["id"])
 if retrieved["records"] is not None:
