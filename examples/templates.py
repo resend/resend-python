@@ -45,6 +45,7 @@ print(f"Duplicated template: {duplicated['id']}")
 # Get a template by ID
 retrieved_template: resend.Template = resend.Templates.get(template["id"])
 print(f"Retrieved template: {retrieved_template['name']}")
+print(f"Has unpublished versions: {retrieved_template['has_unpublished_versions']}")
 
 # Update a template (update just the name, keep HTML/variables the same)
 update_params: resend.Templates.UpdateParams = {
