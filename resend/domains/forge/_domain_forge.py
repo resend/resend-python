@@ -31,6 +31,7 @@ class DomainForge:
         """
         Activate Forge on an existing domain. Idempotent on the API side:
         enabling an already-migrated domain returns its current state.
+        see more: https://resend.com/docs/api-reference/domains/enable-forge
 
         To re-check only the Forge record, use `Domains.verify` with
         `scope=["forge"]`.
@@ -52,6 +53,7 @@ class DomainForge:
         """
         Activate Forge on an existing domain (async). Idempotent on the API
         side: enabling an already-migrated domain returns its current state.
+        see more: https://resend.com/docs/api-reference/domains/enable-forge
 
         To re-check only the Forge record, use `Domains.verify_async` with
         `scope=["forge"]`.

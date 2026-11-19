@@ -15,7 +15,7 @@ if not domain_id:
 # already-migrated domain is idempotent and returns its current state.
 enable_params: resend.Domains.Forge.EnableParams = {
     "id": domain_id,
-    "custom_return_path": "send",
+    "custom_return_path": "forge",
 }
 domain: resend.Domain = resend.Domains.Forge.enable(enable_params)
 print(f"Forge enabled on domain: {domain['id']}")
