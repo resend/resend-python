@@ -1,7 +1,11 @@
+from unittest import TestCase
+from unittest.mock import create_autospec
+
 from typing_extensions import assert_type
 
 import resend
 from resend.exceptions import NoContentError
+from resend.http_client import HTTPClient
 from tests.conftest import ResendBaseTest
 
 # flake8: noqa
@@ -185,6 +189,22 @@ class TestResendDomains(ResendBaseTest):
             _ = resend.Domains.verify(
                 domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
             )
+
+    def test_domains_verify_with_forge_scope(self) -> None:
+        self.set_mock_json(
+            {"object": "domain", "id": "d91cd9bd-1176-453e-8fc1-35364d380206"}
+        )
+
+        params: resend.Domains.VerifyParams = {"scope": ["forge"]}
+        domain = resend.Domains.verify(
+            domain_id="d91cd9bd-1176-453e-8fc1-35364d380206",
+            params=params,
+        )
+        assert domain["id"] == "d91cd9bd-1176-453e-8fc1-35364d380206"
+        assert (
+            self.mock.call_args.kwargs["url"]
+            == "https://api.resend.com/domains/d91cd9bd-1176-453e-8fc1-35364d380206/verify"
+        )
 
     def test_domains_create_with_tracking_subdomain(self) -> None:
         self.set_mock_json(
@@ -401,3 +421,36 @@ class TestResendDomains(ResendBaseTest):
         assert domains["has_more"] is False
         assert len(domains["data"]) == 1
         assert domains["data"][0]["id"] == "domain-3"
+
+
+class TestDomainsRequestBody(TestCase):
+    def setUp(self) -> None:
+        resend.api_key = "re_123"
+        self.mock_client = create_autospec(HTTPClient, instance=True)
+        self.mock_client.request.return_value = (
+            b'{"id": "d91cd9bd-1176-453e-8fc1-35364d380206"}',
+            200,
+            {"Content-Type": "application/json"},
+        )
+        self.previous_http_client = resend.default_http_client
+        resend.default_http_client = self.mock_client
+
+    def tearDown(self) -> None:
+        resend.default_http_client = self.previous_http_client
+
+    def test_verify_sends_forge_scope(self) -> None:
+        params: resend.Domains.VerifyParams = {"scope": ["forge"]}
+        resend.Domains.verify(
+            domain_id="d91cd9bd-1176-453e-8fc1-35364d380206", params=params
+        )
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "post"
+        assert kwargs["json"] == {"scope": ["forge"]}
+
+    def test_verify_sends_empty_body_without_scope(self) -> None:
+        resend.Domains.verify(domain_id="d91cd9bd-1176-453e-8fc1-35364d380206")
+
+        _, kwargs = self.mock_client.request.call_args
+        assert kwargs["method"] == "post"
+        assert kwargs["json"] == {}
