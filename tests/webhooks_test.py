@@ -585,3 +585,40 @@ class TestWebhookVerification:
 
         with pytest.raises(ValueError, match="no matching signature found"):
             resend.Webhooks.verify(options)
+
+    def test_verify_rejects_non_v1_signature_prefix(self) -> None:
+        """Test webhook verification requires the v1 signature version prefix"""
+        secret = "whsec_" + base64.b64encode(b"test_secret_key").decode("utf-8")
+        msg_id = "msg_123"
+        timestamp = str(int(time.time()))
+        payload = '{"type":"email.sent","data":{"email_id":"123"}}'
+
+        valid_v1 = self._generate_test_signature(secret, msg_id, timestamp, payload)
+        _, valid_digest = valid_v1.split(",", 1)
+
+        for prefix in ("v0", "v2"):
+            with pytest.raises(ValueError, match="no matching signature found"):
+                resend.Webhooks.verify(
+                    {
+                        "payload": payload,
+                        "headers": {
+                            "id": msg_id,
+                            "timestamp": timestamp,
+                            "signature": f"{prefix},{valid_digest}",
+                        },
+                        "webhook_secret": secret,
+                    }
+                )
+
+        event = resend.Webhooks.verify(
+            {
+                "payload": payload,
+                "headers": {
+                    "id": msg_id,
+                    "timestamp": timestamp,
+                    "signature": f"v0,{valid_digest} {valid_v1}",
+                },
+                "webhook_secret": secret,
+            }
+        )
+        assert event["type"] == "email.sent"
