@@ -7,6 +7,7 @@ from resend._base_response import BaseResponse
 from resend.emails._received_email import (AttachmentWithSignedUrl,
                                            EmailAttachmentDetails,
                                            ListReceivedEmail, ReceivedEmail)
+from resend.inboxes._query import build_inbox_query_path
 from resend.pagination_helper import PaginationHelper
 
 # Async imports (optional - only available with pip install resend[async])
@@ -28,6 +29,23 @@ class _ListParams(TypedDict):
     before: NotRequired[str]
     """
     Return emails before this cursor for pagination.
+    """
+    to: NotRequired[List[str]]
+    """
+    Recipients. Returns emails received by any of these addresses, matched
+    exactly and with case. Up to 20 values.
+    """
+    start_date: NotRequired[str]
+    """
+    Matches emails received on or after this date. Accepts a date like
+    ``2026-09-01`` or an ISO 8601 timestamp, in UTC unless the timestamp has
+    an offset.
+    """
+    end_date: NotRequired[str]
+    """
+    Matches emails received on or before this date. Same formats as
+    ``start_date``. A date covers that whole day. A timestamp is used as given.
+    An ``end_date`` before ``start_date`` returns a 422 validation_error.
     """
 
 
@@ -222,6 +240,10 @@ class Receiving:
             limit (NotRequired[int]): The maximum number of emails to return. Maximum 100, minimum 1.
             after (NotRequired[str]): Return emails after this cursor for pagination.
             before (NotRequired[str]): Return emails before this cursor for pagination.
+            to (NotRequired[List[str]]): Recipients. Returns emails received by any
+                of these addresses, matched exactly and with case. Up to 20 values.
+            start_date (NotRequired[str]): Matches emails received on or after this date.
+            end_date (NotRequired[str]): Matches emails received on or before this date.
         """
 
     class GetParams(_GetParams):
@@ -275,14 +297,14 @@ class Receiving:
         see more: https://resend.com/docs/api-reference/emails/list-received-emails
 
         Args:
-            params (Optional[ListParams]): The list parameters for pagination
+            params (Optional[ListParams]): Optional filter and pagination parameters
 
         Returns:
             ListResponse: A paginated list of received email objects
         """
-        base_path = "/emails/receiving"
-        query_params = cast(Dict[Any, Any], params) if params else None
-        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        path = build_inbox_query_path(
+            "/emails/receiving", cast(Dict[Any, Any], params) if params else None
+        )
         resp = request.Request[Receiving.ListResponse](
             path=path,
             params={},
@@ -322,14 +344,14 @@ class Receiving:
         see more: https://resend.com/docs/api-reference/emails/list-received-emails
 
         Args:
-            params (Optional[ListParams]): The list parameters for pagination
+            params (Optional[ListParams]): Optional filter and pagination parameters
 
         Returns:
             ListResponse: A paginated list of received email objects
         """
-        base_path = "/emails/receiving"
-        query_params = cast(Dict[Any, Any], params) if params else None
-        path = PaginationHelper.build_paginated_path(base_path, query_params)
+        path = build_inbox_query_path(
+            "/emails/receiving", cast(Dict[Any, Any], params) if params else None
+        )
         resp = await AsyncRequest[Receiving.ListResponse](
             path=path,
             params={},
