@@ -614,6 +614,37 @@ class TestResendEmail(ResendBaseTest):
         assert len(emails["data"]) == 0
         assert emails["has_more"] == False
 
+    def test_receiving_list_with_filters(self) -> None:
+        self.set_mock_json({"object": "list", "has_more": False, "data": []})
+
+        params: EmailsReceiving.ListParams = {
+            "to": ["support@acme.com", "billing@acme.com"],
+            "start_date": "2026-11-01",
+            "end_date": "2026-11-15T12:00:00Z",
+            "limit": 25,
+            "after": "cursor123",
+        }
+        resend.Emails.Receiving.list(params=params)
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/receiving"
+            "?to=support%40acme.com%2Cbilling%40acme.com"
+            "&start_date=2026-11-01&end_date=2026-11-15T12%3A00%3A00Z"
+            "&limit=25&after=cursor123"
+        )
+
+    def test_receiving_list_omits_unset_filters(self) -> None:
+        self.set_mock_json({"object": "list", "has_more": False, "data": []})
+
+        resend.Emails.Receiving.list(params={"to": ["support@acme.com"]})
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/receiving?to=support%40acme.com"
+        )
+
+        resend.Emails.Receiving.list(params={"limit": 10, "before": "cursor123"})
+        self.mock.assert_called_with(
+            url="https://api.resend.com/emails/receiving?limit=10&before=cursor123"
+        )
+
     def test_should_receiving_list_raise_exception_when_no_content(self) -> None:
         self.set_mock_json(None)
         with self.assertRaises(NoContentError):

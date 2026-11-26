@@ -12,7 +12,7 @@ try:
 except ImportError:
     pass
 
-from ._topic import Topic
+from ._topic import Topic, TopicVisibility
 
 
 class Topics:
@@ -44,6 +44,13 @@ class Topics:
         """
         The topic description. Max length is 200 characters.
         """
+        visibility: NotRequired[TopicVisibility]
+        """
+        The visibility of the topic on the unsubscribe page. Possible values: public or private.
+        private: only contacts who are opted in to the topic can see it.
+        public: all contacts can see it.
+        Defaults to private when not provided.
+        """
 
     class UpdateTopicResponse(BaseResponse):
         """
@@ -66,6 +73,10 @@ class Topics:
         description: str
         """
         The topic description. Max length is 200 characters.
+        """
+        visibility: TopicVisibility
+        """
+        The visibility of the topic on the unsubscribe page. Possible values: public or private.
         """
 
     class RemoveTopicResponse(BaseResponse):
@@ -143,6 +154,7 @@ class Topics:
                 - name: The topic name (max 50 characters)
                 - default_subscription: The default subscription preference ("opt_in" or "opt_out")
                 - description: Optional topic description (max 200 characters)
+                - visibility: Optional topic visibility ("public" or "private")
 
         Returns:
             CreateTopicResponse: The created topic response with the topic ID
@@ -183,6 +195,7 @@ class Topics:
             params (UpdateParams): The topic update parameters
                 - name: Optional topic name (max 50 characters)
                 - description: Optional topic description (max 200 characters)
+                - visibility: Optional topic visibility ("public" or "private")
 
         Returns:
             UpdateTopicResponse: The updated topic response with the topic ID
