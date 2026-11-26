@@ -599,7 +599,7 @@ class Webhooks:
         for sig in signatures:
             # Strip version prefix (e.g., "v1,")
             parts = sig.split(",", 1)
-            if len(parts) != 2:
+            if len(parts) != 2 or parts[0] != "v1":
                 continue
 
             received_signature = parts[1]
