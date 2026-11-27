@@ -1,4 +1,5 @@
 import pytest
+from typing_extensions import assert_type
 
 import resend
 from resend.exceptions import NoContentError
@@ -217,3 +218,42 @@ class TestResendTemplatesAsync(AsyncResendBaseTest):
         self.set_mock_json(None)
         with pytest.raises(NoContentError):
             _ = await resend.Templates.list_async()
+
+    async def test_templates_get_async_returns_version_fields(self) -> None:
+        self.set_mock_json(
+            {
+                "object": "template",
+                "id": "34a080c9-b17d-4187-ad80-5af20266e535",
+                "current_version_id": "b2693018-7abb-4b4b-b4cb-aadf72dc06bd",
+                "alias": "reset-password",
+                "name": "reset-password",
+                "created_at": "2026-10-06 23:47:56.678+00",
+                "updated_at": "2026-10-06 23:47:56.678+00",
+                "status": "published",
+                "published_at": "2026-10-06 23:47:56.678+00",
+                "from": "John Doe <john.doe@example.com>",
+                "subject": "Hello, world!",
+                "reply_to": None,
+                "html": "<h1>Hello, world!</h1>",
+                "text": "Hello, world!",
+                "variables": [
+                    {
+                        "id": "e169aa45-1ecf-4183-9955-b1499d5701d3",
+                        "key": "user_name",
+                        "type": "string",
+                        "fallback_value": "John Doe",
+                        "created_at": "2026-10-06 23:47:56.678+00",
+                        "updated_at": "2026-10-06 23:47:56.678+00",
+                    }
+                ],
+                "has_unpublished_versions": True,
+            }
+        )
+
+        template = await resend.Templates.get_async(
+            "34a080c9-b17d-4187-ad80-5af20266e535"
+        )
+        assert_type(template["current_version_id"], str)
+        assert_type(template["has_unpublished_versions"], bool)
+        assert template["current_version_id"] == "b2693018-7abb-4b4b-b4cb-aadf72dc06bd"
+        assert template["has_unpublished_versions"] is True
